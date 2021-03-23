@@ -10,15 +10,24 @@ module.exports = {
     "plugin:react-hooks/recommended",
     "plugin:jsx-a11y/recommended",
     "prettier",
+    "plugin:@typescript-eslint/recommended",
   ],
+  parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
+    useJSXTextNode: true,
     ecmaVersion: 11,
     sourceType: "module",
   },
-  plugins: ["react", "jsx-a11y", "react-hooks", "prettier"],
+  plugins: [
+    "react",
+    "jsx-a11y",
+    "react-hooks",
+    "prettier",
+    "@typescript-eslint",
+  ],
   rules: {
     "react/prop-types": 0,
     "prettier/prettier": ["error", { endOfLine: "auto" }],
