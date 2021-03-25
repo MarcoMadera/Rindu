@@ -97,10 +97,13 @@ export const getAllTracksFromPlaylist = async (
   playlist: string
 ): Promise<AllTracksFromAPlaylistResponse> => {
   try {
-    spotifyAPI.setAccessToken(accessToken);
+    if (accessToken) {
+      spotifyAPI.setAccessToken(accessToken);
+    }
     let tracks = [];
     const data = await spotifyAPI.getPlaylistTracks(playlist);
     const { body } = data;
+
     tracks = body.items;
     if (body.total > 100)
       for (let i = 1; i < Math.ceil(body.total / 100); i++) {
@@ -112,17 +115,15 @@ export const getAllTracksFromPlaylist = async (
     return {
       tracks: tracks.map(({ track }, i) => {
         return {
-          name: track.name || undefined,
-          images: track.album.images || undefined,
-          uri: track.uri || undefined,
-          href: track.external_urls.spotify || undefined,
-          artists:
-            track.artists.map((_artist) => _artist.name).join(", ") ||
-            undefined,
-          id: track.id || undefined,
-          explicit: track.explicit || undefined,
-          duration: track.duration_ms || undefined,
-          corruptedTrack: false,
+          name: track?.name,
+          images: track?.album.images,
+          uri: track?.uri,
+          href: track?.external_urls.spotify,
+          artists: track?.artists.map((_artist) => _artist.name).join(", "),
+          id: track?.id,
+          explicit: track?.explicit,
+          duration: track?.duration_ms,
+          corruptedTrack: !track?.uri,
           position: i,
         };
       }),

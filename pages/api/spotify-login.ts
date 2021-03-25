@@ -13,10 +13,13 @@ export default async function login(
       return res.status(400).json(err);
     }
   }
-  try {
-    const data = await getSpotifyAuthorization(req.body.code);
-    return res.json(data);
-  } catch (err) {
-    return res.status(400).json(err);
+  if (req.body.code) {
+    try {
+      const data = await getSpotifyAuthorization(req.body.code);
+      return res.json(data);
+    } catch (err) {
+      return res.status(400).json(err);
+    }
   }
+  return res.status(400).json({ message: "bad request" });
 }

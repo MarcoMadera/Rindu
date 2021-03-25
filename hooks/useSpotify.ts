@@ -1,4 +1,4 @@
-import { useCallback, useContext } from "react";
+import { Dispatch, SetStateAction, useCallback, useContext } from "react";
 import {
   AllTracksFromAPlayList,
   PlaylistItems,
@@ -7,15 +7,19 @@ import {
   AllTracksFromAPlaylistResponse,
 } from "../lib/types";
 import SpotifyContext from "../context/SpotifyContext";
+import {
+  getPlaylistsRequest,
+  getTracksFromPlayListRequest,
+  removeTracksRequest,
+} from "../lib/requests";
 
-export default function useSpotify(
-  accessToken?: string | undefined
-): {
+export default function useSpotify(): {
   playlists: PlaylistItems;
   totalPlaylists: number;
   getPlaylists: (offset: number, playlistLimit: number) => void;
   getTracksFromPlayList: (playlistId: string) => void;
   allTracks: AllTracksFromAPlayList;
+  setPlaylists: Dispatch<SetStateAction<PlaylistItems>>;
   removeTracks: (
     playlist: string | undefined,
     tracks: number[],
@@ -32,18 +36,8 @@ export default function useSpotify(
   } = useContext(SpotifyContext);
 
   const getPlaylists = useCallback(
-    (offset, playlistLimit) => {
-      fetch("/api/playlists", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          accessToken,
-          offset: offset,
-          playlistLimit,
-        }),
-      })
+    (offset: number, playlistLimit: number) => {
+      getPlaylistsRequest(offset, playlistLimit)
         .then((res) => {
           if (!res.ok) {
             throw Error(res.statusText);
@@ -53,28 +47,19 @@ export default function useSpotify(
         .then((d) => d.json())
         .then(({ items, total }: UserPlaylistsResponse) => {
           setTotalPlaylists(total);
-          return setPlaylists((playlist) => [...playlist, ...items]);
+          setPlaylists((playlist) => [...playlist, ...items]);
         })
         .catch((err) => {
           console.log(err);
         });
     },
-    [accessToken, setPlaylists, setTotalPlaylists]
+    [setPlaylists, setTotalPlaylists]
   );
 
   const getTracksFromPlayList = useCallback(
-    (playlistId) => {
+    (playlistId: string) => {
       setAllTracks([]);
-      fetch("/api/playlists", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          accessToken,
-          playlistId,
-        }),
-      })
+      getTracksFromPlayListRequest(playlistId)
         .then((d) => d.json())
         .then(({ tracks }: AllTracksFromAPlaylistResponse) => {
           return setAllTracks(tracks);
@@ -83,7 +68,7 @@ export default function useSpotify(
           console.log(err);
         });
     },
-    [accessToken, setAllTracks]
+    [setAllTracks]
   );
 
   const removeTracks = useCallback(
@@ -93,18 +78,7 @@ export default function useSpotify(
       snapshotID: string | undefined
     ) => {
       try {
-        const res = await fetch("/api/removetracks", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            accessToken,
-            playlist,
-            tracks,
-            snapshotID,
-          }),
-        });
+        const res = await removeTracksRequest(playlist, tracks, snapshotID);
         if (!res.ok) {
           throw Error(res.statusText);
         }
@@ -115,7 +89,7 @@ export default function useSpotify(
         return;
       }
     },
-    [accessToken]
+    []
   );
 
   return {
@@ -125,5 +99,6 @@ export default function useSpotify(
     getTracksFromPlayList,
     allTracks,
     removeTracks,
+    setPlaylists,
   };
 }

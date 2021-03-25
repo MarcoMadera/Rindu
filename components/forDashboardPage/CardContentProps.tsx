@@ -13,7 +13,9 @@ export const CardContent: React.FC<CardContentProps> = ({
   const { user } = useAuth();
   return (
     <article>
-      {images && <img src={images[1]?.url ?? images[0]?.url} alt={name} />}
+      {images && (
+        <img loading="lazy" src={images[1]?.url ?? images[0]?.url} alt={name} />
+      )}
       <strong>{name}</strong>
       {<p>{description || `De ${user?.name}`}</p>}
       <style jsx>{`

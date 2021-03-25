@@ -15,8 +15,7 @@ const Footer: React.FC = () => {
       <style jsx>{`
         footer {
           display: block;
-          padding: 1em 0;
-          margin-top: 80px;
+          height: 50px;
         }
         p {
           margin: 0;

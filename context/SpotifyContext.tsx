@@ -18,7 +18,6 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
   const [playlists, setPlaylists] = useState<PlaylistItems>([]);
   const [totalPlaylists, setTotalPlaylists] = useState<number>(0);
   const [allTracks, setAllTracks] = useState<AllTracksFromAPlayList>([]);
-  console.log(allTracks);
 
   return (
     <SpotifyContext.Provider

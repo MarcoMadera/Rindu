@@ -1,11 +1,14 @@
-import useAuth from "../hooks/useAuth";
-import UserConfig from "./dashboard/UserConfig";
+import Link from "next/link";
+import useAuth from "../../hooks/useAuth";
+import UserConfig from "./UserConfig";
 
 const Navbar: React.FC = () => {
-  const { user } = useAuth();
+  const { isLogin, user } = useAuth();
   return (
     <header>
-      <p translate="no">Rindu</p>
+      <Link href={isLogin ? "/dashboard" : "/"}>
+        <a translate="no">Rindu</a>
+      </Link>
       {user ? (
         <UserConfig name={user?.name} img={user?.image} href={user?.href} />
       ) : (
@@ -21,13 +24,14 @@ const Navbar: React.FC = () => {
           align-items: center;
           justify-content: space-between;
         }
-        p {
+        a {
           font-size: 36px;
           font-family: "Lato";
           width: 148px;
           text-align: center;
           color: #e5e5e5;
           margin: 0;
+          text-decoration: none;
         }
       `}</style>
     </header>
