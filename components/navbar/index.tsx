@@ -16,7 +16,7 @@ const Navbar: React.FC = () => {
       )}
       <style jsx>{`
         header {
-          height: 120px;
+          height: 80px;
           width: 100vw;
           color: #e5e5e5;
           display: flex;

@@ -21,13 +21,11 @@ export const CardContent: React.FC<CardContentProps> = ({
       <style jsx>{`
         strong {
           display: block;
-          font-size: 14px;
           margin: 3px 0;
         }
         p {
           font-weight: 300;
           margin: 0.5em 0;
-          font-size: 10px;
         }
         article {
           border-radius: 5px;

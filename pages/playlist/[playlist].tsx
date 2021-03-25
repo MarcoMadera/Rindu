@@ -1,35 +1,98 @@
-import { AllTracksFromAPlaylistResponse } from "../../lib/types";
 import { NextApiRequest, NextPage } from "next";
-import { getTracksFromPlayListRequest } from "../../lib/requests";
-import useSpotify from "../../hooks/useSpotify";
+import { getSinglePlayListRequest } from "../../lib/requests";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import ModalCardTrack from "../../components/forPlaylistsPage/CardTrack";
+import { decode } from "html-entities";
 
-const Playlist: NextPage<AllTracksFromAPlaylistResponse> = ({ tracks }) => {
+interface PlaylistProps {
+  playlistDetails: SpotifyApi.SinglePlaylistResponse;
+}
+
+const PlaylistPageHeader: React.FC<PlaylistProps> = ({ playlistDetails }) => {
+  return (
+    <div>
+      <img
+        src={
+          playlistDetails.images[1]
+            ? playlistDetails.images[1].url
+            : playlistDetails.images[0].url
+        }
+        alt=""
+      />
+      <section>
+        <h1>{playlistDetails.name}</h1>
+        <p>{decode(playlistDetails.description)}</p>
+        <p>{decode(playlistDetails.owner.display_name)}</p>
+        <p>{playlistDetails.followers.total} seguidores</p>
+      </section>
+      <style jsx>
+        {`
+          p {
+            margin: 0;
+            color: #535296;
+          }
+          h1 {
+            font-size: 24px;
+            color: #abac73;
+            margin-bottom: 0;
+          }
+          img {
+            height: 100px;
+            margin: 5px;
+            margin-right: 20px;
+            align-self: center;
+          }
+          div {
+            background: #fff;
+            max-height: 110px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            max-width: 800px;
+          }
+        `}
+      </style>
+    </div>
+  );
+};
+
+const Playlist: NextPage<PlaylistProps> = ({ playlistDetails }) => {
+  const { tracks } = playlistDetails;
+  console.log(playlistDetails);
   const router = useRouter();
-  const { playlists } = useSpotify();
   useEffect(() => {
-    if (!tracks) {
+    if (!playlistDetails) {
       router.push("/");
     }
-  }, [router, tracks]);
+  }, [router, playlistDetails]);
   return (
     <main>
-      <p>{playlists?.length > 0 ? playlists[0]?.name : null}</p>
-      <div>
-        {tracks?.length > 0
-          ? tracks.map((track) => {
-              return <ModalCardTrack key={track.position} track={track} />;
-            })
-          : null}
-      </div>
+      <section>
+        <PlaylistPageHeader playlistDetails={playlistDetails} />
+        <div>
+          {tracks?.items.length > 0
+            ? tracks.items.map(({ track }) => {
+                return <ModalCardTrack key={track.id} track={track} />;
+              })
+            : null}
+        </div>
+      </section>
       <style jsx>{`
         main {
-          height: calc(100vh - 120px - 66px);
+          min-height: calc(100vh - 80px - 30px);
+          display: flex;
+          justify-content: center;
+        }
+        section {
+          display: flex;
+          flex-direction: column;
+          max-width: 800px;
+          margin: 0;
+          padding: 0;
         }
         div {
-          max-height: calc(100vh - 265px);
+          max-height: calc(100vh - 240px);
           overflow-y: auto;
         }
         div::-webkit-scrollbar {
@@ -57,11 +120,11 @@ export async function getServerSideProps({
 }: {
   params: { playlist: string };
   req: NextApiRequest;
-}): Promise<{ props: AllTracksFromAPlaylistResponse }> {
+}): Promise<{ props: PlaylistProps }> {
   const cookies = req ? req?.headers?.cookie : undefined;
-  const res = await getTracksFromPlayListRequest(playlist, cookies);
-  const tracks: AllTracksFromAPlaylistResponse = await res.json();
+  const _res = await getSinglePlayListRequest(playlist, cookies);
+  const playlistDetails = await _res.json();
   return {
-    props: tracks,
+    props: { playlistDetails },
   };
 }

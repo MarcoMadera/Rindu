@@ -10,6 +10,7 @@
     "test:ci": "jest --ci"
   },
   "dependencies": {
+    "html-entities": "^2.1.1",
     "next": "10.0.9",
     "react": "17.0.1",
     "react-dom": "17.0.1",

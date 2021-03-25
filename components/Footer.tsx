@@ -14,13 +14,14 @@ const Footer: React.FC = () => {
       </p>
       <style jsx>{`
         footer {
-          display: block;
-          height: 50px;
+          display: flex;
+          align-items: flex-end;
+          justify-content: center;
+          height: 30px;
         }
         p {
           margin: 0;
           text-align: center;
-          font-size: 18px;
           text-align: center;
           color: #e5e5e5;
         }

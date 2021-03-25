@@ -1,15 +1,13 @@
-import { trackItem } from "../../lib/types";
-
 interface ModalCardTrackProps {
-  track: trackItem;
+  track: SpotifyApi.TrackObjectFull;
 }
 
 const ExplicitSign: React.FC = () => {
   return (
     <div>
-      <span>E</span>
+      <small>E</small>
       <style jsx>{`
-        span {
+        small {
           font-size: 10px;
           font-weight: bold;
           color: #463f3f;
@@ -33,15 +31,22 @@ const ExplicitSign: React.FC = () => {
 const ModalCardTrack: React.FC<ModalCardTrackProps> = ({ track }) => {
   return (
     <article>
-      <a href={track.href} target="_blank" rel="noopener noreferrer">
-        {track.images ? (
-          <img src={track.images[2]?.url ?? track.images[1]?.url} alt="" />
+      <a
+        href={track.external_urls.spotify}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {track.album.images ? (
+          <img
+            src={track.album.images[2]?.url ?? track.album.images[1]?.url}
+            alt=""
+          />
         ) : null}
         <section>
           <strong>{`${track.name}`}</strong>
           <div>
             {track.explicit && <ExplicitSign />}
-            <p>{track.artists}</p>
+            <p>{track.artists[0].name}</p>
           </div>
         </section>
       </a>
@@ -53,10 +58,8 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({ track }) => {
         p {
           margin: 0;
           font-weight: 400;
-          font-size: 16px;
         }
         strong {
-          font-size: 18px;
           font-weight: bold;
         }
         a {

@@ -36,6 +36,22 @@ export async function getTracksFromPlayListRequest(
   });
   return res;
 }
+export async function getSinglePlayListRequest(
+  playlistId: string,
+  cookies?: string | undefined
+): Promise<Response> {
+  const res = await fetch(`${SITE_URL}/api/playlist`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      accessToken: takeCookie(ACCESSTOKENCOOKIE, cookies),
+      playlistId,
+    }),
+  });
+  return res;
+}
 
 export async function removeTracksRequest(
   playlist: string | undefined,

@@ -132,6 +132,21 @@ export const getAllTracksFromPlaylist = async (
     throw new Error(`getAllTracksFromPlaylist error: ${err}`);
   }
 };
+export const getPlaylistDetails = async (
+  accessToken: string,
+  playlist: string
+): Promise<SpotifyApi.SinglePlaylistResponse> => {
+  try {
+    if (accessToken) {
+      spotifyAPI.setAccessToken(accessToken);
+    }
+    const data = await spotifyAPI.getPlaylist(playlist);
+    const { body } = data;
+    return body;
+  } catch (err) {
+    throw new Error(`getPlaylistDetails error: ${err}`);
+  }
+};
 
 export async function removeTracksFromPlaylist(
   accessToken: string,

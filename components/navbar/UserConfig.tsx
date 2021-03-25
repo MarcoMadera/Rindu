@@ -34,7 +34,6 @@ const UserConfig: React.FC<UserConfigProps> = ({ name, img, href }) => {
         p {
           margin: 0;
           padding: 8px 17px 8px 4px;
-          font-size: 18px;
           font-family: "Lato";
         }
       `}</style>

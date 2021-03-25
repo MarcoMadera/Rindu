@@ -17,7 +17,6 @@ const LoginContainer: React.FC = () => {
           border-radius: 10px;
         }
         h1 {
-          font-size: 36px;
           font-weight: bold;
           margin: 0;
         }
@@ -26,7 +25,6 @@ const LoginContainer: React.FC = () => {
           background-color: #1db954;
           color: #fff;
           font-family: sans-serif;
-          font-size: 24px;
           line-height: 1;
           border-radius: 500px;
           padding: 22px 48px;
@@ -47,7 +45,6 @@ const LoginContainer: React.FC = () => {
           background-color: #1ed760;
         }
         p {
-          font-size: 24px;
           line-height: 1.6;
         }
       `}</style>

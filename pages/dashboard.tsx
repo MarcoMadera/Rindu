@@ -95,7 +95,6 @@ const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
         h1 {
           color: #eb5757;
           text-align: center;
-          font-size: 48px;
           font-weight: bold;
           margin: 0;
         }
@@ -114,7 +113,6 @@ const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
           border: none;
           background-color: #181818;
           color: #e5e5e5;
-          font-size: 18px;
           font-family: inherit;
           cursor: pointer;
         }

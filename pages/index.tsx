@@ -82,15 +82,12 @@ const Home: NextPage<HomeProps> = () => {
             width: 100%;
           }
           li {
-            font-size: 24px;
             list-style-type: circle;
           }
           p {
-            font-size: 18px;
             line-height: 1.6;
           }
           h2 {
-            font-size: 36px;
             font-weight: 400;
             margin-top: 0;
           }
