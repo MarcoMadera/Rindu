@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 interface ModalCardTrackProps {
   track: SpotifyApi.TrackObjectFull;
 }
@@ -28,9 +30,31 @@ const ExplicitSign: React.FC = () => {
   );
 };
 
-const ModalCardTrack: React.FC<ModalCardTrackProps> = ({ track }) => {
+interface AudioPlayerProps {
+  audio?: string;
+}
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ audio }) => {
   return (
-    <article>
+    // eslint-disable-next-line jsx-a11y/media-has-caption
+    <audio autoPlay loop>
+      <source src={audio}></source>
+      Your browser isn&apos;t invited for super fun audio time.
+    </audio>
+  );
+};
+
+const ModalCardTrack: React.FC<ModalCardTrackProps> = ({ track }) => {
+  const [isMouseEnter, setIsMouseEnter] = useState<boolean>();
+  return (
+    <article
+      onMouseEnter={() => setIsMouseEnter(true)}
+      onFocus={() => setIsMouseEnter(true)}
+      onMouseLeave={() => setIsMouseEnter(false)}
+      onBlur={() => setIsMouseEnter(false)}
+    >
+      {track.preview_url && isMouseEnter ? (
+        <AudioPlayer audio={track.preview_url} />
+      ) : null}
       <a
         href={track.external_urls.spotify}
         target="_blank"
@@ -65,7 +89,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({ track }) => {
         a {
           width: 610px;
           height: 65px;
-          background-color: #151414;
+          background-color: ${track.preview_url ? "#151414" : "#202020"};
           border-radius: 10px;
           margin: 0;
           padding: 0;

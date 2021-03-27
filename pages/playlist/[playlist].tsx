@@ -1,15 +1,22 @@
 import { NextApiRequest, NextPage } from "next";
-import { getSinglePlayListRequest } from "../../lib/requests";
+import {
+  getSinglePlayListRequest,
+  getTracksFromPlayListRequest,
+} from "../../lib/requests";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import ModalCardTrack from "../../components/forPlaylistsPage/CardTrack";
 import { decode } from "html-entities";
+import { usePalette } from "react-palette";
+import { AllTracksFromAPlayList } from "../../lib/types";
 
 interface PlaylistProps {
   playlistDetails: SpotifyApi.SinglePlaylistResponse;
 }
 
 const PlaylistPageHeader: React.FC<PlaylistProps> = ({ playlistDetails }) => {
+  const { data } = usePalette(playlistDetails.images[0].url);
+
   return (
     <div>
       <img
@@ -50,6 +57,13 @@ const PlaylistPageHeader: React.FC<PlaylistProps> = ({ playlistDetails }) => {
             display: flex;
             align-items: center;
             max-width: 800px;
+          }
+          :global(body) {
+            background-image: linear-gradient(
+              180deg,
+              ${data.darkMuted},
+              ${data.darkVibrant} 90%
+            );
           }
         `}
       </style>
@@ -120,11 +134,13 @@ export async function getServerSideProps({
 }: {
   params: { playlist: string };
   req: NextApiRequest;
-}): Promise<{ props: PlaylistProps }> {
+}): Promise<{ props: PlaylistProps & AllTracksFromAPlayList }> {
   const cookies = req ? req?.headers?.cookie : undefined;
   const _res = await getSinglePlayListRequest(playlist, cookies);
+  const alltracksres = await getTracksFromPlayListRequest(playlist, cookies);
+  const alltracks = await alltracksres.json();
   const playlistDetails = await _res.json();
   return {
-    props: { playlistDetails },
+    props: { playlistDetails, alltracks },
   };
 }
