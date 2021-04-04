@@ -6,13 +6,13 @@ export default async function playlists(
   res: NextApiResponse
 ): Promise<void> {
   try {
-    const data = await removeTracksFromPlaylist(
+    const snapshot_id = await removeTracksFromPlaylist(
       req.body.accessToken,
       req.body.playlist,
       req.body.tracks,
       req.body.snapshotID
     );
-    res.json(data);
+    res.json({ snapshot_id });
   } catch (err) {
     res.status(400).json(err);
   }

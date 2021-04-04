@@ -4,13 +4,12 @@ import { NextPage } from "next";
 import { takeCookie } from "../utils/cookies";
 import { ACCESSTOKENCOOKIE, REFRESHTOKENCOOKIE } from "../utils/constants";
 import { validateAccessToken } from "../utils/validateAccessToken";
-import { SpotifyUserResponse } from "../lib/types";
 import useAuth from "../hooks/useAuth";
 import { useEffect } from "react";
 import { refreshAccessTokenRequest } from "../lib/requests";
 
 interface HomeProps {
-  user?: SpotifyUserResponse;
+  accessToken?: string;
 }
 
 const Home: NextPage<HomeProps> = () => {
@@ -24,30 +23,30 @@ const Home: NextPage<HomeProps> = () => {
     <main>
       <section>
         <div>
-          <h2>En qué casos te ayuda Rindu:</h2>
+          <h1>En qué casos te ayuda Rindu:</h1>
           <ul>
             <li>
               Si tu playlist tiene tracks duplicados:
               <p>
-                Ya sea si tienes un bot que añade track y te ha estado añadiendo
-                los mismos, Rindu elimina esos tracks que están de más y deja
-                solo uno.
+                Ya sea si tienes un bot que añade tracks y te ha estado
+                añadiendo repetidos, Rindu elimina esos tracks que están de más
+                y deja solo uno.
               </p>
             </li>
             <li>
               Si tienes canciones invisibles:
               <p>
-                Al agregar canciones a una playlist, puede que falle en
-                agregarse, por lo que queda un espacio guardado sin datos. Esto
-                lo identificas si el total de canciones de una playlist no
+                El proceso de agregar canciones por cualquier método puede
+                fallar, por lo que queda un espacio guardado sin datos. Esto lo
+                identificas si el total de canciones de una playlist no
                 concuerda con el último número de la lista. En Spotify versión
-                esto puede causar una duplicación visual de un track.
+                web esto puede causar una duplicación visual de un track.
               </p>
             </li>
           </ul>
           <video
-            src="https://res.cloudinary.com/marcomadera/video/upload/c_scale,w_650/v1615173210/Blog/Code%20Snippets%20en%20VSCode/generalSnippet_peoxlp.mp4"
-            title="Snippet general"
+            src="https://res.cloudinary.com/marcomadera/video/upload/v1617518896/Spotify-Cleaner-App/2021-04-04_00-44-53_zxpprv.mp4"
+            title="Demo"
             muted
             loop
             autoPlay
@@ -63,7 +62,7 @@ const Home: NextPage<HomeProps> = () => {
       <style jsx>
         {`
           main {
-            min-height: calc(100vh - 174px);
+            min-height: calc(100vh - 110px);
             width: 100vw;
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -87,7 +86,8 @@ const Home: NextPage<HomeProps> = () => {
           p {
             line-height: 1.6;
           }
-          h2 {
+          h1 {
+            font-size: 32px;
             font-weight: 400;
             margin-top: 0;
           }
@@ -95,6 +95,7 @@ const Home: NextPage<HomeProps> = () => {
             padding-left: 20px;
           }
           video {
+            background: #161616;
             width: 100%;
           }
         `}
@@ -105,7 +106,10 @@ const Home: NextPage<HomeProps> = () => {
 
 export default Home;
 
-Home.getInitialProps = async ({ res, req }) => {
+Home.getInitialProps = async ({
+  res,
+  req,
+}): Promise<{ accessToken: string }> => {
   const cookies = req ? req?.headers?.cookie : undefined;
   const refreshToken = takeCookie(REFRESHTOKENCOOKIE, cookies);
   let accessToken;
@@ -128,10 +132,10 @@ Home.getInitialProps = async ({ res, req }) => {
       } else {
         Router.replace("/dashboard");
       }
-      return {};
+      return { accessToken };
     }
   } catch (error) {
     console.log(error);
   }
-  return {};
+  return { accessToken };
 };

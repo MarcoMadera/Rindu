@@ -32,10 +32,10 @@ const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
   const { setIsLogin, setUser } = useAuth();
   const [offset, setOffSet] = useState<number>(10);
   useEffect(() => {
-    setPlaylists(userPlaylists.items);
+    setPlaylists(userPlaylists?.items);
     setIsLogin(true);
     setUser(user);
-  }, [setIsLogin, setPlaylists, userPlaylists.items, setUser, user]);
+  }, [setIsLogin, setPlaylists, userPlaylists, setUser, user]);
 
   useEffect(() => {
     const expireIn = parseInt(takeCookie(EXPIRETOKENCOOKIE) || "3600", 10);
@@ -138,12 +138,22 @@ export async function getServerSideProps({
 }> {
   const cookies = req ? req?.headers?.cookie : undefined;
   const refreshToken = takeCookie(REFRESHTOKENCOOKIE, cookies);
-  if (refreshToken) {
-    await refreshAccessTokenRequest(refreshToken);
-  }
+  let accessToken;
   try {
-    let accessToken;
-    accessToken = cookies ? takeCookie(ACCESSTOKENCOOKIE, cookies) : undefined;
+    if (refreshToken) {
+      const re = await refreshAccessTokenRequest(refreshToken);
+      const refresh = await re.json();
+      accessToken = refresh.accessToken;
+
+      res.setHeader("Set-Cookie", [
+        `${ACCESSTOKENCOOKIE}=${accessToken}; Path=/;"`,
+      ]);
+    } else {
+      accessToken = cookies
+        ? takeCookie(ACCESSTOKENCOOKIE, cookies)
+        : undefined;
+    }
+
     if (query.code) {
       try {
         const _res = await getAuthorizationByCode(query.code);

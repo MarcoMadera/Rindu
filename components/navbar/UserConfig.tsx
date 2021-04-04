@@ -1,3 +1,13 @@
+import { useRouter } from "next/router";
+import { useState } from "react";
+import useAuth from "../../hooks/useAuth";
+import {
+  ACCESSTOKENCOOKIE,
+  EXPIRETOKENCOOKIE,
+  REFRESHTOKENCOOKIE,
+} from "../../utils/constants";
+import { eatCookie } from "../../utils/cookies";
+
 interface UserConfigProps {
   name: string | undefined;
   img: string | undefined;
@@ -5,15 +15,70 @@ interface UserConfigProps {
 }
 
 const UserConfig: React.FC<UserConfigProps> = ({ name, img, href }) => {
+  const [openSettings, setOpenSettings] = useState(false);
+  const router = useRouter();
+  const { setUser, setIsLogin } = useAuth();
   function handleClick() {
-    console.log(href);
+    setOpenSettings(!openSettings);
   }
   return (
-    <button onClick={handleClick}>
-      <img src={img} alt={name} />
-      <p>{name}</p>
+    <div>
+      <button className="pill" onClick={handleClick}>
+        <img src={img} alt={name} />
+        <p>{name}</p>
+      </button>
+      <section>
+        <a href={href} rel="noopener noreferrer" target="_blank">
+          Perfil
+        </a>
+        <button
+          onClick={() => {
+            eatCookie(ACCESSTOKENCOOKIE);
+            eatCookie(REFRESHTOKENCOOKIE);
+            eatCookie(EXPIRETOKENCOOKIE);
+            router.push("/");
+            setUser(null);
+            setIsLogin(false);
+          }}
+        >
+          Cerrar sesión
+        </button>
+      </section>
       <style jsx>{`
-        button {
+        div {
+          position: relative;
+        }
+        section {
+          position: absolute;
+          top: calc(100% + 4px);
+          width: 100%;
+          display: ${openSettings ? "block" : "none"};
+          border-radius: 5px;
+          background-color: #161616;
+          box-shadow: 0px 2px 9px 0px rgb(0 0 0 / 5%);
+          padding: 12px 0;
+        }
+        section * {
+          background-color: transparent;
+          width: 100%;
+          padding: 4px 24px;
+          border: none;
+          display: inline-block;
+          align-content: center;
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 20px;
+          color: #fff;
+          cursor: pointer;
+          text-align: start;
+          text-decoration: none;
+        }
+        section *:hover,
+        section *:focus {
+          outline: none;
+          text-decoration: underline;
+        }
+        .pill {
           display: flex;
           align-items: center;
           background-color: #161616;
@@ -37,7 +102,7 @@ const UserConfig: React.FC<UserConfigProps> = ({ name, img, href }) => {
           font-family: "Lato";
         }
       `}</style>
-    </button>
+    </div>
   );
 };
 

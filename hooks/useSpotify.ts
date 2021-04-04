@@ -82,7 +82,7 @@ export default function useSpotify(): {
         if (!res.ok) {
           throw Error(res.statusText);
         }
-        const snapshot_id: string = await res.json();
+        const { snapshot_id }: { snapshot_id: string } = await res.json();
         return snapshot_id;
       } catch (err) {
         console.log(err);

@@ -5,7 +5,7 @@ const LoginContainer: React.FC = () => {
 
   return (
     <div>
-      <h1>Limpia tus playlists</h1>
+      <h2>Limpia tus playlists</h2>
       <p>Remueve canciones duplicadas e invisibles</p>
       <a href={AUTH_URL}>Entra con Spotify</a>
       <style jsx>{`
@@ -16,7 +16,7 @@ const LoginContainer: React.FC = () => {
           background-color: #111111;
           border-radius: 10px;
         }
-        h1 {
+        h2 {
           font-weight: bold;
           margin: 0;
         }
@@ -27,14 +27,15 @@ const LoginContainer: React.FC = () => {
           font-family: sans-serif;
           line-height: 1;
           border-radius: 500px;
-          padding: 22px 48px;
+          padding: 16px 32px;
           transition-property: background-color, border-color, color, box-shadow,
             filter;
           transition-duration: 0.3s;
           border-width: 0;
           letter-spacing: 2px;
+          max-width: 300px;
           width: 100%;
-          height: 66px;
+          height: 48px;
           text-transform: uppercase;
           white-space: normal;
           text-decoration: none;

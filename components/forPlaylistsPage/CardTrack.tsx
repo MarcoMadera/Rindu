@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-
+import { normalTrackTypes } from "../../lib/types";
 interface ModalCardTrackProps {
-  track: SpotifyApi.TrackObjectFull;
+  track: normalTrackTypes;
 }
 
 const ExplicitSign: React.FC = () => {
@@ -52,25 +52,16 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({ track }) => {
       onMouseLeave={() => setIsMouseEnter(false)}
       onBlur={() => setIsMouseEnter(false)}
     >
-      {track.preview_url && isMouseEnter ? (
-        <AudioPlayer audio={track.preview_url} />
-      ) : null}
-      <a
-        href={track.external_urls.spotify}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {track.album.images ? (
-          <img
-            src={track.album.images[2]?.url ?? track.album.images[1]?.url}
-            alt=""
-          />
+      {track.audio && isMouseEnter ? <AudioPlayer audio={track.audio} /> : null}
+      <a href={track.href} target="_blank" rel="noopener noreferrer">
+        {track.images ? (
+          <img src={track.images[2]?.url ?? track.images[1]?.url} alt="" />
         ) : null}
         <section>
           <strong>{`${track.name}`}</strong>
           <div>
             {track.explicit && <ExplicitSign />}
-            <p>{track.artists[0].name}</p>
+            <p>{track.artists}</p>
           </div>
         </section>
       </a>
@@ -89,7 +80,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({ track }) => {
         a {
           width: 610px;
           height: 65px;
-          background-color: ${track.preview_url ? "#151414" : "#202020"};
+          background-color: ${track.audio ? "#151414" : "#202020"};
           border-radius: 10px;
           margin: 0;
           padding: 0;

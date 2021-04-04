@@ -26,6 +26,12 @@ const PlaylistCard: React.FC<PlaylistCardProps> = ({
             background: unset;
             margin: 0;
             padding: 0;
+            text-decoration: none;
+          }
+          a:hover,
+          a:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px #cccccc4d;
           }
         `}</style>
       </a>

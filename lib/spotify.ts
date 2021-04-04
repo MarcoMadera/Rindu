@@ -123,6 +123,7 @@ export const getAllTracksFromPlaylist = async (
           id: track?.id,
           explicit: track?.explicit,
           duration: track?.duration_ms,
+          audio: track?.preview_url,
           corruptedTrack: !track?.uri,
           position: i,
         };

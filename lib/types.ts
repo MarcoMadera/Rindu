@@ -42,6 +42,7 @@ export type normalTrackTypes = {
   href?: string;
   artists?: string;
   id?: string;
+  audio: string | null;
   explicit?: boolean;
   duration?: number;
 };

@@ -1,3 +1,4 @@
+import { decode } from "html-entities";
 import useAuth from "../../hooks/useAuth";
 
 interface CardContentProps {
@@ -17,15 +18,29 @@ export const CardContent: React.FC<CardContentProps> = ({
         <img loading="lazy" src={images[1]?.url ?? images[0]?.url} alt={name} />
       )}
       <strong>{name}</strong>
-      {<p>{description || `De ${user?.name}`}</p>}
+      {<p>{decode(description) || `De ${user?.name}`}</p>}
       <style jsx>{`
         strong {
           display: block;
           margin: 3px 0;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          display: -webkit-box;
+          overflow: hidden;
+          text-align: left;
+          text-overflow: ellipsis;
+          white-space: unset;
         }
         p {
           font-weight: 300;
-          margin: 0.5em 0;
+          margin: 0em 0;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          display: -webkit-box;
+          overflow: hidden;
+          text-align: left;
+          text-overflow: ellipsis;
+          white-space: unset;
         }
         article {
           border-radius: 5px;
