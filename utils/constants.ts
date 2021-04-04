@@ -4,5 +4,5 @@ export const ACCESSTOKENCOOKIE = "qs";
 export const REFRESHTOKENCOOKIE = "rs";
 export const EXPIRETOKENCOOKIE = "ex";
 export const SITE_URL = __prod__
-  ? process.env.SITE_URL
+  ? process.env.NEXT_PUBLIC_SITE_URL
   : "http://localhost:3000";
