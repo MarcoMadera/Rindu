@@ -25,10 +25,10 @@ export const UserContextProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<SpotifyUserResponse | null>(null);
 
   useEffect(() => {
-    if (router.query.code) {
+    if (router.query.code && isLogin) {
       router.replace("/dashboard", undefined, { shallow: true });
     }
-  }, [router]);
+  }, [router, isLogin]);
 
   return (
     <UserContext.Provider
