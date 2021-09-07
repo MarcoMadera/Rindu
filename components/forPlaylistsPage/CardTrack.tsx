@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { normalTrackTypes } from "../../lib/types";
+import { normalTrackTypes } from "types/spotify";
 interface ModalCardTrackProps {
   track: normalTrackTypes;
 }
@@ -78,7 +78,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({ track }) => {
           font-weight: bold;
         }
         a {
-          width: 610px;
+          width: 100%;
           height: 65px;
           background-color: ${track.audio ? "#151414" : "#202020"};
           border-radius: 10px;

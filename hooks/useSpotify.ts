@@ -5,7 +5,7 @@ import {
   RemoveTracksResponse,
   UserPlaylistsResponse,
   AllTracksFromAPlaylistResponse,
-} from "../lib/types";
+} from "types/spotify";
 import SpotifyContext from "../context/SpotifyContext";
 import {
   getPlaylistsRequest,

@@ -7,6 +7,7 @@ import { validateAccessToken } from "../utils/validateAccessToken";
 import useAuth from "../hooks/useAuth";
 import { useEffect } from "react";
 import { refreshAccessTokenRequest } from "../lib/requests";
+import useAnalitycs from "../hooks/useAnalytics";
 
 interface HomeProps {
   accessToken?: string;
@@ -15,12 +16,20 @@ interface HomeProps {
 const Home: NextPage<HomeProps> = () => {
   const { setIsLogin } = useAuth();
 
+  const { trackWithGoogleAnalitycs } = useAnalitycs();
+  useEffect(() => {
+    trackWithGoogleAnalitycs();
+  }, [trackWithGoogleAnalitycs]);
+
   useEffect(() => {
     setIsLogin(false);
   }, [setIsLogin]);
 
   return (
     <main>
+      <section>
+        <LoginContainer />
+      </section>
       <section>
         <div>
           <h1>En qué casos te ayuda Rindu:</h1>
@@ -56,23 +65,22 @@ const Home: NextPage<HomeProps> = () => {
           </video>
         </div>
       </section>
-      <section>
-        <LoginContainer />
-      </section>
+
       <style jsx>
         {`
           main {
-            min-height: calc(100vh - 110px);
-            width: 100vw;
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-            grid-gap: 20px;
-            padding: 0 100px;
+            min-height: calc(100vh - 124px);
+            width: 100%;
+            display: block;
+            padding: 0 20px;
+            max-width: 1400px;
+            margin: 0 auto;
           }
           section {
             display: flex;
             justify-content: center;
             align-items: center;
+            margin: 10px 0 10px 0;
           }
           div {
             padding: 24px;
@@ -97,6 +105,16 @@ const Home: NextPage<HomeProps> = () => {
           video {
             background: #161616;
             width: 100%;
+          }
+          @media screen and (min-width: 1000px) {
+            main {
+              display: grid;
+              grid-template-columns: minmax(0, 650px) minmax(0, 1fr);
+              grid-gap: 20px;
+            }
+            main section:nth-of-type(2) {
+              grid-row-start: 1;
+            }
           }
         `}
       </style>

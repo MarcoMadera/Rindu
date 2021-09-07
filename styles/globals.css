@@ -1,21 +1,32 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap");
 html,
 body {
-  padding: 0;
-  margin: 0;
   background-color: #060606;
   background-image: linear-gradient(180deg, #340a3c, #265828 90%);
+  background-repeat: no-repeat;
   color: #e5e5e5;
   overflow-x: hidden;
+  min-height: 100vh;
   font-family: "Lato", sans-serif;
-  transition: background-image ease 900ms;
 }
 html {
-  width: 100vw;
+  width: 100%;
+  min-width: 360px;
+  color-scheme: dark;
 }
-
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+}
+h1,
+h2,
+h3,
+h4 {
+  margin: 1rem 0;
+}
+p {
+  margin: 0.8rem 0;
 }
 h1 {
   font-size: 3em;

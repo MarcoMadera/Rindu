@@ -1,12 +1,12 @@
 import React from "react";
 import { decode } from "html-entities";
-import { usePalette } from "react-palette";
 import useSpotify from "../../hooks/useSpotify";
 import { getTracksFromPlayListRequest } from "../../lib/requests";
 import {
   AllTracksFromAPlayList,
   AllTracksFromAPlaylistResponse,
-} from "../../lib/types";
+} from "types/spotify";
+import { SITE_URL } from "../../utils/constants";
 
 export interface PlaylistPageHeaderProps {
   playlistDetails: SpotifyApi.SinglePlaylistResponse;
@@ -21,23 +21,16 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
   corruptedSongs,
   setAllTracks,
 }) => {
-  const { data } = usePalette(
-    playlistDetails?.images[0]
-      ? playlistDetails?.images[0].url
-      : playlistDetails?.images[1]?.url
-  );
   const { removeTracks } = useSpotify();
+  const coverImg =
+    playlistDetails.images[1]?.url ??
+    playlistDetails.images[0]?.url ??
+    `${SITE_URL}/defaultSongCover.jpeg`;
+
   return (
     <header>
       <section>
-        <img
-          src={
-            playlistDetails.images[1]
-              ? playlistDetails.images[1].url
-              : playlistDetails.images[0].url
-          }
-          alt=""
-        />
+        <img src={coverImg} alt="" />
         <div>
           <h1>{playlistDetails.name}</h1>
           <p>{decode(playlistDetails.description)}</p>
@@ -71,7 +64,8 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
                 const playListTracksres = await getTracksFromPlayListRequest(
                   playlistDetails.id
                 );
-                const playListTracks: AllTracksFromAPlaylistResponse = await playListTracksres.json();
+                const playListTracks: AllTracksFromAPlaylistResponse =
+                  await playListTracksres.json();
                 setAllTracks(playListTracks.tracks);
               }
             }}
@@ -115,20 +109,12 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
           }
           header {
             background: #fff;
-            max-height: 110px;
             margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 5px;
             max-width: 800px;
-          }
-          :global(body) {
-            background-image: linear-gradient(
-              180deg,
-              ${data.darkMuted},
-              ${data.darkVibrant} 90%
-            );
           }
         `}
       </style>

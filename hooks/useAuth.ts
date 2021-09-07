@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useContext } from "react";
-import { SpotifyUserResponse } from "../lib/types";
+import { SpotifyUserResponse } from "types/spotify";
 import UserContext from "../context/UserContext";
 
 export default function useAuth(): {

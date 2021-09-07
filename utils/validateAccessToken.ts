@@ -1,4 +1,4 @@
-import { SpotifyUserResponse } from "../lib/types";
+import { SpotifyUserResponse } from "types/spotify";
 import { SITE_URL } from "./constants";
 
 export async function validateAccessToken(

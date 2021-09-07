@@ -6,7 +6,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { SpotifyUserResponse } from "../lib/types";
+import { SpotifyUserResponse } from "types/spotify";
 
 export interface Context {
   isLogin: boolean;

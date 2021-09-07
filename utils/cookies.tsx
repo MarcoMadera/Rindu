@@ -24,7 +24,15 @@ export function takeCookie(
  * @param value string value
  * @param age the expire time in miliseconds string
  */
-export function makeCookie(name: string, value: string, age: string): string {
+export function makeCookie({
+  name,
+  value,
+  age,
+}: {
+  name: string;
+  value: string;
+  age: number;
+}): string {
   return `${name}=${value}; max-age=${age}; Path=/;"`;
 }
 

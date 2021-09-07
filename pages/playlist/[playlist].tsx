@@ -10,12 +10,13 @@ import ModalCardTrack from "../../components/forPlaylistsPage/CardTrack";
 import {
   AllTracksFromAPlayList,
   AllTracksFromAPlaylistResponse,
-} from "../../lib/types";
+} from "types/spotify";
 import { PlaylistPageHeader } from "../../components/forPlaylistsPage/PlaylistPageHeader";
 import { ACCESSTOKENCOOKIE, REFRESHTOKENCOOKIE } from "../../utils/constants";
 import { takeCookie } from "../../utils/cookies";
 import { validateAccessToken } from "../../utils/validateAccessToken";
 import Router from "next/router";
+import useAnalitycs from "../../hooks/useAnalytics";
 
 interface PlaylistProps {
   playlistDetails: SpotifyApi.SinglePlaylistResponse;
@@ -31,6 +32,13 @@ const Playlist: NextPage<PlaylistProps> = ({
   const [duplicatesSongs, setDuplicatesSongs] = useState<number[]>([]);
   const [corruptedSongs, setCorruptedSongs] = useState<number>(0);
   const [allTracks, setAllTracks] = useState<AllTracksFromAPlayList>(tracks);
+
+  const { trackWithGoogleAnalitycs } = useAnalitycs();
+
+  useEffect(() => {
+    trackWithGoogleAnalitycs();
+  }, [trackWithGoogleAnalitycs]);
+
   useEffect(() => {
     if (!playlistDetails) {
       router.push("/");
@@ -96,9 +104,11 @@ const Playlist: NextPage<PlaylistProps> = ({
       </section>
       <style jsx>{`
         main {
-          min-height: calc(100vh - 80px - 30px);
-          display: flex;
-          justify-content: center;
+          min-height: calc(100vh - 124px);
+          display: block;
+          margin: 0 auto;
+          max-width: 610px;
+          padding: 0 20px;
         }
         section {
           display: flex;

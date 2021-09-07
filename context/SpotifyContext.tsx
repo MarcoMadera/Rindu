@@ -1,5 +1,5 @@
 import { createContext, Dispatch, SetStateAction, useState } from "react";
-import { AllTracksFromAPlayList, PlaylistItems } from "../lib/types";
+import { AllTracksFromAPlayList, PlaylistItems } from "types/spotify";
 
 export interface Context {
   playlists: PlaylistItems;

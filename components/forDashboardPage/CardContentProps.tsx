@@ -1,5 +1,5 @@
 import { decode } from "html-entities";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "hooks/useAuth";
 
 interface CardContentProps {
   images?: SpotifyApi.ImageObject[];

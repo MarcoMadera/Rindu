@@ -1,6 +1,7 @@
 import { getRefreshAccessToken } from "../../lib/spotify";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ACCESSTOKENCOOKIE, EXPIRETOKENCOOKIE } from "../../utils/constants";
+import { ApiError } from "next/dist/server/api-utils";
 
 export default async function refresh(
   req: NextApiRequest,
@@ -14,8 +15,9 @@ export default async function refresh(
         `${EXPIRETOKENCOOKIE}=${data.expiresIn}; Path=/;"`,
       ]);
       return res.json(data);
-    } catch ({ body }) {
-      return res.status(body.error.status).json(body.error);
+    } catch (error) {
+      const response = error as ApiError;
+      return res.status(response.statusCode).json(response.message);
     }
   }
   return res.status(400).json({ message: "bad request" });

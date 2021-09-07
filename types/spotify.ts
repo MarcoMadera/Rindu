@@ -16,7 +16,7 @@ export type SpotifyUserResponse = {
 };
 // Playlists
 export type PlaylistItem = {
-  images: SpotifyApi.ImageObject[];
+  images?: Array<{ url: string }>;
   name: string;
   isPublic: boolean | null;
   tracks: number;
@@ -37,7 +37,7 @@ export type normalTrackTypes = {
   name?: string;
   corruptedTrack: boolean;
   position: number;
-  images?: SpotifyApi.ImageObject[];
+  images?: Array<{ url: string }>;
   uri?: string;
   href?: string;
   artists?: string;

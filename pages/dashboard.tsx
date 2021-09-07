@@ -1,19 +1,19 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
 import Router from "next/router";
 import React, { useEffect, useState } from "react";
-import PlaylistCard from "../components/forDashboardPage/PlaylistCard";
-import useAuth from "../hooks/useAuth";
-import useSpotify from "../hooks/useSpotify";
+import PlaylistCard from "components/forDashboardPage/PlaylistCard";
+import useAuth from "hooks/useAuth";
+import useSpotify from "hooks/useSpotify";
 import {
   getAuthorizationByCode,
   getPlaylistsRequest,
   refreshAccessTokenRequest,
-} from "../lib/requests";
+} from "lib/requests";
 import {
   PlaylistItem,
   SpotifyUserResponse,
   UserPlaylistsResponse,
-} from "../lib/types";
+} from "types/spotify";
 import {
   ACCESSTOKENCOOKIE,
   EXPIRETOKENCOOKIE,
@@ -91,6 +91,10 @@ const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
       <style jsx>{`
         main {
           text-align: center;
+          min-height: calc(100vh - 124px);
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 0 20px;
         }
         h1 {
           color: #eb5757;
@@ -104,7 +108,8 @@ const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
           -moz-column-gap: 30px;
           column-gap: 30px;
           row-gap: 34px;
-          margin: 20px 140px 50px 140px;
+          margin: 20px 0 50px 0;
+
           justify-content: space-between;
         }
         button {
@@ -115,6 +120,13 @@ const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
           color: #e5e5e5;
           font-family: inherit;
           cursor: pointer;
+        }
+        @media screen and (min-width: 0px) and (max-width: 469px) {
+          section {
+            grid-template-columns: 1fr;
+            width: 100%;
+            justify-items: center;
+          }
         }
       `}</style>
     </>

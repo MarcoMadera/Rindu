@@ -6,7 +6,7 @@ import {
   RemoveTracksResponse,
   UserPlaylistsResponse,
   AllTracksFromAPlaylistResponse,
-} from "./types";
+} from "types/spotify";
 
 const SPOTIFY_CLIENT_ID = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
 const SPOTIFY_REDIRECT_URL = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URL;

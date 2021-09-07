@@ -16,13 +16,14 @@ const Navbar: React.FC = () => {
       )}
       <style jsx>{`
         header {
-          height: 80px;
-          width: 100vw;
           color: #e5e5e5;
-          display: flex;
-          padding: 0 100px;
           align-items: center;
+          display: flex;
+          flex-wrap: wrap;
           justify-content: space-between;
+          margin: 0 auto;
+          max-width: 1400px;
+          padding: 20px;
         }
         a {
           font-size: 36px;
