@@ -32,8 +32,8 @@ export function makeCookie({
   name: string;
   value: string;
   age: number;
-}): string {
-  return `${name}=${value}; max-age=${age}; Path=/;"`;
+}): void {
+  document.cookie = `${name}=${value}; max-age=${age}; Path=/;"`;
 }
 
 /**
