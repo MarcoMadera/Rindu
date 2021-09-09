@@ -18,6 +18,24 @@ const spotifyAPI = new SpotifyWebAPI({
   clientSecret: SPOTIFY_CLIENT_SECRET,
 });
 
+export function getMyCurrentPlaybackState(callback: CallableFunction): void {
+  spotifyAPI
+    .refreshAccessToken()
+    .then(function (data) {
+      // Set the access token on the API object so that it's used in all future requests
+      spotifyAPI.setAccessToken(data.body["access_token"]);
+
+      return spotifyAPI.getMyCurrentPlaybackState({});
+    })
+    .then(function (data) {
+      callback(data.body);
+    })
+    .catch(function (err) {
+      console.log("Unfortunately, something has gone wrong.", err.message);
+      callback(null);
+    });
+}
+
 export async function getSpotifyAuthorization(
   code: string
 ): Promise<AuthorizationResponse> {
@@ -57,7 +75,7 @@ export async function getSpotifyUser(
 export async function getUserPlaylists(
   accessToken: string,
   offset = 0,
-  limit = 10
+  limit = 50
 ): Promise<UserPlaylistsResponse> {
   spotifyAPI.setAccessToken(accessToken);
   const data = await spotifyAPI.getUserPlaylists({ offset, limit });
@@ -85,7 +103,7 @@ export async function getUserPlaylists(
           id,
           snapshot_id,
           href: external_urls.spotify,
-          owner: owner.id,
+          owner: owner,
         };
       }
     ),

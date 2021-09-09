@@ -26,6 +26,9 @@ const UserConfig: React.FC<UserConfigProps> = ({ name, img, href }) => {
       <button className="pill" onClick={handleClick}>
         <img src={img} alt={name} />
         <p>{name}</p>
+        <svg height="16" width="16" fill="#fff" viewBox="0 0 16 16">
+          <path d="M3 6l5 5.794L13 6z"></path>
+        </svg>
       </button>
       <section>
         <a href={href} rel="noopener noreferrer" target="_blank">
@@ -80,26 +83,41 @@ const UserConfig: React.FC<UserConfigProps> = ({ name, img, href }) => {
         }
         .pill {
           display: flex;
+          justify-content: center;
           align-items: center;
           background-color: #161616;
-          padding: 6px 6px;
           border: none;
           cursor: pointer;
           border-radius: 30px;
           text-decoration: none;
-          padding: 3px 4px;
+          padding: 2px;
+          gap: 8px;
           color: #e5e5e5;
         }
         img {
-          width: 40px;
-          height: 40px;
+          width: 28px;
+          height: 28px;
           border-radius: 50%;
-          margin-right: 10px;
+          object-fit: cover;
         }
         p {
           margin: 0;
-          padding: 8px 17px 8px 4px;
           font-family: "Lato";
+          line-height: 28px;
+          max-width: 110px;
+          overflow: hidden;
+          pointer-events: none;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          font-size: 14px;
+          font-family: sans-serif;
+          font-weight: 700;
+          letter-spacing: normal;
+          line-height: 16px;
+          text-transform: none;
+        }
+        svg {
+          margin-right: 6px;
         }
       `}</style>
     </div>

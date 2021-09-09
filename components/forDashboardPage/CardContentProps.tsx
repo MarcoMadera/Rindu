@@ -1,24 +1,39 @@
 import { decode } from "html-entities";
-import useAuth from "hooks/useAuth";
+import { SITE_URL } from "utils/constants";
+import { PlaylistItem } from "types/spotify";
 
 interface CardContentProps {
   images?: SpotifyApi.ImageObject[];
   name: string;
   description: string | null;
+  owner: PlaylistItem["owner"];
 }
 export const CardContent: React.FC<CardContentProps> = ({
   images,
   name,
   description,
+  owner,
 }) => {
-  const { user } = useAuth();
   return (
     <article>
       {images && (
-        <img loading="lazy" src={images[1]?.url ?? images[0]?.url} alt={name} />
+        <img
+          loading="lazy"
+          src={
+            images[1]?.url ??
+            (images[0]?.url || `${SITE_URL}/defaultSongCover.jpeg`)
+          }
+          alt={name}
+        />
       )}
       <strong>{name}</strong>
-      {<p>{decode(description) || `De ${user?.name}`}</p>}
+      {
+        <p>
+          {decode(description) || owner?.display_name
+            ? `De ${owner?.display_name}`
+            : ""}
+        </p>
+      }
       <style jsx>{`
         strong {
           display: block;

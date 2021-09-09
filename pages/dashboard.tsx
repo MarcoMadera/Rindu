@@ -11,6 +11,7 @@ import {
 } from "lib/requests";
 import {
   PlaylistItem,
+  PlaylistItems,
   SpotifyUserResponse,
   UserPlaylistsResponse,
 } from "types/spotify";
@@ -28,14 +29,56 @@ interface DashboardProps {
 }
 
 const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
-  const { playlists, getPlaylists, setPlaylists } = useSpotify();
+  const { setPlaylists } = useSpotify();
   const { setIsLogin, setUser } = useAuth();
-  const [offset, setOffSet] = useState<number>(10);
+  const [dashBoardPlaylists, setDashBoardPlaylists] = useState<PlaylistItems>(
+    userPlaylists.items
+  );
+
+  function addItemsToPlaylists(items: PlaylistItems, position: number): void {
+    setDashBoardPlaylists((allPlaylists) => {
+      const newPlaylists = [...allPlaylists];
+      newPlaylists.splice(position, 50, ...items);
+      return newPlaylists;
+    });
+  }
+
   useEffect(() => {
-    setPlaylists(userPlaylists?.items);
+    const emptyPlaylistItem: PlaylistItem = {
+      images: [
+        {
+          url: "",
+        },
+      ],
+      name: "",
+      description: "",
+      id: "",
+      owner: {
+        display_name: "",
+        external_urls: { spotify: "" },
+        href: "",
+        id: "",
+        type: "",
+        uri: "",
+      },
+      isPublic: false,
+      href: "",
+      snapshot_id: "",
+      tracks: 0,
+    };
+    const restPlaylistItems = new Array(
+      userPlaylists.total - userPlaylists.items.length
+    ).fill(emptyPlaylistItem);
+
+    setPlaylists(userPlaylists.items);
+
+    setDashBoardPlaylists([...userPlaylists?.items, ...restPlaylistItems]);
+
     setIsLogin(true);
+
     setUser(user);
-  }, [setIsLogin, setPlaylists, userPlaylists, setUser, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userPlaylists, user]);
 
   useEffect(() => {
     const expireIn = parseInt(takeCookie(EXPIRETOKENCOOKIE) || "3600", 10);
@@ -54,51 +97,43 @@ const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
     return () => clearTimeout(interval);
   }, []);
 
-  function loadMorePlaylist(e: { preventDefault: () => void }) {
-    e.preventDefault();
-    setOffSet((value) => value + 10);
-    getPlaylists(offset, 10);
-  }
-
   return (
     <>
       <main>
+        <header></header>
         <h1>Escoge una playlist</h1>
         <section>
-          {playlists?.length > 0
-            ? playlists.map(
-                ({ images, name, description, id, owner }: PlaylistItem) => {
-                  if (owner !== user?.id) {
-                    return null;
-                  }
+          {dashBoardPlaylists?.length > 0
+            ? dashBoardPlaylists.map(
+                ({ images, name, description, id, owner }: PlaylistItem, i) => {
                   return (
                     <PlaylistCard
-                      key={id}
+                      key={id || i}
                       images={images}
                       name={name}
                       description={description}
                       playlistId={id}
+                      owner={owner}
+                      offSet={i}
+                      addItemsToPlaylists={addItemsToPlaylists}
                     />
                   );
                 }
               )
             : null}
         </section>
-        {userPlaylists?.total > playlists?.length && (
-          <button onClick={loadMorePlaylist}>Cargar más playlists</button>
-        )}
       </main>
       <style jsx>{`
         main {
-          text-align: center;
-          min-height: calc(100vh - 124px);
           max-width: 1400px;
           margin: 0 auto;
           padding: 0 20px;
+          height: calc(100vh - 90px);
+          overflow-y: scroll;
+          width: calc(100vw - 200px);
         }
         h1 {
-          color: #eb5757;
-          text-align: center;
+          color: #fff;
           font-weight: bold;
           margin: 0;
         }
@@ -111,15 +146,6 @@ const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
           margin: 20px 0 50px 0;
 
           justify-content: space-between;
-        }
-        button {
-          min-width: 200px;
-          padding: 10px;
-          border: none;
-          background-color: #181818;
-          color: #e5e5e5;
-          font-family: inherit;
-          cursor: pointer;
         }
         @media screen and (min-width: 0px) and (max-width: 469px) {
           section {
@@ -192,7 +218,7 @@ export async function getServerSideProps({
         Router.replace("/");
       }
     }
-    const playlistsRequest = await getPlaylistsRequest(0, 10, accessToken);
+    const playlistsRequest = await getPlaylistsRequest(0, 50, accessToken);
     const userPlaylists = await playlistsRequest.json();
     return {
       props: { user: user || null, userPlaylists },

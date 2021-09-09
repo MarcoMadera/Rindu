@@ -53,6 +53,7 @@ const Playlist: NextPage<PlaylistProps> = ({
     if (!(allTracks?.length > 0)) {
       return;
     }
+
     const sortedArraybyValue = allTracks.sort((a, b) => {
       if (a.corruptedTrack || b.corruptedTrack) {
         return 0;
@@ -62,6 +63,7 @@ const Playlist: NextPage<PlaylistProps> = ({
       }
       return 0;
     });
+
     const duplicates = sortedArraybyValue
       .filter((track, i) => {
         if (track.corruptedTrack) {
@@ -104,34 +106,19 @@ const Playlist: NextPage<PlaylistProps> = ({
       </section>
       <style jsx>{`
         main {
-          min-height: calc(100vh - 124px);
           display: block;
           margin: 0 auto;
-          max-width: 610px;
           padding: 0 20px;
+          height: calc(100vh - 90px);
+          overflow-y: scroll;
+          width: calc(100vw - 200px);
         }
         section {
           display: flex;
           flex-direction: column;
           max-width: 800px;
-          margin: 0;
+          margin: 0 auto;
           padding: 0;
-        }
-        div {
-          max-height: calc(100vh - 240px);
-          overflow-y: auto;
-        }
-        div::-webkit-scrollbar {
-          height: 8px;
-          width: 8px;
-          overflow: visible;
-        }
-        div::-webkit-scrollbar-thumb {
-          background: #181818;
-          border-radius: 30px;
-        }
-        div::-webkit-scrollbar-track {
-          background: transparent;
         }
       `}</style>
     </main>

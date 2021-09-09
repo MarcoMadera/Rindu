@@ -24,7 +24,14 @@ export type PlaylistItem = {
   id: string;
   snapshot_id: string;
   href: string;
-  owner: string;
+  owner: {
+    display_name?: string;
+    external_urls: { spotify: string };
+    href: string;
+    id: string;
+    type: string;
+    uri: string;
+  };
 };
 export type PlaylistItems = PlaylistItem[];
 export type UserPlaylistsResponse = {
