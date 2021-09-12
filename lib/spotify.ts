@@ -18,6 +18,45 @@ const spotifyAPI = new SpotifyWebAPI({
   clientSecret: SPOTIFY_CLIENT_SECRET,
 });
 
+export async function play(
+  accessToken: string,
+  deviceId: string,
+  options: { context_uri?: string; uris?: string[]; offset?: number }
+): Promise<unknown> {
+  const { context_uri, offset = 0, uris } = options;
+  let body;
+
+  if (context_uri) {
+    const isArtist = context_uri.indexOf("artist") >= 0;
+    let position;
+
+    if (!isArtist) {
+      position = { position: offset };
+    }
+
+    body = JSON.stringify({ context_uri, offset: position });
+  } else if (Array.isArray(uris) && uris.length) {
+    body = JSON.stringify({ uris, offset: { position: offset } });
+  }
+
+  try {
+    const data = await fetch(
+      `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+      }
+    );
+    return data.status;
+  } catch (error) {
+    return error;
+  }
+}
+
 export function getMyCurrentPlaybackState(callback: CallableFunction): void {
   spotifyAPI
     .refreshAccessToken()

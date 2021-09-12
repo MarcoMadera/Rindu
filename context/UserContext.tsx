@@ -13,6 +13,8 @@ export interface Context {
   user: SpotifyUserResponse | null;
   setIsLogin: Dispatch<SetStateAction<boolean>>;
   setUser: Dispatch<SetStateAction<SpotifyUserResponse | null>>;
+  accessToken: string | undefined;
+  setAccessToken: Dispatch<SetStateAction<string | undefined>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -23,7 +25,7 @@ export const UserContextProvider: React.FC = ({ children }) => {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [user, setUser] = useState<SpotifyUserResponse | null>(null);
-
+  const [accessToken, setAccessToken] = useState<string>();
   useEffect(() => {
     if (router.query.code && isLogin) {
       router.replace("/dashboard", undefined, { shallow: true });
@@ -37,6 +39,8 @@ export const UserContextProvider: React.FC = ({ children }) => {
         user,
         setIsLogin,
         setUser,
+        accessToken,
+        setAccessToken,
       }}
     >
       {children}

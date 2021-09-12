@@ -7,12 +7,17 @@ export default function useAuth(): {
   setIsLogin: Dispatch<SetStateAction<boolean>>;
   setUser: Dispatch<SetStateAction<SpotifyUserResponse | null>>;
   user: SpotifyUserResponse | null;
+  accessToken: string | undefined;
+  setAccessToken: Dispatch<SetStateAction<string | undefined>>;
 } {
-  const { isLogin, setIsLogin, user, setUser } = useContext(UserContext);
+  const { isLogin, setIsLogin, user, setUser, accessToken, setAccessToken } =
+    useContext(UserContext);
   return {
     isLogin,
     setIsLogin,
     user,
     setUser,
+    accessToken,
+    setAccessToken,
   };
 }

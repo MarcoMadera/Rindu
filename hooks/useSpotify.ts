@@ -20,6 +20,12 @@ export default function useSpotify(): {
   getTracksFromPlayList: (playlistId: string) => void;
   allTracks: AllTracksFromAPlayList;
   setPlaylists: Dispatch<SetStateAction<PlaylistItems>>;
+  deviceId: string | undefined;
+  setDeviceId: Dispatch<SetStateAction<string | undefined>>;
+  setIsPlaying: Dispatch<SetStateAction<boolean>>;
+  isPlaying: boolean;
+  setCurrentlyPlaying: Dispatch<SetStateAction<Spotify.Track | undefined>>;
+  currrentlyPlaying: Spotify.Track | undefined;
   removeTracks: (
     playlist: string | undefined,
     tracks: number[],
@@ -33,6 +39,12 @@ export default function useSpotify(): {
     setPlaylists,
     setAllTracks,
     allTracks,
+    deviceId,
+    setDeviceId,
+    setIsPlaying,
+    isPlaying,
+    setCurrentlyPlaying,
+    currrentlyPlaying,
   } = useContext(SpotifyContext);
 
   const getPlaylists = useCallback(
@@ -100,5 +112,11 @@ export default function useSpotify(): {
     allTracks,
     removeTracks,
     setPlaylists,
+    deviceId,
+    setDeviceId,
+    setIsPlaying,
+    isPlaying,
+    setCurrentlyPlaying,
+    currrentlyPlaying,
   };
 }

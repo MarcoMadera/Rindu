@@ -1,47 +1,80 @@
-import { useEffect, useState } from "react";
+import {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+} from "react";
 import { ACCESSTOKENCOOKIE } from "utils/constants";
 import { takeCookie } from "utils/cookies";
+import useSpotify from "./useSpotify";
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-export default function useSpotifyPlayer(volume: number): {
-  deviceId?: string;
+export default function useSpotifyPlayer({
+  volume,
+  name,
+}: {
+  volume: number;
+  name: string;
+}): {
+  deviceId: string | undefined;
+  player: MutableRefObject<Spotify.Player | undefined>;
+  setIsPlaying: Dispatch<SetStateAction<boolean>>;
 } {
-  const [deviceId, setDeviceId] = useState<string>();
+  const { deviceId, setDeviceId, setIsPlaying, setCurrentlyPlaying } =
+    useSpotify();
+  const player = useRef<Spotify.Player>();
 
   useEffect(() => {
-    // @ts-ignore
     window.onSpotifyWebPlaybackSDKReady = () => {
-      // @ts-ignore
-      const player = new window.Spotify.Player({
+      player.current = new window.Spotify.Player({
         getOAuthToken: (callback: CallableFunction) => {
           callback(takeCookie(ACCESSTOKENCOOKIE) ?? "");
         },
-        name: "Rindu",
+        name,
         volume,
       });
 
-      player.addListener("ready", ({ device_id }: { device_id: string }) => {
-        setDeviceId(device_id);
-      });
+      player.current.addListener(
+        "ready",
+        ({ device_id }: { device_id: string }) => {
+          setDeviceId(device_id);
+        }
+      );
 
-      player.addListener(
+      player.current.addListener(
         "not_ready",
         ({ device_id }: { device_id: string }) => {
           console.log("Device ID has gone offline", device_id);
         }
       );
 
-      // player.addListener("player_state_changed", (e) => console.log(e));
+      player.current.addListener("player_state_changed", (trackWindow) => {
+        setIsPlaying(!trackWindow?.paused);
+        console.log(
+          "Currently Playing",
+          trackWindow?.track_window.current_track
+        );
+        setCurrentlyPlaying(trackWindow?.track_window.current_track);
+        console.log("Position in Song", trackWindow?.position);
+        console.log("Duration of Song", trackWindow?.duration);
+      });
+
       // player.addListener("initialization_error", (error) => console.log(error));
       // player.addListener("authentication_error", (error) => console.log(error));
       // player.addListener("account_error", (error) => console.log(error));
       // player.addListener("playback_error", (error) => console.log(error));
 
-      player.connect();
+      player.current.connect();
+    };
+
+    return () => {
+      player.current?.removeListener("not_ready");
+      player.current?.removeListener("ready");
+      player.current?.disconnect();
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { deviceId };
+  return { deviceId, player, setIsPlaying };
 }

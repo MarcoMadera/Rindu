@@ -26,11 +26,16 @@ import { validateAccessToken } from "../utils/validateAccessToken";
 interface DashboardProps {
   user: SpotifyUserResponse | null;
   userPlaylists: UserPlaylistsResponse;
+  accessToken: string | undefined;
 }
 
-const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
+const Dashboard: NextPage<DashboardProps> = ({
+  user,
+  userPlaylists,
+  accessToken,
+}) => {
   const { setPlaylists } = useSpotify();
-  const { setIsLogin, setUser } = useAuth();
+  const { setIsLogin, setUser, setAccessToken } = useAuth();
   const [dashBoardPlaylists, setDashBoardPlaylists] = useState<PlaylistItems>(
     userPlaylists.items
   );
@@ -66,6 +71,7 @@ const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
       snapshot_id: "",
       tracks: 0,
     };
+
     const restPlaylistItems = new Array(
       userPlaylists.total - userPlaylists.items.length
     ).fill(emptyPlaylistItem);
@@ -77,25 +83,10 @@ const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
     setIsLogin(true);
 
     setUser(user);
+
+    setAccessToken(accessToken);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userPlaylists, user]);
-
-  useEffect(() => {
-    const expireIn = parseInt(takeCookie(EXPIRETOKENCOOKIE) || "3600", 10);
-    const interval = setInterval(() => {
-      const refreshToken = takeCookie(REFRESHTOKENCOOKIE);
-      if (refreshToken) {
-        fetch("/api/spotify-refresh", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ refreshToken }),
-        });
-      }
-    }, (expireIn - 60) * 1000);
-    return () => clearTimeout(interval);
-  }, []);
 
   return (
     <>
@@ -172,6 +163,7 @@ export async function getServerSideProps({
   props: {
     user?: SpotifyUserResponse | null;
     userPlaylists?: UserPlaylistsResponse;
+    accessToken?: string;
   };
 }> {
   const cookies = req ? req?.headers?.cookie : undefined;
@@ -221,7 +213,7 @@ export async function getServerSideProps({
     const playlistsRequest = await getPlaylistsRequest(0, 50, accessToken);
     const userPlaylists = await playlistsRequest.json();
     return {
-      props: { user: user || null, userPlaylists },
+      props: { user: user || null, userPlaylists, accessToken },
     };
   } catch (error) {
     console.log(error);

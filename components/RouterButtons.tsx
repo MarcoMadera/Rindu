@@ -23,13 +23,10 @@ export default function RouterButtons(): ReactElement {
     setDisableButtons(!window.history.length);
   }, []);
 
-  console.log(backRoutes);
-
   return (
     <div className="routerButtons">
       <button
         onClick={() => {
-          console.log("click back", router);
           setclickback(true);
           router.back();
           setBackRoutes((routes) => [...routes, router.asPath]);
@@ -45,7 +42,6 @@ export default function RouterButtons(): ReactElement {
           }
           setBackRoutes((routes) => {
             const allbackroutes = [...routes];
-            console.log("routes in forward", allbackroutes);
             allbackroutes.shift();
             return allbackroutes;
           });

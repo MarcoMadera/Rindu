@@ -6,8 +6,14 @@ export interface Context {
   setPlaylists: Dispatch<SetStateAction<PlaylistItems>>;
   totalPlaylists: number;
   setTotalPlaylists: Dispatch<SetStateAction<number>>;
+  deviceId: string | undefined;
+  setDeviceId: Dispatch<SetStateAction<string | undefined>>;
   allTracks: AllTracksFromAPlayList;
   setAllTracks: Dispatch<SetStateAction<AllTracksFromAPlayList>>;
+  setIsPlaying: Dispatch<SetStateAction<boolean>>;
+  isPlaying: boolean;
+  setCurrentlyPlaying: Dispatch<SetStateAction<Spotify.Track | undefined>>;
+  currrentlyPlaying: Spotify.Track | undefined;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -18,6 +24,9 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
   const [playlists, setPlaylists] = useState<PlaylistItems>([]);
   const [totalPlaylists, setTotalPlaylists] = useState<number>(0);
   const [allTracks, setAllTracks] = useState<AllTracksFromAPlayList>([]);
+  const [deviceId, setDeviceId] = useState<string>();
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currrentlyPlaying, setCurrentlyPlaying] = useState<Spotify.Track>();
 
   return (
     <SpotifyContext.Provider
@@ -28,6 +37,12 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
         setPlaylists,
         setTotalPlaylists,
         setAllTracks,
+        deviceId,
+        setDeviceId,
+        setIsPlaying,
+        isPlaying,
+        setCurrentlyPlaying,
+        currrentlyPlaying,
       }}
     >
       {children}

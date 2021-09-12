@@ -10,6 +10,7 @@ import ModalCardTrack from "../../components/forPlaylistsPage/CardTrack";
 import {
   AllTracksFromAPlayList,
   AllTracksFromAPlaylistResponse,
+  SpotifyUserResponse,
 } from "types/spotify";
 import { PlaylistPageHeader } from "../../components/forPlaylistsPage/PlaylistPageHeader";
 import { ACCESSTOKENCOOKIE, REFRESHTOKENCOOKIE } from "../../utils/constants";
@@ -17,22 +18,28 @@ import { takeCookie } from "../../utils/cookies";
 import { validateAccessToken } from "../../utils/validateAccessToken";
 import Router from "next/router";
 import useAnalitycs from "../../hooks/useAnalytics";
+import useAuth from "hooks/useAuth";
+import { findDuplicateSongs } from "utils/findDuplicateSongs";
 
 interface PlaylistProps {
   playlistDetails: SpotifyApi.SinglePlaylistResponse;
   playListTracks: AllTracksFromAPlaylistResponse;
+  accessToken?: string;
+  user: SpotifyUserResponse | null;
 }
 
 const Playlist: NextPage<PlaylistProps> = ({
   playlistDetails,
   playListTracks,
+  accessToken,
+  user,
 }) => {
   const { tracks } = playListTracks;
   const router = useRouter();
   const [duplicatesSongs, setDuplicatesSongs] = useState<number[]>([]);
   const [corruptedSongs, setCorruptedSongs] = useState<number>(0);
   const [allTracks, setAllTracks] = useState<AllTracksFromAPlayList>(tracks);
-
+  const { setIsLogin, setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalitycs } = useAnalitycs();
 
   useEffect(() => {
@@ -43,39 +50,31 @@ const Playlist: NextPage<PlaylistProps> = ({
     if (!playlistDetails) {
       router.push("/");
     }
-  }, [router, playlistDetails]);
-
-  useEffect(() => {
     setAllTracks(tracks);
-  }, [tracks]);
+
+    setIsLogin(true);
+
+    setUser(user);
+
+    setAccessToken(accessToken);
+  }, [
+    router,
+    playlistDetails,
+    accessToken,
+    setAccessToken,
+    setIsLogin,
+    setUser,
+    user,
+    tracks,
+  ]);
 
   useEffect(() => {
     if (!(allTracks?.length > 0)) {
       return;
     }
 
-    const sortedArraybyValue = allTracks.sort((a, b) => {
-      if (a.corruptedTrack || b.corruptedTrack) {
-        return 0;
-      }
-      if (a.uri && b.uri) {
-        return a?.uri > b?.uri ? 1 : b?.uri > a?.uri ? -1 : 0;
-      }
-      return 0;
-    });
+    setDuplicatesSongs(findDuplicateSongs(allTracks));
 
-    const duplicates = sortedArraybyValue
-      .filter((track, i) => {
-        if (track.corruptedTrack) {
-          return true;
-        }
-        if (i === sortedArraybyValue.length - 1) {
-          return false;
-        }
-        return track.uri === sortedArraybyValue[i + 1].uri;
-      })
-      .map(({ position }) => position);
-    setDuplicatesSongs(duplicates);
     setCorruptedSongs(() => {
       const corrupted = allTracks.filter(
         ({ corruptedTrack }) => corruptedTrack
@@ -99,7 +98,14 @@ const Playlist: NextPage<PlaylistProps> = ({
                 if (track.corruptedTrack) {
                   return null;
                 }
-                return <ModalCardTrack key={track.position} track={track} />;
+                return (
+                  <ModalCardTrack
+                    accessToken={accessToken}
+                    key={track.position}
+                    track={track}
+                    playlistUri={playlistDetails.uri}
+                  />
+                );
               })
             : null}
         </div>
@@ -138,7 +144,9 @@ export async function getServerSideProps({
 }): Promise<{
   props: {
     playlistDetails: PlaylistProps;
+    user?: SpotifyUserResponse | null;
     playListTracks: AllTracksFromAPlaylistResponse;
+    accessToken?: string;
   };
 }> {
   const cookies = req ? req?.headers?.cookie : undefined;
@@ -158,15 +166,7 @@ export async function getServerSideProps({
         ? takeCookie(ACCESSTOKENCOOKIE, cookies)
         : undefined;
     }
-    const user = await validateAccessToken(accessToken);
-    if (!user) {
-      if (res) {
-        res.writeHead(307, { Location: "/" });
-        res.end();
-      } else {
-        Router.replace("/");
-      }
-    }
+
     if (!cookies) {
       res.writeHead(307, { Location: "/" });
       res.end();
@@ -180,8 +180,17 @@ export async function getServerSideProps({
     playlist,
     cookies
   );
+  const user = await validateAccessToken(accessToken);
+  if (!user) {
+    if (res) {
+      res.writeHead(307, { Location: "/" });
+      res.end();
+    } else {
+      Router.replace("/");
+    }
+  }
   const playListTracks = await playListTracksres.json();
   return {
-    props: { playlistDetails, playListTracks },
+    props: { playlistDetails, playListTracks, accessToken, user },
   };
 }

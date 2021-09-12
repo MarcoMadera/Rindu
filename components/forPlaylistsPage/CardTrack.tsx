@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import { Pause, Play } from "components/icons";
+import useSpotify from "hooks/useSpotify";
+import { play } from "lib/spotify";
 import { normalTrackTypes } from "types/spotify";
+
 interface ModalCardTrackProps {
   track: normalTrackTypes;
+  accessToken: string | undefined;
+  playlistUri: string;
 }
 
 const ExplicitSign: React.FC = () => {
@@ -30,45 +35,79 @@ const ExplicitSign: React.FC = () => {
   );
 };
 
-interface AudioPlayerProps {
-  audio?: string;
-}
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ audio }) => {
-  return (
-    // eslint-disable-next-line jsx-a11y/media-has-caption
-    <audio autoPlay loop>
-      <source src={audio}></source>
-      Your browser isn&apos;t invited for super fun audio time.
-    </audio>
-  );
-};
+// interface AudioPlayerProps {
+//   audio?: string;
+// }
+// const AudioPlayer: React.FC<AudioPlayerProps> = ({ audio }) => {
+//   return (
+//     // eslint-disable-next-line jsx-a11y/media-has-caption
+//     <audio autoPlay loop>
+//       <source src={audio}></source>
+//       Your browser isn&apos;t invited for super fun audio time.
+//     </audio>
+//   );
+// };
 
-const ModalCardTrack: React.FC<ModalCardTrackProps> = ({ track }) => {
-  const [isMouseEnter, setIsMouseEnter] = useState<boolean>();
+const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
+  accessToken,
+  track,
+  playlistUri,
+}) => {
+  const { deviceId, currrentlyPlaying } = useSpotify();
+
+  async function playCurrentTrack() {
+    if (accessToken && track.uri && deviceId) {
+      const res = await play(accessToken, deviceId, {
+        context_uri: playlistUri,
+        offset: track.position,
+      });
+      return res;
+    }
+  }
+
+  const currrentlyPlayingArtist = currrentlyPlaying?.artists
+    .map(({ name }) => name)
+    .join(", ");
+
+  const isTheSameAsCurrentlyPlaying =
+    currrentlyPlaying?.name === track.name &&
+    currrentlyPlayingArtist === track.artists;
+
   return (
-    <article
-      onMouseEnter={() => setIsMouseEnter(true)}
-      onFocus={() => setIsMouseEnter(true)}
-      onMouseLeave={() => setIsMouseEnter(false)}
-      onBlur={() => setIsMouseEnter(false)}
-    >
-      {track.audio && isMouseEnter ? <AudioPlayer audio={track.audio} /> : null}
-      <a href={track.href} target="_blank" rel="noopener noreferrer">
-        {track.images ? (
-          <img src={track.images[2]?.url ?? track.images[1]?.url} alt="" />
-        ) : null}
-        <section>
-          <strong>{`${track.name}`}</strong>
-          <div>
-            {track.explicit && <ExplicitSign />}
-            <p>{track.artists}</p>
-          </div>
-        </section>
-      </a>
+    <article onDoubleClick={playCurrentTrack}>
+      {/* {track.audio && isMouseEnter ? <AudioPlayer audio={track.audio} /> : null} */}
+      {/* <a href={track.href} target="_blank" rel="noopener noreferrer"> */}
+      <button onClick={playCurrentTrack}>
+        {isTheSameAsCurrentlyPlaying ? (
+          <Pause fill="#fff" />
+        ) : (
+          <Play fill="#fff" />
+        )}
+      </button>
+      {track.images ? (
+        <img src={track.images[2]?.url ?? track.images[1]?.url} alt="" />
+      ) : null}
+      <section>
+        <strong>{`${track.name}`}</strong>
+        <div>
+          {track.explicit && <ExplicitSign />}
+          <p>{track.artists}</p>
+        </div>
+      </section>
+      {/* </a> */}
       <style jsx>{`
         div {
           display: flex;
           align-items: center;
+        }
+        button {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background: transparent;
+          border: none;
+          width: 32px;
+          height: 32px;
         }
         p {
           margin: 0;
@@ -77,10 +116,12 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({ track }) => {
         strong {
           font-weight: bold;
         }
-        a {
+        article {
           width: 100%;
           height: 65px;
-          background-color: ${track.audio ? "#151414" : "#202020"};
+          background-color: ${isTheSameAsCurrentlyPlaying
+            ? "#202020"
+            : "#151414"};
           border-radius: 10px;
           margin: 0;
           padding: 0;
@@ -89,6 +130,12 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({ track }) => {
           align-items: center;
           text-decoration: none;
           color: inherit;
+          cursor: default;
+          user-select: none;
+        }
+        article:hover,
+        article:focus {
+          background-color: #202020;
         }
         img {
           margin: 0;
