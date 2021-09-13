@@ -20,6 +20,7 @@ import Router from "next/router";
 import useAnalitycs from "../../hooks/useAnalytics";
 import useAuth from "hooks/useAuth";
 import { findDuplicateSongs } from "utils/findDuplicateSongs";
+import Head from "next/head";
 
 interface PlaylistProps {
   playlistDetails: SpotifyApi.SinglePlaylistResponse;
@@ -39,7 +40,7 @@ const Playlist: NextPage<PlaylistProps> = ({
   const [duplicatesSongs, setDuplicatesSongs] = useState<number[]>([]);
   const [corruptedSongs, setCorruptedSongs] = useState<number>(0);
   const [allTracks, setAllTracks] = useState<AllTracksFromAPlayList>(tracks);
-  const { setIsLogin, setUser, setAccessToken } = useAuth();
+  const { setIsLogin, setUser } = useAuth();
   const { trackWithGoogleAnalitycs } = useAnalitycs();
 
   useEffect(() => {
@@ -55,18 +56,7 @@ const Playlist: NextPage<PlaylistProps> = ({
     setIsLogin(true);
 
     setUser(user);
-
-    setAccessToken(accessToken);
-  }, [
-    router,
-    playlistDetails,
-    accessToken,
-    setAccessToken,
-    setIsLogin,
-    setUser,
-    user,
-    tracks,
-  ]);
+  }, [router, playlistDetails, accessToken, setIsLogin, setUser, user, tracks]);
 
   useEffect(() => {
     if (!(allTracks?.length > 0)) {
@@ -85,6 +75,9 @@ const Playlist: NextPage<PlaylistProps> = ({
 
   return (
     <main>
+      <Head>
+        <title>{`Rindu: ${playlistDetails.name}`}</title>
+      </Head>
       <section>
         <PlaylistPageHeader
           playlistDetails={playlistDetails}
@@ -113,16 +106,17 @@ const Playlist: NextPage<PlaylistProps> = ({
       <style jsx>{`
         main {
           display: block;
-          margin: 0 auto;
-          padding: 0 20px;
+          margin: -60px auto 0 auto;
           height: calc(100vh - 90px);
           overflow-y: scroll;
           width: calc(100vw - 200px);
         }
+        div {
+          padding: 0 32px;
+        }
         section {
           display: flex;
           flex-direction: column;
-          max-width: 800px;
           margin: 0 auto;
           padding: 0;
         }
@@ -151,16 +145,18 @@ export async function getServerSideProps({
 }> {
   const cookies = req ? req?.headers?.cookie : undefined;
   const refreshToken = takeCookie(REFRESHTOKENCOOKIE, cookies);
-  let accessToken;
+  let accessToken = takeCookie(ACCESSTOKENCOOKIE, cookies);
+  const user = await validateAccessToken(accessToken);
+
   try {
-    if (refreshToken) {
+    if (refreshToken && !user) {
       const re = await refreshAccessTokenRequest(refreshToken);
+      if (!re.ok) {
+        res.writeHead(307, { Location: "/" });
+        res.end();
+      }
       const refresh = await re.json();
       accessToken = refresh.accessToken;
-
-      res.setHeader("Set-Cookie", [
-        `${ACCESSTOKENCOOKIE}=${accessToken}; Path=/;"`,
-      ]);
     } else {
       accessToken = cookies
         ? takeCookie(ACCESSTOKENCOOKIE, cookies)
@@ -174,13 +170,14 @@ export async function getServerSideProps({
   } catch (error) {
     console.log(error);
   }
+
   const _res = await getSinglePlayListRequest(playlist, cookies);
   const playlistDetails = await _res.json();
   const playListTracksres = await getTracksFromPlayListRequest(
     playlist,
     cookies
   );
-  const user = await validateAccessToken(accessToken);
+
   if (!user) {
     if (res) {
       res.writeHead(307, { Location: "/" });
@@ -189,6 +186,7 @@ export async function getServerSideProps({
       Router.replace("/");
     }
   }
+
   const playListTracks = await playListTracksres.json();
   return {
     props: { playlistDetails, playListTracks, accessToken, user },

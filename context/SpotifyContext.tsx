@@ -14,6 +14,12 @@ export interface Context {
   isPlaying: boolean;
   setCurrentlyPlaying: Dispatch<SetStateAction<Spotify.Track | undefined>>;
   currrentlyPlaying: Spotify.Track | undefined;
+  currentlyPlayingPosition: number | undefined;
+  currentlyPlayingDuration: number | undefined;
+  setCurrentlyPlayingPosition: Dispatch<SetStateAction<number | undefined>>;
+  setCurrentlyPlayingDuration: Dispatch<SetStateAction<number | undefined>>;
+  player: Spotify.Player | undefined;
+  setPlayer: Dispatch<SetStateAction<Spotify.Player | undefined>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -27,6 +33,11 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
   const [deviceId, setDeviceId] = useState<string>();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currrentlyPlaying, setCurrentlyPlaying] = useState<Spotify.Track>();
+  const [currentlyPlayingPosition, setCurrentlyPlayingPosition] =
+    useState<number>();
+  const [currentlyPlayingDuration, setCurrentlyPlayingDuration] =
+    useState<number>();
+  const [player, setPlayer] = useState<Spotify.Player>();
 
   return (
     <SpotifyContext.Provider
@@ -43,6 +54,12 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
         isPlaying,
         setCurrentlyPlaying,
         currrentlyPlaying,
+        currentlyPlayingPosition,
+        currentlyPlayingDuration,
+        setCurrentlyPlayingPosition,
+        setCurrentlyPlayingDuration,
+        player,
+        setPlayer,
       }}
     >
       {children}

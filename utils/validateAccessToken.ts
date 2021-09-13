@@ -13,7 +13,7 @@ export async function validateAccessToken(
       body: JSON.stringify({ accessToken }),
     }).then((res) => {
       if (!res.ok) {
-        throw Error(JSON.stringify(res));
+        return false;
       }
       return res.json();
     });

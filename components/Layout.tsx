@@ -5,7 +5,11 @@ import SpotifyPlayer from "./SpotifyPlayer";
 import SideBar from "./SideBar";
 import Header from "./Header";
 import { takeCookie } from "utils/cookies";
-import { EXPIRETOKENCOOKIE, REFRESHTOKENCOOKIE } from "utils/constants";
+import {
+  ACCESSTOKENCOOKIE,
+  EXPIRETOKENCOOKIE,
+  REFRESHTOKENCOOKIE,
+} from "utils/constants";
 import { RefreshResponse } from "types/spotify";
 import useAuth from "hooks/useAuth";
 import { useEffect } from "react";
@@ -19,6 +23,7 @@ const Layout: React.FC = ({ children }) => {
       return;
     }
     const expireIn = parseInt(takeCookie(EXPIRETOKENCOOKIE) || "3600", 10);
+    setAccessToken(takeCookie(ACCESSTOKENCOOKIE));
     const interval = setInterval(async () => {
       const refreshToken = takeCookie(REFRESHTOKENCOOKIE);
       if (refreshToken) {
@@ -34,7 +39,8 @@ const Layout: React.FC = ({ children }) => {
       }
     }, (expireIn - 60) * 1000);
     return () => clearTimeout(interval);
-  }, [setAccessToken, router.asPath]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>

@@ -5,8 +5,7 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { ACCESSTOKENCOOKIE } from "utils/constants";
-import { takeCookie } from "utils/cookies";
+import useAuth from "./useAuth";
 import useSpotify from "./useSpotify";
 
 export default function useSpotifyPlayer({
@@ -20,19 +19,32 @@ export default function useSpotifyPlayer({
   player: MutableRefObject<Spotify.Player | undefined>;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
 } {
-  const { deviceId, setDeviceId, setIsPlaying, setCurrentlyPlaying } =
-    useSpotify();
+  const {
+    deviceId,
+    setDeviceId,
+    setIsPlaying,
+    setCurrentlyPlaying,
+    setCurrentlyPlayingPosition,
+    setCurrentlyPlayingDuration,
+    setPlayer,
+  } = useSpotify();
   const player = useRef<Spotify.Player>();
+  const { accessToken } = useAuth();
 
   useEffect(() => {
+    if (!accessToken) {
+      return;
+    }
     window.onSpotifyWebPlaybackSDKReady = () => {
       player.current = new window.Spotify.Player({
         getOAuthToken: (callback: CallableFunction) => {
-          callback(takeCookie(ACCESSTOKENCOOKIE) ?? "");
+          callback(accessToken);
         },
         name,
         volume,
       });
+
+      setPlayer(player.current);
 
       player.current.addListener(
         "ready",
@@ -50,31 +62,54 @@ export default function useSpotifyPlayer({
 
       player.current.addListener("player_state_changed", (trackWindow) => {
         setIsPlaying(!trackWindow?.paused);
-        console.log(
-          "Currently Playing",
-          trackWindow?.track_window.current_track
-        );
         setCurrentlyPlaying(trackWindow?.track_window.current_track);
-        console.log("Position in Song", trackWindow?.position);
-        console.log("Duration of Song", trackWindow?.duration);
+        setCurrentlyPlayingPosition(trackWindow?.position);
+        setCurrentlyPlayingDuration(trackWindow?.duration);
       });
 
-      // player.addListener("initialization_error", (error) => console.log(error));
-      // player.addListener("authentication_error", (error) => console.log(error));
-      // player.addListener("account_error", (error) => console.log(error));
-      // player.addListener("playback_error", (error) => console.log(error));
+      player.current.addListener("initialization_error", (error) =>
+        console.log(error)
+      );
+      player.current.addListener("authentication_error", (error) =>
+        console.log(error)
+      );
+      player.current.addListener("account_error", (error) =>
+        console.log(error)
+      );
+      player.current.addListener("playback_error", (error) =>
+        console.log(error)
+      );
 
       player.current.connect();
     };
+
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key === " ") {
+          player.current?.togglePlay();
+        }
+      },
+      false
+    );
 
     return () => {
       player.current?.removeListener("not_ready");
       player.current?.removeListener("ready");
       player.current?.disconnect();
+      document.removeEventListener(
+        "keydown",
+        (event) => {
+          if (event.key === " ") {
+            player.current?.togglePlay();
+          }
+        },
+        false
+      );
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [accessToken]);
 
   return { deviceId, player, setIsPlaying };
 }

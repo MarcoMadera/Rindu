@@ -29,13 +29,9 @@ interface DashboardProps {
   accessToken: string | undefined;
 }
 
-const Dashboard: NextPage<DashboardProps> = ({
-  user,
-  userPlaylists,
-  accessToken,
-}) => {
+const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
   const { setPlaylists } = useSpotify();
-  const { setIsLogin, setUser, setAccessToken } = useAuth();
+  const { setIsLogin, setUser } = useAuth();
   const [dashBoardPlaylists, setDashBoardPlaylists] = useState<PlaylistItems>(
     userPlaylists.items
   );
@@ -83,8 +79,6 @@ const Dashboard: NextPage<DashboardProps> = ({
     setIsLogin(true);
 
     setUser(user);
-
-    setAccessToken(accessToken);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userPlaylists, user]);
 
@@ -168,41 +162,46 @@ export async function getServerSideProps({
 }> {
   const cookies = req ? req?.headers?.cookie : undefined;
   const refreshToken = takeCookie(REFRESHTOKENCOOKIE, cookies);
-  let accessToken;
-  try {
-    if (refreshToken) {
-      const re = await refreshAccessTokenRequest(refreshToken);
-      const refresh = await re.json();
-      accessToken = refresh.accessToken;
+  let accessToken = takeCookie(ACCESSTOKENCOOKIE, cookies);
+  const user = await validateAccessToken(accessToken);
 
+  if (query.code) {
+    try {
+      const _res = await getAuthorizationByCode(query.code);
+      if (!_res.ok) {
+        res.writeHead(307, { Location: "/" });
+        res.end();
+      }
+      const data = await _res.json();
+      accessToken = data.accessToken;
       res.setHeader("Set-Cookie", [
         `${ACCESSTOKENCOOKIE}=${accessToken}; Path=/;"`,
+        `${REFRESHTOKENCOOKIE}=${data.refreshToken}; Path=/;"`,
+        `${EXPIRETOKENCOOKIE}=${data.expiresIn}; Path=/;"`,
       ]);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  try {
+    if (refreshToken && !user) {
+      const re = await refreshAccessTokenRequest(refreshToken);
+      if (!re.ok) {
+        res.writeHead(307, { Location: "/" });
+        res.end();
+      }
+      const refresh = await re.json();
+      accessToken = refresh.accessToken;
     } else {
       accessToken = cookies
         ? takeCookie(ACCESSTOKENCOOKIE, cookies)
         : undefined;
     }
 
-    if (query.code) {
-      try {
-        const _res = await getAuthorizationByCode(query.code);
-        if (!_res.ok) {
-          throw Error(_res.statusText);
-        }
-        const data = await _res.json();
-        accessToken = data.accessToken;
-        res.setHeader("Set-Cookie", [
-          `${ACCESSTOKENCOOKIE}=${accessToken}; Path=/;"`,
-          `${REFRESHTOKENCOOKIE}=${data.refreshToken}; Path=/;"`,
-          `${EXPIRETOKENCOOKIE}=${data.expiresIn}; Path=/;"`,
-        ]);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    const user = await validateAccessToken(accessToken);
-    if (!user) {
+    console.log(accessToken);
+
+    if (!user || !accessToken) {
       if (res) {
         res.writeHead(307, { Location: "/" });
         res.end();
@@ -210,10 +209,11 @@ export async function getServerSideProps({
         Router.replace("/");
       }
     }
+
     const playlistsRequest = await getPlaylistsRequest(0, 50, accessToken);
     const userPlaylists = await playlistsRequest.json();
     return {
-      props: { user: user || null, userPlaylists, accessToken },
+      props: { user: user || null, userPlaylists, accessToken: accessToken },
     };
   } catch (error) {
     console.log(error);

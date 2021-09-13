@@ -2,7 +2,11 @@ import LoginContainer from "../components/forLoginPage/LoginContainer";
 import Router from "next/router";
 import { NextPage } from "next";
 import { takeCookie } from "../utils/cookies";
-import { ACCESSTOKENCOOKIE, REFRESHTOKENCOOKIE } from "../utils/constants";
+import {
+  ACCESSTOKENCOOKIE,
+  EXPIRETOKENCOOKIE,
+  REFRESHTOKENCOOKIE,
+} from "../utils/constants";
 import { validateAccessToken } from "../utils/validateAccessToken";
 import useAuth from "../hooks/useAuth";
 import { useEffect } from "react";
@@ -133,6 +137,14 @@ Home.getInitialProps = async ({
   let accessToken;
   if (refreshToken) {
     const _res = await refreshAccessTokenRequest(refreshToken);
+    if (!_res.ok) {
+      res?.setHeader("Set-Cookie", [
+        `${ACCESSTOKENCOOKIE}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax;`,
+        `${REFRESHTOKENCOOKIE}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax;`,
+        `${EXPIRETOKENCOOKIE}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax;`,
+      ]);
+      return { accessToken: "" };
+    }
     const data = await _res.json();
     accessToken = data.accessToken;
     res?.setHeader("Set-Cookie", [

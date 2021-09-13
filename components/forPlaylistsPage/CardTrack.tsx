@@ -1,6 +1,7 @@
-import { Pause, Play } from "components/icons";
+import { Pause, Play, Playing } from "components/icons";
 import useSpotify from "hooks/useSpotify";
 import { play } from "lib/spotify";
+import { useState } from "react";
 import { normalTrackTypes } from "types/spotify";
 
 interface ModalCardTrackProps {
@@ -53,7 +54,9 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   track,
   playlistUri,
 }) => {
-  const { deviceId, currrentlyPlaying } = useSpotify();
+  const { deviceId, currrentlyPlaying, player, isPlaying, setIsPlaying } =
+    useSpotify();
+  const [mouseEnter, setMouseEnter] = useState(false);
 
   async function playCurrentTrack() {
     if (accessToken && track.uri && deviceId) {
@@ -74,24 +77,49 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
     currrentlyPlayingArtist === track.artists;
 
   return (
-    <article onDoubleClick={playCurrentTrack}>
+    <article
+      onDoubleClick={playCurrentTrack}
+      onMouseEnter={() => {
+        setMouseEnter(true);
+      }}
+      onMouseLeave={() => setMouseEnter(false)}
+    >
       {/* {track.audio && isMouseEnter ? <AudioPlayer audio={track.audio} /> : null} */}
       {/* <a href={track.href} target="_blank" rel="noopener noreferrer"> */}
-      <button onClick={playCurrentTrack}>
-        {isTheSameAsCurrentlyPlaying ? (
+      <button
+        onClick={() => {
+          if (isPlaying) {
+            player?.pause();
+            setIsPlaying(false);
+          } else {
+            playCurrentTrack();
+          }
+        }}
+      >
+        {mouseEnter && isTheSameAsCurrentlyPlaying && isPlaying ? (
           <Pause fill="#fff" />
-        ) : (
+        ) : isTheSameAsCurrentlyPlaying && isPlaying ? (
+          <Playing />
+        ) : mouseEnter ? (
           <Play fill="#fff" />
+        ) : (
+          <span>{`${track.position + 1}`}</span>
         )}
       </button>
       {track.images ? (
-        <img src={track.images[2]?.url ?? track.images[1]?.url} alt="" />
+        <img
+          loading="lazy"
+          src={track.images[2]?.url ?? track.images[1]?.url}
+          alt=""
+          width="48"
+          height="48"
+        />
       ) : null}
       <section>
-        <strong>{`${track.name}`}</strong>
+        <p className="trackName">{`${track.name}`}</p>
         <div>
           {track.explicit && <ExplicitSign />}
-          <p>{track.artists}</p>
+          <p className="trackArtists">{track.artists}</p>
         </div>
       </section>
       {/* </a> */}
@@ -108,10 +136,20 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           border: none;
           width: 32px;
           height: 32px;
+          margin: 0 15px 0 15px;
         }
-        p {
+        p.trackName {
+          color: ${isTheSameAsCurrentlyPlaying ? "#1db954" : "#fff"};
           margin: 0;
+          padding: 0;
+        }
+        p.trackArtists,
+        span {
+          margin: 0;
+          font-family: "Lato", "sans-serif";
           font-weight: 400;
+          color: #b3b3b3;
+          font-size: 14px;
         }
         strong {
           font-weight: bold;
@@ -121,12 +159,11 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           height: 65px;
           background-color: ${isTheSameAsCurrentlyPlaying
             ? "#202020"
-            : "#151414"};
-          border-radius: 10px;
+            : "transparent"};
           margin: 0;
           padding: 0;
           display: flex;
-          margin-bottom: 10px;
+          border-radius: 2px;
           align-items: center;
           text-decoration: none;
           color: inherit;
@@ -140,7 +177,6 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         img {
           margin: 0;
           padding: 0;
-          border-radius: 10px 0 0 10px;
           margin-right: 23px;
         }
       `}</style>

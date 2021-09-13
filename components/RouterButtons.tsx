@@ -1,55 +1,66 @@
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
 import { __isServer__ } from "utils/constants";
+import { AngleBrackect } from "./icons";
 
 export default function RouterButtons(): ReactElement {
   const router = useRouter();
-  const [backRoutes, setBackRoutes] = useState<string[]>([]);
-  // const [forwardRoutes, setForwardRoutes] = useState<string[]>([]);
-  const [clickback, setclickback] = useState(false);
-  const [disableButtons, setDisableButtons] = useState(
-    __isServer__ || !window.history.length
-  );
+  const [lastIndexHistory, setLastIndexHistory] = useState(0);
+  const [biggestLastIdxHistory, setBiggestLastIdxHistory] = useState(0);
 
   useEffect(() => {
-    if (!backRoutes.includes(router.asPath) && !clickback) {
-      setBackRoutes([]);
+    setLastIndexHistory(window.history.state.idx);
+    if (window.history.state.idx > biggestLastIdxHistory) {
+      setBiggestLastIdxHistory(window.history.state.idx);
     }
-    setclickback(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.asPath]);
 
-  useEffect(() => {
-    setDisableButtons(!window.history.length);
-  }, []);
-
   return (
-    <div className="routerButtons">
+    <div>
       <button
         onClick={() => {
-          setclickback(true);
           router.back();
-          setBackRoutes((routes) => [...routes, router.asPath]);
         }}
-        disabled={disableButtons}
+        disabled={__isServer__ || history.state.idx === 0}
+        className="back"
       >
-        {"<"}
+        <AngleBrackect angle="less" />
       </button>
       <button
         onClick={() => {
-          if (backRoutes[0]) {
-            router.push(backRoutes[0]);
+          if (!__isServer__) {
+            window.history.forward();
           }
-          setBackRoutes((routes) => {
-            const allbackroutes = [...routes];
-            allbackroutes.shift();
-            return allbackroutes;
-          });
         }}
-        disabled={!backRoutes[0]}
+        disabled={lastIndexHistory === biggestLastIdxHistory}
+        className="forward"
       >
-        {">"}
+        <AngleBrackect angle="greater" />
       </button>
+      <style jsx>{`
+        div {
+          display: flex;
+        }
+        button {
+          display: flex;
+          align-items: center;
+          background-color: rgba(0, 0, 0, 0.7);
+          border: none;
+          border-radius: 50%;
+          color: #fff;
+          height: 32px;
+          justify-content: center;
+          position: relative;
+          width: 32px;
+          margin-right: 16px;
+          cursor: pointer;
+        }
+        button:disabled {
+          cursor: not-allowed;
+          opacity: 0.6;
+        }
+      `}</style>
     </div>
   );
 }
