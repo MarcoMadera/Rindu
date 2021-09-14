@@ -157,13 +157,12 @@ export async function getServerSideProps({
   props: {
     user?: SpotifyUserResponse | null;
     userPlaylists?: UserPlaylistsResponse;
-    accessToken?: string;
   };
 }> {
   const cookies = req ? req?.headers?.cookie : undefined;
   const refreshToken = takeCookie(REFRESHTOKENCOOKIE, cookies);
   let accessToken = takeCookie(ACCESSTOKENCOOKIE, cookies);
-  const user = await validateAccessToken(accessToken);
+  const user = accessToken ? await validateAccessToken(accessToken) : undefined;
 
   if (query.code) {
     try {
@@ -173,12 +172,14 @@ export async function getServerSideProps({
         res.end();
       }
       const data = await _res.json();
+      if (data) {
+        res.setHeader("Set-Cookie", [
+          `${ACCESSTOKENCOOKIE}=${data.accessToken}; Path=/;"`,
+          `${REFRESHTOKENCOOKIE}=${data.refreshToken}; Path=/;"`,
+          `${EXPIRETOKENCOOKIE}=${data.expiresIn}; Path=/;"`,
+        ]);
+      }
       accessToken = data.accessToken;
-      res.setHeader("Set-Cookie", [
-        `${ACCESSTOKENCOOKIE}=${accessToken}; Path=/;"`,
-        `${REFRESHTOKENCOOKIE}=${data.refreshToken}; Path=/;"`,
-        `${EXPIRETOKENCOOKIE}=${data.expiresIn}; Path=/;"`,
-      ]);
     } catch (error) {
       console.error(error);
     }
@@ -199,8 +200,6 @@ export async function getServerSideProps({
         : undefined;
     }
 
-    console.log(accessToken);
-
     if (!user || !accessToken) {
       if (res) {
         res.writeHead(307, { Location: "/" });
@@ -213,7 +212,7 @@ export async function getServerSideProps({
     const playlistsRequest = await getPlaylistsRequest(0, 50, accessToken);
     const userPlaylists = await playlistsRequest.json();
     return {
-      props: { user: user || null, userPlaylists, accessToken: accessToken },
+      props: { user: user || null, userPlaylists },
     };
   } catch (error) {
     console.log(error);

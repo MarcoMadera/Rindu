@@ -3,7 +3,14 @@ import { NextTrack, Pause, Play, PreviousTrack } from "components/icons";
 import useSpotify from "hooks/useSpotify";
 import useSpotifyPlayer from "hooks/useSpotifyPlayer";
 import Script from "next/script";
-import { ReactElement, useEffect, useState } from "react";
+import {
+  MutableRefObject,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { formatTime } from "utils/formatTime";
 
 function NavbarLeft({
   currrentlyPlaying,
@@ -47,48 +54,103 @@ function NavbarLeft({
 }
 
 function ProgressBar(): ReactElement {
-  const { currentlyPlayingDuration, currentlyPlayingPosition, isPlaying } =
-    useSpotify();
+  const {
+    currentlyPlayingDuration,
+    currentlyPlayingPosition,
+    isPlaying,
+    player,
+  } = useSpotify();
   const [progressPercent, setProgressPercent] = useState(0);
   const [progressSeconds, setProgressSeconds] = useState(0);
+  const [isPressingMouse, setIsPressingMouse] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [sliderPositionX, setSliderPositionX] = useState(0);
+  const [sliderWidth, setSliderWidth] = useState(0);
+  const sliderRef = useRef<HTMLDivElement>();
   const durationInSeconds = currentlyPlayingDuration
     ? currentlyPlayingDuration / 1000
     : 0;
 
-  function formatTime(seconds: number) {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = Math.floor((seconds % 3600) % 60);
-    const dh = h > 0 ? `${h}:` : "";
-    const dm = h > 0 && m < 10 ? `0${m}:` : `${m}:`;
-    const ds = s < 10 ? `0${s}` : s;
-
-    return `${dh}${dm}${ds}`;
-  }
-
   useEffect(() => {
-    const steps = 100 / durationInSeconds;
     if (!isPlaying) {
       return;
     }
     if (currentlyPlayingPosition) {
       setProgressSeconds(currentlyPlayingPosition / 1000);
-      setProgressPercent(
+      const progressFromSpotify =
         !!currentlyPlayingPosition && currentlyPlayingDuration
           ? 100 * (currentlyPlayingPosition / currentlyPlayingDuration)
-          : 0
-      );
+          : 0;
+      setProgressPercent(progressFromSpotify);
     }
+  }, [currentlyPlayingPosition, currentlyPlayingDuration, isPlaying]);
+
+  useEffect(() => {
+    if (!isPlaying && !isDragging && !isPressingMouse) {
+      return;
+    }
+    const steps = 100 / durationInSeconds;
     const playerInterval = setInterval(() => {
       setProgressSeconds((value) => value + 1);
       setProgressPercent((value) => value + steps);
     }, 1000);
     return () => clearInterval(playerInterval);
+  }, [isPlaying, durationInSeconds, isDragging, isPressingMouse]);
+
+  useEffect(() => {
+    setSliderWidth(sliderRef.current?.clientWidth ?? 0);
+    setSliderPositionX(sliderRef.current?.parentElement?.offsetLeft ?? 0);
+  }, []);
+
+  useEffect(() => {
+    if (!isPressingMouse) {
+      return;
+    }
+    function handleDrag(e: MouseEvent) {
+      e.preventDefault();
+      const myposition = e.screenX;
+      const myPositionInSlider =
+        myposition > sliderPositionX + sliderWidth
+          ? sliderWidth
+          : myposition < sliderPositionX
+          ? 0
+          : myposition - sliderPositionX;
+      const currentPositionPercent = (myPositionInSlider * 100) / sliderWidth;
+      setIsDragging(true);
+      setProgressPercent(currentPositionPercent);
+    }
+
+    function handleDragEnd(e: MouseEvent) {
+      e.preventDefault();
+      player
+        ?.seek((progressPercent * (currentlyPlayingDuration || 0)) / 100)
+        .then(() => {
+          setIsPressingMouse(false);
+          setIsDragging(false);
+        });
+    }
+
+    if (!isDragging) {
+      document.removeEventListener("mousemove", handleDrag);
+      document.removeEventListener("mouseup", handleDragEnd);
+      return;
+    }
+
+    document.addEventListener("mousemove", handleDrag);
+    document.addEventListener("mouseup", handleDragEnd);
+
+    return () => {
+      document.removeEventListener("mousemove", handleDrag);
+      document.removeEventListener("mouseup", handleDragEnd);
+    };
   }, [
-    currentlyPlayingPosition,
+    isPressingMouse,
     currentlyPlayingDuration,
-    durationInSeconds,
-    isPlaying,
+    player,
+    isDragging,
+    progressPercent,
+    sliderPositionX,
+    sliderWidth,
   ]);
 
   return (
@@ -108,16 +170,46 @@ function ProgressBar(): ReactElement {
             readOnly
           />
         </label>
-        <div className="transformation">
-          <div className="barBackground">
-            <div className="lineContainer">
-              <div
-                className="line"
-                style={{
-                  transform: `translateX(calc(-100% + ${progressPercent}%))`,
-                }}
-              ></div>
-            </div>
+        <div
+          className="transformation"
+          role="slider"
+          aria-valuenow={progressPercent}
+          tabIndex={0}
+          ref={sliderRef as MutableRefObject<HTMLDivElement>}
+          onMouseMove={(e) => {
+            if (isPressingMouse) {
+              setProgressPercent(
+                ((e.screenX - sliderPositionX) * 100) / sliderWidth
+              );
+            }
+          }}
+          onMouseDown={(e) => {
+            setIsPressingMouse(true);
+            setProgressPercent(
+              ((e.screenX - sliderPositionX) * 100) / sliderWidth
+            );
+          }}
+          onMouseLeave={() => {
+            if (isPressingMouse) {
+              setIsDragging(true);
+            }
+          }}
+          onMouseUp={() => {
+            player
+              ?.seek((progressPercent * (currentlyPlayingDuration || 0)) / 100)
+              .then(() => {
+                setIsPressingMouse(false);
+              });
+          }}
+        >
+          <div className="barBackground"></div>
+          <div className="lineContainer">
+            <div
+              className="line"
+              style={{
+                transform: `translateX(calc(-100% + ${progressPercent}%))`,
+              }}
+            ></div>
           </div>
         </div>
       </div>
@@ -149,6 +241,7 @@ function ProgressBar(): ReactElement {
           font-weight: 400;
           letter-spacing: normal;
           line-height: 16px;
+          user-select: none;
         }
         .barContainer {
           height: 12px;
@@ -172,16 +265,42 @@ function ProgressBar(): ReactElement {
           transform: translateY(-50%);
         }
         .lineContainer {
-          overflow: hidden;
           border-radius: 2px;
           height: 4px;
           width: 100%;
+          transform: translateY(100%);
+          z-index: 900;
+          position: relative;
         }
         .line {
-          background-color: #b3b3b3;
+          background-color: ${isPressingMouse ? "#1db954" : "#b3b3b3"};
           border-radius: 2px;
           height: 4px;
           width: 100%;
+          user-select: none;
+        }
+        .transformation:hover .line {
+          background-color: #1db954;
+          user-select: none;
+        }
+        .transformation:focus-visible {
+          outline: none;
+        }
+        .transformation${isPressingMouse ? "" : ":hover"} .line::after {
+          display: block;
+          content: "";
+          background-color: #fff;
+          border: 0;
+          border-radius: 50%;
+          height: 12px;
+          right: 0px;
+          margin-left: -6px;
+          position: absolute;
+          transform: translate(6px, -2px);
+          top: -50%;
+          z-index: 900;
+          width: 12px;
+          user-select: none;
         }
       `}</style>
     </div>

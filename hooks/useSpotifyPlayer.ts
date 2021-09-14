@@ -65,6 +65,8 @@ export default function useSpotifyPlayer({
         setCurrentlyPlaying(trackWindow?.track_window.current_track);
         setCurrentlyPlayingPosition(trackWindow?.position);
         setCurrentlyPlayingDuration(trackWindow?.duration);
+        // trackWindow?.track_window.next_tracks
+        // trackWindow?.track_window.previous_tracks
       });
 
       player.current.addListener("initialization_error", (error) =>

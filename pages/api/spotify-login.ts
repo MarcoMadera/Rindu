@@ -16,6 +16,7 @@ export default async function login(
   if (req.body.code) {
     try {
       const data = await getSpotifyAuthorization(req.body.code);
+
       return res.json(data);
     } catch (err) {
       return res.status(400).json(err);
