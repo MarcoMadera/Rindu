@@ -1,15 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { NextTrack, Pause, Play, PreviousTrack } from "components/icons";
+import { Volume } from "components/icons/Volume";
+import Slider from "components/Slider";
 import useSpotify from "hooks/useSpotify";
 import useSpotifyPlayer from "hooks/useSpotifyPlayer";
 import Script from "next/script";
-import {
-  MutableRefObject,
-  ReactElement,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { formatTime } from "utils/formatTime";
 
 function NavbarLeft({
@@ -60,13 +56,8 @@ function ProgressBar(): ReactElement {
     isPlaying,
     player,
   } = useSpotify();
-  const [progressPercent, setProgressPercent] = useState(0);
   const [progressSeconds, setProgressSeconds] = useState(0);
-  const [isPressingMouse, setIsPressingMouse] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [sliderPositionX, setSliderPositionX] = useState(0);
-  const [sliderWidth, setSliderWidth] = useState(0);
-  const sliderRef = useRef<HTMLDivElement>();
+  const [progressFromSpotify, setProgressFromSpotify] = useState(0);
   const durationInSeconds = currentlyPlayingDuration
     ? currentlyPlayingDuration / 1000
     : 0;
@@ -76,143 +67,46 @@ function ProgressBar(): ReactElement {
       return;
     }
     if (currentlyPlayingPosition) {
-      setProgressSeconds(currentlyPlayingPosition / 1000);
-      const progressFromSpotify =
+      setProgressFromSpotify(
         !!currentlyPlayingPosition && currentlyPlayingDuration
           ? 100 * (currentlyPlayingPosition / currentlyPlayingDuration)
-          : 0;
-      setProgressPercent(progressFromSpotify);
+          : 0
+      );
+      setProgressSeconds(currentlyPlayingPosition / 1000);
     }
   }, [currentlyPlayingPosition, currentlyPlayingDuration, isPlaying]);
-
-  useEffect(() => {
-    if (!isPlaying && !isDragging && !isPressingMouse) {
-      return;
-    }
-    const steps = 100 / durationInSeconds;
-    const playerInterval = setInterval(() => {
-      setProgressSeconds((value) => value + 1);
-      setProgressPercent((value) => value + steps);
-    }, 1000);
-    return () => clearInterval(playerInterval);
-  }, [isPlaying, durationInSeconds, isDragging, isPressingMouse]);
-
-  useEffect(() => {
-    setSliderWidth(sliderRef.current?.clientWidth ?? 0);
-    setSliderPositionX(sliderRef.current?.parentElement?.offsetLeft ?? 0);
-  }, []);
-
-  useEffect(() => {
-    if (!isPressingMouse) {
-      return;
-    }
-    function handleDrag(e: MouseEvent) {
-      e.preventDefault();
-      const myposition = e.screenX;
-      const myPositionInSlider =
-        myposition > sliderPositionX + sliderWidth
-          ? sliderWidth
-          : myposition < sliderPositionX
-          ? 0
-          : myposition - sliderPositionX;
-      const currentPositionPercent = (myPositionInSlider * 100) / sliderWidth;
-      setIsDragging(true);
-      setProgressPercent(currentPositionPercent);
-    }
-
-    function handleDragEnd(e: MouseEvent) {
-      e.preventDefault();
-      player
-        ?.seek((progressPercent * (currentlyPlayingDuration || 0)) / 100)
-        .then(() => {
-          setIsPressingMouse(false);
-          setIsDragging(false);
-        });
-    }
-
-    if (!isDragging) {
-      document.removeEventListener("mousemove", handleDrag);
-      document.removeEventListener("mouseup", handleDragEnd);
-      return;
-    }
-
-    document.addEventListener("mousemove", handleDrag);
-    document.addEventListener("mouseup", handleDragEnd);
-
-    return () => {
-      document.removeEventListener("mousemove", handleDrag);
-      document.removeEventListener("mouseup", handleDragEnd);
-    };
-  }, [
-    isPressingMouse,
-    currentlyPlayingDuration,
-    player,
-    isDragging,
-    progressPercent,
-    sliderPositionX,
-    sliderWidth,
-  ]);
 
   return (
     <div className="progressBar">
       <div className="timeTag">{formatTime(progressSeconds)}</div>
-      <div className="barContainer">
-        <label>
-          <input
-            type="range"
-            min="0"
-            max={durationInSeconds}
-            step="5"
-            aria-valuetext={`${formatTime(progressSeconds)}:${formatTime(
-              durationInSeconds
-            )}`}
-            value={progressSeconds}
-            readOnly
-          />
-        </label>
-        <div
-          className="transformation"
-          role="slider"
-          aria-valuenow={progressPercent}
-          tabIndex={0}
-          ref={sliderRef as MutableRefObject<HTMLDivElement>}
-          onMouseMove={(e) => {
-            if (isPressingMouse) {
-              setProgressPercent(
-                ((e.screenX - sliderPositionX) * 100) / sliderWidth
-              );
-            }
-          }}
-          onMouseDown={(e) => {
-            setIsPressingMouse(true);
-            setProgressPercent(
-              ((e.screenX - sliderPositionX) * 100) / sliderWidth
-            );
-          }}
-          onMouseLeave={() => {
-            if (isPressingMouse) {
-              setIsDragging(true);
-            }
-          }}
-          onMouseUp={() => {
-            player
-              ?.seek((progressPercent * (currentlyPlayingDuration || 0)) / 100)
-              .then(() => {
-                setIsPressingMouse(false);
-              });
-          }}
-        >
-          <div className="barBackground"></div>
-          <div className="lineContainer">
-            <div
-              className="line"
-              style={{
-                transform: `translateX(calc(-100% + ${progressPercent}%))`,
-              }}
-            ></div>
-          </div>
-        </div>
-      </div>
+      <Slider
+        updateProgress={progressFromSpotify}
+        intervalUpdateAction={{
+          steps: 100 / durationInSeconds,
+          labelUpdateValue: 1,
+          ms: 1000,
+          shouldUpdate: isPlaying,
+        }}
+        setLabelValue={setProgressSeconds}
+        onProgressChange={(currentPositionPercent) => {
+          setProgressSeconds(
+            (currentPositionPercent * (currentlyPlayingDuration ?? 0)) /
+              100 /
+              1000
+          );
+        }}
+        valueText={`${formatTime(progressSeconds)}:${formatTime(
+          durationInSeconds
+        )}`}
+        initialValuePercent={0}
+        value={progressSeconds}
+        maxValue={durationInSeconds}
+        action={(progressPercent) => {
+          player?.seek(
+            (progressPercent * (currentlyPlayingDuration ?? 0)) / 100
+          );
+        }}
+      />
       <div className="timeTag">{formatTime(durationInSeconds)}</div>
       <style jsx>{`
         .progressBar {
@@ -224,16 +118,6 @@ function ProgressBar(): ReactElement {
           max-width: 540px;
           margin-top: 11px;
         }
-        label {
-          clip: rect(0 0 0 0);
-          border: 0;
-          height: 1px;
-          margin: -1px;
-          overflow: hidden;
-          padding: 0;
-          position: absolute;
-          width: 1px;
-        }
         .timeTag {
           min-width: 40px;
           text-align: center;
@@ -243,65 +127,6 @@ function ProgressBar(): ReactElement {
           line-height: 16px;
           user-select: none;
         }
-        .barContainer {
-          height: 12px;
-          position: relative;
-          width: 100%;
-        }
-        .transformation {
-          height: 100%;
-          overflow: hidden;
-          touch-action: none;
-          width: 100%;
-        }
-        .barBackground {
-          border-radius: 2px;
-          height: 4px;
-          width: 100%;
-          display: flex;
-          background-color: #535353;
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-        }
-        .lineContainer {
-          border-radius: 2px;
-          height: 4px;
-          width: 100%;
-          transform: translateY(100%);
-          z-index: 900;
-          position: relative;
-        }
-        .line {
-          background-color: ${isPressingMouse ? "#1db954" : "#b3b3b3"};
-          border-radius: 2px;
-          height: 4px;
-          width: 100%;
-          user-select: none;
-        }
-        .transformation:hover .line {
-          background-color: #1db954;
-          user-select: none;
-        }
-        .transformation:focus-visible {
-          outline: none;
-        }
-        .transformation${isPressingMouse ? "" : ":hover"} .line::after {
-          display: block;
-          content: "";
-          background-color: #fff;
-          border: 0;
-          border-radius: 50%;
-          height: 12px;
-          right: 0px;
-          margin-left: -6px;
-          position: absolute;
-          transform: translate(6px, -2px);
-          top: -50%;
-          z-index: 900;
-          width: 12px;
-          user-select: none;
-        }
       `}</style>
     </div>
   );
@@ -309,8 +134,10 @@ function ProgressBar(): ReactElement {
 
 export default function SpotifyPlayer(): ReactElement {
   const [volume, setVolume] = useState(1);
+  const [lastVolume, setLastVolume] = useState(1);
   const { player } = useSpotifyPlayer({ volume, name: "Rindu" });
   const { isPlaying, currrentlyPlaying } = useSpotify();
+  const [isHoveringVolume, setIsHoveringVolume] = useState(false);
 
   return (
     <footer>
@@ -349,21 +176,53 @@ export default function SpotifyPlayer(): ReactElement {
           <ProgressBar />
         </section>
         <section>
-          <input
-            className="volume-bar"
-            onChange={(event) => {
-              const volumeValue = parseInt(event.currentTarget.value) / 10;
-              setVolume(volumeValue);
-              player.current?.setVolume(volumeValue);
-            }}
-            defaultValue={10}
-            type="range"
-            min="0"
-            max="10"
-          />
+          <div className="extras">
+            <button
+              className="volume"
+              onMouseEnter={() => {
+                setIsHoveringVolume(true);
+              }}
+              onMouseLeave={() => {
+                setIsHoveringVolume(false);
+              }}
+              aria-label={`${volume > 0 ? "Mute" : "Unmute"}`}
+              onClick={() => {
+                setLastVolume(volume);
+                setVolume(volume > 0 ? 0 : lastVolume === 0 ? 1 : lastVolume);
+                player.current?.setVolume(
+                  volume > 0 ? 0 : volume === 0 ? 1 : lastVolume
+                );
+              }}
+            >
+              <Volume volume={volume} />
+            </button>
+            <Slider
+              value={100}
+              updateProgress={volume * 100}
+              onProgressChange={(currentPositionPercent) => {
+                setVolume(currentPositionPercent / 100);
+              }}
+              action={() => {
+                player.current?.setVolume(volume);
+              }}
+              valueText={`${volume}`}
+              initialValuePercent={100}
+              maxValue={1}
+              showDot={isHoveringVolume}
+            />
+          </div>
         </section>
       </div>
       <style jsx>{`
+        .extras {
+          display: flex;
+          width: 100%;
+          column-gap: 5px;
+          align-items: center;
+        }
+        .volume:hover :global(svg path) {
+          fill: #fff;
+        }
         button {
           display: flex;
           justify-content: center;

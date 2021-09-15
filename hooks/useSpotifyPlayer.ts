@@ -95,20 +95,20 @@ export default function useSpotifyPlayer({
       false
     );
 
-    return () => {
-      player.current?.removeListener("not_ready");
-      player.current?.removeListener("ready");
-      player.current?.disconnect();
-      document.removeEventListener(
-        "keydown",
-        (event) => {
-          if (event.key === " ") {
-            player.current?.togglePlay();
-          }
-        },
-        false
-      );
-    };
+    // return () => {
+    //   player.current?.removeListener("not_ready");
+    //   player.current?.removeListener("ready");
+    //   player.current?.disconnect();
+    //   document.removeEventListener(
+    //     "keydown",
+    //     (event) => {
+    //       if (event.key === " ") {
+    //         player.current?.togglePlay();
+    //       }
+    //     },
+    //     false
+    //   );
+    // };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
