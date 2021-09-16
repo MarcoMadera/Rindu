@@ -45,22 +45,18 @@ const Layout: React.FC = ({ children }) => {
   return (
     <>
       {router.asPath === "/" ? (
-        <>
+        <div>
           <Navbar />
           {children}
-        </>
+          <style jsx>{`
+            div {
+              overflow: scroll;
+            }
+          `}</style>
+        </div>
       ) : (
         <SideBar>
-          <div>
-            <Header />
-            {children}
-            <style jsx>{`
-              div {
-                display: flex;
-                flex-direction: column;
-              }
-            `}</style>
-          </div>
+          <Header>{children}</Header>
         </SideBar>
       )}
 

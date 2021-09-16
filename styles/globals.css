@@ -19,15 +19,20 @@ html {
   box-sizing: border-box;
 }
 ::-webkit-scrollbar {
-  height: 8px;
-  width: 8px;
+  height: 12px;
+  width: 12px;
   overflow: visible;
+  margin: 2px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #181818;
-  border-radius: 30px;
+  background: #ffffff4d;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff80;
 }
 ::-webkit-scrollbar-track {
+  padding: 2px;
+  margin: 2px;
   background: transparent;
 }
 h1,

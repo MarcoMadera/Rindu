@@ -1,13 +1,26 @@
 import { Pause, Play, Playing } from "components/icons";
+import { Heart, HeartShape } from "components/icons/Heart";
+import ThreeDots from "components/icons/ThreeDots";
 import useSpotify from "hooks/useSpotify";
+import { getTimeAgo } from "utils/getTimeAgo";
 import { play } from "lib/spotify";
-import { useState } from "react";
+import {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useRef,
+  useState,
+} from "react";
 import { normalTrackTypes } from "types/spotify";
+import { formatTime } from "utils/formatTime";
+import Link from "next/link";
 
 interface ModalCardTrackProps {
   track: normalTrackTypes;
   accessToken: string | undefined;
   playlistUri: string;
+  isTrackInLibrary: boolean;
+  setIsThisPlaylistPlaying: Dispatch<SetStateAction<boolean>>;
 }
 
 const ExplicitSign: React.FC = () => {
@@ -53,10 +66,15 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   accessToken,
   track,
   playlistUri,
+  setIsThisPlaylistPlaying,
+  isTrackInLibrary,
 }) => {
   const { deviceId, currrentlyPlaying, player, isPlaying, setIsPlaying } =
     useSpotify();
   const [mouseEnter, setMouseEnter] = useState(false);
+  const [isHoveringHeart, setIsHoveringHeart] = useState(false);
+  const [isFocusing, setIsFocusing] = useState(false);
+  const trackRef = useRef<HTMLDivElement>();
 
   async function playCurrentTrack() {
     if (accessToken && track.uri && deviceId) {
@@ -77,22 +95,56 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
     currrentlyPlayingArtist === track.artists;
 
   return (
-    <article
-      onDoubleClick={playCurrentTrack}
+    <div
+      className="trackItem"
+      onDoubleClick={() => {
+        playCurrentTrack();
+        setIsThisPlaylistPlaying(true);
+      }}
+      role="button"
+      tabIndex={0}
       onMouseEnter={() => {
         setMouseEnter(true);
       }}
+      onFocus={() => {
+        setIsFocusing(true);
+      }}
+      onBlur={() => {
+        setIsFocusing(false);
+      }}
       onMouseLeave={() => setMouseEnter(false)}
+      ref={trackRef as MutableRefObject<HTMLDivElement>}
+      onKeyDown={(e) => {
+        e.preventDefault();
+        if (e.key === "ArrowDown") {
+          (e.currentTarget.nextElementSibling as HTMLElement)?.focus();
+        }
+        if (e.key === "ArrowUp") {
+          (e.currentTarget.previousElementSibling as HTMLElement)?.focus();
+        }
+        if (e.key === "Enter") {
+          if (isPlaying && isTheSameAsCurrentlyPlaying) {
+            player?.pause();
+            setIsPlaying(false);
+            setIsThisPlaylistPlaying(false);
+          } else {
+            playCurrentTrack();
+            setIsThisPlaylistPlaying(true);
+          }
+        }
+      }}
     >
       {/* {track.audio && isMouseEnter ? <AudioPlayer audio={track.audio} /> : null} */}
       {/* <a href={track.href} target="_blank" rel="noopener noreferrer"> */}
       <button
         onClick={() => {
-          if (isPlaying) {
+          if (isPlaying && isTheSameAsCurrentlyPlaying) {
             player?.pause();
             setIsPlaying(false);
+            setIsThisPlaylistPlaying(false);
           } else {
             playCurrentTrack();
+            setIsThisPlaylistPlaying(true);
           }
         }}
       >
@@ -100,33 +152,81 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           <Pause fill="#fff" />
         ) : isTheSameAsCurrentlyPlaying && isPlaying ? (
           <Playing />
-        ) : mouseEnter ? (
+        ) : mouseEnter || isFocusing ? (
           <Play fill="#fff" />
         ) : (
           <span>{`${track.position + 1}`}</span>
         )}
       </button>
-      {track.images ? (
-        <img
-          loading="lazy"
-          src={track.images[2]?.url ?? track.images[1]?.url}
-          alt=""
-          width="48"
-          height="48"
-        />
-      ) : null}
       <section>
-        <p className="trackName">{`${track.name}`}</p>
-        <div>
+        {track.images ? (
+          <img
+            loading="lazy"
+            src={track.images[2]?.url ?? track.images[1]?.url}
+            alt=""
+            width="48"
+            height="48"
+          />
+        ) : null}
+        <div className="trackArtistsContainer">
+          <p className="trackName">{`${track.name}`}</p>
           {track.explicit && <ExplicitSign />}
-          <p className="trackArtists">{track.artists}</p>
+          <span className="trackArtists">{track.artists}</span>
         </div>
+      </section>
+      <section>
+        <p className="trackArtists">
+          <Link href={`/album/${track.album.uri}`}>
+            <a>{track.album.name}</a>
+          </Link>
+        </p>
+      </section>
+      <section>
+        <p className="trackArtists">
+          {getTimeAgo(+new Date(track.added_at), "en")}
+        </p>
+      </section>
+      <section>
+        <button
+          onMouseEnter={() => {
+            setIsHoveringHeart(true);
+          }}
+          onMouseLeave={() => {
+            setIsHoveringHeart(false);
+          }}
+        >
+          {isTrackInLibrary ? (
+            <Heart />
+          ) : mouseEnter || isFocusing ? (
+            <HeartShape fill={isHoveringHeart ? "#fff" : "#ffffffb3"} />
+          ) : null}
+        </button>
+        <p className="trackArtists">
+          {formatTime((track.duration || 0) / 1000)}
+        </p>
+        <button className="options">
+          {mouseEnter || isFocusing ? (
+            <ThreeDots />
+          ) : (
+            <div style={{ width: "16px" }}></div>
+          )}
+        </button>
       </section>
       {/* </a> */}
       <style jsx>{`
-        div {
-          display: flex;
+        .trackArtistsContainer {
+          display: block;
           align-items: center;
+        }
+        .options {
+          margin-right: 20px;
+        }
+        a {
+          text-decoration: none;
+          color: ${mouseEnter || isFocusing ? "#fff" : "inherit"};
+        }
+        a:hover {
+          text-decoration: underline;
         }
         button {
           display: flex;
@@ -154,7 +254,15 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         strong {
           font-weight: bold;
         }
-        article {
+        section {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+        }
+        section:nth-of-type(4) {
+          justify-content: flex-end;
+        }
+        .trackItem {
           width: 100%;
           height: 65px;
           background-color: ${isTheSameAsCurrentlyPlaying
@@ -162,17 +270,24 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
             : "transparent"};
           margin: 0;
           padding: 0;
-          display: flex;
           border-radius: 2px;
           align-items: center;
           text-decoration: none;
           color: inherit;
           cursor: default;
           user-select: none;
+          display: grid;
+          grid-gap: 16px;
+          grid-template-columns: [index] 48px [first] 6fr [var1] 4fr [var2] 3fr [last] minmax(
+              120px,
+              1fr
+            );
         }
-        article:hover,
-        article:focus {
+        .trackItem:hover {
           background-color: #202020;
+        }
+        .trackItem:focus {
+          background-color: #ffffff4d;
         }
         img {
           margin: 0;
@@ -180,7 +295,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           margin-right: 23px;
         }
       `}</style>
-    </article>
+    </div>
   );
 };
 

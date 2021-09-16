@@ -75,6 +75,25 @@ export function getMyCurrentPlaybackState(callback: CallableFunction): void {
     });
 }
 
+export async function checkTracksInLibrary(
+  ids: string[],
+  accessToken: string
+): Promise<boolean[]> {
+  const stringIds = ids.join(",");
+  const res = await fetch(
+    `https://api.spotify.com/v1/me/tracks/contains?ids=${stringIds}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  const data: boolean[] = await res.json();
+  return data;
+}
+
 export async function getSpotifyAuthorization(
   code: string
 ): Promise<AuthorizationResponse> {
@@ -170,7 +189,7 @@ export const getAllTracksFromPlaylist = async (
         tracks = [...tracks, ...add.body.items];
       }
     return {
-      tracks: tracks.map(({ track }, i) => {
+      tracks: tracks.map(({ track, added_at }, i) => {
         return {
           name: track?.name,
           images: track?.album.images,
@@ -183,6 +202,8 @@ export const getAllTracksFromPlaylist = async (
           audio: track?.preview_url,
           corruptedTrack: !track?.uri,
           position: i,
+          album: track.album,
+          added_at,
         };
       }),
     };

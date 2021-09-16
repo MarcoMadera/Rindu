@@ -52,6 +52,8 @@ export type normalTrackTypes = {
   audio: string | null;
   explicit?: boolean;
   duration?: number;
+  album: Spotify.Album;
+  added_at: string;
 };
 export type trackItem = normalTrackTypes;
 export type AllTracksFromAPlayList = trackItem[];

@@ -89,6 +89,7 @@ export default function useSpotifyPlayer({
       "keydown",
       (event) => {
         if (event.key === " ") {
+          event.preventDefault();
           player.current?.togglePlay();
         }
       },
@@ -103,6 +104,7 @@ export default function useSpotifyPlayer({
     //     "keydown",
     //     (event) => {
     //       if (event.key === " ") {
+    //         event.preventDefault();
     //         player.current?.togglePlay();
     //       }
     //     },

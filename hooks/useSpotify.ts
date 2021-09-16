@@ -32,6 +32,12 @@ export default function useSpotify(): {
   setCurrentlyPlayingDuration: Dispatch<SetStateAction<number | undefined>>;
   player: Spotify.Player | undefined;
   setPlayer: Dispatch<SetStateAction<Spotify.Player | undefined>>;
+  setIsThisPlaylistPlaying: Dispatch<SetStateAction<boolean>>;
+  playlistDetails: SpotifyApi.SinglePlaylistResponse | undefined;
+  isThisPlaylistPlaying: boolean;
+  setPlaylistDetails: Dispatch<
+    SetStateAction<SpotifyApi.SinglePlaylistResponse | undefined>
+  >;
   removeTracks: (
     playlist: string | undefined,
     tracks: number[],
@@ -57,6 +63,10 @@ export default function useSpotify(): {
     setCurrentlyPlayingDuration,
     player,
     setPlayer,
+    setIsThisPlaylistPlaying,
+    playlistDetails,
+    isThisPlaylistPlaying,
+    setPlaylistDetails,
   } = useContext(SpotifyContext);
 
   const getPlaylists = useCallback(
@@ -136,5 +146,9 @@ export default function useSpotify(): {
     setCurrentlyPlayingDuration,
     player,
     setPlayer,
+    setIsThisPlaylistPlaying,
+    playlistDetails,
+    isThisPlaylistPlaying,
+    setPlaylistDetails,
   };
 }

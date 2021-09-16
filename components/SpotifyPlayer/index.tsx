@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { NextTrack, Pause, Play, PreviousTrack } from "components/icons";
 import { Volume } from "components/icons/Volume";
 import Slider from "components/Slider";

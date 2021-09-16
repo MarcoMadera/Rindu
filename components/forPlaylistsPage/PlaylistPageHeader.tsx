@@ -30,7 +30,6 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
 
   return (
     <header>
-      <div className="background"></div>
       <div className="noise"></div>
       <section>
         <img src={coverImg} alt="" />
@@ -95,7 +94,6 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
           div.playlistInfo {
             align-self: flex-end;
           }
-          div.background,
           div.noise {
             display: block;
             height: 100%;
@@ -103,10 +101,6 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
             position: absolute;
             top: 0;
             width: 100%;
-            z-index: -1;
-          }
-          div.background {
-            background-color: #535353;
           }
           div.noise {
             background: linear-gradient(transparent 0, rgba(0, 0, 0, 0.5) 100%),
@@ -149,6 +143,7 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
             min-width: 232px;
             width: 100%;
             margin-top: 60px;
+            position: absolute;
           }
           h1 {
             color: #fff;
@@ -165,7 +160,6 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
           img {
             margin-right: 15px;
             align-self: center;
-
             align-self: flex-end;
             height: 232px;
             margin-inline-end: 24px;
@@ -173,7 +167,6 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
             width: 232px;
           }
           header {
-            margin-bottom: 20px;
             display: flex;
             align-items: center;
             padding: 0 32px;
@@ -181,8 +174,8 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
             max-height: 500px;
             min-height: 340px;
             width: 100%;
+            background: #535353;
             position: relative;
-            z-index: 1;
           }
         `}
       </style>

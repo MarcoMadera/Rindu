@@ -113,9 +113,6 @@ const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
           max-width: 1400px;
           margin: 0 auto;
           padding: 0 20px;
-          height: calc(100vh - 90px);
-          overflow-y: scroll;
-          width: calc(100vw - 200px);
         }
         h1 {
           color: #fff;

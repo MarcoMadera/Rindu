@@ -30,7 +30,8 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
         <style jsx>{`
           nav {
             background-color: #010101;
-            width: 200px;
+            width: 245px;
+            min-width: 245px;
             overflow: hidden;
           }
           section {
@@ -58,6 +59,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
           }
           .logo {
             text-align: center;
+            width: 100%;
           }
         `}</style>
       </div>
