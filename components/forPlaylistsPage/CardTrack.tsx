@@ -3,24 +3,18 @@ import { Heart, HeartShape } from "components/icons/Heart";
 import ThreeDots from "components/icons/ThreeDots";
 import useSpotify from "hooks/useSpotify";
 import { getTimeAgo } from "utils/getTimeAgo";
-import { play } from "lib/spotify";
-import {
-  Dispatch,
-  MutableRefObject,
-  SetStateAction,
-  useRef,
-  useState,
-} from "react";
+import { MutableRefObject, useRef, useState } from "react";
 import { normalTrackTypes } from "types/spotify";
 import { formatTime } from "utils/formatTime";
 import Link from "next/link";
+import useAuth from "hooks/useAuth";
+import { playCurrentTrack } from "utils/playCurrentTrack";
 
 interface ModalCardTrackProps {
   track: normalTrackTypes;
   accessToken: string | undefined;
   playlistUri: string;
   isTrackInLibrary: boolean;
-  setIsThisPlaylistPlaying: Dispatch<SetStateAction<boolean>>;
 }
 
 const ExplicitSign: React.FC = () => {
@@ -49,57 +43,58 @@ const ExplicitSign: React.FC = () => {
   );
 };
 
-// interface AudioPlayerProps {
-//   audio?: string;
-// }
-// const AudioPlayer: React.FC<AudioPlayerProps> = ({ audio }) => {
-//   return (
-//     // eslint-disable-next-line jsx-a11y/media-has-caption
-//     <audio autoPlay loop>
-//       <source src={audio}></source>
-//       Your browser isn&apos;t invited for super fun audio time.
-//     </audio>
-//   );
-// };
-
 const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   accessToken,
   track,
   playlistUri,
-  setIsThisPlaylistPlaying,
   isTrackInLibrary,
 }) => {
-  const { deviceId, currrentlyPlaying, player, isPlaying, setIsPlaying } =
-    useSpotify();
+  const {
+    deviceId,
+    currrentlyPlaying,
+    player,
+    isPlaying,
+    setIsPlaying,
+    allTracks,
+    setCurrentlyPlaying,
+    playlistDetails,
+    setPlaylistPlayingId,
+  } = useSpotify();
   const [mouseEnter, setMouseEnter] = useState(false);
   const [isHoveringHeart, setIsHoveringHeart] = useState(false);
   const [isFocusing, setIsFocusing] = useState(false);
   const trackRef = useRef<HTMLDivElement>();
+  const { user } = useAuth();
+  const isPremium = user?.product === "premium";
 
-  async function playCurrentTrack() {
-    if (accessToken && track.uri && deviceId) {
-      const res = await play(accessToken, deviceId, {
-        context_uri: playlistUri,
-        offset: track.position,
-      });
-      return res;
-    }
-  }
-
-  const currrentlyPlayingArtist = currrentlyPlaying?.artists
-    .map(({ name }) => name)
-    .join(", ");
+  const isPlayable =
+    (!isPremium && track.audio) ||
+    (isPremium && !(track.is_playable === false));
 
   const isTheSameAsCurrentlyPlaying =
     currrentlyPlaying?.name === track.name &&
-    currrentlyPlayingArtist === track.artists;
+    currrentlyPlaying?.artists === track.artists &&
+    currrentlyPlaying?.album.name === track.album.name;
+
+  function playThisTrack() {
+    playCurrentTrack(track, {
+      allTracks,
+      player,
+      user,
+      accessToken,
+      deviceId,
+      playlistUri,
+      playlistId: playlistDetails?.id,
+      setCurrentlyPlaying,
+      setPlaylistPlayingId,
+    });
+  }
 
   return (
     <div
       className="trackItem"
       onDoubleClick={() => {
-        playCurrentTrack();
-        setIsThisPlaylistPlaying(true);
+        playThisTrack();
       }}
       role="button"
       tabIndex={0}
@@ -115,36 +110,37 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       onMouseLeave={() => setMouseEnter(false)}
       ref={trackRef as MutableRefObject<HTMLDivElement>}
       onKeyDown={(e) => {
-        e.preventDefault();
         if (e.key === "ArrowDown") {
+          e.preventDefault();
           (e.currentTarget.nextElementSibling as HTMLElement)?.focus();
         }
         if (e.key === "ArrowUp") {
+          e.preventDefault();
           (e.currentTarget.previousElementSibling as HTMLElement)?.focus();
         }
+        if (e.key === " ") {
+          e.preventDefault();
+          player?.togglePlay();
+        }
         if (e.key === "Enter") {
+          e.preventDefault();
           if (isPlaying && isTheSameAsCurrentlyPlaying) {
             player?.pause();
             setIsPlaying(false);
-            setIsThisPlaylistPlaying(false);
+            setPlaylistPlayingId(playlistDetails?.id);
           } else {
-            playCurrentTrack();
-            setIsThisPlaylistPlaying(true);
+            playThisTrack();
           }
         }
       }}
     >
-      {/* {track.audio && isMouseEnter ? <AudioPlayer audio={track.audio} /> : null} */}
-      {/* <a href={track.href} target="_blank" rel="noopener noreferrer"> */}
       <button
         onClick={() => {
           if (isPlaying && isTheSameAsCurrentlyPlaying) {
             player?.pause();
             setIsPlaying(false);
-            setIsThisPlaylistPlaying(false);
           } else {
-            playCurrentTrack();
-            setIsThisPlaylistPlaying(true);
+            playThisTrack();
           }
         }}
       >
@@ -152,10 +148,10 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           <Pause fill="#fff" />
         ) : isTheSameAsCurrentlyPlaying && isPlaying ? (
           <Playing />
-        ) : mouseEnter || isFocusing ? (
+        ) : (mouseEnter || isFocusing) && isPlayable ? (
           <Play fill="#fff" />
         ) : (
-          <span>{`${track.position + 1}`}</span>
+          <span className="position">{`${(track.position ?? 0) + 1}`}</span>
         )}
       </button>
       <section>
@@ -171,19 +167,30 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         <div className="trackArtistsContainer">
           <p className="trackName">{`${track.name}`}</p>
           {track.explicit && <ExplicitSign />}
-          <span className="trackArtists">{track.artists}</span>
+          <span className="trackArtists">
+            {track.artists?.map((artist) => {
+              return (
+                <Link key={artist.id} href={`/artist/${artist.id}`}>
+                  <a>{artist.name}</a>
+                </Link>
+              );
+            })}
+          </span>
         </div>
       </section>
       <section>
         <p className="trackArtists">
-          <Link href={`/album/${track.album.uri}`}>
+          <Link href={`/album/${track.album.id}`}>
             <a>{track.album.name}</a>
           </Link>
         </p>
       </section>
       <section>
         <p className="trackArtists">
-          {getTimeAgo(+new Date(track.added_at), "en")}
+          {getTimeAgo(
+            track.added_at ? +new Date(track.added_at) : +Date(),
+            "en"
+          )}
         </p>
       </section>
       <section>
@@ -197,7 +204,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         >
           {isTrackInLibrary ? (
             <Heart />
-          ) : mouseEnter || isFocusing ? (
+          ) : (mouseEnter || isFocusing) && isPlayable ? (
             <HeartShape fill={isHoveringHeart ? "#fff" : "#ffffffb3"} />
           ) : null}
         </button>
@@ -212,7 +219,6 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           )}
         </button>
       </section>
-      {/* </a> */}
       <style jsx>{`
         .trackArtistsContainer {
           display: block;
@@ -221,9 +227,13 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         .options {
           margin-right: 20px;
         }
+        .trackItem {
+          opacity: ${isPlayable ? 1 : 0.4};
+        }
         a {
           text-decoration: none;
           color: ${mouseEnter || isFocusing ? "#fff" : "inherit"};
+          margin-right: 5px;
         }
         a:hover {
           text-decoration: underline;

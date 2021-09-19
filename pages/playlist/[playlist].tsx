@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ModalCardTrack from "../../components/forPlaylistsPage/CardTrack";
 import {
-  AllTracksFromAPlayList,
   AllTracksFromAPlaylistResponse,
   SpotifyUserResponse,
 } from "types/spotify";
@@ -23,7 +22,7 @@ import { findDuplicateSongs } from "utils/findDuplicateSongs";
 import Head from "next/head";
 import useSpotify from "hooks/useSpotify";
 import useHeader from "hooks/useHeader";
-import { PlayButton } from "./PlayButton";
+import { PlayButton } from "../../components/forPlaylistsPage/PlayButton";
 import { checkTracksInLibrary } from "lib/spotify";
 import Titles from "components/forPlaylistsPage/Titles";
 
@@ -45,15 +44,15 @@ const Playlist: NextPage<PlaylistProps> = ({
   const [duplicatesSongs, setDuplicatesSongs] = useState<number[]>([]);
   const [corruptedSongs, setCorruptedSongs] = useState<number>(0);
   const [tracksInLibrary, setTracksInLibrary] = useState<boolean[]>([]);
-  const [allTracks, setAllTracks] = useState<AllTracksFromAPlayList>(tracks);
   const { setIsLogin, setUser } = useAuth();
   const { trackWithGoogleAnalitycs } = useAnalitycs();
   const {
     player,
     isPlaying,
     deviceId,
-    setIsThisPlaylistPlaying,
+    setPlaylistPlayingId,
     setPlaylistDetails,
+    setAllTracks,
   } = useSpotify();
   const { setElement } = useHeader();
   const [isPin, setIsPin] = useState(false);
@@ -99,46 +98,46 @@ const Playlist: NextPage<PlaylistProps> = ({
     setUser,
     user,
     router,
+    setAllTracks,
   ]);
 
   useEffect(() => {
-    if (deviceId && isPlaying) {
-      player?.getCurrentState().then((e) => {
+    if (deviceId && isPlaying && user?.product === "premium") {
+      (player as Spotify.Player)?.getCurrentState().then((e) => {
         if (e?.context.uri === playlistDetails.uri) {
-          setIsThisPlaylistPlaying(true);
+          setPlaylistPlayingId(playlistDetails.id);
           return;
         }
       });
+      setPlaylistPlayingId(undefined);
     }
-    setIsThisPlaylistPlaying(false);
   }, [
     isPlaying,
     deviceId,
     player,
-    playlistDetails.uri,
-    setIsThisPlaylistPlaying,
+    playlistDetails,
+    setPlaylistPlayingId,
+    user?.product,
   ]);
 
   useEffect(() => {
-    if (!(allTracks?.length > 0)) {
+    if (!(tracks?.length > 0)) {
       return;
     }
 
-    setDuplicatesSongs(findDuplicateSongs(allTracks));
+    setDuplicatesSongs(findDuplicateSongs(tracks));
 
     setCorruptedSongs(() => {
-      const corrupted = allTracks.filter(
-        ({ corruptedTrack }) => corruptedTrack
-      );
+      const corrupted = tracks.filter(({ corruptedTrack }) => corruptedTrack);
       return corrupted.length;
     });
-  }, [allTracks]);
+  }, [tracks]);
 
   useEffect(() => {
-    if (!allTracks) {
+    if (!tracks) {
       return;
     }
-    const trackIds = allTracks.map(({ id }) => id ?? "");
+    const trackIds = tracks.map(({ id }) => id ?? "");
     async function fetchData() {
       const tracksInLibrary = await checkTracksInLibrary(
         trackIds,
@@ -147,7 +146,7 @@ const Playlist: NextPage<PlaylistProps> = ({
       setTracksInLibrary(tracksInLibrary);
     }
     fetchData();
-  }, [allTracks, accessToken]);
+  }, [tracks, accessToken]);
 
   return (
     <main>
@@ -167,8 +166,8 @@ const Playlist: NextPage<PlaylistProps> = ({
           </div>
           <div className="trc">
             <Titles setIsPin={setIsPin} />
-            {allTracks?.length > 0
-              ? allTracks?.map((track) => {
+            {tracks?.length > 0
+              ? tracks?.map((track) => {
                   if (track.corruptedTrack) {
                     return null;
                   }
@@ -178,8 +177,7 @@ const Playlist: NextPage<PlaylistProps> = ({
                       key={track.position}
                       track={track}
                       playlistUri={playlistDetails.uri}
-                      setIsThisPlaylistPlaying={setIsThisPlaylistPlaying}
-                      isTrackInLibrary={tracksInLibrary[track.position]}
+                      isTrackInLibrary={tracksInLibrary[track.position ?? -1]}
                     />
                   );
                 })

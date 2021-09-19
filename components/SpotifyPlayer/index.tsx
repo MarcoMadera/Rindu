@@ -1,30 +1,60 @@
 import { NextTrack, Pause, Play, PreviousTrack } from "components/icons";
 import { Volume } from "components/icons/Volume";
 import Slider from "components/Slider";
+import useAuth from "hooks/useAuth";
 import useSpotify from "hooks/useSpotify";
-import useSpotifyPlayer from "hooks/useSpotifyPlayer";
+import useSpotifyPlayer, { AudioPlayer } from "hooks/useSpotifyPlayer";
 import Script from "next/script";
 import { ReactElement, useEffect, useState } from "react";
 import { formatTime } from "utils/formatTime";
+import Link from "next/link";
+import { normalTrackTypes } from "types/spotify";
 
 function NavbarLeft({
   currrentlyPlaying,
 }: {
-  currrentlyPlaying: Spotify.Track;
+  currrentlyPlaying: normalTrackTypes;
 }): ReactElement {
   return (
     <div>
-      <img src={currrentlyPlaying.album.images[1].url} alt="" />
+      <img
+        src={
+          currrentlyPlaying.album.images[2]?.url ??
+          currrentlyPlaying.album.images[1]?.url
+        }
+        alt={currrentlyPlaying.album.name}
+        width={64}
+        height={64}
+      />
       <section>
-        <strong>{`${currrentlyPlaying.name}`}</strong>
-        <p>
-          {currrentlyPlaying.artists.map((_artist) => _artist.name).join(", ")}
-        </p>
+        <p className="trackName">{currrentlyPlaying.name}</p>
+        <span className="trackArtists">
+          {currrentlyPlaying.artists?.map((artist) => {
+            return (
+              <Link key={artist.id} href={`/artist/${artist.id}`}>
+                <a>{artist.name}</a>
+              </Link>
+            );
+          })}
+        </span>
       </section>
       <style jsx>{`
-        p {
+        p.trackName {
+          color: #fff;
           margin: 0;
-          font-weight: 400;
+          padding: 0;
+        }
+        span.trackArtists {
+          font-size: 14px;
+        }
+        a {
+          text-decoration: none;
+          margin-right: 5px;
+          color: inherit;
+        }
+        a:hover {
+          color: #fff;
+          text-decoration: underline;
         }
         div {
           width: 100%;
@@ -57,8 +87,12 @@ function ProgressBar(): ReactElement {
   } = useSpotify();
   const [progressSeconds, setProgressSeconds] = useState(0);
   const [progressFromSpotify, setProgressFromSpotify] = useState(0);
+  const { user } = useAuth();
+  const isPremium = user?.product === "premium";
   const durationInSeconds = currentlyPlayingDuration
-    ? currentlyPlayingDuration / 1000
+    ? isPremium
+      ? currentlyPlayingDuration / 1000
+      : currentlyPlayingDuration
     : 0;
 
   useEffect(() => {
@@ -71,13 +105,26 @@ function ProgressBar(): ReactElement {
           ? 100 * (currentlyPlayingPosition / currentlyPlayingDuration)
           : 0
       );
-      setProgressSeconds(currentlyPlayingPosition / 1000);
+      setProgressSeconds(
+        isPremium ? currentlyPlayingPosition / 1000 : currentlyPlayingPosition
+      );
     }
-  }, [currentlyPlayingPosition, currentlyPlayingDuration, isPlaying]);
+  }, [
+    currentlyPlayingPosition,
+    currentlyPlayingDuration,
+    isPlaying,
+    isPremium,
+  ]);
 
   return (
     <div className="progressBar">
-      <div className="timeTag">{formatTime(progressSeconds)}</div>
+      <div className="timeTag">
+        {formatTime(
+          progressSeconds > durationInSeconds
+            ? durationInSeconds
+            : progressSeconds
+        )}
+      </div>
       <Slider
         updateProgress={progressFromSpotify}
         intervalUpdateAction={{
@@ -86,12 +133,17 @@ function ProgressBar(): ReactElement {
           ms: 1000,
           shouldUpdate: isPlaying,
         }}
+        onDragging={(isDragging) => {
+          if (!isPremium && player) {
+            (player as AudioPlayer).sliderBusy = isDragging;
+          }
+        }}
         setLabelValue={setProgressSeconds}
         onProgressChange={(currentPositionPercent) => {
           setProgressSeconds(
             (currentPositionPercent * (currentlyPlayingDuration ?? 0)) /
               100 /
-              1000
+              (isPremium ? 1000 : 1)
           );
         }}
         valueText={`${formatTime(progressSeconds)}:${formatTime(
@@ -134,14 +186,19 @@ function ProgressBar(): ReactElement {
 export default function SpotifyPlayer(): ReactElement {
   const [volume, setVolume] = useState(1);
   const [lastVolume, setLastVolume] = useState(1);
-  const { player } = useSpotifyPlayer({ volume, name: "Rindu" });
+  useSpotifyPlayer({ volume, name: "Rindu" });
+  const { player } = useSpotify();
   const { isPlaying, currrentlyPlaying } = useSpotify();
   const [isHoveringVolume, setIsHoveringVolume] = useState(false);
+  const { user } = useAuth();
+  const isPremium = user?.product === "premium";
 
   return (
     <footer>
       <div className="container">
-        <Script src="https://sdk.scdn.co/spotify-player.js"></Script>
+        {isPremium ? (
+          <Script src="https://sdk.scdn.co/spotify-player.js"></Script>
+        ) : null}
         <section>
           {currrentlyPlaying && (
             <NavbarLeft currrentlyPlaying={currrentlyPlaying} />
@@ -151,21 +208,18 @@ export default function SpotifyPlayer(): ReactElement {
           <div className="player">
             <button
               onClick={() => {
-                player.current?.previousTrack();
+                player?.previousTrack();
               }}
               className="playerButton"
             >
               <PreviousTrack fill="#b3b3b3" />
             </button>
-            <button
-              className="toggle"
-              onClick={() => player.current?.togglePlay()}
-            >
+            <button className="toggle" onClick={() => player?.togglePlay()}>
               {currrentlyPlaying && isPlaying ? <Pause /> : <Play />}
             </button>
             <button
               onClick={() => {
-                player.current?.nextTrack();
+                player?.nextTrack();
               }}
               className="playerButton"
             >
@@ -188,7 +242,7 @@ export default function SpotifyPlayer(): ReactElement {
               onClick={() => {
                 setLastVolume(volume);
                 setVolume(volume > 0 ? 0 : lastVolume === 0 ? 1 : lastVolume);
-                player.current?.setVolume(
+                player?.setVolume(
                   volume > 0 ? 0 : volume === 0 ? 1 : lastVolume
                 );
               }}
@@ -202,7 +256,7 @@ export default function SpotifyPlayer(): ReactElement {
                 setVolume(currentPositionPercent / 100);
               }}
               action={() => {
-                player.current?.setVolume(volume);
+                player?.setVolume(volume);
               }}
               valueText={`${volume}`}
               initialValuePercent={100}
@@ -239,11 +293,17 @@ export default function SpotifyPlayer(): ReactElement {
         button.playerButton:focus :global(svg path) {
           fill: #fff;
         }
+        button.playerButton:active :global(svg path) {
+          fill: #b3b3b3;
+        }
         button.toggle:hover,
         button.toggle:focus,
         button.toggle:hover :global(svg),
         button.toggle:focus :global(svg) {
           transform: scale(1.05);
+        }
+        button.toggle:active {
+          transform: scale(1);
         }
         section:nth-child(1) {
           min-width: 180px;

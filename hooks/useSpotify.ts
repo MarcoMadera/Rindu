@@ -5,6 +5,7 @@ import {
   RemoveTracksResponse,
   UserPlaylistsResponse,
   AllTracksFromAPlaylistResponse,
+  trackItem,
 } from "types/spotify";
 import SpotifyContext from "../context/SpotifyContext";
 import {
@@ -12,6 +13,7 @@ import {
   getTracksFromPlayListRequest,
   removeTracksRequest,
 } from "../lib/requests";
+import { AudioPlayer } from "./useSpotifyPlayer";
 
 export default function useSpotify(): {
   playlists: PlaylistItems;
@@ -19,22 +21,23 @@ export default function useSpotify(): {
   getPlaylists: (offset: number, playlistLimit: number) => void;
   getTracksFromPlayList: (playlistId: string) => void;
   allTracks: AllTracksFromAPlayList;
+  setAllTracks: Dispatch<SetStateAction<AllTracksFromAPlayList>>;
   setPlaylists: Dispatch<SetStateAction<PlaylistItems>>;
   deviceId: string | undefined;
   setDeviceId: Dispatch<SetStateAction<string | undefined>>;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
   isPlaying: boolean;
-  setCurrentlyPlaying: Dispatch<SetStateAction<Spotify.Track | undefined>>;
-  currrentlyPlaying: Spotify.Track | undefined;
+  setCurrentlyPlaying: Dispatch<SetStateAction<trackItem | undefined>>;
+  currrentlyPlaying: trackItem | undefined;
   currentlyPlayingPosition: number | undefined;
   currentlyPlayingDuration: number | undefined;
   setCurrentlyPlayingPosition: Dispatch<SetStateAction<number | undefined>>;
   setCurrentlyPlayingDuration: Dispatch<SetStateAction<number | undefined>>;
-  player: Spotify.Player | undefined;
-  setPlayer: Dispatch<SetStateAction<Spotify.Player | undefined>>;
-  setIsThisPlaylistPlaying: Dispatch<SetStateAction<boolean>>;
+  player: Spotify.Player | AudioPlayer | undefined;
+  setPlayer: Dispatch<SetStateAction<Spotify.Player | AudioPlayer | undefined>>;
   playlistDetails: SpotifyApi.SinglePlaylistResponse | undefined;
-  isThisPlaylistPlaying: boolean;
+  setPlaylistPlayingId: Dispatch<SetStateAction<string | undefined>>;
+  playlistPlayingId: string | undefined;
   setPlaylistDetails: Dispatch<
     SetStateAction<SpotifyApi.SinglePlaylistResponse | undefined>
   >;
@@ -63,9 +66,9 @@ export default function useSpotify(): {
     setCurrentlyPlayingDuration,
     player,
     setPlayer,
-    setIsThisPlaylistPlaying,
+    setPlaylistPlayingId,
+    playlistPlayingId,
     playlistDetails,
-    isThisPlaylistPlaying,
     setPlaylistDetails,
   } = useContext(SpotifyContext);
 
@@ -132,6 +135,7 @@ export default function useSpotify(): {
     getPlaylists,
     getTracksFromPlayList,
     allTracks,
+    setAllTracks,
     removeTracks,
     setPlaylists,
     deviceId,
@@ -146,9 +150,9 @@ export default function useSpotify(): {
     setCurrentlyPlayingDuration,
     player,
     setPlayer,
-    setIsThisPlaylistPlaying,
     playlistDetails,
-    isThisPlaylistPlaying,
+    setPlaylistPlayingId,
+    playlistPlayingId,
     setPlaylistDetails,
   };
 }

@@ -13,6 +13,8 @@ export type SpotifyUserResponse = {
   image: string | undefined;
   href: string;
   id: string;
+  product: string | undefined;
+  followers: SpotifyApi.FollowersObject | undefined;
 };
 // Playlists
 export type PlaylistItem = {
@@ -39,21 +41,37 @@ export type UserPlaylistsResponse = {
   total: number;
 };
 
+interface Artist extends Spotify.Artist {
+  id?: string | null;
+  type?: "artist" | undefined;
+  href?: string | undefined;
+  external_urls?: SpotifyApi.ExternalUrlObject | undefined;
+}
+interface Album extends Spotify.Album {
+  album_type?: "album" | "single" | "compilation";
+  artists?: Artist[];
+  id?: string;
+  release_date?: string;
+}
+
 //Tracks
 export type normalTrackTypes = {
   name?: string;
-  corruptedTrack: boolean;
-  position: number;
+  corruptedTrack?: boolean;
+  position?: number;
   images?: Array<{ url: string }>;
-  uri?: string;
+  uri?: Spotify.Track["uri"];
   href?: string;
-  artists?: string;
-  id?: string;
-  audio: string | null;
+  artists?: Artist[];
+  id?: string | null;
+  audio?: string | null;
   explicit?: boolean;
   duration?: number;
-  album: Spotify.Album;
-  added_at: string;
+  album: Album;
+  added_at?: string;
+  type: "track" | "episode" | "ad";
+  media_type: "audio" | "video";
+  is_playable?: boolean | undefined;
 };
 export type trackItem = normalTrackTypes;
 export type AllTracksFromAPlayList = trackItem[];

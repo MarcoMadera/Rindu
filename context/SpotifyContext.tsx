@@ -1,5 +1,10 @@
+import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { createContext, Dispatch, SetStateAction, useState } from "react";
-import { AllTracksFromAPlayList, PlaylistItems } from "types/spotify";
+import {
+  AllTracksFromAPlayList,
+  PlaylistItems,
+  trackItem,
+} from "types/spotify";
 
 export interface Context {
   playlists: PlaylistItems;
@@ -12,17 +17,17 @@ export interface Context {
   setAllTracks: Dispatch<SetStateAction<AllTracksFromAPlayList>>;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
   isPlaying: boolean;
-  setCurrentlyPlaying: Dispatch<SetStateAction<Spotify.Track | undefined>>;
-  currrentlyPlaying: Spotify.Track | undefined;
+  setCurrentlyPlaying: Dispatch<SetStateAction<trackItem | undefined>>;
+  currrentlyPlaying: trackItem | undefined;
   currentlyPlayingPosition: number | undefined;
   currentlyPlayingDuration: number | undefined;
   setCurrentlyPlayingPosition: Dispatch<SetStateAction<number | undefined>>;
   setCurrentlyPlayingDuration: Dispatch<SetStateAction<number | undefined>>;
-  player: Spotify.Player | undefined;
-  setPlayer: Dispatch<SetStateAction<Spotify.Player | undefined>>;
-  setIsThisPlaylistPlaying: Dispatch<SetStateAction<boolean>>;
+  player: Spotify.Player | AudioPlayer | undefined;
+  setPlayer: Dispatch<SetStateAction<Spotify.Player | AudioPlayer | undefined>>;
   playlistDetails: SpotifyApi.SinglePlaylistResponse | undefined;
-  isThisPlaylistPlaying: boolean;
+  setPlaylistPlayingId: Dispatch<SetStateAction<string | undefined>>;
+  playlistPlayingId: string | undefined;
   setPlaylistDetails: Dispatch<
     SetStateAction<SpotifyApi.SinglePlaylistResponse | undefined>
   >;
@@ -38,14 +43,13 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
   const [allTracks, setAllTracks] = useState<AllTracksFromAPlayList>([]);
   const [deviceId, setDeviceId] = useState<string>();
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currrentlyPlaying, setCurrentlyPlaying] = useState<Spotify.Track>();
+  const [currrentlyPlaying, setCurrentlyPlaying] = useState<trackItem>();
   const [currentlyPlayingPosition, setCurrentlyPlayingPosition] =
     useState<number>();
   const [currentlyPlayingDuration, setCurrentlyPlayingDuration] =
     useState<number>();
-  const [player, setPlayer] = useState<Spotify.Player>();
-  const [isThisPlaylistPlaying, setIsThisPlaylistPlaying] =
-    useState<boolean>(false);
+  const [player, setPlayer] = useState<Spotify.Player | AudioPlayer>();
+  const [playlistPlayingId, setPlaylistPlayingId] = useState<string>();
   const [playlistDetails, setPlaylistDetails] = useState<
     SpotifyApi.SinglePlaylistResponse | undefined
   >();
@@ -71,9 +75,9 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
         setCurrentlyPlayingDuration,
         player,
         setPlayer,
-        setIsThisPlaylistPlaying,
+        playlistPlayingId,
+        setPlaylistPlayingId,
         playlistDetails,
-        isThisPlaylistPlaying,
         setPlaylistDetails,
       }}
     >

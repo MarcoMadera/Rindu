@@ -24,6 +24,7 @@ interface SliderProps {
     shouldUpdate: boolean;
   };
   onProgressChange: (currentPositionPercent: number) => void;
+  onDragging?: (isDragging: boolean) => void;
   showDot?: boolean;
 }
 
@@ -35,6 +36,7 @@ export default function Slider({
   valueText,
   maxValue,
   onProgressChange,
+  onDragging,
   setLabelValue,
   initialValuePercent,
   showDot,
@@ -48,18 +50,25 @@ export default function Slider({
 
   useEffect(() => {
     if (typeof updateProgress === "number") {
-      setProgressPercent(updateProgress);
+      setProgressPercent(
+        Math.ceil(updateProgress) > 100 ? 100 : Math.ceil(updateProgress)
+      );
     }
   }, [updateProgress]);
 
   useEffect(() => {
+    if (onDragging) {
+      onDragging(isDragging || isPressingMouse);
+    }
     const update = intervalUpdateAction;
     if (!update || (!isDragging && !isPressingMouse && !update.shouldUpdate)) {
       return;
     }
     const playerInterval = setInterval(() => {
       if (!isDragging && setLabelValue) {
-        setProgressPercent((value) => value + update.steps);
+        setProgressPercent((value) =>
+          value >= 100 ? 0 : value + update.steps
+        );
         setLabelValue((value) => value + update.labelUpdateValue);
       }
     }, update.ms);
@@ -71,6 +80,7 @@ export default function Slider({
     isDragging,
     isPressingMouse,
     setLabelValue,
+    onDragging,
   ]);
 
   const getMyCurrentPositionPercent = useCallback(
@@ -192,14 +202,16 @@ export default function Slider({
             <div
               className="line"
               style={{
-                transform: `translateX(calc(-100% + ${progressPercent}%))`,
+                transform: `translateX(calc(-100% + ${
+                  progressPercent >= 100 ? 100 : progressPercent
+                }%))`,
               }}
             ></div>
           </div>
           <div
             className="dot"
             style={{
-              left: `${progressPercent}%`,
+              left: `${progressPercent >= 100 ? 100 : progressPercent}%`,
             }}
           ></div>
         </div>

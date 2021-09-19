@@ -127,6 +127,8 @@ export async function getSpotifyUser(
     image: data.body.images?.[0].url,
     href: data.body.external_urls.spotify,
     id: data.body.id,
+    product: data.body.product,
+    followers: data.body.followers,
   };
 }
 
@@ -195,7 +197,7 @@ export const getAllTracksFromPlaylist = async (
           images: track?.album.images,
           uri: track?.uri,
           href: track?.external_urls.spotify,
-          artists: track?.artists.map((_artist) => _artist.name).join(", "),
+          artists: track.artists,
           id: track?.id,
           explicit: track?.explicit,
           duration: track?.duration_ms,
@@ -204,6 +206,9 @@ export const getAllTracksFromPlaylist = async (
           position: i,
           album: track.album,
           added_at,
+          type: track.type,
+          media_type: "audio",
+          is_playable: track.is_playable,
         };
       }),
     };
