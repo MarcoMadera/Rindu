@@ -8,11 +8,7 @@ const Navbar: React.FC = () => {
   return (
     <header>
       <Logo />
-      {user ? (
-        <UserConfig name={user?.name} img={user?.image} href={user?.href} />
-      ) : (
-        <div></div>
-      )}
+      {user ? <UserConfig name={user?.name} img={user?.image} /> : <div></div>}
       <style jsx>{`
         header {
           color: #e5e5e5;
