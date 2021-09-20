@@ -183,15 +183,15 @@ export const getAllTracksFromPlaylist = async (
     const { body } = data;
 
     tracks = body.items;
-    if (body.total > 100)
-      for (let i = 1; i < Math.ceil(body.total / 100); i++) {
-        const add = await spotifyAPI.getPlaylistTracks(playlist, {
-          offset: 100 * i,
-        });
-        tracks = [...tracks, ...add.body.items];
-      }
+    // if (body.total > 100)
+    //   for (let i = 1; i < Math.ceil(body.total / 100); i++) {
+    //     const add = await spotifyAPI.getPlaylistTracks(playlist, {
+    //       offset: 100 * i,
+    //     });
+    //     tracks = [...tracks, ...add.body.items];
+    //   }
     return {
-      tracks: tracks.map(({ track, added_at }, i) => {
+      tracks: tracks.map(({ track, added_at, is_local }, i) => {
         return {
           name: track?.name,
           images: track?.album.images,
@@ -209,6 +209,7 @@ export const getAllTracksFromPlaylist = async (
           type: track.type,
           media_type: "audio",
           is_playable: track.is_playable,
+          is_local,
         };
       }),
     };

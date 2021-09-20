@@ -8,6 +8,7 @@ import {
 } from "types/spotify";
 import { SITE_URL } from "../../utils/constants";
 import Link from "next/link";
+import formatNumber from "utils/formatNumber";
 
 export interface PlaylistPageHeaderProps {
   playlistDetails: SpotifyApi.SinglePlaylistResponse;
@@ -36,20 +37,24 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
         <div className="playlistInfo">
           <h2>PLAYLIST</h2>
           <h1>{playlistDetails.name}</h1>
-          <p>{decode(playlistDetails.description)}</p>
+          <p className="description">{decode(playlistDetails.description)}</p>
           <div>
             <p>
               <Link href={`/user/${playlistDetails.owner.id}`}>
                 <a className="userLink">
                   {decode(playlistDetails.owner.display_name)}
                 </a>
-              </Link>{" "}
+              </Link>
               {playlistDetails.followers.total > 0 ? (
                 <span>
-                  &middot; {playlistDetails.followers.total} seguidores{" "}
+                  &nbsp;&middot; {formatNumber(playlistDetails.followers.total)}{" "}
+                  seguidores
                 </span>
               ) : null}
-              <span>&middot; {playlistDetails.tracks.total} canciones</span>
+              <span>
+                &nbsp;&middot; {formatNumber(playlistDetails.tracks.total)}{" "}
+                canciones
+              </span>
               {duplicatesSongs.length > 0 ? (
                 <span>, {duplicatesSongs.length} duplicadas</span>
               ) : null}
@@ -93,6 +98,13 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
           }
           div.playlistInfo {
             align-self: flex-end;
+            width: calc(100% - 310px);
+          }
+          p.description {
+            margin-bottom: 4px;
+            font-size: 14px;
+            word-spacing: 2px;
+            line-height: 1.4;
           }
           div.noise {
             display: block;
@@ -113,6 +125,7 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
             color: ${duplicatesSongs.length > 0 ? "#c62828" : "#65c628"};
           }
           .userLink {
+            display: inline-block;
             font-size: 14px;
             font-weight: 700;
             letter-spacing: normal;
@@ -137,6 +150,10 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
             margin: 0;
             color: #ffffffb3;
           }
+          span {
+            font-size: 14px;
+            display: inline-block;
+          }
           section {
             display: flex;
             height: 232px;
@@ -148,14 +165,32 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
           h1 {
             color: #fff;
             margin: 0;
+            pointer-events: none;
+            user-select: none;
             padding: 0.08em 0px;
-            font-size: 96px;
-            line-height: 96px;
+            font-size: ${playlistDetails.name.length < 20
+              ? "96px"
+              : playlistDetails.name.length < 30
+              ? "72px"
+              : "48px"};
+            line-height: ${playlistDetails.name.length < 20
+              ? "96px"
+              : playlistDetails.name.length < 30
+              ? "72px"
+              : "48px"};
             visibility: visible;
             width: 100%;
             font-weight: 900;
             letter-spacing: -0.04em;
             text-transform: none;
+            overflow: hidden;
+            text-align: left;
+            text-overflow: ellipsis;
+            white-space: unset;
+            -webkit-box-orient: vertical;
+            display: -webkit-box;
+            line-break: anywhere;
+            -webkit-line-clamp: 3;
           }
           img {
             margin-right: 15px;

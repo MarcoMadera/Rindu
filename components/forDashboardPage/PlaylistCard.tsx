@@ -25,13 +25,15 @@ const PlaylistCard: React.FC<PlaylistCardProps> = ({
   owner,
 }) => {
   const cardRef = useRef<HTMLAnchorElement>();
+  const shouldObserve = offSet % 50 === 0 && offSet !== 0;
   const { isNearScreen } = useNearScreen({
     distance: "200px",
     externalRef: cardRef,
+    observe: shouldObserve,
   });
 
   useEffect(() => {
-    if (offSet % 50 === 0 && offSet !== 0 && isNearScreen) {
+    if (shouldObserve && isNearScreen) {
       getPlaylistsRequest(offSet, 50)
         .then((res) => res.json())
         .then((playlists) => {

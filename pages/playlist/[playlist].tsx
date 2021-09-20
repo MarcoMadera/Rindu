@@ -8,7 +8,9 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ModalCardTrack from "../../components/forPlaylistsPage/CardTrack";
 import {
+  AllTracksFromAPlayList,
   AllTracksFromAPlaylistResponse,
+  normalTrackTypes,
   SpotifyUserResponse,
 } from "types/spotify";
 import { PlaylistPageHeader } from "../../components/forPlaylistsPage/PlaylistPageHeader";
@@ -53,6 +55,7 @@ const Playlist: NextPage<PlaylistProps> = ({
     setPlaylistPlayingId,
     setPlaylistDetails,
     setAllTracks,
+    allTracks,
   } = useSpotify();
   const { setElement } = useHeader();
   const [isPin, setIsPin] = useState(false);
@@ -62,22 +65,28 @@ const Playlist: NextPage<PlaylistProps> = ({
       router.push("/");
     }
     setElement(() => (
-      <>
+      <div>
         <PlayButton size={40} centerSize={16} />
         <span>{playlistDetails.name}</span>
         <style jsx>{`
           span {
             color: #fff;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
             letter-spacing: -0.04em;
             line-height: 28px;
             overflow: hidden;
             padding: 0 16px;
             text-overflow: ellipsis;
+            pointer-events: none;
+          }
+          div {
+            align-items: center;
+            display: flex;
+            white-space: nowrap;
           }
         `}</style>
-      </>
+      </div>
     ));
     setPlaylistDetails(playlistDetails);
     trackWithGoogleAnalitycs();
@@ -148,6 +157,43 @@ const Playlist: NextPage<PlaylistProps> = ({
     fetchData();
   }, [tracks, accessToken]);
 
+  useEffect(() => {
+    const emptyTrackItem: normalTrackTypes = {
+      images: [
+        {
+          url: "",
+        },
+      ],
+      name: "",
+      id: "",
+      href: "",
+      album: { images: [{ url: "" }], name: "", uri: "" },
+      media_type: "audio",
+      type: "track",
+    };
+
+    const restTrackItems = new Array(
+      playlistDetails.tracks.total - tracks.length
+    ).fill(emptyTrackItem);
+
+    console.log(restTrackItems);
+
+    setAllTracks([...tracks, ...restTrackItems]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tracks]);
+
+  function addTracksToPlaylists(
+    tracks: AllTracksFromAPlayList,
+    position: number
+  ): void {
+    setAllTracks((allTracks) => {
+      const newTracks = [...allTracks];
+      newTracks.splice(position, 100, ...tracks);
+      return newTracks;
+    });
+  }
+
   return (
     <main>
       <Head>
@@ -166,18 +212,20 @@ const Playlist: NextPage<PlaylistProps> = ({
           </div>
           <div className="trc">
             <Titles setIsPin={setIsPin} />
-            {tracks?.length > 0
-              ? tracks?.map((track) => {
+            {allTracks?.length > 0
+              ? allTracks?.map((track, i) => {
                   if (track.corruptedTrack) {
                     return null;
                   }
                   return (
                     <ModalCardTrack
                       accessToken={accessToken}
-                      key={track.position}
+                      key={track.position || i}
                       track={track}
                       playlistUri={playlistDetails.uri}
                       isTrackInLibrary={tracksInLibrary[track.position ?? -1]}
+                      offSet={i}
+                      addTracksToPlaylists={addTracksToPlaylists}
                     />
                   );
                 })
@@ -193,6 +241,9 @@ const Playlist: NextPage<PlaylistProps> = ({
           width: 100%;
           align-items: center;
           flex-direction: row;
+        }
+        .trc {
+          margin-bottom: 50px;
         }
         .trc :global(.titles) {
           border-bottom: 1px solid transparent;

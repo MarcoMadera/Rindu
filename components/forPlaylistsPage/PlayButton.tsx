@@ -87,6 +87,7 @@ export function PlayButton({
           height: ${size}px;
           border: none;
           border-radius: 50%;
+          min-width: ${size}px;
         }
         .playPlaylist:focus,
         .playPlaylist:hover {

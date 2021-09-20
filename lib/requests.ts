@@ -20,6 +20,26 @@ export async function getPlaylistsRequest(
   return res;
 }
 
+export async function getTracksFromPlaylist(
+  playlistId: string,
+  offset = 0,
+  accessToken?: string | undefined
+): Promise<Response> {
+  const res = await fetch(
+    `https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=${offset}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${
+          accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
+        }`,
+      },
+    }
+  );
+  return res;
+}
+
 export async function getTracksFromPlayListRequest(
   playlistId: string,
   cookies?: string | undefined

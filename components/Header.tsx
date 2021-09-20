@@ -22,6 +22,7 @@ export default function Header({
   const appRef = useRef<HTMLDivElement>();
   const { user } = useAuth();
   const { element } = useHeader();
+  const isPremium = user?.product === "premium";
 
   useEffect(() => {
     const app = appRef.current;
@@ -58,8 +59,19 @@ export default function Header({
           <div className="extraElement">
             {element && showFixed ? <>{element}</> : null}
           </div>
+          {!isPremium ? (
+            <a
+              href="https://www.spotify.com/premium/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Upgrade to Premium"
+              title="Upgrade to Premium"
+            >
+              UPGRADE
+            </a>
+          ) : null}
           {user ? (
-            <UserConfig name={user?.name} img={user?.image} href={user?.href} />
+            <UserConfig name={user?.name} img={user?.image} />
           ) : (
             <div className="userConfig"></div>
           )}
@@ -75,9 +87,38 @@ export default function Header({
           position: relative;
         }
         .extraElement {
-          display: flex;
+          white-space: nowrap;
           width: 100%;
-          align-items: center;
+          min-width: 0;
+          z-index: 2;
+        }
+        a {
+          border-radius: 500px;
+          text-decoration: none;
+          color: #fff;
+          cursor: pointer;
+          display: inline-block;
+          font-size: 12px;
+          font-weight: 800;
+          letter-spacing: 1.76px;
+          line-height: 18px;
+          padding: 8px 34px;
+          text-align: center;
+          text-transform: uppercase;
+          transition: all 33ms cubic-bezier(0.3, 0, 0, 1);
+          white-space: nowrap;
+          background-color: #000000b3;
+          border: 1px solid #ffffffb3;
+          will-change: transform;
+        }
+        a:focus,
+        a:hover {
+          transform: scale(1.06);
+          background-color: #000;
+          border: 1px solid #fff;
+        }
+        a:active {
+          transform: scale(1);
         }
         header {
           display: flex;

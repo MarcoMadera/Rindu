@@ -3,18 +3,25 @@ import { Heart, HeartShape } from "components/icons/Heart";
 import ThreeDots from "components/icons/ThreeDots";
 import useSpotify from "hooks/useSpotify";
 import { getTimeAgo } from "utils/getTimeAgo";
-import { MutableRefObject, useRef, useState } from "react";
-import { normalTrackTypes } from "types/spotify";
+import { MutableRefObject, useRef, useState, Fragment, useEffect } from "react";
+import { AllTracksFromAPlayList, normalTrackTypes } from "types/spotify";
 import { formatTime } from "utils/formatTime";
 import Link from "next/link";
 import useAuth from "hooks/useAuth";
 import { playCurrentTrack } from "utils/playCurrentTrack";
+import useNearScreen from "hooks/useNearScreen";
+import { getTracksFromPlaylist } from "lib/requests";
 
 interface ModalCardTrackProps {
   track: normalTrackTypes;
   accessToken: string | undefined;
   playlistUri: string;
   isTrackInLibrary: boolean;
+  offSet: number;
+  addTracksToPlaylists: (
+    tracks: AllTracksFromAPlayList,
+    position: number
+  ) => void;
 }
 
 const ExplicitSign: React.FC = () => {
@@ -36,7 +43,7 @@ const ExplicitSign: React.FC = () => {
           background-color: #d2d2d2;
           width: 17px;
           height: 17px;
-          margin-right: 8px;
+          margin-right: 4px;
         }
       `}</style>
     </div>
@@ -48,6 +55,8 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   track,
   playlistUri,
   isTrackInLibrary,
+  offSet,
+  addTracksToPlaylists,
 }) => {
   const {
     deviceId,
@@ -65,6 +74,12 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   const [isFocusing, setIsFocusing] = useState(false);
   const trackRef = useRef<HTMLDivElement>();
   const { user } = useAuth();
+  const shouldObserve = offSet % 100 === 0 && offSet !== 0;
+  const { isNearScreen } = useNearScreen({
+    distance: "300px",
+    externalRef: trackRef,
+    observe: shouldObserve,
+  });
   const isPremium = user?.product === "premium";
 
   const isPlayable =
@@ -75,6 +90,52 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
     currrentlyPlaying?.name === track.name &&
     currrentlyPlaying?.artists === track.artists &&
     currrentlyPlaying?.album.name === track.album.name;
+
+  useEffect(() => {
+    if (shouldObserve && isNearScreen && playlistDetails?.id) {
+      getTracksFromPlaylist(playlistDetails.id, offSet)
+        .then((res) => res.json())
+        .then((playlistItems) => {
+          const items = playlistItems.items;
+          const tracks = items?.map(
+            (
+              {
+                track,
+                added_at,
+                is_local,
+              }: {
+                track: SpotifyApi.TrackObjectFull;
+                added_at: string;
+                is_local: boolean;
+              },
+              i: number
+            ) => {
+              return {
+                name: track?.name,
+                images: track?.album.images,
+                uri: track?.uri,
+                href: track?.external_urls.spotify,
+                artists: track.artists,
+                id: track?.id,
+                explicit: track?.explicit,
+                duration: track?.duration_ms,
+                audio: track?.preview_url,
+                corruptedTrack: !track?.uri,
+                position: offSet + i,
+                album: track.album,
+                added_at,
+                type: track.type,
+                media_type: "audio",
+                is_playable: track.is_playable,
+                is_local,
+              };
+            }
+          );
+          addTracksToPlaylists(tracks, offSet);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isNearScreen, offSet]);
 
   function playThisTrack() {
     playCurrentTrack(track, {
@@ -151,7 +212,9 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         ) : (mouseEnter || isFocusing) && isPlayable ? (
           <Play fill="#fff" />
         ) : (
-          <span className="position">{`${(track.position ?? 0) + 1}`}</span>
+          <span className="position">{`${
+            track.position ? track.position + 1 : ""
+          }`}</span>
         )}
       </button>
       <section>
@@ -166,13 +229,18 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         ) : null}
         <div className="trackArtistsContainer">
           <p className="trackName">{`${track.name}`}</p>
-          {track.explicit && <ExplicitSign />}
           <span className="trackArtists">
-            {track.artists?.map((artist) => {
+            {track.explicit && <ExplicitSign />}
+            {track.artists?.map((artist, i) => {
               return (
-                <Link key={artist.id} href={`/artist/${artist.id}`}>
-                  <a>{artist.name}</a>
-                </Link>
+                <Fragment key={artist.id}>
+                  <Link href={`/artist/${artist.id}`}>
+                    <a>{artist.name}</a>
+                  </Link>
+                  {i !== (track.artists?.length && track.artists?.length - 1)
+                    ? ", "
+                    : null}
+                </Fragment>
               );
             })}
           </span>
@@ -187,10 +255,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       </section>
       <section>
         <p className="trackArtists">
-          {getTimeAgo(
-            track.added_at ? +new Date(track.added_at) : +Date(),
-            "en"
-          )}
+          {track.added_at ? getTimeAgo(+new Date(track.added_at), "en") : null}
         </p>
       </section>
       <section>
@@ -208,7 +273,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
             <HeartShape fill={isHoveringHeart ? "#fff" : "#ffffffb3"} />
           ) : null}
         </button>
-        <p className="trackArtists">
+        <p className="trackArtists time">
           {formatTime((track.duration || 0) / 1000)}
         </p>
         <button className="options">
@@ -230,10 +295,23 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         .trackItem {
           opacity: ${isPlayable ? 1 : 0.4};
         }
+        p,
+        span {
+          margin: 0px;
+          overflow: hidden;
+          text-align: left;
+          text-overflow: ellipsis;
+          white-space: unset;
+          -webkit-box-orient: vertical;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+        }
+        .time {
+          overflow: unset;
+        }
         a {
           text-decoration: none;
           color: ${mouseEnter || isFocusing ? "#fff" : "inherit"};
-          margin-right: 5px;
         }
         a:hover {
           text-decoration: underline;
@@ -268,6 +346,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           display: flex;
           align-items: center;
           justify-content: flex-start;
+          max-width: 100%;
         }
         section:nth-of-type(4) {
           justify-content: flex-end;
