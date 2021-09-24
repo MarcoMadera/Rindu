@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
 import {
   getSinglePlayListRequest,
+  getTracksFromPlaylist,
   getTracksFromPlayListRequest,
   refreshAccessTokenRequest,
 } from "../../lib/requests";
@@ -10,11 +11,14 @@ import ModalCardTrack from "../../components/forPlaylistsPage/CardTrack";
 import {
   AllTracksFromAPlayList,
   AllTracksFromAPlaylistResponse,
-  normalTrackTypes,
   SpotifyUserResponse,
 } from "types/spotify";
 import { PlaylistPageHeader } from "../../components/forPlaylistsPage/PlaylistPageHeader";
-import { ACCESSTOKENCOOKIE, REFRESHTOKENCOOKIE } from "../../utils/constants";
+import {
+  ACCESSTOKENCOOKIE,
+  REFRESHTOKENCOOKIE,
+  __isServer__,
+} from "../../utils/constants";
 import { takeCookie } from "../../utils/cookies";
 import { validateAccessToken } from "../../utils/validateAccessToken";
 import Router from "next/router";
@@ -27,6 +31,13 @@ import useHeader from "hooks/useHeader";
 import { PlayButton } from "../../components/forPlaylistsPage/PlayButton";
 import { checkTracksInLibrary } from "lib/spotify";
 import Titles from "components/forPlaylistsPage/Titles";
+import List from "react-virtualized/dist/commonjs/List";
+import {
+  IndexRange,
+  AutoSizer,
+  WindowScroller,
+  InfiniteLoader,
+} from "react-virtualized";
 
 interface PlaylistProps {
   playlistDetails: SpotifyApi.SinglePlaylistResponse;
@@ -157,32 +168,6 @@ const Playlist: NextPage<PlaylistProps> = ({
     fetchData();
   }, [tracks, accessToken]);
 
-  useEffect(() => {
-    const emptyTrackItem: normalTrackTypes = {
-      images: [
-        {
-          url: "",
-        },
-      ],
-      name: "",
-      id: "",
-      href: "",
-      album: { images: [{ url: "" }], name: "", uri: "" },
-      media_type: "audio",
-      type: "track",
-    };
-
-    const restTrackItems = new Array(
-      playlistDetails.tracks.total - tracks.length
-    ).fill(emptyTrackItem);
-
-    console.log(restTrackItems);
-
-    setAllTracks([...tracks, ...restTrackItems]);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracks]);
-
   function addTracksToPlaylists(
     tracks: AllTracksFromAPlayList,
     position: number
@@ -192,6 +177,47 @@ const Playlist: NextPage<PlaylistProps> = ({
       newTracks.splice(position, 100, ...tracks);
       return newTracks;
     });
+  }
+
+  async function loadMoreRows({ startIndex }: IndexRange) {
+    const res = await getTracksFromPlaylist(playlistDetails.id, startIndex);
+    const data = await res.json();
+    const items = data.items;
+    const tracks = items?.map(
+      (
+        {
+          track,
+          added_at,
+          is_local,
+        }: {
+          track: SpotifyApi.TrackObjectFull;
+          added_at: string;
+          is_local: boolean;
+        },
+        i: number
+      ) => {
+        return {
+          name: track?.name,
+          images: track?.album.images,
+          uri: track?.uri,
+          href: track?.external_urls.spotify,
+          artists: track.artists,
+          id: track?.id,
+          explicit: track?.explicit,
+          duration: track?.duration_ms,
+          audio: track?.preview_url,
+          corruptedTrack: !track?.uri,
+          position: startIndex + i,
+          album: track.album,
+          added_at,
+          type: track.type,
+          media_type: "audio",
+          is_playable: track.is_playable,
+          is_local,
+        };
+      }
+    );
+    addTracksToPlaylists(tracks, startIndex);
   }
 
   return (
@@ -212,7 +238,71 @@ const Playlist: NextPage<PlaylistProps> = ({
           </div>
           <div className="trc">
             <Titles setIsPin={setIsPin} />
-            {allTracks?.length > 0
+
+            <WindowScroller
+              scrollElement={
+                __isServer__
+                  ? undefined
+                  : document.getElementsByClassName("app")[0]
+              }
+            >
+              {({ height, isScrolling, onChildScroll, scrollTop }) => {
+                return (
+                  <AutoSizer disableHeight>
+                    {({ width }) => {
+                      return (
+                        <InfiniteLoader
+                          isRowLoaded={({ index }) => {
+                            return !!allTracks[index];
+                          }}
+                          loadMoreRows={loadMoreRows}
+                          rowCount={playlistDetails.tracks.total}
+                        >
+                          {({ onRowsRendered, registerChild }) => (
+                            <div ref={registerChild}>
+                              <List
+                                autoHeight
+                                height={height}
+                                isScrolling={isScrolling}
+                                onRowsRendered={onRowsRendered}
+                                onScroll={onChildScroll}
+                                overscanRowCount={2}
+                                rowCount={playlistDetails.tracks.total}
+                                rowHeight={65}
+                                scrollTop={scrollTop}
+                                width={width}
+                                rowRenderer={({ index, style, key }) => {
+                                  if (allTracks[index]?.corruptedTrack) {
+                                    return null;
+                                  }
+
+                                  return (
+                                    <ModalCardTrack
+                                      accessToken={accessToken}
+                                      key={key}
+                                      style={style}
+                                      track={allTracks[index]}
+                                      playlistUri={playlistDetails.uri}
+                                      isTrackInLibrary={
+                                        tracksInLibrary[
+                                          allTracks[index]?.position ?? -1
+                                        ]
+                                      }
+                                    />
+                                  );
+                                }}
+                              />
+                            </div>
+                          )}
+                        </InfiniteLoader>
+                      );
+                    }}
+                  </AutoSizer>
+                );
+              }}
+            </WindowScroller>
+
+            {/* {allTracks?.length > 0
               ? allTracks?.map((track, i) => {
                   if (track.corruptedTrack) {
                     return null;
@@ -229,10 +319,11 @@ const Playlist: NextPage<PlaylistProps> = ({
                     />
                   );
                 })
-              : null}
+              : null} */}
           </div>
         </div>
       </section>
+
       <style jsx>{`
         .options {
           display: flex;

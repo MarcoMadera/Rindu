@@ -3,25 +3,25 @@ import { Heart, HeartShape } from "components/icons/Heart";
 import ThreeDots from "components/icons/ThreeDots";
 import useSpotify from "hooks/useSpotify";
 import { getTimeAgo } from "utils/getTimeAgo";
-import { MutableRefObject, useRef, useState, Fragment, useEffect } from "react";
-import { AllTracksFromAPlayList, normalTrackTypes } from "types/spotify";
+import {
+  MutableRefObject,
+  useRef,
+  useState,
+  Fragment,
+  CSSProperties,
+} from "react";
+import { normalTrackTypes } from "types/spotify";
 import { formatTime } from "utils/formatTime";
 import Link from "next/link";
 import useAuth from "hooks/useAuth";
 import { playCurrentTrack } from "utils/playCurrentTrack";
-import useNearScreen from "hooks/useNearScreen";
-import { getTracksFromPlaylist } from "lib/requests";
 
 interface ModalCardTrackProps {
   track: normalTrackTypes;
   accessToken: string | undefined;
   playlistUri: string;
+  style: CSSProperties;
   isTrackInLibrary: boolean;
-  offSet: number;
-  addTracksToPlaylists: (
-    tracks: AllTracksFromAPlayList,
-    position: number
-  ) => void;
 }
 
 const ExplicitSign: React.FC = () => {
@@ -55,8 +55,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   track,
   playlistUri,
   isTrackInLibrary,
-  offSet,
-  addTracksToPlaylists,
+  style,
 }) => {
   const {
     deviceId,
@@ -74,68 +73,16 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   const [isFocusing, setIsFocusing] = useState(false);
   const trackRef = useRef<HTMLDivElement>();
   const { user } = useAuth();
-  const shouldObserve = offSet % 100 === 0 && offSet !== 0;
-  const { isNearScreen } = useNearScreen({
-    distance: "300px",
-    externalRef: trackRef,
-    observe: shouldObserve,
-  });
   const isPremium = user?.product === "premium";
 
   const isPlayable =
-    (!isPremium && track.audio) ||
-    (isPremium && !(track.is_playable === false));
+    (!isPremium && track?.audio) ||
+    (isPremium && !(track?.is_playable === false));
 
   const isTheSameAsCurrentlyPlaying =
-    currrentlyPlaying?.name === track.name &&
-    currrentlyPlaying?.artists === track.artists &&
-    currrentlyPlaying?.album.name === track.album.name;
-
-  useEffect(() => {
-    if (shouldObserve && isNearScreen && playlistDetails?.id) {
-      getTracksFromPlaylist(playlistDetails.id, offSet)
-        .then((res) => res.json())
-        .then((playlistItems) => {
-          const items = playlistItems.items;
-          const tracks = items?.map(
-            (
-              {
-                track,
-                added_at,
-                is_local,
-              }: {
-                track: SpotifyApi.TrackObjectFull;
-                added_at: string;
-                is_local: boolean;
-              },
-              i: number
-            ) => {
-              return {
-                name: track?.name,
-                images: track?.album.images,
-                uri: track?.uri,
-                href: track?.external_urls.spotify,
-                artists: track.artists,
-                id: track?.id,
-                explicit: track?.explicit,
-                duration: track?.duration_ms,
-                audio: track?.preview_url,
-                corruptedTrack: !track?.uri,
-                position: offSet + i,
-                album: track.album,
-                added_at,
-                type: track.type,
-                media_type: "audio",
-                is_playable: track.is_playable,
-                is_local,
-              };
-            }
-          );
-          addTracksToPlaylists(tracks, offSet);
-        });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isNearScreen, offSet]);
+    currrentlyPlaying?.name === track?.name &&
+    currrentlyPlaying?.artists === track?.artists &&
+    currrentlyPlaying?.album.name === track?.album?.name;
 
   function playThisTrack() {
     playCurrentTrack(track, {
@@ -153,6 +100,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
 
   return (
     <div
+      style={style}
       className="trackItem"
       onDoubleClick={() => {
         playThisTrack();
@@ -213,31 +161,31 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           <Play fill="#fff" />
         ) : (
           <span className="position">{`${
-            track.position ? track.position + 1 : ""
+            typeof track?.position === "number" ? track?.position + 1 : ""
           }`}</span>
         )}
       </button>
       <section>
-        {track.images ? (
+        {track?.images ? (
           <img
             loading="lazy"
-            src={track.images[2]?.url ?? track.images[1]?.url}
+            src={track?.images[2]?.url ?? track?.images[1]?.url}
             alt=""
             width="48"
             height="48"
           />
         ) : null}
         <div className="trackArtistsContainer">
-          <p className="trackName">{`${track.name}`}</p>
+          <p className="trackName">{`${track?.name ?? ""}`}</p>
           <span className="trackArtists">
-            {track.explicit && <ExplicitSign />}
-            {track.artists?.map((artist, i) => {
+            {track?.explicit && <ExplicitSign />}
+            {track?.artists?.map((artist, i) => {
               return (
                 <Fragment key={artist.id}>
                   <Link href={`/artist/${artist.id}`}>
                     <a>{artist.name}</a>
                   </Link>
-                  {i !== (track.artists?.length && track.artists?.length - 1)
+                  {i !== (track?.artists?.length && track?.artists?.length - 1)
                     ? ", "
                     : null}
                 </Fragment>
@@ -248,14 +196,16 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       </section>
       <section>
         <p className="trackArtists">
-          <Link href={`/album/${track.album.id}`}>
-            <a>{track.album.name}</a>
+          <Link href={`/album/${track?.album?.id}`}>
+            <a>{track?.album?.name}</a>
           </Link>
         </p>
       </section>
       <section>
         <p className="trackArtists">
-          {track.added_at ? getTimeAgo(+new Date(track.added_at), "en") : null}
+          {track?.added_at
+            ? getTimeAgo(+new Date(track?.added_at), "en")
+            : null}
         </p>
       </section>
       <section>
@@ -274,7 +224,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           ) : null}
         </button>
         <p className="trackArtists time">
-          {formatTime((track.duration || 0) / 1000)}
+          {track?.duration ? formatTime((track?.duration || 0) / 1000) : ""}
         </p>
         <button className="options">
           {mouseEnter || isFocusing ? (

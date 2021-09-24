@@ -57,8 +57,8 @@ export function PlayButton({
         return;
       }
       (player as AudioPlayer).allTracks = allTracks;
-      if (allTracks[0].audio) {
-        (player as AudioPlayer).src = allTracks[0].audio;
+      if (allTracks[0]?.audio) {
+        (player as AudioPlayer).src = allTracks[0]?.audio;
         (player as AudioPlayer)?.play();
         setCurrentlyPlaying(allTracks[0]);
       } else {
