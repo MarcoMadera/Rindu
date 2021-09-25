@@ -14,8 +14,7 @@ export default function Logo(): ReactElement {
           font-size: 36px;
           font-family: "Lato";
           width: 148px;
-          text-align: center;
-          color: #e5e5e5;
+          color: #fff;
           margin: 0;
           text-decoration: none;
         }

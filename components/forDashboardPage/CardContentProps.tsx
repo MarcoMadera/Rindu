@@ -26,18 +26,21 @@ export const CardContent: React.FC<CardContentProps> = ({
           alt={name}
         />
       )}
-      <strong>{name}</strong>
-      {
+      <div>
+        <strong>{name}</strong>
         <p>
           {decode(description) || owner?.display_name
             ? `De ${owner?.display_name}`
             : ""}
         </p>
-      }
+      </div>
       <style jsx>{`
+        div {
+          min-height: 62px;
+        }
         strong {
           display: block;
-          margin: 3px 0;
+          margin-top: 4px;
           -webkit-line-clamp: 1;
           -webkit-box-orient: vertical;
           display: -webkit-box;
@@ -58,16 +61,26 @@ export const CardContent: React.FC<CardContentProps> = ({
           white-space: unset;
         }
         article {
-          border-radius: 5px;
-          padding: 12px 10px;
           background-color: #181818;
-          width: 200px;
-          height: 260px;
+          width: 100%;
+          height: 100%;
           text-align: left;
+          border-radius: 4px;
+          flex: 1;
+          isolation: isolate;
+          padding: 16px;
+          position: relative;
+          transition: background-color 0.3s ease;
+        }
+        article:hover {
+          background-color: #282828;
         }
         img {
-          width: 180px;
-          height: 180px;
+          width: 160px;
+          height: 160px;
+          margin-bottom: 16px;
+          border-radius: 2px;
+          box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
         }
       `}</style>
     </article>

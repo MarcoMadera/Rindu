@@ -62,11 +62,6 @@ const PlaylistCard: React.FC<PlaylistCardProps> = ({
             padding: 0;
             text-decoration: none;
           }
-          a:hover,
-          a:focus {
-            outline: none;
-            box-shadow: 0 0 0 4px #cccccc4d;
-          }
         `}</style>
       </a>
     </Link>

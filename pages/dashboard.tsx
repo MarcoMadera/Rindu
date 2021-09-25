@@ -121,20 +121,10 @@ const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
         }
         section {
           display: grid;
-          grid-template-columns: repeat(auto-fit, 200px);
-          -moz-column-gap: 30px;
-          column-gap: 30px;
-          row-gap: 34px;
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+          grid-gap: 24px;
           margin: 20px 0 50px 0;
-
           justify-content: space-between;
-        }
-        @media screen and (min-width: 0px) and (max-width: 469px) {
-          section {
-            grid-template-columns: 1fr;
-            width: 100%;
-            justify-items: center;
-          }
         }
       `}</style>
     </>
