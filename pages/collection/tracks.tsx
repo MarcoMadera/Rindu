@@ -63,7 +63,7 @@ const Playlist: NextPage<PlaylistProps> = ({
     setAllTracks,
     allTracks,
   } = useSpotify();
-  const { setElement } = useHeader();
+  const { setElement } = useHeader({ showOnFixed: false });
   const [isPin, setIsPin] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 

@@ -22,6 +22,10 @@ export default function useHeader(
     if (options?.showOnFixed) {
       setDisplayOnFixed(options.showOnFixed);
     }
+
+    return () => {
+      setDisplayOnFixed(false);
+    };
   }, [options?.showOnFixed, setDisplayOnFixed]);
 
   return { element, setElement, setDisplayOnFixed, displayOnFixed };
