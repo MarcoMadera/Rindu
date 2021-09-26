@@ -15,6 +15,8 @@ import { formatTime } from "utils/formatTime";
 import Link from "next/link";
 import useAuth from "hooks/useAuth";
 import { playCurrentTrack } from "utils/playCurrentTrack";
+import { takeCookie } from "utils/cookies";
+import { ACCESSTOKENCOOKIE } from "utils/constants";
 
 interface ModalCardTrackProps {
   track: normalTrackTypes;
@@ -50,6 +52,37 @@ const ExplicitSign: React.FC = () => {
   );
 };
 
+async function saveTracksToLibrary(tracksIds: string[], accessToken?: string) {
+  const ids = tracksIds.join();
+  const res = await fetch(`https://api.spotify.com/v1/me/tracks?ids=${ids}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${
+        accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
+      }`,
+    },
+  });
+  return res.ok;
+}
+
+async function removeTracksFromLibrary(
+  tracksIds: string[],
+  accessToken?: string
+) {
+  const ids = tracksIds.join();
+  const res = await fetch(`https://api.spotify.com/v1/me/tracks?ids=${ids}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${
+        accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
+      }`,
+    },
+  });
+  return res.ok;
+}
+
 const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   accessToken,
   track,
@@ -71,6 +104,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   const [mouseEnter, setMouseEnter] = useState(false);
   const [isHoveringHeart, setIsHoveringHeart] = useState(false);
   const [isFocusing, setIsFocusing] = useState(false);
+  const [isLikedTrack, setIsLikedTrack] = useState(isTrackInLibrary);
   const trackRef = useRef<HTMLDivElement>();
   const { user } = useAuth();
   const isPremium = user?.product === "premium";
@@ -216,10 +250,27 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           onMouseLeave={() => {
             setIsHoveringHeart(false);
           }}
+          onClick={() => {
+            if (isLikedTrack) {
+              removeTracksFromLibrary([track.id ?? ""], accessToken).then(
+                (res) => {
+                  if (res) {
+                    setIsLikedTrack(false);
+                  }
+                }
+              );
+            } else {
+              saveTracksToLibrary([track.id ?? ""], accessToken).then((res) => {
+                if (res) {
+                  setIsLikedTrack(true);
+                }
+              });
+            }
+          }}
         >
-          {isTrackInLibrary ? (
+          {isLikedTrack ? (
             <Heart />
-          ) : (mouseEnter || isFocusing) && isPlayable ? (
+          ) : (mouseEnter || isFocusing) && !track.is_local ? (
             <HeartShape fill={isHoveringHeart ? "#fff" : "#ffffffb3"} />
           ) : null}
         </button>

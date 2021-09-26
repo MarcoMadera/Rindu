@@ -3,6 +3,7 @@ import { decode } from "html-entities";
 import { SITE_URL } from "../../utils/constants";
 import Link from "next/link";
 import formatNumber from "utils/formatNumber";
+import { ContentHeader } from "./ContentHeader";
 
 export interface PlaylistPageHeaderProps {
   playlistDetails: SpotifyApi.SinglePlaylistResponse;
@@ -17,37 +18,64 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
     `${SITE_URL}/defaultSongCover.jpeg`;
 
   return (
-    <header>
-      <div className="noise"></div>
-      <section>
-        <img src={coverImg} alt="" />
-        <div className="playlistInfo">
-          <h2>PLAYLIST</h2>
-          <h1>{playlistDetails.name}</h1>
-          <p className="description">{decode(playlistDetails.description)}</p>
-          <div>
-            <p>
-              <Link href={`/user/${playlistDetails.owner.id}`}>
-                <a className="userLink">
-                  {decode(playlistDetails.owner.display_name)}
-                </a>
-              </Link>
-              {playlistDetails.followers.total > 0 ? (
-                <span>
-                  &nbsp;&middot; {formatNumber(playlistDetails.followers.total)}{" "}
-                  seguidores
-                </span>
-              ) : null}
+    <ContentHeader>
+      <img src={coverImg} alt="" />
+      <div className="playlistInfo">
+        <h2>PLAYLIST</h2>
+        <h1>{playlistDetails.name}</h1>
+        <p className="description">{decode(playlistDetails.description)}</p>
+        <div>
+          <p>
+            <Link href={`/user/${playlistDetails.owner.id}`}>
+              <a className="userLink">
+                {decode(playlistDetails.owner.display_name)}
+              </a>
+            </Link>
+            {playlistDetails.followers.total > 0 ? (
               <span>
-                &nbsp;&middot; {formatNumber(playlistDetails.tracks.total)}{" "}
-                canciones
+                &nbsp;&middot; {formatNumber(playlistDetails.followers.total)}{" "}
+                seguidores
               </span>
-            </p>
-          </div>
+            ) : null}
+            <span>
+              &nbsp;&middot; {formatNumber(playlistDetails.tracks.total)}{" "}
+              canciones
+            </span>
+          </p>
         </div>
-      </section>
+      </div>
       <style jsx>
         {`
+          h1 {
+            color: #fff;
+            margin: 0;
+            pointer-events: none;
+            user-select: none;
+            padding: 0.08em 0px;
+            font-size: ${playlistDetails.name.length < 20
+              ? "96px"
+              : playlistDetails.name.length < 30
+              ? "72px"
+              : "48px"};
+            line-height: ${playlistDetails.name.length < 20
+              ? "96px"
+              : playlistDetails.name.length < 30
+              ? "72px"
+              : "48px"};
+            visibility: visible;
+            width: 100%;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            text-transform: none;
+            overflow: hidden;
+            text-align: left;
+            text-overflow: ellipsis;
+            white-space: unset;
+            -webkit-box-orient: vertical;
+            display: -webkit-box;
+            line-break: anywhere;
+            -webkit-line-clamp: 3;
+          }
           h2 {
             font-size: 12px;
             margin-top: 4px;
@@ -63,18 +91,6 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
             font-size: 14px;
             word-spacing: 2px;
             line-height: 1.4;
-          }
-          div.noise {
-            display: block;
-            height: 100%;
-            left: 0;
-            position: absolute;
-            top: 0;
-            width: 100%;
-          }
-          div.noise {
-            background: linear-gradient(transparent 0, rgba(0, 0, 0, 0.5) 100%),
-              url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
           }
           .userLink {
             display: inline-block;
@@ -106,44 +122,7 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
             font-size: 14px;
             display: inline-block;
           }
-          section {
-            display: flex;
-            height: 232px;
-            min-width: 232px;
-            width: 100%;
-            margin-top: 60px;
-            position: absolute;
-          }
-          h1 {
-            color: #fff;
-            margin: 0;
-            pointer-events: none;
-            user-select: none;
-            padding: 0.08em 0px;
-            font-size: ${playlistDetails.name.length < 20
-              ? "96px"
-              : playlistDetails.name.length < 30
-              ? "72px"
-              : "48px"};
-            line-height: ${playlistDetails.name.length < 20
-              ? "96px"
-              : playlistDetails.name.length < 30
-              ? "72px"
-              : "48px"};
-            visibility: visible;
-            width: 100%;
-            font-weight: 900;
-            letter-spacing: -0.04em;
-            text-transform: none;
-            overflow: hidden;
-            text-align: left;
-            text-overflow: ellipsis;
-            white-space: unset;
-            -webkit-box-orient: vertical;
-            display: -webkit-box;
-            line-break: anywhere;
-            -webkit-line-clamp: 3;
-          }
+
           img {
             margin-right: 15px;
             align-self: center;
@@ -152,20 +131,10 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
             margin-inline-end: 24px;
             min-width: 232px;
             width: 232px;
-          }
-          header {
-            display: flex;
-            align-items: center;
-            padding: 0 32px;
-            height: 30vh;
-            max-height: 500px;
-            min-height: 340px;
-            width: 100%;
-            background: #535353;
-            position: relative;
+            box-shadow: 0 4px 60px rgb(0 0 0 / 50%);
           }
         `}
       </style>
-    </header>
+    </ContentHeader>
   );
 };

@@ -70,13 +70,7 @@ const UserConfig: React.FC<UserConfigProps> = ({ name, img }) => {
         </div>
         <div role="presentation">
           <Link href={`/user/${user?.id}`}>
-            <a
-              role="menuitem"
-              tabIndex={-1}
-              className="option"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
+            <a role="menuitem" tabIndex={-1} className="option">
               Profile
             </a>
           </Link>

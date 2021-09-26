@@ -37,7 +37,8 @@ export async function getTracksFromPlaylist(
       },
     }
   );
-  return res;
+  const data = await res.json();
+  return data;
 }
 
 export async function getTracksFromPlayListRequest(

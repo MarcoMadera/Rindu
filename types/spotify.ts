@@ -3,11 +3,13 @@ export type AuthorizationResponse = {
   refreshToken: string;
   expiresIn: number;
 };
+
 export type RefreshResponse = {
   accessToken: string;
   refreshToken: string | undefined;
   expiresIn: number;
 };
+
 export type SpotifyUserResponse = {
   name: string | undefined;
   image: string | undefined;
@@ -35,7 +37,9 @@ export type PlaylistItem = {
     uri: string;
   };
 };
+
 export type PlaylistItems = PlaylistItem[];
+
 export type UserPlaylistsResponse = {
   items: PlaylistItems;
   total: number;
@@ -47,6 +51,7 @@ interface Artist extends Spotify.Artist {
   href?: string | undefined;
   external_urls?: SpotifyApi.ExternalUrlObject | undefined;
 }
+
 interface Album extends Spotify.Album {
   album_type?: "album" | "single" | "compilation";
   artists?: Artist[];
@@ -72,9 +77,12 @@ export type normalTrackTypes = {
   type: "track" | "episode" | "ad";
   media_type: "audio" | "video";
   is_playable?: boolean | undefined;
+  is_local?: boolean;
 };
 export type trackItem = normalTrackTypes;
+
 export type AllTracksFromAPlayList = trackItem[];
+
 export type AllTracksFromAPlaylistResponse = {
   tracks: AllTracksFromAPlayList;
 };

@@ -25,8 +25,9 @@ export default function useHeader(
 
     return () => {
       setDisplayOnFixed(false);
+      setElement(null);
     };
-  }, [options?.showOnFixed, setDisplayOnFixed]);
+  }, [options?.showOnFixed, setDisplayOnFixed, setElement]);
 
   return { element, setElement, setDisplayOnFixed, displayOnFixed };
 }
