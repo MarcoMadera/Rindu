@@ -31,8 +31,7 @@ export default function RemoveTracksModal({
   const [targetNode, setTargetNode] = useState<Element>();
   const firstButtonRef = useRef<HTMLButtonElement | null>(null);
   const secondButtonRef = useRef<HTMLButtonElement | null>(null);
-  const { removeTracks, playlistDetails, setAllTracks, allTracks } =
-    useSpotify();
+  const { removeTracks, playlistDetails, setAllTracks } = useSpotify();
   const { accessToken } = useAuth();
   const [duplicatesSongs, setduplicatesSongs] = useState<normalTrackTypes[]>(
     []
@@ -46,11 +45,11 @@ export default function RemoveTracksModal({
       }
       let tracks: AllTracksFromAPlayList = [];
       const limit = type === "saved" ? 50 : 100;
-      for (
-        let i = 0;
-        i < Math.ceil(playlistDetails.tracks.total / limit);
-        i++
-      ) {
+      const max = Math.ceil(playlistDetails.tracks.total / limit);
+
+      setIsLoadingComplete(false);
+
+      for (let i = 0; i < max; i++) {
         const res = await fetch(
           `https://api.spotify.com/v1/${
             type === "playlist" ? `playlists/${id}` : "me"
@@ -62,9 +61,10 @@ export default function RemoveTracksModal({
             },
           }
         );
+
         const data: SpotifyApi.PlaylistTrackResponse = await res.json();
         const newTracks: AllTracksFromAPlayList = data?.items?.map(
-          ({ track, added_at, is_local }, i) => {
+          ({ track, added_at, is_local }, index) => {
             return {
               name: track?.name,
               images: track?.album.images,
@@ -76,7 +76,7 @@ export default function RemoveTracksModal({
               duration: track?.duration_ms,
               audio: track?.preview_url,
               corruptedTrack: !track?.uri,
-              position: i,
+              position: limit * i + index,
               album: track.album,
               added_at,
               type: track.type,
@@ -88,13 +88,14 @@ export default function RemoveTracksModal({
         );
         tracks = [...tracks, ...newTracks];
       }
+
       setAllTracks(tracks);
-      setIsLoadingComplete(true);
       const duplicatesSongs = findDuplicateSongs(tracks);
       const duplicateTracks = duplicatesSongs.map(({ index }) => {
-        return allTracks[index];
+        return tracks[index];
       });
       setduplicatesSongs(duplicateTracks);
+      setIsLoadingComplete(true);
       return tracks;
     }
     getPlaylist(playlistDetails?.id);
