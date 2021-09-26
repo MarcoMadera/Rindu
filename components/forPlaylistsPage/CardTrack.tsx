@@ -20,7 +20,7 @@ interface ModalCardTrackProps {
   track: normalTrackTypes;
   accessToken: string | undefined;
   playlistUri: string;
-  style: CSSProperties;
+  style?: CSSProperties;
   isTrackInLibrary: boolean;
 }
 

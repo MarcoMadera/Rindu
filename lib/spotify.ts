@@ -179,7 +179,10 @@ export const getAllTracksFromPlaylist = async (
       spotifyAPI.setAccessToken(accessToken);
     }
     let tracks = [];
-    const data = await spotifyAPI.getPlaylistTracks(playlist);
+    const data = await spotifyAPI.getPlaylistTracks(playlist, {
+      limit: 50,
+      offset: 0,
+    });
     const { body } = data;
 
     tracks = body.items;

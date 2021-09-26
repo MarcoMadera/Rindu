@@ -36,10 +36,10 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
                 Search
               </a>
             </Link>
-            <Link href="/library">
+            <Link href="/collection">
               <a>
                 <Library fill="#b3b3b3" />
-                Library
+                Your Library
               </a>
             </Link>
           </section>

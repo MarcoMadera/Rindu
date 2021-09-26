@@ -1,29 +1,16 @@
 import React from "react";
 import { decode } from "html-entities";
-import useSpotify from "../../hooks/useSpotify";
-import { getTracksFromPlayListRequest } from "../../lib/requests";
-import {
-  AllTracksFromAPlayList,
-  AllTracksFromAPlaylistResponse,
-} from "types/spotify";
 import { SITE_URL } from "../../utils/constants";
 import Link from "next/link";
 import formatNumber from "utils/formatNumber";
 
 export interface PlaylistPageHeaderProps {
   playlistDetails: SpotifyApi.SinglePlaylistResponse;
-  duplicatesSongs: number[];
-  corruptedSongs: number;
-  setAllTracks: React.Dispatch<React.SetStateAction<AllTracksFromAPlayList>>;
 }
 
 export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
   playlistDetails,
-  duplicatesSongs,
-  corruptedSongs,
-  setAllTracks,
 }) => {
-  const { removeTracks } = useSpotify();
   const coverImg =
     playlistDetails.images[0]?.url ??
     playlistDetails.images[1]?.url ??
@@ -55,37 +42,8 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
                 &nbsp;&middot; {formatNumber(playlistDetails.tracks.total)}{" "}
                 canciones
               </span>
-              {duplicatesSongs.length > 0 ? (
-                <span>, {duplicatesSongs.length} duplicadas</span>
-              ) : null}
-              {corruptedSongs > 0 ? (
-                <span>, {corruptedSongs} corruptas</span>
-              ) : null}
             </p>
           </div>
-        </div>
-        <div className="info">
-          {corruptedSongs > 0 || duplicatesSongs.length > 0 ? (
-            <button
-              onClick={async () => {
-                const snapshot = await removeTracks(
-                  playlistDetails.id,
-                  duplicatesSongs,
-                  playlistDetails.snapshot_id
-                );
-                if (snapshot) {
-                  const playListTracksres = await getTracksFromPlayListRequest(
-                    playlistDetails.id
-                  );
-                  const playListTracks: AllTracksFromAPlaylistResponse =
-                    await playListTracksres.json();
-                  setAllTracks(playListTracks.tracks);
-                }
-              }}
-            >
-              Remover
-            </button>
-          ) : null}
         </div>
       </section>
       <style jsx>
@@ -117,12 +75,6 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
           div.noise {
             background: linear-gradient(transparent 0, rgba(0, 0, 0, 0.5) 100%),
               url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
-          }
-          .corruptedSongs {
-            color: ${corruptedSongs > 0 ? "#c62828" : "#65c628"};
-          }
-          .duplicateSongs {
-            color: ${duplicatesSongs.length > 0 ? "#c62828" : "#65c628"};
           }
           .userLink {
             display: inline-block;

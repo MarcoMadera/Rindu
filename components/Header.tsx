@@ -21,7 +21,7 @@ export default function Header({
   const router = useRouter();
   const appRef = useRef<HTMLDivElement>();
   const { user } = useAuth();
-  const { element } = useHeader();
+  const { element, displayOnFixed } = useHeader();
   const isPremium = user?.product === "premium";
 
   useEffect(() => {
@@ -49,7 +49,11 @@ export default function Header({
   }, [showFixed, router]);
 
   return (
-    <div className="app" ref={appRef as MutableRefObject<HTMLDivElement>}>
+    <div
+      className="app"
+      id="app"
+      ref={appRef as MutableRefObject<HTMLDivElement>}
+    >
       <div className="container">
         <header>
           <div className="background">
@@ -57,7 +61,7 @@ export default function Header({
           </div>
           <RouterButtons />
           <div className="extraElement">
-            {element && showFixed ? <>{element}</> : null}
+            {displayOnFixed || (element && showFixed) ? <>{element}</> : null}
           </div>
           {!isPremium ? (
             <a
@@ -80,7 +84,7 @@ export default function Header({
       {children}
       <style jsx>{`
         .app {
-          overflow-y: scroll;
+          overflow-y: overlay;
           height: calc(100vh - 90px);
           overflow-x: hidden;
           width: calc(100vw - 245px);
@@ -125,10 +129,8 @@ export default function Header({
           justify-content: space-between;
           align-items: center;
           padding: 0 32px;
-          width: calc(100% - 258px);
+          width: 100%;
           height: 60px;
-          z-index: 999999;
-          position: fixed;
         }
         div.noise {
           background-color: #00000099;
@@ -149,6 +151,9 @@ export default function Header({
         }
         .container {
           height: 60px;
+          z-index: 1;
+          position: sticky;
+          top: 0px;
         }
       `}</style>
     </div>

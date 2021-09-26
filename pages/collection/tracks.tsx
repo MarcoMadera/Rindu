@@ -1,10 +1,5 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import {
-  getSinglePlayListRequest,
-  getTracksFromPlaylist,
-  getTracksFromPlayListRequest,
-  refreshAccessTokenRequest,
-} from "../../lib/requests";
+import { refreshAccessTokenRequest } from "../../lib/requests";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ModalCardTrack from "../../components/forPlaylistsPage/CardTrack";
@@ -31,12 +26,12 @@ import useHeader from "hooks/useHeader";
 import { PlayButton } from "../../components/forPlaylistsPage/PlayButton";
 import { checkTracksInLibrary } from "lib/spotify";
 import Titles from "components/forPlaylistsPage/Titles";
-import List from "react-virtualized/dist/commonjs/List";
 import {
   IndexRange,
   AutoSizer,
   WindowScroller,
   InfiniteLoader,
+  List,
 } from "react-virtualized";
 import { Flask } from "components/icons/Flask";
 import RemoveTracksModal from "components/removeTrackModal";
@@ -192,7 +187,18 @@ const Playlist: NextPage<PlaylistProps> = ({
   }
 
   async function loadMoreRows({ startIndex }: IndexRange) {
-    const res = await getTracksFromPlaylist(playlistDetails.id, startIndex);
+    const res = await fetch(
+      `https://api.spotify.com/v1/me/tracks?offset=${startIndex}&limit=50`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${
+            accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
+          }`,
+        },
+      }
+    );
     const data = await res.json();
     const items = data.items;
     const tracks = items?.map(
@@ -318,7 +324,7 @@ const Playlist: NextPage<PlaylistProps> = ({
           <RemoveTracksModal
             openModal={openModal}
             setOpenModal={setOpenModal}
-            type="playlist"
+            type="saved"
           />
         ) : null}
       </section>
@@ -413,16 +419,14 @@ const Playlist: NextPage<PlaylistProps> = ({
 export default Playlist;
 
 export async function getServerSideProps({
-  params: { playlist },
   req,
   res,
 }: {
-  params: { playlist: string };
   req: NextApiRequest;
   res: NextApiResponse;
 }): Promise<{
   props: {
-    playlistDetails: PlaylistProps;
+    playlistDetails: SpotifyApi.SinglePlaylistResponse;
     user?: SpotifyUserResponse | null;
     playListTracks: AllTracksFromAPlaylistResponse;
     accessToken?: string;
@@ -456,13 +460,6 @@ export async function getServerSideProps({
     console.log(error);
   }
 
-  const _res = await getSinglePlayListRequest(playlist, cookies);
-  const playlistDetails = await _res.json();
-  const playListTracksres = await getTracksFromPlayListRequest(
-    playlist,
-    cookies
-  );
-
   if (!user) {
     if (res) {
       res.writeHead(307, { Location: "/" });
@@ -472,8 +469,82 @@ export async function getServerSideProps({
     }
   }
 
-  const playListTracks = await playListTracksres.json();
+  const _res = await fetch(
+    "https://api.spotify.com/v1/me/tracks?limit=50&offset=0",
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${
+          accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
+        }`,
+      },
+    }
+  );
+  const playListTracks: SpotifyApi.PlaylistTrackResponse = await _res.json();
+  const playlistDetails: SpotifyApi.SinglePlaylistResponse = {
+    collaborative: false,
+    description: "",
+    external_urls: { spotify: "https://open.spotify.com/collection/tracks" },
+    followers: { total: 0, href: null },
+    href: "",
+    id: "",
+    images: [
+      {
+        url: "https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png",
+        height: 300,
+        width: 300,
+      },
+    ],
+    name: "Liked Songs",
+    owner: {
+      id: user?.id ?? "",
+      external_urls: { spotify: user?.href ?? "" },
+      href: user?.href ?? "",
+      type: "user",
+      uri: `spotify:user${user?.id}`,
+      display_name: user?.name ?? "",
+    },
+    public: false,
+    snapshot_id: "",
+    tracks: {
+      total: playListTracks.total ?? 0,
+      previous: playListTracks.previous,
+      href: playListTracks.href,
+      items: [],
+      limit: playListTracks.limit,
+      next: playListTracks.next,
+      offset: playListTracks.offset,
+    },
+    type: "playlist",
+    uri: "",
+  };
   return {
-    props: { playlistDetails, playListTracks, accessToken, user },
+    props: {
+      playlistDetails,
+      playListTracks: {
+        tracks: playListTracks.items.map(({ track, added_at }, i: number) => {
+          return {
+            name: track?.name,
+            images: track?.album.images,
+            uri: track?.uri,
+            href: track?.external_urls.spotify,
+            artists: track.artists,
+            id: track?.id,
+            explicit: track?.explicit,
+            duration: track?.duration_ms,
+            audio: track?.preview_url,
+            corruptedTrack: !track?.uri,
+            position: i,
+            album: track.album,
+            added_at,
+            type: track.type,
+            media_type: "audio",
+          };
+        }),
+      },
+      accessToken,
+      user,
+    },
   };
 }

@@ -1,14 +1,15 @@
 import { AllTracksFromAPlayList } from "types/spotify";
 
-export function findDuplicateSongs(
-  allTracks: AllTracksFromAPlayList
-): number[] {
+export function findDuplicateSongs(allTracks: AllTracksFromAPlayList): {
+  index: number;
+  id: string | null;
+}[] {
   const seenByIds: Record<string, boolean> = {};
 
   const seenByNameAndArtist: Record<string, number[]> = {};
 
   const duplicateSongs = allTracks.reduce(
-    (duplicates: number[], track, index) => {
+    (duplicates: { index: number; id: string }[], track, index) => {
       if (track === null) return duplicates;
       if (!track.id) return duplicates;
       if (!track) return duplicates;
@@ -36,7 +37,7 @@ export function findDuplicateSongs(
       }
 
       if (isDuplicate) {
-        duplicates.push(index);
+        duplicates.push({ index, id: track.id ?? null });
       }
 
       if (!isDuplicate) {
