@@ -52,7 +52,7 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
             pointer-events: none;
             user-select: none;
             padding: 0.08em 0px;
-            font-size: ${playlistDetails.name.length < 20
+            font-size: ${playlistDetails.name.length < 18
               ? "96px"
               : playlistDetails.name.length < 30
               ? "72px"

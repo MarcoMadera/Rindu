@@ -89,7 +89,7 @@ interface PlaylistProps {
   tracksInLibrary: boolean[];
   accessToken?: string;
   user: SpotifyUserResponse | null;
-  type: "saved" | "playlist";
+  isLibrary: boolean;
 }
 
 const Playlist: NextPage<PlaylistProps> = ({
@@ -97,7 +97,7 @@ const Playlist: NextPage<PlaylistProps> = ({
   playListTracks,
   user,
   tracksInLibrary,
-  type,
+  isLibrary,
 }) => {
   const { tracks } = playListTracks;
   const router = useRouter();
@@ -245,15 +245,19 @@ const Playlist: NextPage<PlaylistProps> = ({
             </div>
           </div>
           <div className="trc">
-            <Titles setIsPin={setIsPin} />
-            <List type={type} initialTracksInLibrary={tracksInLibrary} />
+            <Titles isPin={isPin} type="playlist" setIsPin={setIsPin} />
+            <List
+              type="playlist"
+              isLibrary={isLibrary}
+              initialTracksInLibrary={tracksInLibrary}
+            />
           </div>
         </div>
         {openModal ? (
           <RemoveTracksModal
             openModal={openModal}
             setOpenModal={setOpenModal}
-            type={type}
+            isLibrary={isLibrary}
           />
         ) : null}
       </section>

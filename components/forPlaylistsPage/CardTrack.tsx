@@ -24,9 +24,10 @@ interface ModalCardTrackProps {
   playlistUri: string;
   style?: CSSProperties;
   isTrackInLibrary: boolean;
+  type: "presentation" | "playlist" | "album";
 }
 
-const ExplicitSign: React.FC = () => {
+export const ExplicitSign: React.FC = () => {
   return (
     <div>
       <small>E</small>
@@ -89,6 +90,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   playlistUri,
   isTrackInLibrary,
   style,
+  type,
 }) => {
   const {
     deviceId,
@@ -178,6 +180,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       }}
     >
       <button
+        className="playbutton"
         onClick={() => {
           if (isPlaying && isTheSameAsCurrentlyPlaying) {
             player?.pause();
@@ -200,7 +203,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         )}
       </button>
       <section>
-        {track?.images ? (
+        {type !== "presentation" && track?.images ? (
           <img
             loading="lazy"
             src={track?.images[2]?.url ?? track?.images[1]?.url}
@@ -228,20 +231,24 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           </span>
         </div>
       </section>
-      <section>
-        <p className="trackArtists">
-          <Link href={`/album/${track?.album?.id}`}>
-            <a>{track?.album?.name}</a>
-          </Link>
-        </p>
-      </section>
-      <section>
-        <p className="trackArtists">
-          {track?.added_at
-            ? getTimeAgo(+new Date(track?.added_at), "en")
-            : null}
-        </p>
-      </section>
+      {type === "playlist" ? (
+        <>
+          <section>
+            <p className="trackArtists">
+              <Link href={`/album/${track?.album?.id}`}>
+                <a>{track?.album?.name}</a>
+              </Link>
+            </p>
+          </section>
+          <section>
+            <p className="trackArtists">
+              {track?.added_at
+                ? getTimeAgo(+new Date(track?.added_at), "en")
+                : null}
+            </p>
+          </section>
+        </>
+      ) : null}
       <section>
         <button
           onMouseEnter={() => {
@@ -286,6 +293,15 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         </button>
       </section>
       <style jsx>{`
+        .playbutton {
+          background-image: ${type === "presentation"
+            ? `url(${track?.images?.[2]?.url ?? track?.images?.[1]?.url})`
+            : "unset"};
+          object-fit: cover;
+          object-position: center center;
+          background-size: 40px 40px;
+          background-repeat: no-repeat;
+        }
         .trackArtistsContainer {
           display: block;
           align-items: center;
@@ -323,8 +339,8 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           align-items: center;
           background: transparent;
           border: none;
-          width: 32px;
-          height: 32px;
+          width: ${type !== "presentation" ? "32" : "40"}px;
+          height: ${type !== "presentation" ? "32" : "40"}px;
           margin: 0 15px 0 15px;
         }
         p.trackName {
@@ -368,10 +384,11 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           user-select: none;
           display: grid;
           grid-gap: 16px;
-          grid-template-columns: [index] 48px [first] 6fr [var1] 4fr [var2] 3fr [last] minmax(
-              120px,
-              1fr
-            );
+          grid-template-columns: ${type === "playlist"
+            ? "[index] 48px [first] 6fr [var1] 4fr [var2] 3fr [last] minmax(120px,1fr)"
+            : type === "album"
+            ? "[index] 48px [first] 6fr [last] minmax(120px,1fr)"
+            : "[index] 55px [first] 4fr [last] minmax(120px,1fr)"};
         }
         .trackItem:hover {
           background-color: #202020;

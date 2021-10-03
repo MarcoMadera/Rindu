@@ -1,18 +1,17 @@
 import { decode } from "html-entities";
 import { SITE_URL } from "utils/constants";
-import { PlaylistItem } from "types/spotify";
 
 interface CardContentProps {
   images?: SpotifyApi.ImageObject[];
-  name: string;
-  description: string | null;
-  owner: PlaylistItem["owner"];
+  title: string;
+  subTitle: string;
+  type: "playlist" | "album" | "artist" | "user" | "show";
 }
 export const CardContent: React.FC<CardContentProps> = ({
+  type,
   images,
-  name,
-  description,
-  owner,
+  title,
+  subTitle,
 }) => {
   return (
     <article>
@@ -23,16 +22,12 @@ export const CardContent: React.FC<CardContentProps> = ({
             images[1]?.url ??
             (images[0]?.url || `${SITE_URL}/defaultSongCover.jpeg`)
           }
-          alt={name}
+          alt={title}
         />
       )}
       <div>
-        <strong>{name}</strong>
-        <p>
-          {decode(description) || owner?.display_name
-            ? `De ${owner?.display_name}`
-            : ""}
-        </p>
+        <strong>{title}</strong>
+        <p>{decode(subTitle)}</p>
       </div>
       <style jsx>{`
         div {
@@ -79,8 +74,12 @@ export const CardContent: React.FC<CardContentProps> = ({
           width: 160px;
           height: 160px;
           margin-bottom: 16px;
-          border-radius: 2px;
+          border-radius: ${type === "artist" || type === "user"
+            ? "50%"
+            : "2px"};
           box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
+          object-fit: cover;
+          object-position: center center;
         }
       `}</style>
     </article>

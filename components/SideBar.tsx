@@ -1,5 +1,5 @@
 import useSpotify from "hooks/useSpotify";
-import { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode, useEffect } from "react";
 import Logo from "./Logo";
 import Link from "next/link";
 import Home from "./icons/Home";
@@ -8,14 +8,77 @@ import Library from "./icons/Library";
 import { useRouter } from "next/router";
 import Add from "./icons/Add";
 import { Heart } from "./icons/Heart";
+import useAuth from "hooks/useAuth";
 
 interface SideBarProps {
   children: ReactNode;
 }
 
+async function getPlaylist(offset: number, accessToken: string) {
+  const res = await fetch(
+    `https://api.spotify.com/v1/me/playlists?limit=50&offset=${offset}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  const data = await res.json();
+  return data;
+}
+
+async function getAllPlaylists(accessToken: string) {
+  const limit = 50;
+  const playlistsData: SpotifyApi.ListOfCurrentUsersPlaylistsResponse =
+    await getPlaylist(0, accessToken);
+
+  let restPlaylistsData:
+    | SpotifyApi.ListOfCurrentUsersPlaylistsResponse
+    | undefined;
+  const max = Math.ceil(playlistsData.total / limit);
+
+  if (max <= 1) {
+    return playlistsData;
+  }
+
+  for (let i = 1; i < max; i++) {
+    const resPlaylistsData = await getPlaylist(limit * i, accessToken);
+    if (restPlaylistsData) {
+      restPlaylistsData = {
+        ...restPlaylistsData,
+        items: [...restPlaylistsData?.items, ...resPlaylistsData.items],
+      };
+    } else {
+      restPlaylistsData = resPlaylistsData;
+    }
+  }
+  if (!restPlaylistsData) {
+    return playlistsData;
+  }
+  const allPlaylists = {
+    ...playlistsData,
+    items: [...playlistsData.items, ...restPlaylistsData.items],
+  };
+  return allPlaylists;
+}
+
 export default function SideBar({ children }: SideBarProps): ReactElement {
-  const { playlists } = useSpotify();
+  const { playlists, setPlaylists } = useSpotify();
+  const { accessToken } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (!accessToken) return;
+
+    async function getPlaylists() {
+      const allPlaylists: SpotifyApi.ListOfCurrentUsersPlaylistsResponse =
+        await getAllPlaylists(accessToken as string);
+      setPlaylists(allPlaylists.items);
+    }
+    getPlaylists();
+  }, [accessToken, setPlaylists]);
+
   return (
     <>
       <div className="container">
@@ -61,7 +124,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
             <hr />
           </section>
           <section>
-            {playlists.map(({ id, name }) => {
+            {playlists?.map(({ id, name }) => {
               return (
                 <Link key={id} href={`/playlist/${encodeURIComponent(id)}`}>
                   <a>{name}</a>

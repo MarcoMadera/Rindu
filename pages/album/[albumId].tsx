@@ -244,8 +244,8 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
             </div>
           </div>
           <div className="trc">
-            <Titles setIsPin={setIsPin} />
-            <List type="playlist" initialTracksInLibrary={tracksInLibrary} />
+            <Titles type="album" setIsPin={setIsPin} isPin={isPin} />
+            <List type="album" initialTracksInLibrary={tracksInLibrary} />
           </div>
         </div>
       </section>
@@ -345,42 +345,6 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
         }
         .trc {
           margin-bottom: 50px;
-        }
-        .trc :global(.titles) {
-          border-bottom: 1px solid transparent;
-          box-sizing: content-box;
-          height: 36px;
-          margin: ${isPin ? "0 -32px 8px" : "0 -16px 8px"};
-          padding: ${isPin ? "0 32px" : "0 16px"};
-          position: sticky;
-          top: 60px;
-          z-index: 2;
-          display: grid;
-          grid-gap: 16px;
-          background-color: ${isPin ? "#181818" : "transparent"};
-          border-bottom: 1px solid #ffffff1a;
-          grid-template-columns: [index] 48px [first] 6fr [var1] 4fr [var2] 3fr [last] minmax(
-              120px,
-              1fr
-            );
-        }
-        .trc :global(.titles span) {
-          display: flex;
-          align-items: center;
-          font-size: 0.75rem;
-          color: #b3b3b3;
-          font-family: sans-serif;
-        }
-        .trc :global(.titles span:nth-of-type(1)) {
-          font-size: 16px;
-          justify-self: center;
-          margin-left: 16px;
-        }
-        .trc :global(.titles span:nth-of-type(2)) {
-          margin-left: 70px;
-        }
-        .trc :global(.titles span:nth-of-type(5)) {
-          justify-content: center;
         }
         .tracksContainer {
           padding: 0 32px;

@@ -1,56 +1,32 @@
 import { CardContent } from "./CardContentProps";
 import Link from "next/link";
-import useNearScreen from "hooks/useNearScreen";
-import { MutableRefObject, useEffect, useRef } from "react";
-import { getPlaylistsRequest } from "lib/requests";
-import { PlaylistItem, PlaylistItems } from "types/spotify";
+import { MutableRefObject, useRef } from "react";
 
-interface PlaylistCardProps {
+interface PresentationCardProps {
+  type: "playlist" | "album" | "artist" | "user" | "show";
+  id: string;
   images?: SpotifyApi.ImageObject[];
-  name: string;
-  description: string | null;
-  playlistId: string;
-  offSet: number;
-  owner: PlaylistItem["owner"];
-  addItemsToPlaylists: (items: PlaylistItems, position: number) => void;
+  title: string;
+  subTitle: string;
 }
 
-const PlaylistCard: React.FC<PlaylistCardProps> = ({
+const PresentationCard: React.FC<PresentationCardProps> = ({
   images,
-  name,
-  description,
-  playlistId,
-  offSet,
-  addItemsToPlaylists,
-  owner,
+  title,
+  subTitle,
+  id,
+  type,
 }) => {
   const cardRef = useRef<HTMLAnchorElement>();
-  const shouldObserve = offSet % 50 === 0 && offSet !== 0;
-  const { isNearScreen } = useNearScreen({
-    distance: "200px",
-    externalRef: cardRef,
-    observe: shouldObserve,
-  });
-
-  useEffect(() => {
-    if (shouldObserve && isNearScreen) {
-      getPlaylistsRequest(offSet, 50)
-        .then((res) => res.json())
-        .then((playlists) => {
-          addItemsToPlaylists(playlists.items, offSet);
-        });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isNearScreen, offSet]);
 
   return (
-    <Link href={`/playlist/${encodeURIComponent(playlistId)}`}>
+    <Link href={`/${type}/${encodeURIComponent(id)}`}>
       <a ref={cardRef as MutableRefObject<HTMLAnchorElement>}>
         <CardContent
+          type={type}
           images={images}
-          name={name}
-          description={description}
-          owner={owner}
+          title={title}
+          subTitle={subTitle}
         />
         <style jsx>{`
           a {
@@ -68,4 +44,4 @@ const PlaylistCard: React.FC<PlaylistCardProps> = ({
   );
 };
 
-export default PlaylistCard;
+export default PresentationCard;

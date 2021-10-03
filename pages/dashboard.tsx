@@ -1,20 +1,13 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
 import Router from "next/router";
-import React, { useEffect, useState } from "react";
-import PlaylistCard from "components/forDashboardPage/PlaylistCard";
+import React, { useEffect } from "react";
+import PresentationCard from "components/forDashboardPage/PlaylistCard";
 import useAuth from "hooks/useAuth";
-import useSpotify from "hooks/useSpotify";
 import {
   getAuthorizationByCode,
-  getPlaylistsRequest,
   refreshAccessTokenRequest,
 } from "lib/requests";
-import {
-  PlaylistItem,
-  PlaylistItems,
-  SpotifyUserResponse,
-  UserPlaylistsResponse,
-} from "types/spotify";
+import { SpotifyUserResponse } from "types/spotify";
 import {
   ACCESSTOKENCOOKIE,
   EXPIRETOKENCOOKIE,
@@ -22,65 +15,24 @@ import {
 } from "../utils/constants";
 import { takeCookie } from "../utils/cookies";
 import { validateAccessToken } from "../utils/validateAccessToken";
+import useSpotify from "hooks/useSpotify";
+import { decode } from "html-entities";
 
 interface DashboardProps {
   user: SpotifyUserResponse | null;
-  userPlaylists: UserPlaylistsResponse;
   accessToken: string | undefined;
 }
 
-const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
-  const { setPlaylists } = useSpotify();
+const Dashboard: NextPage<DashboardProps> = ({ user }) => {
   const { setIsLogin, setUser } = useAuth();
-  const [dashBoardPlaylists, setDashBoardPlaylists] = useState<PlaylistItems>(
-    userPlaylists.items
-  );
-
-  function addItemsToPlaylists(items: PlaylistItems, position: number): void {
-    setDashBoardPlaylists((allPlaylists) => {
-      const newPlaylists = [...allPlaylists];
-      newPlaylists.splice(position, 50, ...items);
-      return newPlaylists;
-    });
-  }
+  const { playlists } = useSpotify();
 
   useEffect(() => {
-    const emptyPlaylistItem: PlaylistItem = {
-      images: [
-        {
-          url: "",
-        },
-      ],
-      name: "",
-      description: "",
-      id: "",
-      owner: {
-        display_name: "",
-        external_urls: { spotify: "" },
-        href: "",
-        id: "",
-        type: "",
-        uri: "",
-      },
-      isPublic: false,
-      href: "",
-      snapshot_id: "",
-      tracks: 0,
-    };
-
-    const restPlaylistItems = new Array(
-      userPlaylists.total - userPlaylists.items.length
-    ).fill(emptyPlaylistItem);
-
-    setPlaylists(userPlaylists.items);
-
-    setDashBoardPlaylists([...userPlaylists?.items, ...restPlaylistItems]);
-
     setIsLogin(true);
 
     setUser(user);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userPlaylists, user]);
+  }, [user]);
 
   return (
     <>
@@ -88,23 +40,19 @@ const Dashboard: NextPage<DashboardProps> = ({ user, userPlaylists }) => {
         <header></header>
         <h1>Escoge una playlist</h1>
         <section>
-          {dashBoardPlaylists?.length > 0
-            ? dashBoardPlaylists.map(
-                ({ images, name, description, id, owner }: PlaylistItem, i) => {
-                  return (
-                    <PlaylistCard
-                      key={id || i}
-                      images={images}
-                      name={name}
-                      description={description}
-                      playlistId={id}
-                      owner={owner}
-                      offSet={i}
-                      addItemsToPlaylists={addItemsToPlaylists}
-                    />
-                  );
-                }
-              )
+          {playlists?.length > 0
+            ? playlists.map(({ images, name, description, id, owner }) => {
+                return (
+                  <PresentationCard
+                    type="playlist"
+                    key={id}
+                    images={images}
+                    title={name}
+                    subTitle={decode(description) || `De ${owner.display_name}`}
+                    id={id}
+                  />
+                );
+              })
             : null}
         </section>
       </main>
@@ -143,7 +91,6 @@ export async function getServerSideProps({
 }): Promise<{
   props: {
     user?: SpotifyUserResponse | null;
-    userPlaylists?: UserPlaylistsResponse;
   };
 }> {
   const cookies = req ? req?.headers?.cookie : undefined;
@@ -195,11 +142,8 @@ export async function getServerSideProps({
         Router.replace("/");
       }
     }
-
-    const playlistsRequest = await getPlaylistsRequest(0, 50, accessToken);
-    const userPlaylists = await playlistsRequest.json();
     return {
-      props: { user: user || null, userPlaylists },
+      props: { user: user || null },
     };
   } catch (error) {
     console.log(error);

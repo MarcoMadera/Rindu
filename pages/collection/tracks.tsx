@@ -22,7 +22,7 @@ interface PlaylistProps {
 const Playlist: NextPage<PlaylistProps> = (props) => {
   return (
     <PlaylistLayout
-      type="saved"
+      isLibrary={true}
       playlistDetails={props.playlistDetails}
       playListTracks={props.playListTracks}
       tracksInLibrary={props.tracksInLibrary}

@@ -64,13 +64,15 @@ async function getTracksFromLibrary(offSet: number, accessToken?: string) {
 }
 
 interface Props {
-  type: "playlist" | "saved";
+  type: "playlist" | "album" | "presentation";
   initialTracksInLibrary: boolean[];
+  isLibrary?: boolean;
 }
 
 export default function Playlist({
   type,
   initialTracksInLibrary,
+  isLibrary,
 }: Props): ReactElement | null {
   const { allTracks, playlistDetails, setAllTracks } = useSpotify();
   const { accessToken } = useAuth();
@@ -94,14 +96,13 @@ export default function Playlist({
   }
 
   async function loadMoreRows({ startIndex }: IndexRange) {
-    const data =
-      type === "saved"
-        ? await getTracksFromLibrary(startIndex, accessToken)
-        : await getTracksFromPlaylist(
-            playlistDetails?.id ?? "",
-            startIndex,
-            accessToken
-          );
+    const data = isLibrary
+      ? await getTracksFromLibrary(startIndex, accessToken)
+      : await getTracksFromPlaylist(
+          playlistDetails?.id ?? "",
+          startIndex,
+          accessToken
+        );
     const items = data.items;
     const tracks = mapPlaylistItems(items, startIndex);
     const trackIds = tracks.map((track) => track.id ?? "");
@@ -156,6 +157,7 @@ export default function Playlist({
                             isTrackInLibrary={
                               tracksInLibrary[allTracks[index]?.position ?? -1]
                             }
+                            type={type}
                           />
                         );
                       }}

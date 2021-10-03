@@ -2,8 +2,12 @@ import Head from "next/head";
 import useHeader from "hooks/useHeader";
 import { useEffect, ReactElement } from "react";
 import Link from "next/link";
+import useSpotify from "hooks/useSpotify";
+import PresentationCard from "components/forDashboardPage/PlaylistCard";
+import { decode } from "html-entities";
 export default function CollectionPlaylists(): ReactElement {
   const { setElement } = useHeader({ showOnFixed: true });
+  const { playlists } = useSpotify();
 
   useEffect(() => {
     setElement(() => {
@@ -53,12 +57,52 @@ export default function CollectionPlaylists(): ReactElement {
       <Head>
         <title>Rindu - Library</title>
       </Head>
+      <h2>Playlists</h2>
+      <section>
+        {playlists?.length > 0
+          ? playlists.map(({ images, name, description, id, owner }) => {
+              return (
+                <PresentationCard
+                  type="playlist"
+                  key={id}
+                  images={images}
+                  title={name}
+                  subTitle={decode(description) || `De ${owner.display_name}`}
+                  id={id}
+                />
+              );
+            })
+          : null}
+      </section>
       <style jsx>{`
         main {
           display: block;
-          margin: -60px auto 0 auto;
           height: calc(100vh - 90px);
           width: calc(100vw - 245px);
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 0 20px;
+        }
+        h2 {
+          color: #fff;
+          display: inline-block;
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          font-size: 24px;
+          font-weight: 700;
+          letter-spacing: -0.04em;
+          line-height: 28px;
+          text-transform: none;
+          margin: 0;
+        }
+        section {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+          grid-gap: 24px;
+          margin: 20px 0 50px 0;
+          justify-content: space-between;
         }
       `}</style>
     </main>

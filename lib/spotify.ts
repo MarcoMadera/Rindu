@@ -129,6 +129,7 @@ export async function getSpotifyUser(
     id: data.body.id,
     product: data.body.product,
     followers: data.body.followers,
+    country: data.body.country,
   };
 }
 
@@ -137,39 +138,19 @@ export async function getUserPlaylists(
   offset = 0,
   limit = 50
 ): Promise<UserPlaylistsResponse> {
-  spotifyAPI.setAccessToken(accessToken);
-  const data = await spotifyAPI.getUserPlaylists({ offset, limit });
-  return {
-    items: data.body.items.map(
-      ({
-        images,
-        name,
-        public: isPublic,
-        tracks,
-        description,
-        id,
-        snapshot_id,
-        external_urls,
-        owner,
-      }) => {
-        return {
-          images: images.map(({ url }) => ({
-            url,
-          })),
-          name,
-          isPublic,
-          tracks: tracks.total,
-          description,
-          id,
-          snapshot_id,
-          href: external_urls.spotify,
-          owner: owner,
-        };
-      }
-    ),
-    total: data.body.total,
-  };
+  const res = await fetch(
+    `https://api.spotify.com/v1/me/playlists?limit=${limit}&offset=${offset}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  const data = await res.json();
+  return data;
 }
+
 export const getAllTracksFromPlaylist = async (
   accessToken: string,
   playlist: string

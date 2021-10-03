@@ -17,26 +17,10 @@ export type SpotifyUserResponse = {
   id: string;
   product: string | undefined;
   followers: SpotifyApi.FollowersObject | undefined;
+  country: string;
 };
 // Playlists
-export type PlaylistItem = {
-  images?: Array<{ url: string }>;
-  name: string;
-  isPublic: boolean | null;
-  tracks: number;
-  description: string | null;
-  id: string;
-  snapshot_id: string;
-  href: string;
-  owner: {
-    display_name?: string;
-    external_urls: { spotify: string };
-    href: string;
-    id: string;
-    type: string;
-    uri: string;
-  };
-};
+export type PlaylistItem = SpotifyApi.PlaylistObjectSimplified;
 
 export type PlaylistItems = PlaylistItem[];
 

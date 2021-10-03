@@ -1,9 +1,63 @@
 import Head from "next/head";
 import useHeader from "hooks/useHeader";
-import { useEffect, ReactElement } from "react";
+import { useEffect, ReactElement, useState } from "react";
 import Link from "next/link";
+import PresentationCard from "components/forDashboardPage/PlaylistCard";
+import useAuth from "hooks/useAuth";
+
+async function getShow(offset: number, accessToken: string) {
+  const res = await fetch(
+    `https://api.spotify.com/v1/me/shows?limit=50&offset=${offset}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  const data = await res.json();
+  return data;
+}
+
+async function getAllAlbums(accessToken: string) {
+  const limit = 50;
+  const albumsData: SpotifyApi.UsersSavedShowsResponse = await getShow(
+    0,
+    accessToken
+  );
+
+  let restAlbumsData: SpotifyApi.UsersSavedShowsResponse | undefined;
+  const max = Math.ceil(albumsData.total / limit);
+
+  if (max <= 1) {
+    return albumsData;
+  }
+
+  for (let i = 1; i < max; i++) {
+    const resAlbumsData = await getShow(limit * i, accessToken);
+    if (restAlbumsData) {
+      restAlbumsData = {
+        ...restAlbumsData,
+        items: [...restAlbumsData?.items, ...resAlbumsData.items],
+      };
+    } else {
+      restAlbumsData = resAlbumsData;
+    }
+  }
+  if (!restAlbumsData) {
+    return albumsData;
+  }
+  const allPlaylists = {
+    ...albumsData,
+    items: [...albumsData.items, ...restAlbumsData.items],
+  };
+  return allPlaylists;
+}
+
 export default function CollectionPlaylists(): ReactElement {
   const { setElement } = useHeader({ showOnFixed: true });
+  const { accessToken } = useAuth();
+  const [shows, setShows] = useState<SpotifyApi.SavedShowObject[]>([]);
 
   useEffect(() => {
     setElement(() => {
@@ -48,17 +102,69 @@ export default function CollectionPlaylists(): ReactElement {
     };
   }, [setElement]);
 
+  useEffect(() => {
+    if (!accessToken) return;
+
+    async function getAlbums() {
+      const allAlbums: SpotifyApi.UsersSavedShowsResponse = await getAllAlbums(
+        accessToken as string
+      );
+      setShows(allAlbums.items);
+    }
+    getAlbums();
+  }, [accessToken, setShows]);
+
   return (
     <main>
       <Head>
         <title>Rindu - Library</title>
       </Head>
+      <h2>Podcasts</h2>
+      <section>
+        {shows?.length > 0
+          ? shows.map(({ show }) => {
+              return (
+                <PresentationCard
+                  type="show"
+                  key={show.id}
+                  images={show.images}
+                  title={show.name}
+                  subTitle={show.description}
+                  id={show.id}
+                />
+              );
+            })
+          : null}
+      </section>
       <style jsx>{`
         main {
           display: block;
-          margin: -60px auto 0 auto;
-          height: calc(100vh - 90px);
+          min-height: calc(100vh - 90px);
           width: calc(100vw - 245px);
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 0px 30px;
+        }
+        h2 {
+          color: #fff;
+          display: inline-block;
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          font-size: 24px;
+          font-weight: 700;
+          letter-spacing: -0.04em;
+          line-height: 28px;
+          text-transform: none;
+          margin: 0;
+        }
+        section {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+          grid-gap: 24px;
+          margin: 20px 0 50px 0;
+          justify-content: space-between;
         }
       `}</style>
     </main>

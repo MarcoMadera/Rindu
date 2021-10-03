@@ -20,13 +20,13 @@ import { List } from "react-virtualized";
 interface RemoveTracksModalProps {
   openModal: boolean;
   setOpenModal: Dispatch<SetStateAction<boolean>>;
-  type: "playlist" | "saved";
+  isLibrary: boolean;
 }
 
 export default function RemoveTracksModal({
   openModal,
   setOpenModal,
-  type,
+  isLibrary,
 }: RemoveTracksModalProps): ReactPortal | null {
   const [targetNode, setTargetNode] = useState<Element>();
   const firstButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -44,7 +44,7 @@ export default function RemoveTracksModal({
         return;
       }
       let tracks: AllTracksFromAPlayList = [];
-      const limit = type === "saved" ? 50 : 100;
+      const limit = isLibrary ? 50 : 100;
       const max = Math.ceil(playlistDetails.tracks.total / limit);
 
       setIsLoadingComplete(false);
@@ -52,7 +52,7 @@ export default function RemoveTracksModal({
       for (let i = 0; i < max; i++) {
         const res = await fetch(
           `https://api.spotify.com/v1/${
-            type === "playlist" ? `playlists/${id}` : "me"
+            !isLibrary ? `playlists/${id}` : "me"
           }/tracks?limit=${limit}&offset=${limit * i}`,
           {
             method: "GET",
@@ -186,6 +186,7 @@ export default function RemoveTracksModal({
                       isTrackInLibrary={false}
                       track={duplicatesSongs[index]}
                       playlistUri={playlistDetails?.uri ?? ""}
+                      type="presentation"
                     />
                   </div>
                 );
@@ -208,7 +209,7 @@ export default function RemoveTracksModal({
             ref={secondButtonRef}
             onClick={async (e) => {
               e.preventDefault();
-              if (type === "playlist") {
+              if (!isLibrary) {
                 const indexes = duplicatesSongs.map(
                   ({ position }) => position as number
                 );
@@ -229,7 +230,7 @@ export default function RemoveTracksModal({
                 }
               }
 
-              if (type === "saved") {
+              if (isLibrary) {
                 const arrays: (string | null)[][] = [];
                 const ids = duplicatesSongs.map(({ id }) => id as string);
                 for (let i = 0; i < duplicatesSongs.length; i += 50) {
