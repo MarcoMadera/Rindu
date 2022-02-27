@@ -1,7 +1,7 @@
 module.exports = {
   env: {
     browser: true,
-    es2020: true,
+    es2021: true,
     node: true,
   },
   extends: [
@@ -10,14 +10,16 @@ module.exports = {
     "plugin:react-hooks/recommended",
     "plugin:jsx-a11y/recommended",
     "prettier",
+    "next",
+    "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
-    useJSXTextNode: true,
     ecmaVersion: 11,
     sourceType: "module",
   },
@@ -47,4 +49,18 @@ module.exports = {
     "no-unneeded-ternary": 1,
     "react/react-in-jsx-scope": 0,
   },
+  overrides: [
+    {
+      // enable the rule specifically for TypeScript files
+      files: ["*.ts", "*.tsx"],
+      rules: {
+        "@typescript-eslint/explicit-module-boundary-types": [1],
+      },
+    },
+    {
+      files: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
+      extends: ["plugin:testing-library/react", "plugin:jest/all"],
+      plugins: ["testing-library", "jest"],
+    },
+  ],
 };

@@ -17,7 +17,10 @@ const Footer: React.FC = () => {
           display: flex;
           align-items: flex-end;
           justify-content: center;
-          height: 30px;
+          height: 40px;
+          background-color: #010101;
+          color: #e5e5e5;
+          padding: 10px;
         }
         p {
           margin: 0;
@@ -30,7 +33,7 @@ const Footer: React.FC = () => {
           text-decoration: none;
         }
         a:hover {
-          color: #ef2c2c;
+          color: #1ed760;
           text-decoration: underline;
         }
       `}</style>

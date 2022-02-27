@@ -2,7 +2,7 @@ import useAuth from "hooks/useAuth";
 import Link from "next/link";
 import { ReactElement } from "react";
 
-export default function Logo(): ReactElement {
+export default function Logo({ color }: { color: string }): ReactElement {
   const { isLogin } = useAuth();
   return (
     <>
@@ -14,7 +14,7 @@ export default function Logo(): ReactElement {
           font-size: 36px;
           font-family: "Lato";
           width: 148px;
-          color: #fff;
+          color: ${color};
           margin: 0;
           text-decoration: none;
         }

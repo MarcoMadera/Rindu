@@ -33,7 +33,7 @@ export default function Header({
       }
     }
     router.events.on("routeChangeComplete", () => {
-      document.getElementsByClassName("app")[0].scrollTo(0, 0);
+      document.getElementsByClassName("app")?.[0]?.scrollTo(0, 0);
       setShowFixed(false);
     });
 
@@ -41,7 +41,7 @@ export default function Header({
 
     return () => {
       router.events.off("routeChangeComplete", () => {
-        document.getElementsByClassName("app")[0].scrollTo(0, 0);
+        document.getElementsByClassName("app")?.[0]?.scrollTo(0, 0);
         setShowFixed(false);
       });
       app?.removeEventListener("scroll", onScroll);

@@ -42,17 +42,14 @@ const Layout: React.FC = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const isLoginPage = router.asPath === "/";
+
   return (
     <>
-      {router.asPath === "/" ? (
+      {isLoginPage ? (
         <div>
           <Navbar />
           {children}
-          <style jsx>{`
-            div {
-              overflow: scroll;
-            }
-          `}</style>
         </div>
       ) : (
         <SideBar>

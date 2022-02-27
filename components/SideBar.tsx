@@ -84,7 +84,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
       <div className="container">
         <nav>
           <div className="logo">
-            <Logo />
+            <Logo color="#fff" />
           </div>
           <section>
             <Link href="/dashboard">
