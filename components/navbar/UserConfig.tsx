@@ -2,9 +2,9 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import {
-  ACCESSTOKENCOOKIE,
-  EXPIRETOKENCOOKIE,
-  REFRESHTOKENCOOKIE,
+  ACCESS_TOKEN_COOKIE,
+  EXPIRE_TOKEN_COOKIE,
+  REFRESH_TOKEN_COOKIE,
 } from "../../utils/constants";
 import { eatCookie } from "../../utils/cookies";
 import Link from "next/link";
@@ -96,9 +96,9 @@ const UserConfig: React.FC<UserConfigProps> = ({ name, img }) => {
             tabIndex={-1}
             className="option"
             onClick={() => {
-              eatCookie(ACCESSTOKENCOOKIE);
-              eatCookie(REFRESHTOKENCOOKIE);
-              eatCookie(EXPIRETOKENCOOKIE);
+              eatCookie(ACCESS_TOKEN_COOKIE);
+              eatCookie(REFRESH_TOKEN_COOKIE);
+              eatCookie(EXPIRE_TOKEN_COOKIE);
               router.push("/");
               setUser(null);
               setIsLogin(false);

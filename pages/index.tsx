@@ -1,19 +1,16 @@
 import Router from "next/router";
 import { NextPage } from "next";
 import { takeCookie } from "../utils/cookies";
-import {
-  ACCESSTOKENCOOKIE,
-  EXPIRETOKENCOOKIE,
-  REFRESHTOKENCOOKIE,
-} from "../utils/constants";
-import { validateAccessToken } from "../utils/validateAccessToken";
+import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "../utils/constants";
+import { validateAccessToken } from "../utils/spotifyCalls/validateAccessToken";
 import useAuth from "../hooks/useAuth";
 import { useEffect } from "react";
-import { refreshAccessTokenRequest } from "../lib/requests";
+import { refreshAccessToken } from "../utils/spotifyCalls/refreshAccessToken";
 import useAnalitycs from "../hooks/useAnalytics";
+import { removeTokensFromCookieServer } from "utils/removeTokensFromCookieServer";
 
 interface HomeProps {
-  accessToken?: string;
+  accessToken?: string | null;
 }
 
 const Home: NextPage<HomeProps> = () => {
@@ -315,41 +312,42 @@ export default Home;
 Home.getInitialProps = async ({
   res,
   req,
-}): Promise<{ accessToken: string }> => {
-  const cookies = req ? req?.headers?.cookie : undefined;
-  const refreshToken = takeCookie(REFRESHTOKENCOOKIE, cookies);
-  let accessToken;
+}): Promise<{ accessToken: string | null }> => {
+  const cookies = req?.headers?.cookie;
+
+  if (!cookies) {
+    return { accessToken: null };
+  }
+
+  const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE, cookies);
+
   if (refreshToken) {
-    const _res = await refreshAccessTokenRequest(refreshToken);
-    if (!_res.ok) {
-      res?.setHeader("Set-Cookie", [
-        `${ACCESSTOKENCOOKIE}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax;`,
-        `${REFRESHTOKENCOOKIE}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax;`,
-        `${EXPIRETOKENCOOKIE}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax;`,
-      ]);
-      return { accessToken: "" };
+    const { accessToken } = (await refreshAccessToken(refreshToken)) || {};
+
+    if (!accessToken) {
+      removeTokensFromCookieServer(res);
+      return { accessToken: null };
     }
-    const data = await _res.json();
-    accessToken = data.accessToken;
+
     res?.setHeader("Set-Cookie", [
-      `${ACCESSTOKENCOOKIE}=${data.accessToken}; Path=/;"`,
+      `${ACCESS_TOKEN_COOKIE}=${accessToken}; Path=/;"`,
     ]);
+  }
+
+  const accessTokenFromCookies = takeCookie(ACCESS_TOKEN_COOKIE, cookies);
+  const user = await validateAccessToken(accessTokenFromCookies);
+
+  if (!user) {
+    removeTokensFromCookieServer(res);
+    return { accessToken: null };
+  }
+
+  if (res) {
+    res.writeHead(307, { Location: "/dashboard" });
+    res.end();
   } else {
-    accessToken = cookies ? takeCookie(ACCESSTOKENCOOKIE, cookies) : undefined;
+    Router.replace("/dashboard");
   }
-  try {
-    const user = await validateAccessToken(accessToken);
-    if (user) {
-      if (res) {
-        res.writeHead(307, { Location: "/dashboard" });
-        res.end();
-      } else {
-        Router.replace("/dashboard");
-      }
-      return { accessToken };
-    }
-  } catch (error) {
-    console.log(error);
-  }
-  return { accessToken };
+
+  return { accessToken: accessTokenFromCookies };
 };

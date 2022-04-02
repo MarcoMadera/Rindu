@@ -25,11 +25,11 @@ export interface Context {
   setCurrentlyPlayingDuration: Dispatch<SetStateAction<number | undefined>>;
   player: Spotify.Player | AudioPlayer | undefined;
   setPlayer: Dispatch<SetStateAction<Spotify.Player | AudioPlayer | undefined>>;
-  playlistDetails: SpotifyApi.SinglePlaylistResponse | undefined;
+  playlistDetails: SpotifyApi.SinglePlaylistResponse | null;
   setPlaylistPlayingId: Dispatch<SetStateAction<string | undefined>>;
   playlistPlayingId: string | undefined;
   setPlaylistDetails: Dispatch<
-    SetStateAction<SpotifyApi.SinglePlaylistResponse | undefined>
+    SetStateAction<SpotifyApi.SinglePlaylistResponse | null>
   >;
 }
 
@@ -50,9 +50,8 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
     useState<number>();
   const [player, setPlayer] = useState<Spotify.Player | AudioPlayer>();
   const [playlistPlayingId, setPlaylistPlayingId] = useState<string>();
-  const [playlistDetails, setPlaylistDetails] = useState<
-    SpotifyApi.SinglePlaylistResponse | undefined
-  >();
+  const [playlistDetails, setPlaylistDetails] =
+    useState<SpotifyApi.SinglePlaylistResponse | null>(null);
 
   return (
     <SpotifyContext.Provider

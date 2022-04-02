@@ -2,7 +2,6 @@ import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
 import useAuth from "hooks/useAuth";
 import useSpotify from "hooks/useSpotify";
 import { getTracksFromPlaylist } from "lib/requests";
-import { checkTracksInLibrary } from "lib/spotify";
 import { ReactElement, useState } from "react";
 import {
   AutoSizer,
@@ -12,8 +11,9 @@ import {
   WindowScroller,
 } from "react-virtualized";
 import { AllTracksFromAPlayList, normalTrackTypes } from "types/spotify";
-import { ACCESSTOKENCOOKIE, __isServer__ } from "utils/constants";
+import { ACCESS_TOKEN_COOKIE, __isServer__ } from "utils/constants";
 import { takeCookie } from "utils/cookies";
+import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 
 export function mapPlaylistItems(
   items: {
@@ -54,7 +54,7 @@ async function getTracksFromLibrary(offSet: number, accessToken?: string) {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
+          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
         }`,
       },
     }
@@ -65,7 +65,7 @@ async function getTracksFromLibrary(offSet: number, accessToken?: string) {
 
 interface Props {
   type: "playlist" | "album" | "presentation";
-  initialTracksInLibrary: boolean[];
+  initialTracksInLibrary: boolean[] | null;
   isLibrary?: boolean;
 }
 
@@ -76,22 +76,28 @@ export default function Playlist({
 }: Props): ReactElement | null {
   const { allTracks, playlistDetails, setAllTracks } = useSpotify();
   const { accessToken } = useAuth();
-  const [tracksInLibrary, setTracksInLibrary] = useState<boolean[]>(
+  const [tracksInLibrary, setTracksInLibrary] = useState<boolean[] | null>(
     initialTracksInLibrary
   );
 
   function addTracksToPlaylists(
     tracks: AllTracksFromAPlayList,
-    tracksInLibrary: boolean[],
+    tracksInLibrary: boolean[] | null,
     position: number
   ): void {
-    function spliceTracks<T>(allTracks: T[], newTracks: T[]) {
+    function spliceTracks<T>(allTracks: T[] | null, newTracks: T[]) {
+      if (!allTracks) {
+        return [...newTracks];
+      }
       const tracks = [...allTracks];
       tracks.splice(position, 50, ...newTracks);
       return tracks;
     }
 
     setAllTracks((allTracks) => spliceTracks(allTracks, tracks));
+
+    if (!tracksInLibrary) return;
+
     setTracksInLibrary((allTracks) => spliceTracks(allTracks, tracksInLibrary));
   }
 
@@ -155,7 +161,9 @@ export default function Playlist({
                             track={allTracks[index]}
                             playlistUri={playlistDetails?.uri ?? ""}
                             isTrackInLibrary={
-                              tracksInLibrary[allTracks[index]?.position ?? -1]
+                              tracksInLibrary?.[
+                                allTracks[index]?.position ?? -1
+                              ]
                             }
                             type={type}
                           />

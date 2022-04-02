@@ -1,20 +1,18 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { refreshAccessTokenRequest } from "../../lib/requests";
-import { SpotifyUserResponse } from "types/spotify";
-import { ACCESSTOKENCOOKIE, REFRESHTOKENCOOKIE } from "../../utils/constants";
-import { takeCookie } from "../../utils/cookies";
-import { validateAccessToken } from "../../utils/validateAccessToken";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { ContentHeader } from "components/forPlaylistsPage/ContentHeader";
 import formatNumber from "utils/formatNumber";
 import useAuth from "hooks/useAuth";
 import useAnalitycs from "hooks/useAnalytics";
 import { useEffect } from "react";
+import { serverRedirect } from "utils/serverRedirect";
+import { getAuth } from "utils/getAuth";
+import { getArtistById } from "utils/spotifyCalls/getArtistById";
 
 interface CurrentUserProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
   accessToken?: string;
-  user: SpotifyUserResponse | null;
+  user: SpotifyApi.UserObjectPrivate | null;
 }
 
 const CurrentUser: NextPage<CurrentUserProps> = ({
@@ -142,63 +140,16 @@ export async function getServerSideProps({
   req: NextApiRequest;
   res: NextApiResponse;
 }): Promise<{
-  props: CurrentUserProps;
+  props: CurrentUserProps | null;
 }> {
-  const cookies = req ? req?.headers?.cookie : undefined;
-  const refreshToken = takeCookie(REFRESHTOKENCOOKIE, cookies);
-  let accessToken = takeCookie(ACCESSTOKENCOOKIE, cookies);
-  const user = await validateAccessToken(accessToken);
-
-  try {
-    if (refreshToken && !user) {
-      const re = await refreshAccessTokenRequest(refreshToken);
-      if (!re.ok) {
-        res.writeHead(307, { Location: "/" });
-        res.end();
-      }
-      const refresh = await re.json();
-      accessToken = refresh.accessToken;
-    } else {
-      accessToken = cookies
-        ? takeCookie(ACCESSTOKENCOOKIE, cookies)
-        : undefined;
-    }
-
-    if (!cookies) {
-      res.writeHead(307, { Location: "/" });
-      res.end();
-    }
-  } catch (error) {
-    console.log(error);
+  const cookies = req?.headers?.cookie;
+  if (!cookies) {
+    serverRedirect(res, "/");
+    return { props: null };
   }
+  const { accessToken, user } = (await getAuth(res, cookies)) || {};
 
-  if (!user) {
-    if (res) {
-      res.writeHead(307, { Location: "/" });
-      res.end();
-    } else {
-      Router.replace("/");
-    }
-  }
-
-  async function getCurrentArtist(artistId: string, accessToken?: string) {
-    if (!accessToken || !artistId) {
-      return null;
-    }
-    const res = await fetch(`https://api.spotify.com/v1/artists/${artistId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
-        }`,
-      },
-    });
-    const data = res.json();
-    return data;
-  }
-
-  const currentArtist = await getCurrentArtist(artistId, accessToken);
+  const currentArtist = await getArtistById(artistId, accessToken, cookies);
 
   return {
     props: {

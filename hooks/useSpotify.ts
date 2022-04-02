@@ -4,15 +4,11 @@ import {
   PlaylistItems,
   RemoveTracksResponse,
   UserPlaylistsResponse,
-  AllTracksFromAPlaylistResponse,
   trackItem,
 } from "types/spotify";
+import { getTracksFromPlayList as getTracksFromPlayListFromAPI } from "utils/spotifyCalls/getTracksFromPlayList";
 import SpotifyContext from "../context/SpotifyContext";
-import {
-  getPlaylistsRequest,
-  getTracksFromPlayListRequest,
-  removeTracksRequest,
-} from "../lib/requests";
+import { getPlaylistsRequest, removeTracksRequest } from "../lib/requests";
 import { AudioPlayer } from "./useSpotifyPlayer";
 
 export default function useSpotify(): {
@@ -35,11 +31,11 @@ export default function useSpotify(): {
   setCurrentlyPlayingDuration: Dispatch<SetStateAction<number | undefined>>;
   player: Spotify.Player | AudioPlayer | undefined;
   setPlayer: Dispatch<SetStateAction<Spotify.Player | AudioPlayer | undefined>>;
-  playlistDetails: SpotifyApi.SinglePlaylistResponse | undefined;
+  playlistDetails: SpotifyApi.SinglePlaylistResponse | null;
   setPlaylistPlayingId: Dispatch<SetStateAction<string | undefined>>;
   playlistPlayingId: string | undefined;
   setPlaylistDetails: Dispatch<
-    SetStateAction<SpotifyApi.SinglePlaylistResponse | undefined>
+    SetStateAction<SpotifyApi.SinglePlaylistResponse | null>
   >;
   removeTracks: (
     playlist: string | undefined,
@@ -96,12 +92,11 @@ export default function useSpotify(): {
   const getTracksFromPlayList = useCallback(
     (playlistId: string) => {
       setAllTracks([]);
-      getTracksFromPlayListRequest(playlistId)
-        .then((d) => d.json())
-        .then(({ tracks }: AllTracksFromAPlaylistResponse) => {
-          return setAllTracks(tracks);
+      getTracksFromPlayListFromAPI(playlistId)
+        .then((playlistDetails) => {
+          return setAllTracks(playlistDetails?.tracks ?? []);
         })
-        .catch((err) => {
+        .catch((err: unknown) => {
           console.log(err);
         });
     },

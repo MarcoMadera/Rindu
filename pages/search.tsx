@@ -13,49 +13,16 @@ import {
 import Search from "components/icons/Search";
 import { takeCookie } from "utils/cookies";
 import { NextApiRequest, NextApiResponse } from "next";
-import { refreshAccessTokenRequest } from "lib/requests";
-import { ACCESSTOKENCOOKIE, REFRESHTOKENCOOKIE } from "utils/constants";
-import { validateAccessToken } from "utils/validateAccessToken";
-import Router from "next/router";
-import { SpotifyUserResponse } from "types/spotify";
+import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 import Link from "next/link";
 import useAuth from "hooks/useAuth";
 import PresentationCard from "components/forDashboardPage/PlaylistCard";
 import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
 import { decode } from "html-entities";
+import { getAuth } from "utils/getAuth";
+import { getCategories } from "utils/spotifyCalls/getCategories";
+import { serverRedirect } from "utils/serverRedirect";
 
-async function getCategories(accessToken?: string) {
-  const res = await fetch(
-    "https://api.spotify.com/v1/browse/categories?limit=50&offset=0&locale=es_MX",
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
-        }`,
-      },
-    }
-  );
-  const data = await res.json();
-  return data.categories;
-}
-
-// async function getEpisodes(accessToken?: string) {
-//   const res = await fetch(
-//     "https://api.spotify.com/v1/me/episodes?limit=1&offset=0&market=from_token",
-//     {
-//       headers: {
-//         "Content-Type": "application/json",
-//         authorization: `Bearer ${
-//           accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
-//         }`,
-//       },
-//     }
-//   );
-//   const data = await res.json();
-//   return data;
-// }
 async function search(query: string, accessToken?: string) {
   const q = query.replaceAll(" ", "+");
   const res = await fetch(
@@ -64,7 +31,7 @@ async function search(query: string, accessToken?: string) {
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
+          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
         }`,
       },
     }
@@ -199,7 +166,7 @@ function InputElement({ setData }: InputElementProps) {
 interface SearchPageProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject>;
   accessToken: string | null;
-  user: SpotifyUserResponse | null;
+  user: SpotifyApi.UserObjectPrivate | null;
 }
 
 const cardBackgroundColors = [
@@ -578,46 +545,15 @@ export async function getServerSideProps({
   req: NextApiRequest;
   res: NextApiResponse;
 }): Promise<{
-  props: SearchPageProps;
+  props: SearchPageProps | null;
 }> {
-  const cookies = req ? req?.headers?.cookie : undefined;
-  const refreshToken = takeCookie(REFRESHTOKENCOOKIE, cookies);
-  let accessToken = takeCookie(ACCESSTOKENCOOKIE, cookies);
-  const user = await validateAccessToken(accessToken);
-
-  try {
-    if (refreshToken && !user) {
-      const re = await refreshAccessTokenRequest(refreshToken);
-      if (!re.ok) {
-        res.writeHead(307, { Location: "/" });
-        res.end();
-      }
-      const refresh = await re.json();
-      accessToken = refresh.accessToken;
-    } else {
-      accessToken = cookies
-        ? takeCookie(ACCESSTOKENCOOKIE, cookies)
-        : undefined;
-    }
-
-    if (!cookies) {
-      res.writeHead(307, { Location: "/" });
-      res.end();
-    }
-  } catch (error) {
-    console.log(error);
+  const cookies = req?.headers?.cookie;
+  if (!cookies) {
+    serverRedirect(res, "/");
+    return { props: null };
   }
-
-  if (!user) {
-    if (res) {
-      res.writeHead(307, { Location: "/" });
-      res.end();
-    } else {
-      Router.replace("/");
-    }
-  }
-
-  const categories = await getCategories(accessToken);
+  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+  const categories = await getCategories(accessToken, cookies);
 
   return {
     props: {

@@ -1,6 +1,9 @@
 import { getRefreshAccessToken } from "../../lib/spotify";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ACCESSTOKENCOOKIE, EXPIRETOKENCOOKIE } from "../../utils/constants";
+import {
+  ACCESS_TOKEN_COOKIE,
+  EXPIRE_TOKEN_COOKIE,
+} from "../../utils/constants";
 import { ApiError } from "next/dist/server/api-utils";
 
 export default async function refresh(
@@ -11,8 +14,8 @@ export default async function refresh(
     try {
       const data = await getRefreshAccessToken(req.body.refreshToken);
       res.setHeader("Set-Cookie", [
-        `${ACCESSTOKENCOOKIE}=${data.accessToken}; Path=/;"`,
-        `${EXPIRETOKENCOOKIE}=${data.expiresIn}; Path=/;"`,
+        `${ACCESS_TOKEN_COOKIE}=${data.accessToken}; Path=/;"`,
+        `${EXPIRE_TOKEN_COOKIE}=${data.expiresIn}; Path=/;"`,
       ]);
       return res.json(data);
     } catch (error) {

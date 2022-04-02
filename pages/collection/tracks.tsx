@@ -1,22 +1,17 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { refreshAccessTokenRequest } from "../../lib/requests";
-import {
-  AllTracksFromAPlaylistResponse,
-  SpotifyUserResponse,
-} from "types/spotify";
-import { ACCESSTOKENCOOKIE, REFRESHTOKENCOOKIE } from "../../utils/constants";
-import { takeCookie } from "../../utils/cookies";
-import { validateAccessToken } from "../../utils/validateAccessToken";
-import Router from "next/router";
+import { AllTracksFromAPlaylistResponse } from "types/spotify";
 import PlaylistLayout from "layouts/playlist";
-import { checkTracksInLibrary } from "lib/spotify";
+import { serverRedirect } from "utils/serverRedirect";
+import { getAuth } from "utils/getAuth";
+import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
+import { getMyLikedSongs } from "utils/spotifyCalls/getMyLikedSongs";
 
 interface PlaylistProps {
   playlistDetails: SpotifyApi.SinglePlaylistResponse;
   playListTracks: AllTracksFromAPlaylistResponse;
-  tracksInLibrary: boolean[];
-  accessToken?: string;
-  user: SpotifyUserResponse | null;
+  tracksInLibrary: boolean[] | null;
+  accessToken: string | null;
+  user: SpotifyApi.UserObjectPrivate | null;
 }
 
 const Playlist: NextPage<PlaylistProps> = (props) => {
@@ -41,63 +36,25 @@ export async function getServerSideProps({
   req: NextApiRequest;
   res: NextApiResponse;
 }): Promise<{
-  props: PlaylistProps;
+  props: PlaylistProps | null;
 }> {
-  const cookies = req ? req?.headers?.cookie : undefined;
-  const refreshToken = takeCookie(REFRESHTOKENCOOKIE, cookies);
-  let accessToken = takeCookie(ACCESSTOKENCOOKIE, cookies);
-  const user = await validateAccessToken(accessToken);
-
-  try {
-    if (refreshToken && !user) {
-      const re = await refreshAccessTokenRequest(refreshToken);
-      if (!re.ok) {
-        res.writeHead(307, { Location: "/" });
-        res.end();
-      }
-      const refresh = await re.json();
-      accessToken = refresh.accessToken;
-    } else {
-      accessToken = cookies
-        ? takeCookie(ACCESSTOKENCOOKIE, cookies)
-        : undefined;
-    }
-
-    if (!cookies) {
-      res.writeHead(307, { Location: "/" });
-      res.end();
-    }
-  } catch (error) {
-    console.log(error);
+  const cookies = req?.headers?.cookie;
+  if (!cookies) {
+    serverRedirect(res, "/");
+    return { props: null };
   }
+  const { accessToken, user } = (await getAuth(res, cookies)) || {};
 
-  if (!user) {
-    if (res) {
-      res.writeHead(307, { Location: "/" });
-      res.end();
-    } else {
-      Router.replace("/");
-    }
-  }
-
-  const _res = await fetch(
-    "https://api.spotify.com/v1/me/tracks?limit=50&offset=0",
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
-        }`,
-      },
-    }
-  );
-  const playListTracks: SpotifyApi.PlaylistTrackResponse = await _res.json();
-  const trackIds = playListTracks.items.map(({ track }) => track.id);
+  const playListTracks = await getMyLikedSongs();
+  const trackIds = playListTracks?.items.map(({ track }) => track.id);
   const tracksInLibrary = await checkTracksInLibrary(
-    trackIds,
+    trackIds ?? [],
     accessToken || ""
   );
+
+  if (!playListTracks) {
+    return { props: null };
+  }
 
   const playlistDetails: SpotifyApi.SinglePlaylistResponse = {
     collaborative: false,
@@ -120,7 +77,7 @@ export async function getServerSideProps({
       href: user?.href ?? "",
       type: "user",
       uri: `spotify:user${user?.id}`,
-      display_name: user?.name ?? "",
+      display_name: user?.display_name ?? "",
     },
     public: false,
     snapshot_id: "",
@@ -162,7 +119,7 @@ export async function getServerSideProps({
           };
         }),
       },
-      accessToken,
+      accessToken: accessToken ?? null,
       user: user ?? null,
     },
   };

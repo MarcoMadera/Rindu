@@ -1,11 +1,7 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import {
-  AllTracksFromAPlaylistResponse,
-  normalTrackTypes,
-  SpotifyUserResponse,
-} from "types/spotify";
+import { normalTrackTypes } from "types/spotify";
 import { PlaylistPageHeader } from "../../components/forPlaylistsPage/PlaylistPageHeader";
 import useAnalitycs from "../../hooks/useAnalytics";
 import useAuth from "hooks/useAuth";
@@ -20,7 +16,8 @@ import RemoveTracksModal from "components/removeTrackModal";
 import { ExtraHeader } from "./ExtraHeader";
 import { Heart, HeartShape } from "components/icons/Heart";
 import { takeCookie } from "utils/cookies";
-import { ACCESSTOKENCOOKIE } from "utils/constants";
+import { ACCESS_TOKEN_COOKIE } from "utils/constants";
+import { PlaylistProps } from "pages/playlist/[playlist]";
 
 async function followPlaylist(id?: string, accessToken?: string) {
   if (!id) {
@@ -33,7 +30,7 @@ async function followPlaylist(id?: string, accessToken?: string) {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
+          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
         }`,
       },
     }
@@ -51,7 +48,7 @@ async function unfollowPlaylist(id?: string, accessToken?: string) {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
+          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
         }`,
       },
     }
@@ -74,7 +71,7 @@ async function checkUsersFollowAPlaylist(
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
+          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
         }`,
       },
     }
@@ -83,23 +80,13 @@ async function checkUsersFollowAPlaylist(
   return data;
 }
 
-interface PlaylistProps {
-  playlistDetails: SpotifyApi.SinglePlaylistResponse;
-  playListTracks: AllTracksFromAPlaylistResponse;
-  tracksInLibrary: boolean[];
-  accessToken?: string;
-  user: SpotifyUserResponse | null;
-  isLibrary: boolean;
-}
-
-const Playlist: NextPage<PlaylistProps> = ({
+const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
   playlistDetails,
   playListTracks,
   user,
   tracksInLibrary,
   isLibrary,
 }) => {
-  const { tracks } = playListTracks;
   const router = useRouter();
   const { setIsLogin, setUser, accessToken } = useAuth();
   const { trackWithGoogleAnalitycs } = useAnalitycs();
@@ -114,8 +101,9 @@ const Playlist: NextPage<PlaylistProps> = ({
   const { setElement } = useHeader({ showOnFixed: false });
   const [isPin, setIsPin] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const isMyPlaylist = playlistDetails.owner.id === user?.id;
+  const isMyPlaylist = playlistDetails?.owner.id === user?.id;
   const [isFollowingThisPlaylist, setIsFollowingThisPlaylist] = useState(false);
+  const tracks = playListTracks?.tracks ?? [];
 
   useEffect(() => {
     if (isMyPlaylist) {
@@ -124,13 +112,13 @@ const Playlist: NextPage<PlaylistProps> = ({
     async function fetchData() {
       const userFollowThisPlaylist = await checkUsersFollowAPlaylist(
         [user?.id ?? ""],
-        playlistDetails.id,
+        playlistDetails?.id,
         accessToken
       );
       setIsFollowingThisPlaylist(!!userFollowThisPlaylist?.[0]);
     }
     fetchData();
-  }, [accessToken, playlistDetails.id, user?.id, isMyPlaylist]);
+  }, [accessToken, playlistDetails?.id, user?.id, isMyPlaylist]);
 
   useEffect(() => {
     if (!playlistDetails) {
@@ -151,7 +139,6 @@ const Playlist: NextPage<PlaylistProps> = ({
     setPlaylistDetails,
     playlistDetails,
     trackWithGoogleAnalitycs,
-    tracks,
     setIsLogin,
     setUser,
     user,
@@ -162,8 +149,8 @@ const Playlist: NextPage<PlaylistProps> = ({
   useEffect(() => {
     if (deviceId && isPlaying && user?.product === "premium") {
       (player as Spotify.Player)?.getCurrentState().then((e) => {
-        if (e?.context.uri === playlistDetails.uri) {
-          setPlaylistPlayingId(playlistDetails.id);
+        if (e?.context.uri === playlistDetails?.uri) {
+          setPlaylistPlayingId(playlistDetails?.id);
           return;
         }
       });
@@ -194,7 +181,7 @@ const Playlist: NextPage<PlaylistProps> = ({
     };
 
     const restTrackItems = new Array(
-      playlistDetails.tracks.total - tracks.length
+      (playlistDetails?.tracks.total ?? tracks.length) - tracks.length
     ).fill(emptyTrackItem);
 
     setAllTracks([...tracks, ...restTrackItems]);
@@ -205,7 +192,7 @@ const Playlist: NextPage<PlaylistProps> = ({
   return (
     <main>
       <Head>
-        <title>{`Rindu: ${playlistDetails.name}`}</title>
+        <title>{`Rindu: ${playlistDetails?.name}`}</title>
       </Head>
       <section>
         <PlaylistPageHeader playlistDetails={playlistDetails} />
@@ -220,13 +207,13 @@ const Playlist: NextPage<PlaylistProps> = ({
                     return;
                   }
                   if (isFollowingThisPlaylist) {
-                    unfollowPlaylist(playlistDetails.id).then((res) => {
+                    unfollowPlaylist(playlistDetails?.id).then((res) => {
                       if (res) {
                         setIsFollowingThisPlaylist(false);
                       }
                     });
                   } else {
-                    followPlaylist(playlistDetails.id).then((res) => {
+                    followPlaylist(playlistDetails?.id).then((res) => {
                       if (res) {
                         setIsFollowingThisPlaylist(true);
                       }

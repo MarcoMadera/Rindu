@@ -14,7 +14,7 @@ import { AllTracksFromAPlayList, normalTrackTypes } from "types/spotify";
 import { findDuplicateSongs } from "utils/findDuplicateSongs";
 import ModalCardTrack from "./forPlaylistsPage/CardTrack";
 import { takeCookie } from "utils/cookies";
-import { ACCESSTOKENCOOKIE } from "utils/constants";
+import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 import { List } from "react-virtualized";
 
 interface RemoveTracksModalProps {
@@ -244,7 +244,7 @@ export default function RemoveTracksModal({
                       Authorization: `Bearer ${
                         accessToken
                           ? accessToken
-                          : takeCookie(ACCESSTOKENCOOKIE)
+                          : takeCookie(ACCESS_TOKEN_COOKIE)
                       }`,
                     },
                     body: JSON.stringify({ ids }),

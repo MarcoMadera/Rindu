@@ -1,10 +1,6 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { refreshAccessTokenRequest } from "../../lib/requests";
-import { normalTrackTypes, SpotifyUserResponse } from "types/spotify";
-import { ACCESSTOKENCOOKIE, REFRESHTOKENCOOKIE } from "../../utils/constants";
-import { takeCookie } from "../../utils/cookies";
-import { validateAccessToken } from "../../utils/validateAccessToken";
-import Router, { useRouter } from "next/router";
+import { normalTrackTypes } from "types/spotify";
+import { useRouter } from "next/router";
 import { ContentHeader } from "components/forPlaylistsPage/ContentHeader";
 import formatNumber from "utils/formatNumber";
 import useAuth from "hooks/useAuth";
@@ -14,79 +10,24 @@ import Link from "next/link";
 import List from "layouts/playlist/List";
 import { Heart, HeartShape } from "components/icons/Heart";
 import Titles from "components/forPlaylistsPage/Titles";
-import { checkTracksInLibrary } from "lib/spotify";
 import useSpotify from "hooks/useSpotify";
 import { PlayButton } from "components/forPlaylistsPage/PlayButton";
 import useHeader from "hooks/useHeader";
 import { ExtraHeader } from "layouts/playlist/ExtraHeader";
+import { serverRedirect } from "utils/serverRedirect";
+import { getAuth } from "utils/getAuth";
+import { getAlbumById } from "utils/spotifyCalls/getAlbumById";
+import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
+import { checkIfUserFollowAlbums } from "utils/spotifyCalls/checkIfUserFollowAlbums";
+import { unFollowAlbums } from "utils/spotifyCalls/unFollowAlbums";
+import { followAlbums } from "utils/spotifyCalls/followAlbums";
 
 interface CurrentUserProps {
-  album: SpotifyApi.SingleAlbumResponse;
+  album: SpotifyApi.SingleAlbumResponse | null;
   accessToken?: string;
-  user: SpotifyUserResponse | null;
-  tracks: normalTrackTypes[];
-  tracksInLibrary: boolean[];
-}
-
-async function followAlbums(ids?: string[], accessToken?: string) {
-  if (!ids) {
-    return;
-  }
-  const res = await fetch(
-    `https://api.spotify.com/v1/me/albums?ids=${ids.join()}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
-        }`,
-      },
-    }
-  );
-  return res.ok;
-}
-async function unFollowAlbums(ids?: string[], accessToken?: string) {
-  if (!ids) {
-    return;
-  }
-  const res = await fetch(
-    `https://api.spotify.com/v1/me/albums?ids=${ids.join()}`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
-        }`,
-      },
-    }
-  );
-  return res.ok;
-}
-
-async function checkIfUserFollowAlbums(
-  albumIds?: string[],
-  accessToken?: string
-) {
-  if (!albumIds) {
-    return;
-  }
-  const ids = albumIds.join();
-  const res = await fetch(
-    `https://api.spotify.com/v1/me/albums/contains?ids=${ids}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
-        }`,
-      },
-    }
-  );
-  const data = res.json();
-  return data;
+  user: SpotifyApi.UserObjectPrivate | null;
+  tracks: normalTrackTypes[] | null;
+  tracksInLibrary: boolean[] | null;
 }
 
 const CurrentUser: NextPage<CurrentUserProps> = ({
@@ -107,13 +48,13 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
   useEffect(() => {
     async function fetchData() {
       const userFollowThisAlbum = await checkIfUserFollowAlbums(
-        [album.id],
+        [album?.id || ""],
         accessToken
       );
       setIsFollowingThisAlbum(!!userFollowThisAlbum?.[0]);
     }
     fetchData();
-  }, [accessToken, album.id, user?.id]);
+  }, [accessToken, album?.id, user?.id]);
 
   useEffect(() => {
     if (!album) {
@@ -129,7 +70,11 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
 
     setUser(user);
 
-    setAllTracks(tracks);
+    setAllTracks(tracks ?? []);
+
+    if (!album) {
+      return;
+    }
 
     setPlaylistDetails({
       collaborative: false,
@@ -179,6 +124,8 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
     setElement,
   ]);
 
+  const albumName = album?.name ?? "";
+
   return (
     <main>
       <section>
@@ -190,7 +137,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
             <div>
               <p>
                 <span className="artists">
-                  {album.artists?.map((artist, i) => {
+                  {album?.artists?.map((artist, i) => {
                     return (
                       <Fragment key={artist.id}>
                         <Link href={`/artist/${artist.id}`}>
@@ -205,10 +152,11 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
                   })}
                 </span>
                 <span>
-                  &nbsp;&middot; {new Date(album.release_date).getFullYear()}
+                  &nbsp;&middot;{" "}
+                  {new Date(album?.release_date ?? 1).getFullYear()}
                 </span>
                 <span>
-                  &nbsp;&middot; {formatNumber(album.tracks.total ?? 0)} songs
+                  &nbsp;&middot; {formatNumber(album?.tracks.total ?? 0)} songs
                 </span>
               </p>
             </div>
@@ -220,6 +168,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
             <div className="info">
               <button
                 onClick={() => {
+                  if (!album) return;
                   if (isFollowingThisAlbum) {
                     unFollowAlbums([album.id]).then((res) => {
                       if (res) {
@@ -266,14 +215,14 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
           pointer-events: none;
           user-select: none;
           padding: 0.08em 0px;
-          font-size: ${(album.name?.length ?? 0) < 20
+          font-size: ${(albumName?.length ?? 0) < 20
             ? "96px"
-            : (album.name?.length ?? 0) < 30
+            : (albumName?.length ?? 0) < 30
             ? "72px"
             : "48px"};
-          line-height: ${(album.name?.length ?? 0) < 20
+          line-height: ${(albumName?.length ?? 0) < 20
             ? "96px"
-            : (album.name?.length ?? 0) < 30
+            : (albumName?.length ?? 0) < 30
             ? "72px"
             : "48px"};
           visibility: visible;
@@ -371,104 +320,56 @@ export async function getServerSideProps({
   req: NextApiRequest;
   res: NextApiResponse;
 }): Promise<{
-  props: CurrentUserProps;
+  props: CurrentUserProps | null;
 }> {
   const cookies = req ? req?.headers?.cookie : undefined;
-  const refreshToken = takeCookie(REFRESHTOKENCOOKIE, cookies);
-  let accessToken = takeCookie(ACCESSTOKENCOOKIE, cookies);
-  const user = await validateAccessToken(accessToken);
-
-  try {
-    if (refreshToken && !user) {
-      const re = await refreshAccessTokenRequest(refreshToken);
-      if (!re.ok) {
-        res.writeHead(307, { Location: "/" });
-        res.end();
-      }
-      const refresh = await re.json();
-      accessToken = refresh.accessToken;
-    } else {
-      accessToken = cookies
-        ? takeCookie(ACCESSTOKENCOOKIE, cookies)
-        : undefined;
-    }
-
-    if (!cookies) {
-      res.writeHead(307, { Location: "/" });
-      res.end();
-    }
-  } catch (error) {
-    console.log(error);
+  if (!cookies) {
+    serverRedirect(res, "/");
+    return { props: null };
   }
+  const { accessToken, user } = (await getAuth(res, cookies)) || {};
 
-  if (!user) {
-    if (res) {
-      res.writeHead(307, { Location: "/" });
-      res.end();
-    } else {
-      Router.replace("/");
-    }
-  }
-
-  async function getAlbum(albumId: string, accessToken?: string) {
-    if (!accessToken || !albumId) {
-      return null;
-    }
-    const res = await fetch(`https://api.spotify.com/v1/albums/${albumId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
-        }`,
-      },
-    });
-    const data = res.json();
-    return data;
-  }
-
-  const album: SpotifyApi.SingleAlbumResponse = await getAlbum(
-    albumId,
-    accessToken
-  );
-  const trackIds = album.tracks.items.map(({ id }: { id: string }) => id);
+  const album = await getAlbumById(albumId, accessToken);
+  const trackIds = album?.tracks.items.map(({ id }: { id: string }) => id);
   const tracksInLibrary = await checkTracksInLibrary(
-    trackIds,
+    trackIds ?? [],
     accessToken || ""
   );
-  const tracks: normalTrackTypes[] = album.tracks.items.map((track) => {
-    return {
-      name: track.name,
-      album: {
+  const tracks: normalTrackTypes[] | undefined = album?.tracks.items.map(
+    (track) => {
+      return {
+        name: track.name,
+        album: {
+          images: album.images,
+          id: album.id,
+          name: album.name,
+          artists: album.artists,
+          uri: album.uri,
+        },
+        media_type: "audio",
+        type: track.type,
+        added_at: album.release_date,
+        artists: track.artists,
+        audio: track.preview_url,
+        corruptedTrack: !track.name,
+        duration: track.duration_ms,
+        explicit: track.explicit,
+        href: track.href,
+        id: track.id,
         images: album.images,
-        id: album.id,
-        name: album.name,
-        artists: album.artists,
-        uri: album.uri,
-      },
-      media_type: "audio",
-      type: track.type,
-      added_at: album.release_date,
-      artists: track.artists,
-      audio: track.preview_url,
-      corruptedTrack: !track.name,
-      duration: track.duration_ms,
-      explicit: track.explicit,
-      href: track.href,
-      id: track.id,
-      images: album.images,
-      is_local: false,
-      position: track.track_number - 1,
-      uri: track.uri,
-    };
-  });
+        is_local: false,
+        position: track.track_number - 1,
+        uri: track.uri,
+      };
+    }
+  );
 
   return {
     props: {
       album,
       accessToken,
       user: user ?? null,
-      tracks,
+      tracks: tracks ?? null,
       tracksInLibrary,
     },
   };

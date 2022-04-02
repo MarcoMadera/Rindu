@@ -2,7 +2,6 @@ import SpotifyWebAPI from "spotify-web-api-node";
 import {
   AuthorizationResponse,
   RefreshResponse,
-  SpotifyUserResponse,
   RemoveTracksResponse,
   UserPlaylistsResponse,
   AllTracksFromAPlaylistResponse,
@@ -75,25 +74,6 @@ export function getMyCurrentPlaybackState(callback: CallableFunction): void {
     });
 }
 
-export async function checkTracksInLibrary(
-  ids: string[],
-  accessToken: string
-): Promise<boolean[]> {
-  const stringIds = ids.join(",");
-  const res = await fetch(
-    `https://api.spotify.com/v1/me/tracks/contains?ids=${stringIds}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-  const data: boolean[] = await res.json();
-  return data;
-}
-
 export async function getSpotifyAuthorization(
   code: string
 ): Promise<AuthorizationResponse> {
@@ -119,18 +99,10 @@ export async function getRefreshAccessToken(
 
 export async function getSpotifyUser(
   accessToken: string
-): Promise<SpotifyUserResponse> {
+): Promise<SpotifyApi.UserObjectPrivate> {
   spotifyAPI.setAccessToken(accessToken);
   const data = await spotifyAPI.getMe();
-  return {
-    name: data.body.display_name,
-    image: data.body.images?.[0].url,
-    href: data.body.external_urls.spotify,
-    id: data.body.id,
-    product: data.body.product,
-    followers: data.body.followers,
-    country: data.body.country,
-  };
+  return data.body;
 }
 
 export async function getUserPlaylists(

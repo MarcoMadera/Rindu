@@ -1,10 +1,4 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { refreshAccessTokenRequest } from "../../lib/requests";
-import { SpotifyUserResponse } from "types/spotify";
-import { ACCESSTOKENCOOKIE, REFRESHTOKENCOOKIE } from "../../utils/constants";
-import { takeCookie } from "../../utils/cookies";
-import { validateAccessToken } from "../../utils/validateAccessToken";
-import Router from "next/router";
 import { ContentHeader } from "components/forPlaylistsPage/ContentHeader";
 import { decode } from "html-entities";
 import formatNumber from "utils/formatNumber";
@@ -16,18 +10,22 @@ import { useEffect, useState } from "react";
 import { ExplicitSign } from "components/forPlaylistsPage/CardTrack";
 import { formatTime } from "utils/formatTime";
 import { getTimeAgo } from "utils/getTimeAgo";
+import { getAuth } from "utils/getAuth";
+import { serverRedirect } from "utils/serverRedirect";
+import { getShow } from "utils/spotifyCalls/getShow";
 
-function Header({ show }: { show: SpotifyApi.SingleShowResponse }) {
+function Header({ show }: { show: SpotifyApi.SingleShowResponse | null }) {
+  const showName = show?.name ?? "";
   return (
     <ContentHeader>
-      <img src={show.images[1].url} alt="" />
+      <img src={show?.images[1].url} alt="" />
       <div className="playlistInfo">
         <h2>PODCAST</h2>
-        <h1>{show.name}</h1>
-        <p className="description">{decode(show.publisher)}</p>
+        <h1>{show?.name}</h1>
+        <p className="description">{decode(show?.publisher)}</p>
         <div>
           <p>
-            <span>{formatNumber(show.episodes.total)} episodes</span>
+            <span>{formatNumber(show?.episodes?.total ?? 0)} episodes</span>
           </p>
         </div>
       </div>
@@ -39,14 +37,14 @@ function Header({ show }: { show: SpotifyApi.SingleShowResponse }) {
             pointer-events: none;
             user-select: none;
             padding: 0.08em 0px;
-            font-size: ${show.name.length < 18
+            font-size: ${showName.length < 18
               ? "96px"
-              : show.name.length < 30
+              : showName.length < 30
               ? "72px"
               : "48px"};
-            line-height: ${show.name.length < 20
+            line-height: ${showName.length < 20
               ? "96px"
-              : show.name.length < 30
+              : showName.length < 30
               ? "72px"
               : "48px"};
             visibility: visible;
@@ -127,24 +125,10 @@ function Header({ show }: { show: SpotifyApi.SingleShowResponse }) {
   );
 }
 
-async function getShow(id: string, accessToken: string | undefined) {
-  const res = await fetch(`https://api.spotify.com/v1/shows/${id}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
-      }`,
-    },
-  });
-  const data = await res.json();
-  return data;
-}
-
 interface PlaylistProps {
-  show: SpotifyApi.SingleShowResponse;
+  show: SpotifyApi.SingleShowResponse | null;
   accessToken?: string;
-  user: SpotifyUserResponse | null;
+  user: SpotifyApi.UserObjectPrivate | null;
 }
 
 function EpisodeCard({ item }: { item: SpotifyApi.EpisodeObjectSimplified }) {
@@ -384,7 +368,7 @@ const Playlist: NextPage<PlaylistProps> = ({ show }) => {
     <main>
       <Header show={show} />
       <section>
-        {show.episodes.items.map((item) => {
+        {show?.episodes.items.map((item) => {
           return <EpisodeCard key={item.id} item={item} />;
         })}
       </section>
@@ -414,49 +398,20 @@ export async function getServerSideProps({
   req: NextApiRequest;
   res: NextApiResponse;
 }): Promise<{
-  props: PlaylistProps;
+  props: PlaylistProps | null;
 }> {
-  const cookies = req ? req?.headers?.cookie : undefined;
-  const refreshToken = takeCookie(REFRESHTOKENCOOKIE, cookies);
-  let accessToken = takeCookie(ACCESSTOKENCOOKIE, cookies);
-  const user = await validateAccessToken(accessToken);
-
-  try {
-    if (refreshToken && !user) {
-      const re = await refreshAccessTokenRequest(refreshToken);
-      if (!re.ok) {
-        res.writeHead(307, { Location: "/" });
-        res.end();
-      }
-      const refresh = await re.json();
-      accessToken = refresh.accessToken;
-    } else {
-      accessToken = cookies
-        ? takeCookie(ACCESSTOKENCOOKIE, cookies)
-        : undefined;
-    }
-
-    if (!cookies) {
-      res.writeHead(307, { Location: "/" });
-      res.end();
-    }
-  } catch (error) {
-    console.log(error);
+  const cookies = req?.headers?.cookie;
+  if (!cookies) {
+    serverRedirect(res, "/");
+    return { props: null };
   }
+  const { accessToken, user } = (await getAuth(res, cookies)) || {};
 
   const showData = await getShow(show, accessToken);
 
-  if (!user) {
-    if (res) {
-      res.writeHead(307, { Location: "/" });
-      res.end();
-    } else {
-      Router.replace("/");
-    }
-  }
   return {
     props: {
-      show: showData ?? null,
+      show: showData,
       accessToken,
       user: user ?? null,
     },

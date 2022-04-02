@@ -16,14 +16,14 @@ import Link from "next/link";
 import useAuth from "hooks/useAuth";
 import { playCurrentTrack } from "utils/playCurrentTrack";
 import { takeCookie } from "utils/cookies";
-import { ACCESSTOKENCOOKIE } from "utils/constants";
+import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 
 interface ModalCardTrackProps {
   track: normalTrackTypes;
   accessToken: string | undefined;
   playlistUri: string;
   style?: CSSProperties;
-  isTrackInLibrary: boolean;
+  isTrackInLibrary: boolean | undefined;
   type: "presentation" | "playlist" | "album";
 }
 
@@ -60,7 +60,7 @@ async function saveTracksToLibrary(tracksIds: string[], accessToken?: string) {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${
-        accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
+        accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
       }`,
     },
   });
@@ -77,7 +77,7 @@ async function removeTracksFromLibrary(
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${
-        accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
+        accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
       }`,
     },
   });

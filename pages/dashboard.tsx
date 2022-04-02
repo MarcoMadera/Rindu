@@ -1,26 +1,21 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import Router from "next/router";
 import React, { useEffect } from "react";
 import PresentationCard from "components/forDashboardPage/PlaylistCard";
 import useAuth from "hooks/useAuth";
 import {
-  getAuthorizationByCode,
-  refreshAccessTokenRequest,
-} from "lib/requests";
-import { SpotifyUserResponse } from "types/spotify";
-import {
-  ACCESSTOKENCOOKIE,
-  EXPIRETOKENCOOKIE,
-  REFRESHTOKENCOOKIE,
+  ACCESS_TOKEN_COOKIE,
+  EXPIRE_TOKEN_COOKIE,
+  REFRESH_TOKEN_COOKIE,
 } from "../utils/constants";
-import { takeCookie } from "../utils/cookies";
-import { validateAccessToken } from "../utils/validateAccessToken";
 import useSpotify from "hooks/useSpotify";
 import { decode } from "html-entities";
+import { getAuth } from "utils/getAuth";
+import { serverRedirect } from "utils/serverRedirect";
+import { getAuthorizationByCode } from "utils/spotifyCalls/getAuthorizationByCode";
 
 interface DashboardProps {
-  user: SpotifyUserResponse | null;
-  accessToken: string | undefined;
+  user: SpotifyApi.UserObjectPrivate | null;
+  accessToken: string | null;
 }
 
 const Dashboard: NextPage<DashboardProps> = ({ user }) => {
@@ -89,66 +84,27 @@ export async function getServerSideProps({
   req: NextApiRequest;
   query: { code?: string };
 }): Promise<{
-  props: {
-    user?: SpotifyUserResponse | null;
-  };
+  props: DashboardProps;
 }> {
-  const cookies = req ? req?.headers?.cookie : undefined;
-  const refreshToken = takeCookie(REFRESHTOKENCOOKIE, cookies);
-  let accessToken = takeCookie(ACCESSTOKENCOOKIE, cookies);
-  const user = accessToken ? await validateAccessToken(accessToken) : undefined;
+  const cookies = req?.headers?.cookie ?? "";
 
   if (query.code) {
-    try {
-      const _res = await getAuthorizationByCode(query.code);
-      if (!_res.ok) {
-        res.writeHead(307, { Location: "/" });
-        res.end();
-      }
-      const data = await _res.json();
-      if (data) {
-        res.setHeader("Set-Cookie", [
-          `${ACCESSTOKENCOOKIE}=${data.accessToken}; Path=/;"`,
-          `${REFRESHTOKENCOOKIE}=${data.refreshToken}; Path=/;"`,
-          `${EXPIRETOKENCOOKIE}=${data.expiresIn}; Path=/;"`,
-        ]);
-      }
-      accessToken = data.accessToken;
-    } catch (error) {
-      console.error(error);
+    const tokens = await getAuthorizationByCode(query.code);
+    if (!tokens) {
+      serverRedirect(res, "/");
+    }
+    if (tokens) {
+      res.setHeader("Set-Cookie", [
+        `${ACCESS_TOKEN_COOKIE}=${tokens.accessToken}; Path=/;"`,
+        `${REFRESH_TOKEN_COOKIE}=${tokens.refreshToken}; Path=/;"`,
+        `${EXPIRE_TOKEN_COOKIE}=${tokens.expiresIn}; Path=/;"`,
+      ]);
     }
   }
 
-  try {
-    if (refreshToken && !user) {
-      const re = await refreshAccessTokenRequest(refreshToken);
-      if (!re.ok) {
-        res.writeHead(307, { Location: "/" });
-        res.end();
-      }
-      const refresh = await re.json();
-      accessToken = refresh.accessToken;
-    } else {
-      accessToken = cookies
-        ? takeCookie(ACCESSTOKENCOOKIE, cookies)
-        : undefined;
-    }
+  const { accessToken, user } = (await getAuth(res, cookies)) || {};
 
-    if (!user || !accessToken) {
-      if (res) {
-        res.writeHead(307, { Location: "/" });
-        res.end();
-      } else {
-        Router.replace("/");
-      }
-    }
-    return {
-      props: { user: user || null },
-    };
-  } catch (error) {
-    console.log(error);
-  }
   return {
-    props: {},
+    props: { user: user || null, accessToken: accessToken ?? null },
   };
 }

@@ -8,14 +8,14 @@ import { __isServer__ } from "./constants";
  */
 export function takeCookie(
   cookieName: string | undefined,
-  cookieJar?: string
-): string | undefined {
-  const allCookies = `; ${__isServer__ ? cookieJar : document.cookie}`;
+  cookiesJar?: string
+): string | null {
+  const allCookies = `; ${__isServer__ ? cookiesJar : document.cookie}`;
   const parts = allCookies.split(`; ${cookieName}=`);
   if (parts.length === 2) {
-    return parts.pop()?.split(";").shift();
+    return parts.pop()?.split(";").shift() || null;
   }
-  return;
+  return null;
 }
 
 /**

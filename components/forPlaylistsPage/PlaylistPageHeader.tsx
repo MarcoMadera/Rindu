@@ -6,39 +6,41 @@ import formatNumber from "utils/formatNumber";
 import { ContentHeader } from "./ContentHeader";
 
 export interface PlaylistPageHeaderProps {
-  playlistDetails: SpotifyApi.SinglePlaylistResponse;
+  playlistDetails: SpotifyApi.SinglePlaylistResponse | null;
 }
 
 export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
   playlistDetails,
 }) => {
   const coverImg =
-    playlistDetails.images[0]?.url ??
-    playlistDetails.images[1]?.url ??
+    playlistDetails?.images[0]?.url ??
+    playlistDetails?.images[1]?.url ??
     `${SITE_URL}/defaultSongCover.jpeg`;
+
+  const playlistName = playlistDetails?.name ?? "";
 
   return (
     <ContentHeader>
       <img src={coverImg} alt="" />
       <div className="playlistInfo">
         <h2>PLAYLIST</h2>
-        <h1>{playlistDetails.name}</h1>
-        <p className="description">{decode(playlistDetails.description)}</p>
+        <h1>{playlistDetails?.name}</h1>
+        <p className="description">{decode(playlistDetails?.description)}</p>
         <div>
           <p>
-            <Link href={`/user/${playlistDetails.owner.id}`}>
+            <Link href={`/user/${playlistDetails?.owner.id}`}>
               <a className="userLink">
-                {decode(playlistDetails.owner.display_name)}
+                {decode(playlistDetails?.owner.display_name)}
               </a>
             </Link>
-            {playlistDetails.followers.total > 0 ? (
+            {(playlistDetails?.followers.total ?? 0) > 0 ? (
               <span>
-                &nbsp;&middot; {formatNumber(playlistDetails.followers.total)}{" "}
-                seguidores
+                &nbsp;&middot;{" "}
+                {formatNumber(playlistDetails?.followers.total ?? 0)} seguidores
               </span>
             ) : null}
             <span>
-              &nbsp;&middot; {formatNumber(playlistDetails.tracks.total)}{" "}
+              &nbsp;&middot; {formatNumber(playlistDetails?.tracks.total ?? 0)}{" "}
               canciones
             </span>
           </p>
@@ -52,14 +54,14 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
             pointer-events: none;
             user-select: none;
             padding: 0.08em 0px;
-            font-size: ${playlistDetails.name.length < 18
+            font-size: ${playlistName.length < 18
               ? "96px"
-              : playlistDetails.name.length < 30
+              : playlistName.length < 30
               ? "72px"
               : "48px"};
-            line-height: ${playlistDetails.name.length < 20
+            line-height: ${playlistName.length < 20
               ? "96px"
-              : playlistDetails.name.length < 30
+              : playlistName.length < 30
               ? "72px"
               : "48px"};
             visibility: visible;

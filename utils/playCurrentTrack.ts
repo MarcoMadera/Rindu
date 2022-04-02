@@ -4,13 +4,12 @@ import { Dispatch, SetStateAction } from "react";
 import {
   AllTracksFromAPlayList,
   normalTrackTypes,
-  SpotifyUserResponse,
   trackItem,
 } from "types/spotify";
 
 interface Config {
   allTracks: AllTracksFromAPlayList;
-  user: SpotifyUserResponse | null;
+  user: SpotifyApi.UserObjectPrivate | null;
   accessToken: string | undefined;
   deviceId: string | undefined;
   playlistUri: string | undefined;

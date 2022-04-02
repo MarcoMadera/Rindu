@@ -6,13 +6,12 @@ import {
   useEffect,
   useState,
 } from "react";
-import { SpotifyUserResponse } from "types/spotify";
 
 export interface Context {
   isLogin: boolean;
-  user: SpotifyUserResponse | null;
+  user: SpotifyApi.UserObjectPrivate | null;
   setIsLogin: Dispatch<SetStateAction<boolean>>;
-  setUser: Dispatch<SetStateAction<SpotifyUserResponse | null>>;
+  setUser: Dispatch<SetStateAction<SpotifyApi.UserObjectPrivate | null>>;
   accessToken: string | undefined;
   setAccessToken: Dispatch<SetStateAction<string | undefined>>;
 }
@@ -24,7 +23,7 @@ export default UserContext;
 export const UserContextProvider: React.FC = ({ children }) => {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState<boolean>(false);
-  const [user, setUser] = useState<SpotifyUserResponse | null>(null);
+  const [user, setUser] = useState<SpotifyApi.UserObjectPrivate | null>(null);
   const [accessToken, setAccessToken] = useState<string>();
   useEffect(() => {
     if (router.query.code && isLogin) {

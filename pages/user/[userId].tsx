@@ -1,24 +1,23 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { refreshAccessTokenRequest } from "../../lib/requests";
-import { SpotifyUserResponse } from "types/spotify";
-import { ACCESSTOKENCOOKIE, REFRESHTOKENCOOKIE } from "../../utils/constants";
-import { takeCookie } from "../../utils/cookies";
-import { validateAccessToken } from "../../utils/validateAccessToken";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { ContentHeader } from "components/forPlaylistsPage/ContentHeader";
 import formatNumber from "utils/formatNumber";
 import useAuth from "hooks/useAuth";
 import useAnalitycs from "hooks/useAnalytics";
 import { useEffect } from "react";
+import { serverRedirect } from "utils/serverRedirect";
+import { getAuth } from "utils/getAuth";
+import { getUserById } from "utils/spotifyCalls/getUserById";
+import { getPlaylistsFromUser } from "utils/spotifyCalls/getPlaylistsFromUser";
 
 interface CurrentUserProps {
-  currentUser: SpotifyApi.UserProfileResponse | null;
+  currentUser: SpotifyApi.UserObjectPublic | null;
   accessToken?: string;
-  user: SpotifyUserResponse | null;
-  currentUserPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse;
+  user: SpotifyApi.UserObjectPrivate | null;
+  currentUserPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse | null;
 }
 
-const CurrentUser: NextPage<CurrentUserProps> = ({
+const CurrentUser: NextPage<CurrentUserProps | null> = ({
   currentUser,
   user,
   accessToken,
@@ -63,7 +62,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
                 {formatNumber(currentUser?.followers?.total ?? 0)} seguidores
               </span>
               <span>
-                &nbsp;&middot; {formatNumber(currentUserPlaylists.total ?? 0)}{" "}
+                &nbsp;&middot; {formatNumber(currentUserPlaylists?.total ?? 0)}{" "}
                 playlists publicas
               </span>
             </p>
@@ -144,86 +143,18 @@ export async function getServerSideProps({
   req: NextApiRequest;
   res: NextApiResponse;
 }): Promise<{
-  props: CurrentUserProps;
+  props: CurrentUserProps | null;
 }> {
-  const cookies = req ? req?.headers?.cookie : undefined;
-  const refreshToken = takeCookie(REFRESHTOKENCOOKIE, cookies);
-  let accessToken = takeCookie(ACCESSTOKENCOOKIE, cookies);
-  const user = await validateAccessToken(accessToken);
+  const cookies = req?.headers?.cookie;
 
-  try {
-    if (refreshToken && !user) {
-      const re = await refreshAccessTokenRequest(refreshToken);
-      if (!re.ok) {
-        res.writeHead(307, { Location: "/" });
-        res.end();
-      }
-      const refresh = await re.json();
-      accessToken = refresh.accessToken;
-    } else {
-      accessToken = cookies
-        ? takeCookie(ACCESSTOKENCOOKIE, cookies)
-        : undefined;
-    }
-
-    if (!cookies) {
-      res.writeHead(307, { Location: "/" });
-      res.end();
-    }
-  } catch (error) {
-    console.log(error);
+  if (!cookies) {
+    serverRedirect(res, "/");
+    return { props: null };
   }
 
-  if (!user) {
-    if (res) {
-      res.writeHead(307, { Location: "/" });
-      res.end();
-    } else {
-      Router.replace("/");
-    }
-  }
-
-  async function getCurrentUser(userId: string, accessToken?: string) {
-    if (!accessToken || !userId) {
-      return null;
-    }
-    const res = await fetch(`https://api.spotify.com/v1/users/${userId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
-        }`,
-      },
-    });
-    const data = res.json();
-    return data;
-  }
-  async function getCurrentUserPlaylists(userId: string, accessToken?: string) {
-    if (!accessToken || !userId) {
-      return null;
-    }
-    const res = await fetch(
-      `https://api.spotify.com/v1/users/${userId}/playlists`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${
-            accessToken ? accessToken : takeCookie(ACCESSTOKENCOOKIE)
-          }`,
-        },
-      }
-    );
-    const data = res.json();
-    return data;
-  }
-
-  const currentUser = await getCurrentUser(userId, accessToken);
-  const currentUserPlaylists = await getCurrentUserPlaylists(
-    userId,
-    accessToken
-  );
+  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+  const currentUser = await getUserById(userId, accessToken);
+  const currentUserPlaylists = await getPlaylistsFromUser(userId, accessToken);
 
   return {
     props: {

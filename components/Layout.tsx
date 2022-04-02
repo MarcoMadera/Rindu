@@ -6,9 +6,9 @@ import SideBar from "./SideBar";
 import Header from "./Header";
 import { takeCookie } from "utils/cookies";
 import {
-  ACCESSTOKENCOOKIE,
-  EXPIRETOKENCOOKIE,
-  REFRESHTOKENCOOKIE,
+  ACCESS_TOKEN_COOKIE,
+  EXPIRE_TOKEN_COOKIE,
+  REFRESH_TOKEN_COOKIE,
 } from "utils/constants";
 import { RefreshResponse } from "types/spotify";
 import useAuth from "hooks/useAuth";
@@ -22,10 +22,10 @@ const Layout: React.FC = ({ children }) => {
     if (router.asPath === "/") {
       return;
     }
-    const expireIn = parseInt(takeCookie(EXPIRETOKENCOOKIE) || "3600", 10);
-    setAccessToken(takeCookie(ACCESSTOKENCOOKIE));
+    const expireIn = parseInt(takeCookie(EXPIRE_TOKEN_COOKIE) || "3600", 10);
+    setAccessToken(takeCookie(ACCESS_TOKEN_COOKIE) ?? "");
     const interval = setInterval(async () => {
-      const refreshToken = takeCookie(REFRESHTOKENCOOKIE);
+      const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE);
       if (refreshToken) {
         const res = await fetch("/api/spotify-refresh", {
           method: "POST",
