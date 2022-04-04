@@ -1,3 +1,4 @@
+import useHeader from "hooks/useHeader";
 import React, { ReactElement, ReactNode } from "react";
 
 export function ContentHeader({
@@ -5,9 +6,11 @@ export function ContentHeader({
 }: {
   children: ReactNode;
 }): ReactElement {
+  const { headerColor } = useHeader();
   return (
     <header>
-      <div></div>
+      <div className="b-1"></div>
+      <div className="b-2"></div>
       <section>{children}</section>
       <style jsx>{`
         section {
@@ -29,7 +32,10 @@ export function ContentHeader({
           background: #535353;
           position: relative;
         }
-        div {
+        div.b-1 {
+          background-color: ${headerColor ?? "transparent"};
+        }
+        div.b-2 {
           background: linear-gradient(transparent 0, rgba(0, 0, 0, 0.5) 100%),
             url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
         }

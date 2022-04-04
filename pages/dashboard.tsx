@@ -12,6 +12,8 @@ import { decode } from "html-entities";
 import { getAuth } from "utils/getAuth";
 import { serverRedirect } from "utils/serverRedirect";
 import { getAuthorizationByCode } from "utils/spotifyCalls/getAuthorizationByCode";
+import useHeader from "hooks/useHeader";
+import { useRouter } from "next/router";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -21,6 +23,8 @@ interface DashboardProps {
 const Dashboard: NextPage<DashboardProps> = ({ user }) => {
   const { setIsLogin, setUser } = useAuth();
   const { playlists } = useSpotify();
+  const { setHeaderColor } = useHeader();
+  const router = useRouter();
 
   useEffect(() => {
     setIsLogin(true);
@@ -28,6 +32,10 @@ const Dashboard: NextPage<DashboardProps> = ({ user }) => {
     setUser(user);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
+
+  useEffect(() => {
+    setHeaderColor("#242424");
+  }, [router]);
 
   return (
     <>

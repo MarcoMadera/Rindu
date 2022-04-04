@@ -242,12 +242,14 @@ export default function SearchPage({
   accessToken,
   user,
 }: SearchPageProps): ReactElement {
-  const { setElement } = useHeader({ showOnFixed: true });
+  const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
   const { setUser, setAccessToken } = useAuth();
   const [data, setData] = useState<SearchType | null>(null);
 
   useEffect(() => {
     setElement(() => <InputElement setData={setData} />);
+
+    setHeaderColor("#242424");
 
     return () => {
       setElement(null);

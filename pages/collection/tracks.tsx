@@ -45,8 +45,8 @@ export async function getServerSideProps({
   }
   const { accessToken, user } = (await getAuth(res, cookies)) || {};
 
-  const playListTracks = await getMyLikedSongs();
-  const trackIds = playListTracks?.items.map(({ track }) => track.id);
+  const playListTracks = await getMyLikedSongs(accessToken, cookies);
+  const trackIds = playListTracks?.items?.map(({ track }) => track.id);
   const tracksInLibrary = await checkTracksInLibrary(
     trackIds ?? [],
     accessToken || ""
@@ -76,7 +76,7 @@ export async function getServerSideProps({
       external_urls: { spotify: user?.href ?? "" },
       href: user?.href ?? "",
       type: "user",
-      uri: `spotify:user${user?.id}`,
+      uri: `spotify:user:${user?.id}`,
       display_name: user?.display_name ?? "",
     },
     public: false,

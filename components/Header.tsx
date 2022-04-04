@@ -21,7 +21,7 @@ export default function Header({
   const router = useRouter();
   const appRef = useRef<HTMLDivElement>();
   const { user } = useAuth();
-  const { element, displayOnFixed } = useHeader();
+  const { headerColor, element, displayOnFixed } = useHeader();
   const isPremium = user?.product === "premium";
 
   useEffect(() => {
@@ -137,7 +137,7 @@ export default function Header({
           height: 100%;
         }
         div.background {
-          background-color: #797979;
+          background-color: ${headerColor ?? "#797979"};
           opacity: ${showFixed ? 1 : 0};
           bottom: 0;
           left: 0;

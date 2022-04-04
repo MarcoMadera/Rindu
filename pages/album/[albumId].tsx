@@ -21,6 +21,7 @@ import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import { checkIfUserFollowAlbums } from "utils/spotifyCalls/checkIfUserFollowAlbums";
 import { unFollowAlbums } from "utils/spotifyCalls/unFollowAlbums";
 import { followAlbums } from "utils/spotifyCalls/followAlbums";
+import { getMainColorFromImage } from "utils/getMainColorFromImage";
 
 interface CurrentUserProps {
   album: SpotifyApi.SingleAlbumResponse | null;
@@ -43,7 +44,9 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
   const router = useRouter();
   const [isPin, setIsPin] = useState(false);
   const [isFollowingThisAlbum, setIsFollowingThisAlbum] = useState(false);
-  const { setElement } = useHeader({ showOnFixed: false });
+  const { headerColor, setHeaderColor, setElement } = useHeader({
+    showOnFixed: false,
+  });
 
   useEffect(() => {
     async function fetchData() {
@@ -130,7 +133,16 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
     <main>
       <section>
         <ContentHeader>
-          <img src={album?.images?.[0].url} alt="" />
+          <img
+            src={album?.images?.[0].url}
+            alt=""
+            id="cover-image"
+            onLoad={() => {
+              setHeaderColor(
+                (prev) => getMainColorFromImage("cover-image") ?? prev
+              );
+            }}
+          />
           <div className="info">
             <h2>ALBUM</h2>
             <h1>{album?.name}</h1>
@@ -163,6 +175,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
           </div>
         </ContentHeader>
         <div className="tracksContainer">
+          <div className="bg-12"></div>
           <div className="options">
             <PlayButton size={56} centerSize={28} />
             <div className="info">
@@ -284,19 +297,29 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
         .info button:active {
           transform: scale(1);
         }
+        .bg-12 {
+          background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0, #121212 100%),
+            url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
+          height: 232px;
+          position: absolute;
+          width: 100%;
+          background-color: ${headerColor ?? "transparent"};
+        }
         .options {
           display: flex;
           padding: 24px 0;
           position: relative;
           width: 100%;
           align-items: center;
+          margin: 16px 0;
           flex-direction: row;
+        }
+        .options,
+        .trc {
+          padding: 0 32px;
         }
         .trc {
           margin-bottom: 50px;
-        }
-        .tracksContainer {
-          padding: 0 32px;
         }
         section {
           display: flex;

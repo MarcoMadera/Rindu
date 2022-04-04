@@ -12,14 +12,14 @@ export async function getMyLikedSongs(
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE, cookies)
+          accessToken ?? takeCookie(ACCESS_TOKEN_COOKIE, cookies)
         }`,
       },
     }
   );
   if (res.ok) {
-    const data = await res.json();
-    return data.items;
+    const data: SpotifyApi.PlaylistTrackResponse = await res.json();
+    return data;
   }
   return null;
 }

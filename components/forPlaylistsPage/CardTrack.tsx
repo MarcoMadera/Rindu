@@ -391,7 +391,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
             : "[index] 55px [first] 4fr [last] minmax(120px,1fr)"};
         }
         .trackItem:hover {
-          background-color: #202020;
+          background-color: rgba(255, 255, 255, 0.1);
         }
         .trackItem:focus {
           background-color: #ffffff4d;

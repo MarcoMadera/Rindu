@@ -6,6 +6,7 @@ import useAuth from "hooks/useAuth";
 import { serverRedirect } from "utils/serverRedirect";
 import { getAuth } from "utils/getAuth";
 import { getCategoryPlaylists } from "utils/spotifyCalls/getCategoryPlaylists";
+import useHeader from "hooks/useHeader";
 
 interface CategoryProps {
   playlists: SpotifyApi.PagingObject<SpotifyApi.PlaylistObjectSimplified> | null;
@@ -19,6 +20,11 @@ export default function Category({
   user,
 }: CategoryProps): ReactElement {
   const { setAccessToken, setUser } = useAuth();
+  const { setHeaderColor } = useHeader();
+
+  useEffect(() => {
+    setHeaderColor("#242424");
+  }, []);
 
   useEffect(() => {
     if (accessToken) {

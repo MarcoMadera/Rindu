@@ -13,6 +13,8 @@ import { getTimeAgo } from "utils/getTimeAgo";
 import { getAuth } from "utils/getAuth";
 import { serverRedirect } from "utils/serverRedirect";
 import { getShow } from "utils/spotifyCalls/getShow";
+import useHeader from "hooks/useHeader";
+import { getMainColorFromImage } from "utils/getMainColorFromImage";
 
 function Header({ show }: { show: SpotifyApi.SingleShowResponse | null }) {
   const showName = show?.name ?? "";
@@ -134,6 +136,7 @@ interface PlaylistProps {
 function EpisodeCard({ item }: { item: SpotifyApi.EpisodeObjectSimplified }) {
   const [currrentlyPlaying, setCurrrentlyPlaying] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const { setHeaderColor } = useHeader();
 
   useEffect(() => {
     setCurrrentlyPlaying(false);
@@ -144,7 +147,16 @@ function EpisodeCard({ item }: { item: SpotifyApi.EpisodeObjectSimplified }) {
     <div className="episodeCard">
       <div className="coverImage">
         <div>
-          <img src={item.images[1].url} alt={item.name} />
+          <img
+            src={item.images[1].url}
+            alt={item.name}
+            id="cover-image"
+            onLoad={() => {
+              setHeaderColor(
+                (prev) => getMainColorFromImage("cover-image") ?? prev
+              );
+            }}
+          />
         </div>
       </div>
       <div className="header">

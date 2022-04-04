@@ -12,11 +12,19 @@ export default function useHeader(
 ): {
   element: ReactElement | null;
   setDisplayOnFixed: Dispatch<SetStateAction<boolean>>;
+  headerColor: string;
+  setHeaderColor: Dispatch<SetStateAction<string>>;
   displayOnFixed: boolean;
   setElement: Dispatch<SetStateAction<ReactElement | null>>;
 } {
-  const { element, setElement, setDisplayOnFixed, displayOnFixed } =
-    useContext(HeaderContext);
+  const {
+    element,
+    setElement,
+    setDisplayOnFixed,
+    displayOnFixed,
+    headerColor,
+    setHeaderColor,
+  } = useContext(HeaderContext);
 
   useEffect(() => {
     if (options?.showOnFixed) {
@@ -29,5 +37,12 @@ export default function useHeader(
     };
   }, [options?.showOnFixed, setDisplayOnFixed, setElement]);
 
-  return { element, setElement, setDisplayOnFixed, displayOnFixed };
+  return {
+    element,
+    setElement,
+    setDisplayOnFixed,
+    displayOnFixed,
+    headerColor,
+    setHeaderColor,
+  };
 }

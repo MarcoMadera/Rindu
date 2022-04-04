@@ -4,6 +4,8 @@ import { SITE_URL } from "../../utils/constants";
 import Link from "next/link";
 import formatNumber from "utils/formatNumber";
 import { ContentHeader } from "./ContentHeader";
+import useHeader from "hooks/useHeader";
+import { getMainColorFromImage } from "utils/getMainColorFromImage";
 
 export interface PlaylistPageHeaderProps {
   playlistDetails: SpotifyApi.SinglePlaylistResponse | null;
@@ -12,6 +14,7 @@ export interface PlaylistPageHeaderProps {
 export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
   playlistDetails,
 }) => {
+  const { setHeaderColor } = useHeader();
   const coverImg =
     playlistDetails?.images[0]?.url ??
     playlistDetails?.images[1]?.url ??
@@ -21,7 +24,16 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
 
   return (
     <ContentHeader>
-      <img src={coverImg} alt="" />
+      <img
+        src={coverImg}
+        alt=""
+        id="cover-image"
+        onLoad={() => {
+          setHeaderColor(
+            (prev) => getMainColorFromImage("cover-image") ?? prev
+          );
+        }}
+      />
       <div className="playlistInfo">
         <h2>PLAYLIST</h2>
         <h1>{playlistDetails?.name}</h1>

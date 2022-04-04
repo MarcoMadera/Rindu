@@ -6,7 +6,7 @@ import useSpotify from "hooks/useSpotify";
 import PresentationCard from "components/forDashboardPage/PlaylistCard";
 import { decode } from "html-entities";
 export default function CollectionPlaylists(): ReactElement {
-  const { setElement } = useHeader({ showOnFixed: true });
+  const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
   const { playlists } = useSpotify();
 
   useEffect(() => {
@@ -46,6 +46,8 @@ export default function CollectionPlaylists(): ReactElement {
         </div>
       );
     });
+
+    setHeaderColor("#242424");
 
     return () => {
       setElement(null);

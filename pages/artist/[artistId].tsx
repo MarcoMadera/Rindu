@@ -8,6 +8,8 @@ import { useEffect } from "react";
 import { serverRedirect } from "utils/serverRedirect";
 import { getAuth } from "utils/getAuth";
 import { getArtistById } from "utils/spotifyCalls/getArtistById";
+import { getMainColorFromImage } from "utils/getMainColorFromImage";
+import useHeader from "hooks/useHeader";
 
 interface CurrentUserProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
@@ -22,6 +24,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
 }) => {
   const { setIsLogin, setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalitycs } = useAnalitycs();
+  const { setHeaderColor } = useHeader();
   const router = useRouter();
 
   useEffect(() => {
@@ -49,7 +52,16 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
   return (
     <main>
       <ContentHeader>
-        <img src={currentArtist?.images?.[0].url} alt="" />
+        <img
+          src={currentArtist?.images?.[0].url}
+          alt=""
+          id="cover-image"
+          onLoad={() => {
+            setHeaderColor(
+              (prev) => getMainColorFromImage("cover-image") ?? prev
+            );
+          }}
+        />
         <div className="info">
           <h2>ARTIST</h2>
           <h1>{currentArtist?.name}</h1>
@@ -123,6 +135,8 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
           margin-inline-end: 24px;
           min-width: 232px;
           width: 232px;
+          object-fit: cover;
+          object-position: center center;
         }
       `}</style>
     </main>

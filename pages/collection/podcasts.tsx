@@ -55,7 +55,7 @@ async function getAllAlbums(accessToken: string) {
 }
 
 export default function CollectionPlaylists(): ReactElement {
-  const { setElement } = useHeader({ showOnFixed: true });
+  const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
   const { accessToken } = useAuth();
   const [shows, setShows] = useState<SpotifyApi.SavedShowObject[]>([]);
 
@@ -96,6 +96,8 @@ export default function CollectionPlaylists(): ReactElement {
         </div>
       );
     });
+
+    setHeaderColor("#242424");
 
     return () => {
       setElement(null);

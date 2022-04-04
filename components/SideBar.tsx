@@ -146,6 +146,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
           }
           section {
             overflow-y: auto;
+            overflow-x: hidden;
             width: 100%;
           }
           section:nth-of-type(1) {
