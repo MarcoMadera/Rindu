@@ -34,7 +34,6 @@ export function getMainColorFromImage(imageId: string) {
   ctx?.drawImage(img, 0, 0);
   const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height);
   const rgb = getAverageRGB(imageData);
-  console.log("rroot", rgb);
   var luma = 0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b;
 
   if (luma < 30) {

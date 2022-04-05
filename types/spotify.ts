@@ -59,7 +59,7 @@ export type normalTrackTypes = {
   album: Album;
   added_at?: string;
   type: "track" | "episode" | "ad";
-  media_type: "audio" | "video";
+  media_type?: "audio" | "video";
   is_playable?: boolean | undefined;
   is_local?: boolean;
 };
