@@ -1,16 +1,17 @@
 import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 import { takeCookie } from "utils/cookies";
 
-export async function getCategories(
+export async function getFeaturedPlaylists(
   country: string,
-  limit?: number,
+  limit: number,
   accessToken?: string,
   cookies?: string
-): Promise<SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null> {
+): Promise<SpotifyApi.ListOfFeaturedPlaylistsResponse | null> {
+  if (!accessToken) {
+    return null;
+  }
   const res = await fetch(
-    `https://api.spotify.com/v1/browse/categories?country=${country}&limit=${
-      limit ?? 5
-    }&offset=0`,
+    `https://api.spotify.com/v1/browse/featured-playlists?country=${country}&limit=${limit}`,
     {
       method: "GET",
       headers: {
@@ -21,10 +22,9 @@ export async function getCategories(
       },
     }
   );
-
   if (res.ok) {
-    const data: SpotifyApi.MultipleCategoriesResponse = await res.json();
-    return data.categories as SpotifyApi.PagingObject<SpotifyApi.CategoryObject>;
+    const data: SpotifyApi.ListOfFeaturedPlaylistsResponse = await res.json();
+    return data;
   }
   return null;
 }

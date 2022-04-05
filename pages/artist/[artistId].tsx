@@ -81,7 +81,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
     ).then((res) => {
       setIsFollowingThisArtist(res);
     });
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     setElement(() => <ExtraHeader />);

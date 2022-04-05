@@ -5,7 +5,7 @@ interface CardContentProps {
   images?: SpotifyApi.ImageObject[];
   title: string;
   subTitle: string;
-  type: "playlist" | "album" | "artist" | "user" | "show";
+  type: "playlist" | "album" | "artist" | "user" | "show" | "genre";
 }
 export const CardContent: React.FC<CardContentProps> = ({
   type,

@@ -164,7 +164,7 @@ function InputElement({ setData }: InputElementProps) {
 }
 
 interface SearchPageProps {
-  categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject>;
+  categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
   accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
 }
@@ -303,7 +303,7 @@ export default function SearchPage({
                 </Link>
                 <div className="trackSearch">
                   {data.tracks?.items?.map((track, i) => {
-                    if (i > 3) {
+                    if (i === 0 || i > 4) {
                       return null;
                     }
                     return (
@@ -401,7 +401,7 @@ export default function SearchPage({
         <>
           <h2>Browse All</h2>
           <div className="browse">
-            {categories.items.map(({ name, id, icons }, i) => {
+            {categories?.items.map(({ name, id, icons }, i) => {
               return (
                 <Link key={id} href={`/genre/${id}`}>
                   <a style={{ backgroundColor: cardBackgroundColors[i] }}>
@@ -446,7 +446,7 @@ export default function SearchPage({
         }
         .tracks {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: 50% 50%;
           width: 100%;
           grid-gap: 20px;
           margin: 10px 0 30px;
@@ -555,7 +555,12 @@ export async function getServerSideProps({
     return { props: null };
   }
   const { accessToken, user } = (await getAuth(res, cookies)) || {};
-  const categories = await getCategories(accessToken, cookies);
+  const categories = await getCategories(
+    user?.country ?? "US",
+    50,
+    accessToken,
+    cookies
+  );
 
   return {
     props: {

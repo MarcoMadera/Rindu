@@ -3,7 +3,7 @@ import Link from "next/link";
 import { MutableRefObject, useRef } from "react";
 
 interface PresentationCardProps {
-  type: "playlist" | "album" | "artist" | "user" | "show";
+  type: "playlist" | "album" | "artist" | "user" | "show" | "genre";
   id: string;
   images?: SpotifyApi.ImageObject[];
   title: string;

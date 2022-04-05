@@ -3,7 +3,7 @@ export default function LoginButton() {
   const SPOTIFY_REDIRECT_URL = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URL;
   const API_AUTH_URL = "https://accounts.spotify.com/authorize?";
   const scopes =
-    "streaming,user-read-email,user-follow-read,user-follow-modify,playlist-read-private,user-read-private,user-library-read,user-library-modify,user-read-playback-state,user-modify-playback-state,playlist-modify-private,playlist-modify-public";
+    "user-top-read,streaming,user-read-email,user-follow-read,user-follow-modify,playlist-read-private,user-read-private,user-library-read,user-library-modify,user-read-playback-state,user-modify-playback-state,playlist-modify-private,playlist-modify-public";
   const paramsData = {
     client_id: SPOTIFY_CLIENT_ID || "",
     response_type: "code",
