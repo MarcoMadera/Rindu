@@ -1,4 +1,6 @@
-export default function LoginButton() {
+import { ReactElement } from "react";
+
+export default function LoginButton(): ReactElement {
   const SPOTIFY_CLIENT_ID = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
   const SPOTIFY_REDIRECT_URL = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URL;
   const API_AUTH_URL = "https://accounts.spotify.com/authorize?";
@@ -42,6 +44,11 @@ export default function LoginButton() {
         }
         a:active {
           transform: scale(1);
+        }
+        @media screen and (min-width: 0px) and (max-width: 780px) {
+          a {
+            padding: 8px 24px;
+          }
         }
       `}</style>
     </>

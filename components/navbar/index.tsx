@@ -41,6 +41,14 @@ const Navbar: React.FC = () => {
             align-items: center;
             margin: 0 auto;
           }
+          @media screen and (min-width: 0px) and (max-width: 780px) {
+            header {
+              padding: 0;
+            }
+            div {
+              padding: 15px;
+            }
+          }
         `}</style>
       </header>
     );

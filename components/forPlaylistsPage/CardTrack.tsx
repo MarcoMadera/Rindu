@@ -15,8 +15,8 @@ import { formatTime } from "utils/formatTime";
 import Link from "next/link";
 import useAuth from "hooks/useAuth";
 import { playCurrentTrack } from "utils/playCurrentTrack";
-import { takeCookie } from "utils/cookies";
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
+import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibrary";
+import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
 
 interface ModalCardTrackProps {
   track: normalTrackTypes;
@@ -52,37 +52,6 @@ export const ExplicitSign: React.FC = () => {
     </div>
   );
 };
-
-async function saveTracksToLibrary(tracksIds: string[], accessToken?: string) {
-  const ids = tracksIds.join();
-  const res = await fetch(`https://api.spotify.com/v1/me/tracks?ids=${ids}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
-      }`,
-    },
-  });
-  return res.ok;
-}
-
-async function removeTracksFromLibrary(
-  tracksIds: string[],
-  accessToken?: string
-) {
-  const ids = tracksIds.join();
-  const res = await fetch(`https://api.spotify.com/v1/me/tracks?ids=${ids}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
-      }`,
-    },
-  });
-  return res.ok;
-}
 
 const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   accessToken,
@@ -204,6 +173,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       </button>
       <section>
         {type !== "presentation" && track?.images ? (
+          //  eslint-disable-next-line @next/next/no-img-element
           <img
             loading="lazy"
             src={track?.images[2]?.url ?? track?.images[1]?.url}
@@ -279,7 +249,9 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
             <Heart />
           ) : (mouseEnter || isFocusing) && !track.is_local ? (
             <HeartShape fill={isHoveringHeart ? "#fff" : "#ffffffb3"} />
-          ) : null}
+          ) : (
+            <div style={{ width: "16px" }}></div>
+          )}
         </button>
         <p className="trackArtists time">
           {track?.duration ? formatTime((track?.duration || 0) / 1000) : ""}
@@ -372,7 +344,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           width: 100%;
           height: 65px;
           background-color: ${isTheSameAsCurrentlyPlaying
-            ? "#202020"
+            ? "#2020204d"
             : "transparent"};
           margin: 0;
           padding: 0;

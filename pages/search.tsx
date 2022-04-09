@@ -8,7 +8,6 @@ import {
   useState,
   Dispatch,
   SetStateAction,
-  Fragment,
 } from "react";
 import Search from "components/icons/Search";
 import { takeCookie } from "utils/cookies";
@@ -22,6 +21,7 @@ import { decode } from "html-entities";
 import { getAuth } from "utils/getAuth";
 import { getCategories } from "utils/spotifyCalls/getCategories";
 import { serverRedirect } from "utils/serverRedirect";
+import FirstTrackContainer from "components/FirstTrackContainer";
 
 async function search(query: string, accessToken?: string) {
   const q = query.replaceAll(" ", "+");
@@ -254,7 +254,7 @@ export default function SearchPage({
     return () => {
       setElement(null);
     };
-  }, [setElement]);
+  }, [setElement, setHeaderColor]);
 
   useEffect(() => {
     if (accessToken) {
@@ -274,33 +274,12 @@ export default function SearchPage({
             <>
               <h2>Canciones</h2>
               <section className="tracks">
-                <Link href={`/album/${data.tracks.items[0].album.id}`}>
-                  <a className="firstTrack">
-                    <img
-                      src={data.tracks.items[0].album.images[1].url}
-                      width={92}
-                      height={92}
-                      alt=""
-                    />
-                    <h3>{data.tracks.items[0].name}</h3>
-                    <span className="trackArtists">
-                      {data.tracks.items[0].artists?.map((artist, i) => {
-                        return (
-                          <Fragment key={artist.id}>
-                            <Link href={`/artist/${artist.id}`}>
-                              <a>{artist.name}</a>
-                            </Link>
-                            {i !==
-                            (data.tracks.items[0].artists?.length &&
-                              data.tracks.items[0].artists?.length - 1)
-                              ? ", "
-                              : null}
-                          </Fragment>
-                        );
-                      })}
-                    </span>
-                  </a>
-                </Link>
+                <FirstTrackContainer
+                  track={data.tracks.items[0]}
+                  preview={data.tracks.items[0].preview_url}
+                  backgroundColor={"#181818"}
+                />
+
                 <div className="trackSearch">
                   {data.tracks?.items?.map((track, i) => {
                     if (i === 0 || i > 4) {
@@ -405,6 +384,7 @@ export default function SearchPage({
               return (
                 <Link key={id} href={`/genre/${id}`}>
                   <a style={{ backgroundColor: cardBackgroundColors[i] }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={icons[0].url} alt={name} />
                     <h3>{name}</h3>
                   </a>
@@ -446,42 +426,10 @@ export default function SearchPage({
         }
         .tracks {
           display: grid;
-          grid-template-columns: 50% 50%;
+          grid-template-columns: 49% 49%;
           width: 100%;
           grid-gap: 20px;
           margin: 10px 0 30px;
-        }
-        .firstTrack {
-          background: #181818;
-          border-radius: 4px;
-          flex: 1;
-          isolation: isolate;
-          padding: 20px;
-          position: relative;
-          transition: background-color 0.3s ease;
-          width: 100%;
-          height: 260px;
-          text-decoration: none;
-        }
-        .firstTrack h3 {
-          font-size: 32px;
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 36px;
-          text-transform: none;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          color: #fff;
-        }
-        .firstTrack a {
-          color: #b3b3b3;
-          text-decoration: none;
-        }
-        .firstTrack a:hover,
-        .firstTrack a:focus {
-          text-decoration: underline;
-          color: #fff;
         }
         .trackItem {
           display: grid;

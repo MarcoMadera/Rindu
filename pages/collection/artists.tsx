@@ -67,7 +67,7 @@ export default function CollectionPlaylists(): ReactElement {
     return () => {
       setElement(null);
     };
-  }, [setElement]);
+  }, [setElement, setHeaderColor]);
 
   useEffect(() => {
     if (!accessToken) return;

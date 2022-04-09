@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import PresentationCard from "components/forDashboardPage/PlaylistCard";
 import useAuth from "hooks/useAuth";
 import {
@@ -15,11 +15,12 @@ import useHeader from "hooks/useHeader";
 import { useRouter } from "next/router";
 import { getRecommendations } from "utils/spotifyCalls/getRecommendations";
 import { getMyTopTracks } from "utils/spotifyCalls/getMyTopTracks";
-import Link from "next/link";
 import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
 import { getFeaturedPlaylists } from "utils/spotifyCalls/getFeaturedPlaylists";
 import { getNewReleases } from "utils/spotifyCalls/getNewReleases";
 import { getCategories } from "utils/spotifyCalls/getCategories";
+import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
+import FirstTrackContainer from "components/FirstTrackContainer";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -42,6 +43,7 @@ const Dashboard: NextPage<DashboardProps> = ({
   const [tracksRecommendations, setTracksRecommendations] = useState<
     SpotifyApi.TrackObjectFull[] | null
   >([]);
+  const [tracksInLibrary, setTracksInLibrary] = useState<boolean[] | null>([]);
 
   useEffect(() => {
     setIsLogin(true);
@@ -50,9 +52,17 @@ const Dashboard: NextPage<DashboardProps> = ({
     getMyTopTracks(accessToken, 5).then((res) => {
       const seed_tracks = res?.items?.map((item) => item.id) ?? [];
       if (seed_tracks.length > 0) {
-        getRecommendations(seed_tracks, accessToken).then(
-          setTracksRecommendations
-        );
+        getRecommendations(seed_tracks, accessToken)
+          .then((res) => {
+            setTracksRecommendations(res);
+            return res;
+          })
+          .then((res) => {
+            const tracks = res?.map((item) => item.id) ?? [];
+            checkTracksInLibrary(tracks, accessToken ?? "").then(
+              setTracksInLibrary
+            );
+          });
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,7 +70,7 @@ const Dashboard: NextPage<DashboardProps> = ({
 
   useEffect(() => {
     setHeaderColor("#242424");
-  }, [router]);
+  }, [router, setHeaderColor]);
 
   return (
     <>
@@ -115,60 +125,41 @@ const Dashboard: NextPage<DashboardProps> = ({
             </section>
           </>
         ) : null}
-        <h2>Te van a gustar</h2>
         {tracksRecommendations && tracksRecommendations?.length > 0 && (
-          <section className="tracks">
-            <Link href={`/album/${tracksRecommendations?.[0].album.id}`}>
-              <a className="firstTrack">
-                <img
-                  src={tracksRecommendations?.[0].album.images[1].url}
-                  width={92}
-                  height={92}
-                  alt=""
-                />
-                <h3>{tracksRecommendations?.[0].name}</h3>
-                <span>
-                  {tracksRecommendations?.[0].artists?.map((artist, i) => {
-                    return (
-                      <Fragment key={artist.id}>
-                        <Link href={`/artist/${artist.id}`}>
-                          <a>{artist.name}</a>
-                        </Link>
-                        {i !==
-                        (tracksRecommendations?.[0].artists?.length &&
-                          tracksRecommendations?.[0].artists?.length - 1)
-                          ? ", "
-                          : null}
-                      </Fragment>
-                    );
-                  })}
-                </span>
-              </a>
-            </Link>
-            <div className="trackSearch">
-              {tracksRecommendations?.map((track, i) => {
-                if (i === 0 || i > 4) {
-                  return null;
-                }
-                return (
-                  <ModalCardTrack
-                    accessToken={accessToken ?? ""}
-                    isTrackInLibrary={false}
-                    playlistUri=""
-                    track={{
-                      ...track,
-                      media_type: "audio",
-                      audio: track.preview_url,
-                      images: track.album.images,
-                      duration: track.duration_ms,
-                    }}
-                    key={track.id}
-                    type="presentation"
-                  />
-                );
-              })}
-            </div>
-          </section>
+          <>
+            <h2>Te van a gustar</h2>
+            <section className="tracks">
+              <FirstTrackContainer
+                track={tracksRecommendations?.[0]}
+                preview={tracksRecommendations?.[0].preview_url}
+                backgroundColor={"#3d3a1d"}
+              />
+
+              <div className="trackSearch">
+                {tracksRecommendations?.map((track, i) => {
+                  if (i === 0 || i > 4) {
+                    return null;
+                  }
+                  return (
+                    <ModalCardTrack
+                      accessToken={accessToken ?? ""}
+                      isTrackInLibrary={tracksInLibrary?.[i] ?? false}
+                      playlistUri=""
+                      track={{
+                        ...track,
+                        media_type: "audio",
+                        audio: track.preview_url,
+                        images: track.album.images,
+                        duration: track.duration_ms,
+                      }}
+                      key={track.id}
+                      type="presentation"
+                    />
+                  );
+                })}
+              </div>
+            </section>
+          </>
         )}
         <h2>Categorias</h2>
         <section className="playlists">
@@ -195,7 +186,7 @@ const Dashboard: NextPage<DashboardProps> = ({
         }
         .tracks {
           display: grid;
-          grid-template-columns: 50% 50%;
+          grid-template-columns: 49% 49%;
           width: 100%;
           grid-gap: 20px;
           margin: 10px 0 30px;
@@ -211,38 +202,6 @@ const Dashboard: NextPage<DashboardProps> = ({
           grid-gap: 24px;
           margin: 20px 0 50px 0;
           justify-content: space-between;
-        }
-        .firstTrack {
-          background: #3d3a1d;
-          border-radius: 4px;
-          flex: 1;
-          isolation: isolate;
-          padding: 20px;
-          position: relative;
-          transition: background-color 0.3s ease;
-          width: 100%;
-          height: 260px;
-          text-decoration: none;
-        }
-        .firstTrack h3 {
-          font-size: 32px;
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 36px;
-          text-transform: none;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          color: #fff;
-        }
-        .firstTrack a {
-          color: #b3b3b3;
-          text-decoration: none;
-        }
-        .firstTrack a:hover,
-        .firstTrack a:focus {
-          text-decoration: underline;
-          color: #fff;
         }
       `}</style>
     </>

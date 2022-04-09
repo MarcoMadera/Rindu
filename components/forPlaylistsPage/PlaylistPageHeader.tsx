@@ -24,6 +24,7 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
 
   return (
     <ContentHeader>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={coverImg}
         alt=""

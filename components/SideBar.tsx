@@ -47,7 +47,7 @@ async function getAllPlaylists(accessToken: string) {
     if (restPlaylistsData) {
       restPlaylistsData = {
         ...restPlaylistsData,
-        items: [...restPlaylistsData?.items, ...resPlaylistsData.items],
+        items: [...restPlaylistsData.items, ...resPlaylistsData.items],
       };
     } else {
       restPlaylistsData = resPlaylistsData;
@@ -64,7 +64,7 @@ async function getAllPlaylists(accessToken: string) {
 }
 
 export default function SideBar({ children }: SideBarProps): ReactElement {
-  const { playlists, setPlaylists } = useSpotify();
+  const { playlists, setPlaylists, playlistPlayingId } = useSpotify();
   const { accessToken } = useAuth();
   const router = useRouter();
 
@@ -127,7 +127,9 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
             {playlists?.map(({ id, name }) => {
               return (
                 <Link key={id} href={`/playlist/${encodeURIComponent(id)}`}>
-                  <a>{name}</a>
+                  <a className={playlistPlayingId === id ? "green" : ""}>
+                    {name}
+                  </a>
                 </Link>
               );
             })}
@@ -143,6 +145,9 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
             height: 100%;
             display: grid;
             grid-template-rows: 86px 130px 120px 10fr;
+          }
+          .green {
+            color: #1db954;
           }
           section {
             overflow-y: auto;

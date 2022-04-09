@@ -38,7 +38,7 @@ async function getAllAlbums(accessToken: string) {
     if (restAlbumsData) {
       restAlbumsData = {
         ...restAlbumsData,
-        items: [...restAlbumsData?.items, ...resAlbumsData.items],
+        items: [...restAlbumsData.items, ...resAlbumsData.items],
       };
     } else {
       restAlbumsData = resAlbumsData;

@@ -24,7 +24,7 @@ export default function Category({
 
   useEffect(() => {
     setHeaderColor("#242424");
-  }, []);
+  }, [setHeaderColor]);
 
   useEffect(() => {
     if (accessToken) {

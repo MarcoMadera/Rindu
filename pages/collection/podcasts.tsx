@@ -38,7 +38,7 @@ async function getAllAlbums(accessToken: string) {
     if (restAlbumsData) {
       restAlbumsData = {
         ...restAlbumsData,
-        items: [...restAlbumsData?.items, ...resAlbumsData.items],
+        items: [...restAlbumsData.items, ...resAlbumsData.items],
       };
     } else {
       restAlbumsData = resAlbumsData;
@@ -102,7 +102,7 @@ export default function CollectionPlaylists(): ReactElement {
     return () => {
       setElement(null);
     };
-  }, [setElement]);
+  }, [setElement, setHeaderColor]);
 
   useEffect(() => {
     if (!accessToken) return;

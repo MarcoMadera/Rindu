@@ -20,6 +20,7 @@ function Header({ show }: { show: SpotifyApi.SingleShowResponse | null }) {
   const showName = show?.name ?? "";
   return (
     <ContentHeader>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={show?.images[1].url} alt="" />
       <div className="playlistInfo">
         <h2>PODCAST</h2>
@@ -147,6 +148,7 @@ function EpisodeCard({ item }: { item: SpotifyApi.EpisodeObjectSimplified }) {
     <div className="episodeCard">
       <div className="coverImage">
         <div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={item.images[1].url}
             alt={item.name}

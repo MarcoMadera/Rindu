@@ -18,6 +18,11 @@ export default function Logo({ color }: { color: string }): ReactElement {
           margin: 0;
           text-decoration: none;
         }
+        @media screen and (min-width: 0px) and (max-width: 780px) {
+          a {
+            width: 124px;
+          }
+        }
       `}</style>
     </>
   );

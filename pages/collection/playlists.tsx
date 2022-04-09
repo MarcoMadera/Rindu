@@ -52,7 +52,7 @@ export default function CollectionPlaylists(): ReactElement {
     return () => {
       setElement(null);
     };
-  }, [setElement]);
+  }, [setElement, setHeaderColor]);
 
   return (
     <main>

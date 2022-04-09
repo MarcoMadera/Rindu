@@ -41,6 +41,7 @@ const Home: NextPage<HomeProps> = () => {
   return (
     <main>
       <section className="hero">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://res.cloudinary.com/marcomadera/image/upload/v1645938502/Spotify-Cleaner-App/Mu1_ytmhg5.jpg"
           alt=""
@@ -62,6 +63,7 @@ const Home: NextPage<HomeProps> = () => {
         className="sec-full"
         style={{ backgroundColor: "rgb(253, 186, 239)" }}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://res.cloudinary.com/marcomadera/image/upload/v1645938505/Spotify-Cleaner-App/Mu2_viopob.jpg"
           alt=""
@@ -97,6 +99,7 @@ const Home: NextPage<HomeProps> = () => {
             Descubre como
           </a>
         </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://res.cloudinary.com/marcomadera/image/upload/v1645938507/Spotify-Cleaner-App/Mu3_xbb08n.jpg"
           alt=""
@@ -108,6 +111,7 @@ const Home: NextPage<HomeProps> = () => {
         className="sec-full"
         style={{ backgroundColor: "rgb(253, 186, 239)" }}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://res.cloudinary.com/marcomadera/image/upload/v1645938509/Spotify-Cleaner-App/Mu4_vigcfb.jpg"
           alt=""
@@ -139,6 +143,7 @@ const Home: NextPage<HomeProps> = () => {
             Descubre como
           </a>
         </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://res.cloudinary.com/marcomadera/image/upload/v1645938516/Spotify-Cleaner-App/Mu5_n7u3cf.jpg"
           alt=""
@@ -295,6 +300,56 @@ const Home: NextPage<HomeProps> = () => {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
             position: relative;
+          }
+          @media screen and (min-width: 0px) and (max-width: 1100px) {
+            .hero,
+            .info,
+            section.sec-full {
+              display: block;
+            }
+            .sec-full img,
+            .hero img {
+              transform: translateY(0px);
+            }
+            .hero-title {
+              margin: 0;
+            }
+            .hero-title h1 {
+              font-size: 40px;
+              line-height: 40px;
+              max-width: fit-content;
+              margin-left: 0;
+              padding: 10px;
+            }
+            .hero-title {
+              height: auto;
+              padding: 40px 0;
+              margin-top: -10px;
+            }
+            .info h2 {
+              font-size: 1.4rem;
+              line-height: 2.4rem;
+            }
+            .info p {
+              font-size: 20px;
+            }
+            .info {
+              padding: 10px;
+            }
+            section.sec-full {
+              padding: 20px;
+            }
+            section.sec-full img {
+              width: 100%;
+            }
+            div.sec-desc {
+              margin: 20px 0;
+              padding: 0 15px;
+            }
+            .sec-full > :nth-child(2) {
+              margin: 20px 0;
+              padding: 0 15px;
+            }
           }
           @media screen and (min-width: 1000px) {
             .hero {

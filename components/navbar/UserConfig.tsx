@@ -48,6 +48,7 @@ const UserConfig: React.FC<UserConfigProps> = ({ name, img }) => {
           e.stopPropagation();
         }}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={img} alt={name} />
         <p>{name}</p>
         <svg height="16" width="16" fill="#fff" viewBox="0 0 16 16">

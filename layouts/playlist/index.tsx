@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { normalTrackTypes } from "types/spotify";
 import { PlaylistPageHeader } from "../../components/forPlaylistsPage/PlaylistPageHeader";
 import useAnalitycs from "../../hooks/useAnalytics";
@@ -11,7 +11,7 @@ import useHeader from "hooks/useHeader";
 import { PlayButton } from "../../components/forPlaylistsPage/PlayButton";
 import Titles from "components/forPlaylistsPage/Titles";
 import List from "layouts/playlist/List";
-import { Flask } from "components/icons/Flask";
+import { Broom } from "components/icons/Broom";
 import RemoveTracksModal from "components/removeTrackModal";
 import { ExtraHeader } from "./ExtraHeader";
 import { Heart, HeartShape } from "components/icons/Heart";
@@ -103,7 +103,8 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
   const [openModal, setOpenModal] = useState(false);
   const isMyPlaylist = playlistDetails?.owner.id === user?.id;
   const [isFollowingThisPlaylist, setIsFollowingThisPlaylist] = useState(false);
-  const tracks = playListTracks?.tracks ?? [];
+
+  const tracks = useMemo(() => playListTracks?.tracks ?? [], [playListTracks]);
 
   useEffect(() => {
     if (isMyPlaylist) {
@@ -144,6 +145,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
     user,
     router,
     setAllTracks,
+    tracks,
   ]);
 
   useEffect(() => {
@@ -223,7 +225,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
                 }}
               >
                 {isMyPlaylist ? (
-                  <Flask width={32} height={32} />
+                  <Broom width={32} height={32} />
                 ) : isFollowingThisPlaylist ? (
                   <Heart width={36} height={36} />
                 ) : (

@@ -55,6 +55,7 @@ const CurrentUser: NextPage<CurrentUserProps | null> = ({
   return (
     <main>
       <ContentHeader>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={currentUser?.images?.[0].url}
           alt=""

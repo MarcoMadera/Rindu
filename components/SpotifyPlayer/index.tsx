@@ -98,9 +98,13 @@ export default function SpotifyPlayer(): ReactElement {
           width: 100%;
           column-gap: 5px;
           align-items: center;
+          justify-content: flex-end;
         }
         .volume:hover :global(svg path) {
           fill: #fff;
+        }
+        .extras :global(.barContainer) {
+          max-width: 120px;
         }
         button {
           display: flex;

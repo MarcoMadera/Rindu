@@ -1,14 +1,32 @@
-import { Fragment, ReactElement } from "react";
+import { Fragment, ReactElement, useEffect, useState } from "react";
 import Link from "next/link";
 import { normalTrackTypes } from "types/spotify";
+import { Heart, HeartShape } from "components/icons/Heart";
+import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibrary";
+import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
+import useAuth from "hooks/useAuth";
+import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 
 export function NavbarLeft({
   currrentlyPlaying,
 }: {
   currrentlyPlaying: normalTrackTypes;
 }): ReactElement {
+  const [isHoveringHeart, setIsHoveringHeart] = useState(false);
+  const [isLikedTrack, setIsLikedTrack] = useState(false);
+  const { accessToken } = useAuth();
+  useEffect(() => {
+    if (!currrentlyPlaying?.id) return;
+    checkTracksInLibrary([currrentlyPlaying?.id], accessToken || "").then(
+      (res) => {
+        setIsLikedTrack(!!res?.[0]);
+      }
+    );
+  }, [accessToken, currrentlyPlaying]);
+
   return (
     <div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={
           currrentlyPlaying.album.images[2]?.url ??
@@ -37,6 +55,41 @@ export function NavbarLeft({
           })}
         </span>
       </section>
+      <button
+        className="like-button"
+        onMouseEnter={() => {
+          setIsHoveringHeart(true);
+        }}
+        onMouseLeave={() => {
+          setIsHoveringHeart(false);
+        }}
+        onClick={() => {
+          if (isLikedTrack) {
+            removeTracksFromLibrary(
+              [currrentlyPlaying.id ?? ""],
+              accessToken
+            ).then((res) => {
+              if (res) {
+                setIsLikedTrack(false);
+              }
+            });
+          } else {
+            saveTracksToLibrary([currrentlyPlaying.id ?? ""], accessToken).then(
+              (res) => {
+                if (res) {
+                  setIsLikedTrack(true);
+                }
+              }
+            );
+          }
+        }}
+      >
+        {isLikedTrack ? (
+          <Heart />
+        ) : !currrentlyPlaying.is_local ? (
+          <HeartShape fill={isHoveringHeart ? "#fff" : "#ffffffb3"} />
+        ) : null}
+      </button>
       <style jsx>{`
         p.trackName {
           color: #fff;
@@ -45,6 +98,12 @@ export function NavbarLeft({
         }
         span.trackArtists {
           font-size: 14px;
+        }
+        .like-button {
+          background: transparent;
+          border: none;
+          outline: none;
+          margin: 0 10px;
         }
         p,
         span {

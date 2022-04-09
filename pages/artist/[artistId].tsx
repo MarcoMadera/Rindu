@@ -81,7 +81,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
     ).then((res) => {
       setIsFollowingThisArtist(res);
     });
-  }, [router]);
+  }, [accessToken, currentArtist?.id, router]);
 
   useEffect(() => {
     setElement(() => <ExtraHeader />);
@@ -137,11 +137,24 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
         type: "track",
       }))
     );
-  }, [topTracks, setElement, setPlaylistDetails, router, setAllTracks]);
+  }, [
+    topTracks,
+    setElement,
+    setPlaylistDetails,
+    router,
+    setAllTracks,
+    currentArtist?.name,
+    currentArtist?.id,
+    currentArtist?.images,
+    currentArtist?.external_urls.spotify,
+    currentArtist?.uri,
+    currentArtist?.followers?.total,
+  ]);
 
   return (
     <main>
       <ContentHeader>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={currentArtist?.images?.[0].url}
           alt=""
