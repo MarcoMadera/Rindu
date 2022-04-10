@@ -1,7 +1,10 @@
 import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 import { takeCookie } from "utils/cookies";
 
-export async function followAlbums(ids?: string[], accessToken?: string) {
+export async function followAlbums(
+  ids?: string[],
+  accessToken?: string
+): Promise<boolean | undefined> {
   if (!ids) {
     return;
   }

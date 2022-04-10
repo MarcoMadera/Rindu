@@ -22,7 +22,7 @@ export default HeaderContext;
 export const HeaderContextProvider: React.FC = ({ children }) => {
   const [displayOnFixed, setDisplayOnFixed] = useState<boolean>(false);
   const [element, setElement] = useState<ReactElement | null>(null);
-  const [headerColor, setHeaderColor] = useState<string>("181818");
+  const [headerColor, setHeaderColor] = useState<string>("#181818");
   return (
     <HeaderContext.Provider
       value={{

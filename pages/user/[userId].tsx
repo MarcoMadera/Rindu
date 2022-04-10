@@ -55,17 +55,23 @@ const CurrentUser: NextPage<CurrentUserProps | null> = ({
   return (
     <main>
       <ContentHeader>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={currentUser?.images?.[0].url}
-          alt=""
-          id="cover-image"
-          onLoad={() => {
-            setHeaderColor(
-              (prev) => getMainColorFromImage("cover-image") ?? prev
-            );
-          }}
-        />
+        {currentUser?.images?.[0]?.url ? (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={currentUser?.images?.[0]?.url}
+              alt=""
+              id="cover-image"
+              onLoad={() => {
+                setHeaderColor(
+                  (prev) => getMainColorFromImage("cover-image") ?? prev
+                );
+              }}
+            />
+          </>
+        ) : (
+          <div id="cover-image"></div>
+        )}
         <div className="info">
           <h2>PROFILE</h2>
           <h1>{currentUser?.display_name}</h1>
@@ -129,7 +135,7 @@ const CurrentUser: NextPage<CurrentUserProps | null> = ({
           margin-bottom: 0;
           font-weight: 700;
         }
-        img {
+        #cover-image {
           border-radius: 50%;
           box-shadow: 0 4px 60px rgb(0 0 0 / 50%);
           margin-right: 15px;

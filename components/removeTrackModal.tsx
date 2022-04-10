@@ -5,6 +5,7 @@ import {
   SetStateAction,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -16,6 +17,7 @@ import ModalCardTrack from "./forPlaylistsPage/CardTrack";
 import { takeCookie } from "utils/cookies";
 import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 import { List } from "react-virtualized";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 interface RemoveTracksModalProps {
   openModal: boolean;
@@ -62,8 +64,9 @@ export default function RemoveTracksModal({
           }
         );
 
-        const data: SpotifyApi.PlaylistTrackResponse = await res.json();
-        const newTracks: AllTracksFromAPlayList = data?.items?.map(
+        const data: SpotifyApi.PlaylistTrackResponse | undefined =
+          await res.json();
+        const newTracks: AllTracksFromAPlayList | undefined = data?.items?.map(
           ({ track, added_at, is_local }, index) => {
             return {
               name: track?.name,
@@ -86,7 +89,9 @@ export default function RemoveTracksModal({
             };
           }
         );
-        tracks = [...tracks, ...newTracks];
+        if (newTracks) {
+          tracks = [...tracks, ...newTracks];
+        }
       }
 
       setAllTracks(tracks);
@@ -140,6 +145,19 @@ export default function RemoveTracksModal({
     };
   }, [onPressKey]);
 
+  useLayoutEffect(() => {
+    const elementToBlur = document.querySelector<HTMLElement>(".container");
+    if (elementToBlur) {
+      elementToBlur.style.filter = "blur(2.5px)";
+    }
+
+    return () => {
+      if (elementToBlur) {
+        elementToBlur.style.filter = "blur(0px)";
+      }
+    };
+  }, [targetNode]);
+
   if (targetNode === undefined) {
     return null;
   }
@@ -161,11 +179,20 @@ export default function RemoveTracksModal({
         aria-labelledby="globalModalTitle"
         aria-describedby="globalModaldesc"
       >
-        <h3 id="globalModalTitle">
-          {!isLoadingComplete
-            ? "Analizando playlist"
-            : `Hay ${duplicatesSongs.length} canciones duplicadas`}
-        </h3>
+        {!isLoadingComplete ? (
+          <div className="loading-message">
+            <LoadingSpinner />
+            <h3 id="globalModalTitle">Analizando playlist</h3>
+          </div>
+        ) : (
+          <h3 id="globalModalTitle">
+            {duplicatesSongs.length === 0
+              ? "No hay canciones duplicadas"
+              : duplicatesSongs.length === 1
+              ? "Hay una canción duplicada"
+              : `Hay ${duplicatesSongs.length} canciones duplicadas`}
+          </h3>
+        )}
         <div className="tracks">
           {duplicatesSongs.length > 0 ? (
             <List
@@ -186,7 +213,7 @@ export default function RemoveTracksModal({
                       isTrackInLibrary={false}
                       track={duplicatesSongs[index]}
                       playlistUri={playlistDetails?.uri ?? ""}
-                      type="presentation"
+                      type="album"
                     />
                   </div>
                 );
@@ -264,7 +291,7 @@ export default function RemoveTracksModal({
               }
             }}
           >
-            Eliminar
+            Limpiar
           </button>
         </div>
       </div>
@@ -273,7 +300,6 @@ export default function RemoveTracksModal({
           overflow-y: hidden;
           overflow-x: hidden;
           max-height: calc(100vh - 300px);
-          min-height: 100px;
         }
         button:nth-of-type(2) {
           background: rgb(204, 0, 0);
@@ -315,10 +341,40 @@ export default function RemoveTracksModal({
           position: fixed;
           width: calc(100% - 20px);
           max-width: 830px;
-          padding: 10px;
+          padding: 10px 10px 55px 10px;
           border: 1px solid #282828;
-          background-color: #121212;
+          background: linear-gradient(
+            -45deg,
+            #212329,
+            #202327,
+            #242527,
+            #464651
+          );
+          background-size: 400% 400%;
+          animation: gradient 15s ease infinite;
           border-radius: 4px;
+          min-height: 300px;
+        }
+        @keyframes gradient {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+        .loading-message {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
         }
         p {
           margin: 0;
@@ -329,6 +385,9 @@ export default function RemoveTracksModal({
           margin-top: 10px;
           justify-content: flex-end;
           flex-wrap: wrap;
+          position: absolute;
+          bottom: 20px;
+          right: 20px;
         }
         button {
           padding: 6px 8px;

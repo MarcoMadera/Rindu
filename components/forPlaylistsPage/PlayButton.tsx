@@ -1,4 +1,10 @@
-import React, { ReactElement, useCallback, useEffect, useState } from "react";
+import React, {
+  MouseEvent,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import useAuth from "hooks/useAuth";
 import useSpotify from "hooks/useSpotify";
 import { Pause, Play } from "components/icons";
@@ -69,74 +75,83 @@ export function PlayButton({
     }
   }, [setPlaylistDetails, setPlaylistPlayingId, track]);
 
-  const handleClick = useCallback(async () => {
-    if (!accessToken || (!playlistDetails && !track) || !user) {
-      return;
-    }
-
-    const playbackState = isPremium ? await getCurrentState() : undefined;
-    const playbackRefersToThisPlaylist =
-      playbackState?.track_window.current_track.uri === track?.uri ||
-      playbackState?.context.uri === playlistDetails?.uri;
-
-    if (isPremium && deviceId) {
-      if (playbackRefersToThisPlaylist) {
-        isPlaying ? player?.pause() : (player as Spotify.Player)?.resume();
+  const handleClick = useCallback(
+    async (e: MouseEvent) => {
+      e.preventDefault();
+      if (!accessToken || (!playlistDetails && !track) || !user) {
         return;
       }
 
-      play(accessToken, deviceId, {
-        context_uri: track?.uri || playlistDetails?.uri,
-        offset: 0,
-      });
-    }
+      const playbackState = isPremium ? await getCurrentState() : undefined;
+      const playbackRefersToThisPlaylist =
+        playbackState?.track_window.current_track.uri === track?.uri ||
+        playbackState?.context.uri === playlistDetails?.uri;
 
-    if (!isPremium) {
-      if (
-        (track && isThisTrackPlaying) ||
-        (playlistDetails && isThisPlaylistPlaying && !track)
-      ) {
-        player?.togglePlay();
-        return;
+      if (isPremium && deviceId) {
+        if (playbackRefersToThisPlaylist) {
+          isPlaying ? player?.pause() : (player as Spotify.Player)?.resume();
+          return;
+        }
+
+        play(accessToken, deviceId, {
+          context_uri: track?.uri || playlistDetails?.uri,
+          offset: 0,
+        });
       }
-      (player as AudioPlayer).allTracks = allTracks;
-      if (track) {
-        setIsPlaying(false);
-        (player as AudioPlayer).allTracks = [track];
+
+      if (!isPremium) {
+        if (
+          (track && isThisTrackPlaying) ||
+          (playlistDetails && isThisPlaylistPlaying && !track)
+        ) {
+          player?.togglePlay();
+          return;
+        }
+        (player as AudioPlayer).allTracks = allTracks;
+        if (track) {
+          setIsPlaying(false);
+          (player as AudioPlayer).allTracks = [track];
+        }
+        if (track?.preview_url || allTracks[0]?.audio) {
+          const audio = track?.preview_url || allTracks[0].audio;
+          (player as AudioPlayer).src = audio as string;
+          (player as AudioPlayer)?.play();
+          setCurrentlyPlaying(track || allTracks[0]);
+        } else {
+          (player as AudioPlayer)?.nextTrack();
+        }
+        if (playlistDetails) {
+          setPlaylistPlayingId(playlistDetails.id);
+        }
       }
-      if (track?.preview_url || allTracks[0]?.audio) {
-        const audio = track?.preview_url || allTracks[0].audio;
-        (player as AudioPlayer).src = audio as string;
-        (player as AudioPlayer)?.play();
-        setCurrentlyPlaying(track || allTracks[0]);
-      } else {
-        (player as AudioPlayer)?.nextTrack();
-      }
-      if (playlistDetails) {
-        setPlaylistPlayingId(playlistDetails.id);
-      }
-    }
-  }, [
-    accessToken,
-    allTracks,
-    deviceId,
-    getCurrentState,
-    isPlaying,
-    isPremium,
-    isThisPlaylistPlaying,
-    isThisTrackPlaying,
-    player,
-    playlistDetails,
-    setCurrentlyPlaying,
-    setIsPlaying,
-    setPlaylistPlayingId,
-    track,
-    user,
-  ]);
+    },
+    [
+      accessToken,
+      allTracks,
+      deviceId,
+      getCurrentState,
+      isPlaying,
+      isPremium,
+      isThisPlaylistPlaying,
+      isThisTrackPlaying,
+      player,
+      playlistDetails,
+      setCurrentlyPlaying,
+      setIsPlaying,
+      setPlaylistPlayingId,
+      track,
+      user,
+    ]
+  );
 
   return (
     <>
-      <button className="play-Button" onClick={handleClick}>
+      <button
+        className="play-Button"
+        onClick={(e) => {
+          handleClick(e);
+        }}
+      >
         {(isThisTrackPlaying && !isThisPlaylistPlaying && !playlistDetails) ||
         (isThisPlaylistPlaying && !isThisTrackPlaying && !track) ? (
           <Pause fill="#fff" width={centerSize} height={centerSize} />

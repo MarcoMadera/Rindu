@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { decode } from "html-entities";
 import { SITE_URL } from "../../utils/constants";
 import Link from "next/link";
@@ -6,13 +6,21 @@ import formatNumber from "utils/formatNumber";
 import { ContentHeader } from "./ContentHeader";
 import useHeader from "hooks/useHeader";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
+import { formatTime } from "utils/formatTime";
+
+function getYear(date: string) {
+  const year = new Date(date).getFullYear();
+  return year;
+}
 
 export interface PlaylistPageHeaderProps {
   playlistDetails: SpotifyApi.SinglePlaylistResponse | null;
+  type?: string;
 }
 
 export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
   playlistDetails,
+  type,
 }) => {
   const { setHeaderColor } = useHeader();
   const coverImg =
@@ -21,6 +29,10 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
     `${SITE_URL}/defaultSongCover.jpeg`;
 
   const playlistName = playlistDetails?.name ?? "";
+  const durationInSeconds = playlistDetails?.tracks?.items?.[0]?.track
+    ?.duration_ms
+    ? playlistDetails?.tracks.items[0].track.duration_ms / 1000
+    : 0;
 
   return (
     <ContentHeader>
@@ -36,26 +48,65 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
         }}
       />
       <div className="playlistInfo">
-        <h2>PLAYLIST</h2>
+        <h2>{type ?? "PLAYLIST"}</h2>
         <h1>{playlistDetails?.name}</h1>
         <p className="description">{decode(playlistDetails?.description)}</p>
         <div>
           <p>
-            <Link href={`/user/${playlistDetails?.owner.id}`}>
-              <a className="userLink">
-                {decode(playlistDetails?.owner.display_name)}
-              </a>
-            </Link>
+            {type === "SONG" ? (
+              <span className="trackArtists">
+                {playlistDetails?.tracks?.items[0]?.track?.artists &&
+                  playlistDetails.tracks.items[0].track.artists?.map(
+                    (artist, i) => {
+                      return (
+                        <Fragment key={artist.id}>
+                          <Link href={`/artist/${artist.id}`}>
+                            <a className="userLink">{artist.name}</a>
+                          </Link>
+                          {i !==
+                          (playlistDetails?.tracks.items[0].track.artists
+                            ?.length &&
+                            playlistDetails?.tracks.items[0].track.artists
+                              ?.length - 1)
+                            ? ", "
+                            : null}
+                        </Fragment>
+                      );
+                    }
+                  )}
+              </span>
+            ) : (
+              <Link href={`/user/${playlistDetails?.owner.id}`}>
+                <a className="userLink">
+                  {decode(playlistDetails?.owner.display_name)}
+                </a>
+              </Link>
+            )}
             {(playlistDetails?.followers.total ?? 0) > 0 ? (
               <span>
                 &nbsp;&middot;{" "}
                 {formatNumber(playlistDetails?.followers.total ?? 0)} seguidores
               </span>
             ) : null}
-            <span>
-              &nbsp;&middot; {formatNumber(playlistDetails?.tracks.total ?? 0)}{" "}
-              canciones
-            </span>
+            {type === "SONG" &&
+            playlistDetails?.tracks?.items?.[0]?.track?.album?.release_date ? (
+              <>
+                <span>
+                  &nbsp;&middot;{" "}
+                  {getYear(
+                    playlistDetails?.tracks.items[0].track.album.release_date
+                  )}
+                </span>
+                <span>
+                  &nbsp;&middot; {formatTime(durationInSeconds ?? 0)} minutos
+                </span>
+              </>
+            ) : (
+              <span>
+                &nbsp;&middot;{" "}
+                {formatNumber(playlistDetails?.tracks.total ?? 0)} canciones
+              </span>
+            )}
           </p>
         </div>
       </div>

@@ -378,9 +378,11 @@ function EpisodeCard({ item }: { item: SpotifyApi.EpisodeObjectSimplified }) {
 }
 
 const Playlist: NextPage<PlaylistProps> = ({ show }) => {
+  const { headerColor } = useHeader();
   return (
     <main>
       <Header show={show} />
+      <div className="bg-12"></div>
       <section>
         {show?.episodes.items.map((item) => {
           return <EpisodeCard key={item.id} item={item} />;
@@ -395,6 +397,16 @@ const Playlist: NextPage<PlaylistProps> = ({ show }) => {
         }
         section {
           padding: 50px;
+          position: relative;
+          z-index: 1;
+        }
+        .bg-12 {
+          background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0, #121212 100%),
+            url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
+          height: 232px;
+          position: absolute;
+          width: 100%;
+          background-color: ${headerColor ?? "transparent"};
         }
       `}</style>
     </main>

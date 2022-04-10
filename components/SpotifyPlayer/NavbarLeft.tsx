@@ -37,7 +37,9 @@ export function NavbarLeft({
         height={64}
       />
       <section>
-        <p className="trackName">{currrentlyPlaying.name}</p>
+        <Link href={`/track/${currrentlyPlaying.id}`}>
+          <a>{currrentlyPlaying.name}</a>
+        </Link>
         <span className="trackArtists">
           {currrentlyPlaying.artists?.map((artist, i) => {
             return (

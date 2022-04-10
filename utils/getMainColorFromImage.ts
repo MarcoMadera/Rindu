@@ -21,20 +21,24 @@ function rgbToHex({ r, g, b }: { r: number; g: number; b: number }) {
   return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
-export function getMainColorFromImage(imageId: string) {
+export function getMainColorFromImage(imageId: string): string | undefined {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   const img = document.querySelector(`#${imageId}`) as HTMLImageElement;
-  if (!img) {
+  if (!img || !ctx) {
     return;
   }
   img.crossOrigin = "Anonymous";
   canvas.width = img.width;
   canvas.height = img.height;
-  ctx?.drawImage(img, 0, 0);
-  const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0);
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const rgb = getAverageRGB(imageData);
-  var luma = 0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b;
+  const luma = 0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b;
+
+  if (luma > 200) {
+    return "#8d8d8d";
+  }
 
   if (luma < 30) {
     return "#181818";

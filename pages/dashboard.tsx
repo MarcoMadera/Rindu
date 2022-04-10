@@ -132,7 +132,6 @@ const Dashboard: NextPage<DashboardProps> = ({
               <FirstTrackContainer
                 track={tracksRecommendations?.[0]}
                 preview={tracksRecommendations?.[0].preview_url}
-                backgroundColor={"#3d3a1d"}
               />
 
               <div className="trackSearch">
