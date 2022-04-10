@@ -235,6 +235,8 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
                   position: i,
                 }}
                 key={track.id}
+                isSingleTrack
+                position={i}
                 type="playlist"
               />
             );

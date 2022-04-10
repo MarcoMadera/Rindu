@@ -21,6 +21,7 @@ import { getNewReleases } from "utils/spotifyCalls/getNewReleases";
 import { getCategories } from "utils/spotifyCalls/getCategories";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import FirstTrackContainer from "components/FirstTrackContainer";
+import useSpotify from "hooks/useSpotify";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -44,6 +45,7 @@ const Dashboard: NextPage<DashboardProps> = ({
     SpotifyApi.TrackObjectFull[] | null
   >([]);
   const [tracksInLibrary, setTracksInLibrary] = useState<boolean[] | null>([]);
+  const { setAllTracks } = useSpotify();
 
   useEffect(() => {
     setIsLogin(true);
@@ -55,6 +57,14 @@ const Dashboard: NextPage<DashboardProps> = ({
         getRecommendations(seed_tracks, accessToken)
           .then((res) => {
             setTracksRecommendations(res);
+            setAllTracks(() => {
+              if (!res) return [];
+              return res?.map((track) => ({
+                ...track,
+                audio: track.preview_url,
+                corruptedTrack: false,
+              }));
+            });
             return res;
           })
           .then((res) => {
@@ -133,7 +143,6 @@ const Dashboard: NextPage<DashboardProps> = ({
                 track={tracksRecommendations?.[0]}
                 preview={tracksRecommendations?.[0].preview_url}
               />
-
               <div className="trackSearch">
                 {tracksRecommendations?.map((track, i) => {
                   if (i === 0 || i > 4) {
@@ -153,6 +162,8 @@ const Dashboard: NextPage<DashboardProps> = ({
                       }}
                       key={track.id}
                       type="presentation"
+                      position={i}
+                      isSingleTrack
                     />
                   );
                 })}

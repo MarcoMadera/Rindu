@@ -2,11 +2,17 @@ import { ReactElement } from "react";
 import useSpotify from "hooks/useSpotify";
 import { PlayButton } from "../../components/forPlaylistsPage/PlayButton";
 
-export function ExtraHeader(): ReactElement {
+export function ExtraHeader({
+  isSingle,
+  track,
+}: {
+  isSingle?: boolean;
+  track?: SpotifyApi.TrackObjectFull;
+}): ReactElement {
   const { playlistDetails } = useSpotify();
   return (
     <div>
-      <PlayButton size={40} centerSize={16} />
+      <PlayButton size={40} centerSize={16} isSingle={isSingle} track={track} />
       <span>{playlistDetails?.name}</span>
       <style jsx>{`
         span {

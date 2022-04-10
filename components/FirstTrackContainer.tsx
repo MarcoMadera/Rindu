@@ -1,4 +1,5 @@
 import { PlayButton } from "components/forPlaylistsPage/PlayButton";
+import useAuth from "hooks/useAuth";
 import Link from "next/link";
 import { Fragment, ReactElement, useState } from "react";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
@@ -15,13 +16,15 @@ export default function FirstTrackContainer({
   const [containerColor, setContainerColor] = useState<string | undefined>(
     backgroundColor
   );
+  const { user } = useAuth();
+  const isPremium = user?.product === "premium";
   return (
     <div className="firstTrack-Container">
       <div className="bg-12"></div>
       <Link href={`/track/${track.id}`}>
         <a className="firstTrack">
-          {preview ? (
-            <PlayButton size={60} centerSize={24} track={track} />
+          {preview || isPremium ? (
+            <PlayButton size={60} centerSize={24} track={track} isSingle />
           ) : null}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img

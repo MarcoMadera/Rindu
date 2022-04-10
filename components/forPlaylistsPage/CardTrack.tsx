@@ -25,6 +25,8 @@ interface ModalCardTrackProps {
   style?: CSSProperties;
   isTrackInLibrary: boolean | undefined;
   type: "presentation" | "playlist" | "album";
+  isSingleTrack?: boolean;
+  position?: number;
 }
 
 export const ExplicitSign: React.FC = () => {
@@ -60,6 +62,8 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   isTrackInLibrary,
   style,
   type,
+  isSingleTrack,
+  position,
 }) => {
   const {
     deviceId,
@@ -84,10 +88,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
     (!isPremium && track?.audio) ||
     (isPremium && !(track?.is_playable === false));
 
-  const isTheSameAsCurrentlyPlaying =
-    currrentlyPlaying?.name === track?.name &&
-    currrentlyPlaying?.artists === track?.artists &&
-    currrentlyPlaying?.album.name === track?.album?.name;
+  const isTheSameAsCurrentlyPlaying = currrentlyPlaying?.name === track?.name;
 
   function playThisTrack() {
     playCurrentTrack(track, {
@@ -100,6 +101,8 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       playlistId: playlistDetails?.id,
       setCurrentlyPlaying,
       setPlaylistPlayingId,
+      isSingleTrack,
+      position,
     });
   }
 

@@ -6,7 +6,8 @@ export async function checkTracksInLibrary(
   accessToken?: string,
   cookies?: string
 ): Promise<boolean[] | null> {
-  const stringIds = ids.join(",");
+  if (ids?.length === 0) return null;
+  const stringIds = ids?.join(",");
   const res = await fetch(
     `https://api.spotify.com/v1/me/tracks/contains?ids=${stringIds}`,
     {

@@ -10,9 +10,7 @@ import {
   SetStateAction,
 } from "react";
 import Search from "components/icons/Search";
-import { takeCookie } from "utils/cookies";
 import { NextApiRequest, NextApiResponse } from "next";
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 import Link from "next/link";
 import useAuth from "hooks/useAuth";
 import PresentationCard from "components/forDashboardPage/PlaylistCard";
@@ -22,33 +20,11 @@ import { getAuth } from "utils/getAuth";
 import { getCategories } from "utils/spotifyCalls/getCategories";
 import { serverRedirect } from "utils/serverRedirect";
 import FirstTrackContainer from "components/FirstTrackContainer";
-
-async function search(query: string, accessToken?: string) {
-  const q = query.replaceAll(" ", "+");
-  const res = await fetch(
-    `https://api.spotify.com/v1/search?q=${q}&type=album,track,artist,playlist&market=from_token&limit=10`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
-        }`,
-      },
-    }
-  );
-  const data = await res.json();
-  return data;
-}
-
-interface SearchType {
-  albums: SpotifyApi.AlbumSearchResponse["albums"];
-  artists: SpotifyApi.ArtistSearchResponse["artists"];
-  tracks: SpotifyApi.TrackSearchResponse["tracks"];
-  playlists: SpotifyApi.PlaylistSearchResponse["playlists"];
-}
+import { search } from "utils/spotifyCalls/search";
+import useSpotify from "hooks/useSpotify";
 
 interface InputElementProps {
-  setData: Dispatch<SetStateAction<SearchType | null>>;
+  setData: Dispatch<SetStateAction<SpotifyApi.SearchResponse | null>>;
 }
 
 function InputElement({ setData }: InputElementProps) {
@@ -56,6 +32,7 @@ function InputElement({ setData }: InputElementProps) {
   const [isTyping, setIsTyping] = useState(false);
   const [query, setQuery] = useState("");
   const [shouldSearch, setShouldSearch] = useState(false);
+  const { setAllTracks } = useSpotify();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -86,12 +63,22 @@ function InputElement({ setData }: InputElementProps) {
     async function searchQuery() {
       const searchData = await search(query);
       setData(searchData);
+      if (searchData?.tracks?.items.length) {
+        setAllTracks(() => {
+          if (!searchData?.tracks) return [];
+          return searchData.tracks?.items?.map((track) => ({
+            ...track,
+            audio: track.preview_url,
+            corruptedTrack: false,
+          }));
+        });
+      }
       setShouldSearch(false);
     }
     if (shouldSearch && query) {
       searchQuery();
     }
-  }, [query, shouldSearch, setData]);
+  }, [query, shouldSearch, setData, setAllTracks]);
 
   return (
     <div>
@@ -107,6 +94,11 @@ function InputElement({ setData }: InputElementProps) {
           onChange={(e) => {
             setQuery(e.target.value);
             setIsTyping(true);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === " ") {
+              e.stopPropagation();
+            }
           }}
           onKeyUp={() => {
             setIsTyping(false);
@@ -244,7 +236,7 @@ export default function SearchPage({
 }: SearchPageProps): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
   const { setUser, setAccessToken } = useAuth();
-  const [data, setData] = useState<SearchType | null>(null);
+  const [data, setData] = useState<SpotifyApi.SearchResponse | null>(null);
 
   useEffect(() => {
     setElement(() => <InputElement setData={setData} />);
@@ -270,7 +262,7 @@ export default function SearchPage({
       </Head>
       {data ? (
         <div>
-          {data.tracks?.items?.length > 0 ? (
+          {data?.tracks?.items && data.tracks?.items?.length > 0 ? (
             <>
               <h2>Canciones</h2>
               <section className="tracks">
@@ -298,6 +290,8 @@ export default function SearchPage({
                           duration: track.duration_ms,
                         }}
                         key={track.id}
+                        isSingleTrack
+                        position={i}
                         type="presentation"
                       />
                     );
@@ -306,7 +300,7 @@ export default function SearchPage({
               </section>
             </>
           ) : null}
-          {data.playlists?.items?.length > 0 ? (
+          {data.playlists?.items && data.playlists?.items?.length > 0 ? (
             <>
               <h2>Playlists</h2>
               <section className="playlists">
@@ -332,7 +326,7 @@ export default function SearchPage({
               </section>
             </>
           ) : null}
-          {data.artists?.items?.length > 0 ? (
+          {data.artists?.items && data.artists?.items?.length > 0 ? (
             <>
               <h2>Artists</h2>
               <section className="playlists">
@@ -354,7 +348,7 @@ export default function SearchPage({
               </section>
             </>
           ) : null}
-          {data.albums?.items?.length > 0 ? (
+          {data.albums?.items && data.albums?.items?.length > 0 ? (
             <>
               <h2>Albums</h2>
               <section className="playlists">

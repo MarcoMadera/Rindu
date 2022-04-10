@@ -10,15 +10,18 @@ import useSpotify from "hooks/useSpotify";
 import { Pause, Play } from "components/icons";
 import { play } from "lib/spotify";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
+import { useRouter } from "next/router";
 
 export function PlayButton({
   size,
   centerSize,
   track,
+  isSingle,
 }: {
   size: number;
   centerSize: number;
   track?: SpotifyApi.TrackObjectFull;
+  isSingle?: boolean;
 }): ReactElement | null {
   const {
     isPlaying,
@@ -29,14 +32,15 @@ export function PlayButton({
     allTracks,
     setPlaylistPlayingId,
     setCurrentlyPlaying,
-    setPlaylistDetails,
     setIsPlaying,
+    currrentlyPlaying,
   } = useSpotify();
   const { accessToken, user } = useAuth();
-  const { currrentlyPlaying } = useSpotify();
   const [isThisTrackPlaying, setIsThisTrackPlaying] = useState(false);
   const [isThisPlaylistPlaying, setIsThisPlaylistPlaying] = useState(false);
+  const [isThisArtistPlaying, setIsThisArtistPlaying] = useState(false);
   const isPremium = user?.product === "premium";
+  const router = useRouter();
 
   useEffect(() => {
     if (track?.id) {
@@ -48,8 +52,25 @@ export function PlayButton({
       }
     }
 
-    if (!playlistPlayingId) return setIsThisPlaylistPlaying(false);
-    const isTheSamePlaylistPlaying = playlistPlayingId === playlistDetails?.id;
+    const isArtistPage = router.asPath.includes("/artist");
+
+    const isTheSameArtistPlaying =
+      isArtistPage &&
+      isPlaying &&
+      currrentlyPlaying?.artists?.[0]?.uri &&
+      allTracks?.[0]?.artists?.[0]?.uri ===
+        currrentlyPlaying?.artists?.[0]?.uri;
+
+    if (isTheSameArtistPlaying && isPlaying) {
+      setIsThisArtistPlaying(true);
+    } else {
+      setIsThisArtistPlaying(false);
+    }
+
+    const isTheSamePlaylistPlaying =
+      playlistPlayingId &&
+      playlistPlayingId === playlistDetails?.id &&
+      !isSingle;
     if (isTheSamePlaylistPlaying && isPlaying) {
       setIsThisPlaylistPlaying(true);
     } else {
@@ -61,19 +82,18 @@ export function PlayButton({
     playlistDetails?.id,
     track?.id,
     currrentlyPlaying?.id,
+    track?.artists,
+    currrentlyPlaying,
+    router.asPath,
+    allTracks,
+    isSingle,
   ]);
 
   const getCurrentState = useCallback(async () => {
+    if (!player) return;
     const data = await (player as Spotify.Player)?.getCurrentState();
     return data;
   }, [player]);
-
-  useEffect(() => {
-    if (track) {
-      setPlaylistDetails(null);
-      setPlaylistPlayingId(undefined);
-    }
-  }, [setPlaylistDetails, setPlaylistPlayingId, track]);
 
   const handleClick = useCallback(
     async (e: MouseEvent) => {
@@ -84,8 +104,11 @@ export function PlayButton({
 
       const playbackState = isPremium ? await getCurrentState() : undefined;
       const playbackRefersToThisPlaylist =
-        playbackState?.track_window.current_track.uri === track?.uri ||
-        playbackState?.context.uri === playlistDetails?.uri;
+        (playbackState?.track_window?.current_track.uri &&
+          playbackState?.track_window?.current_track.uri === track?.uri) ||
+        (playbackState?.context.uri &&
+          playbackState?.context.uri === playlistDetails?.uri &&
+          !track);
 
       if (isPremium && deviceId) {
         if (playbackRefersToThisPlaylist) {
@@ -93,9 +116,28 @@ export function PlayButton({
           return;
         }
 
+        if (track || isSingle) {
+          const uris: string[] = [];
+          allTracks.forEach((track) => {
+            if (track.uri) {
+              uris.push(track.uri);
+            }
+          });
+          play(accessToken, deviceId, {
+            uris: uris,
+            offset: 0,
+          });
+
+          return setCurrentlyPlaying(track);
+        }
+
         play(accessToken, deviceId, {
-          context_uri: track?.uri || playlistDetails?.uri,
+          context_uri: playlistDetails?.uri,
           offset: 0,
+        }).then(() => {
+          if (playlistDetails) {
+            setPlaylistPlayingId(playlistDetails.id);
+          }
         });
       }
 
@@ -132,6 +174,7 @@ export function PlayButton({
       getCurrentState,
       isPlaying,
       isPremium,
+      isSingle,
       isThisPlaylistPlaying,
       isThisTrackPlaying,
       player,
@@ -152,7 +195,8 @@ export function PlayButton({
           handleClick(e);
         }}
       >
-        {(isThisTrackPlaying && !isThisPlaylistPlaying && !playlistDetails) ||
+        {(isThisTrackPlaying && !isThisPlaylistPlaying) ||
+        isThisArtistPlaying ||
         (isThisPlaylistPlaying && !isThisTrackPlaying && !track) ? (
           <Pause fill="#fff" width={centerSize} height={centerSize} />
         ) : (

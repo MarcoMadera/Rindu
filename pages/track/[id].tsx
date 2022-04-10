@@ -104,7 +104,7 @@ export default function TrackPage({
   user,
 }: TrackPageProps): ReactElement {
   const { setElement, setHeaderColor, headerColor } = useHeader({
-    showOnFixed: true,
+    showOnFixed: false,
   });
   const { setUser, setAccessToken } = useAuth();
   const [isTrackInLibrary, setIsTrackInLibrary] = useState(false);
@@ -157,14 +157,29 @@ export default function TrackPage({
         uri: track.uri,
       });
 
-      setAllTracks([{ ...track, audio: track.preview_url }]);
+      const artistTopTracksFor = artistTopTracks.map((track) => ({
+        ...track,
+        audio: track.preview_url,
+      }));
+
+      setAllTracks([
+        { ...track, audio: track.preview_url },
+        ...artistTopTracksFor,
+      ]);
     }
-    setElement(() => <ExtraHeader />);
+    setElement(() => <ExtraHeader isSingle track={track ?? undefined} />);
 
     return () => {
       setElement(null);
     };
-  }, [setAllTracks, setElement, setHeaderColor, setPlaylistDetails, track]);
+  }, [
+    artistTopTracks,
+    setAllTracks,
+    setElement,
+    setHeaderColor,
+    setPlaylistDetails,
+    track,
+  ]);
 
   useEffect(() => {
     if (accessToken) {
@@ -212,7 +227,12 @@ export default function TrackPage({
           <div className="bg-12"></div>
           <div className="content">
             <div className="options">
-              <PlayButton size={56} centerSize={28} />
+              <PlayButton
+                size={56}
+                centerSize={28}
+                isSingle
+                track={track ?? undefined}
+              />
               <div className="info">
                 <button
                   onClick={() => {
@@ -282,6 +302,8 @@ export default function TrackPage({
                       }}
                       key={track.id}
                       type="playlist"
+                      position={i + 1}
+                      isSingleTrack
                     />
                   );
                 })}
