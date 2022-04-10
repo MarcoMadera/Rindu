@@ -353,7 +353,7 @@ export async function getServerSideProps({
   }
   const { accessToken, user } = (await getAuth(res, cookies)) || {};
 
-  const album = await getAlbumById(albumId, accessToken);
+  const album = await getAlbumById(albumId, user?.country ?? "US", accessToken);
   const trackIds = album?.tracks.items.map(({ id }: { id: string }) => id);
   const tracksInLibrary = await checkTracksInLibrary(
     trackIds ?? [],
@@ -382,6 +382,7 @@ export async function getServerSideProps({
         id: track.id,
         images: album.images,
         is_local: false,
+        is_playable: track?.is_playable ?? false,
         position: track.track_number - 1,
         uri: track.uri,
       };

@@ -4,7 +4,7 @@ import Navbar from "./navbar";
 import SpotifyPlayer from "./SpotifyPlayer";
 import SideBar from "./SideBar";
 import Header from "./Header";
-import { takeCookie } from "utils/cookies";
+import { makeCookie, takeCookie } from "utils/cookies";
 import {
   ACCESS_TOKEN_COOKIE,
   EXPIRE_TOKEN_COOKIE,
@@ -16,10 +16,10 @@ import { useEffect } from "react";
 
 const Layout: React.FC = ({ children }) => {
   const router = useRouter();
-  const { setAccessToken } = useAuth();
+  const { user, setAccessToken } = useAuth();
 
   useEffect(() => {
-    if (router.asPath === "/") {
+    if (!user?.uri) {
       return;
     }
     const expireIn = parseInt(takeCookie(EXPIRE_TOKEN_COOKIE) || "3600", 10);
@@ -36,11 +36,16 @@ const Layout: React.FC = ({ children }) => {
         });
         const data: RefreshResponse = await res.json();
         setAccessToken(data.accessToken);
+        makeCookie({
+          name: ACCESS_TOKEN_COOKIE,
+          value: data.accessToken,
+          age: expireIn,
+        });
       }
-    }, (expireIn - 60) * 1000);
+    }, (expireIn - 300) * 1000);
     return () => clearTimeout(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user?.uri]);
 
   const isLoginPage = router.asPath === "/";
 

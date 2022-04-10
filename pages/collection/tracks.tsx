@@ -45,7 +45,11 @@ export async function getServerSideProps({
   }
   const { accessToken, user } = (await getAuth(res, cookies)) || {};
 
-  const playListTracks = await getMyLikedSongs(accessToken, cookies);
+  const playListTracks = await getMyLikedSongs(
+    user?.country ?? "US",
+    accessToken,
+    cookies
+  );
   const trackIds = playListTracks?.items?.map(({ track }) => track.id);
   const tracksInLibrary = await checkTracksInLibrary(
     trackIds ?? [],
@@ -62,7 +66,7 @@ export async function getServerSideProps({
     external_urls: { spotify: "https://open.spotify.com/collection/tracks" },
     followers: { total: 0, href: null },
     href: "",
-    id: "",
+    id: "liked-songs",
     images: [
       {
         url: "https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png",
@@ -85,13 +89,13 @@ export async function getServerSideProps({
       total: playListTracks.total ?? 0,
       previous: playListTracks.previous,
       href: playListTracks.href,
-      items: [],
+      items: playListTracks.items ?? [],
       limit: playListTracks.limit,
       next: playListTracks.next,
       offset: playListTracks.offset,
     },
     type: "playlist",
-    uri: "",
+    uri: `spotify:user:${user?.id}:collection`,
   };
   return {
     props: {

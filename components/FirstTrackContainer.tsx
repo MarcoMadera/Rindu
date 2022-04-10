@@ -18,12 +18,15 @@ export default function FirstTrackContainer({
   );
   const { user } = useAuth();
   const isPremium = user?.product === "premium";
+  const isPlayable =
+    (!isPremium && preview) ||
+    (isPremium && !(track?.is_playable === false) && !track.is_local);
   return (
     <div className="firstTrack-Container">
       <div className="bg-12"></div>
       <Link href={`/track/${track.id}`}>
         <a className="firstTrack">
-          {preview || isPremium ? (
+          {isPlayable ? (
             <PlayButton size={60} centerSize={24} track={track} isSingle />
           ) : null}
           {/* eslint-disable-next-line @next/next/no-img-element */}

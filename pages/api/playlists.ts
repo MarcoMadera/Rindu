@@ -9,7 +9,8 @@ export default async function playlists(
     try {
       const data = await getAllTracksFromPlaylist(
         req.body.accessToken,
-        req.body.playlistId
+        req.body.playlistId,
+        req.body.market
       );
       return res.json(data);
     } catch (err) {

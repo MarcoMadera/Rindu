@@ -3,13 +3,14 @@ import { takeCookie } from "utils/cookies";
 
 export async function getRecommendations(
   seed_tracks: string[],
+  market: string,
   accessToken?: string | null
 ): Promise<SpotifyApi.TrackObjectFull[] | null> {
   if (!accessToken) {
     return null;
   }
   const res = await fetch(
-    `https://api.spotify.com/v1/recommendations?seed_tracks=${seed_tracks}`,
+    `https://api.spotify.com/v1/recommendations?seed_tracks=${seed_tracks}&market=${market}`,
     {
       method: "GET",
       headers: {

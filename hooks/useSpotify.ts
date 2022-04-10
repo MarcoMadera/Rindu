@@ -9,6 +9,7 @@ import {
 import { getTracksFromPlayList as getTracksFromPlayListFromAPI } from "utils/spotifyCalls/getTracksFromPlayList";
 import SpotifyContext from "../context/SpotifyContext";
 import { getPlaylistsRequest, removeTracksRequest } from "../lib/requests";
+import useAuth from "./useAuth";
 import { AudioPlayer } from "./useSpotifyPlayer";
 
 export default function useSpotify(): {
@@ -67,10 +68,11 @@ export default function useSpotify(): {
     playlistDetails,
     setPlaylistDetails,
   } = useContext(SpotifyContext);
+  const { user } = useAuth();
 
   const getPlaylists = useCallback(
     (offset: number, playlistLimit: number) => {
-      getPlaylistsRequest(offset, playlistLimit)
+      getPlaylistsRequest(offset, playlistLimit, user?.country ?? "US")
         .then((res) => {
           if (!res.ok) {
             throw Error(res.statusText);
@@ -86,13 +88,13 @@ export default function useSpotify(): {
           console.log(err);
         });
     },
-    [setPlaylists, setTotalPlaylists]
+    [setPlaylists, setTotalPlaylists, user?.country]
   );
 
   const getTracksFromPlayList = useCallback(
     (playlistId: string) => {
       setAllTracks([]);
-      getTracksFromPlayListFromAPI(playlistId)
+      getTracksFromPlayListFromAPI(playlistId, user?.country ?? "US")
         .then((playlistDetails) => {
           return setAllTracks(playlistDetails?.tracks ?? []);
         })
@@ -100,7 +102,7 @@ export default function useSpotify(): {
           console.log(err);
         });
     },
-    [setAllTracks]
+    [setAllTracks, user?.country]
   );
 
   const removeTracks = useCallback(

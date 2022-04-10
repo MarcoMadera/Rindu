@@ -4,10 +4,11 @@ import { takeCookie } from "utils/cookies";
 
 export async function getTracksFromPlayList(
   playlistId: string,
+  market: string,
   accessToken?: string,
   cookies?: string | undefined
 ): Promise<AllTracksFromAPlaylistResponse | null> {
-  const res = await fetch(`${SITE_URL}/api/playlists`, {
+  const res = await fetch(`${SITE_URL}/api/playlists?market=${market}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

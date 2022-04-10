@@ -5,7 +5,7 @@ import useAuth from "hooks/useAuth";
 import useSpotify from "hooks/useSpotify";
 import useSpotifyPlayer from "hooks/useSpotifyPlayer";
 import Script from "next/script";
-import { ReactElement, useState } from "react";
+import { ReactElement, useCallback, useState } from "react";
 import { ProgressBar } from "./ProgressBar";
 import { NavbarLeft } from "./NavbarLeft";
 
@@ -19,6 +19,15 @@ export default function SpotifyPlayer(): ReactElement {
   const { user } = useAuth();
   const isPremium = user?.product === "premium";
 
+  const getActualVolume = useCallback(() => {
+    if (volume > 0) {
+      return 0;
+    }
+    if (lastVolume === 0 && volume === 0) {
+      return 1;
+    }
+    return lastVolume;
+  }, [lastVolume, volume]);
   return (
     <footer>
       <div className="container">
@@ -66,11 +75,11 @@ export default function SpotifyPlayer(): ReactElement {
               }}
               aria-label={`${volume > 0 ? "Mute" : "Unmute"}`}
               onClick={() => {
-                setLastVolume(volume);
-                setVolume(volume > 0 ? 0 : lastVolume === 0 ? 1 : lastVolume);
-                player?.setVolume(
-                  volume > 0 ? 0 : volume === 0 ? 1 : lastVolume
-                );
+                setVolume(getActualVolume());
+                if (volume > 0) {
+                  setLastVolume(volume);
+                }
+                player?.setVolume(getActualVolume());
               }}
             >
               <Volume volume={volume} />
@@ -83,6 +92,7 @@ export default function SpotifyPlayer(): ReactElement {
               }}
               action={() => {
                 player?.setVolume(volume);
+                setLastVolume(volume);
               }}
               valueText={`${volume}`}
               initialValuePercent={100}

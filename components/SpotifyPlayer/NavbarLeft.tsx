@@ -6,6 +6,7 @@ import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibr
 import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
 import useAuth from "hooks/useAuth";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
+import { getIdFromUri } from "utils/getIdFromUri";
 
 export function NavbarLeft({
   currrentlyPlaying,
@@ -43,8 +44,10 @@ export function NavbarLeft({
         <span className="trackArtists">
           {currrentlyPlaying.artists?.map((artist, i) => {
             return (
-              <Fragment key={artist.id}>
-                <Link href={`/artist/${artist.id}`}>
+              <Fragment key={artist.id ?? getIdFromUri(artist?.uri)}>
+                <Link
+                  href={`/artist/${artist.id ?? getIdFromUri(artist?.uri)}`}
+                >
                   <a>{artist.name}</a>
                 </Link>
                 {i !==

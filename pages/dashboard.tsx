@@ -54,7 +54,7 @@ const Dashboard: NextPage<DashboardProps> = ({
     getMyTopTracks(accessToken, 5).then((res) => {
       const seed_tracks = res?.items?.map((item) => item.id) ?? [];
       if (seed_tracks.length > 0) {
-        getRecommendations(seed_tracks, accessToken)
+        getRecommendations(seed_tracks, user?.country ?? "US", accessToken)
           .then((res) => {
             setTracksRecommendations(res);
             setAllTracks(() => {

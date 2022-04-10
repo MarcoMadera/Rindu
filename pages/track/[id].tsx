@@ -26,7 +26,7 @@ function BigPill({
   subTitle,
   href,
 }: {
-  img: string;
+  img: string | undefined;
   title: string;
   subTitle: string;
   href: string;
@@ -34,8 +34,12 @@ function BigPill({
   return (
     <Link href={href}>
       <a className="big-pill">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={img} alt={title} />
+        {img ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img className="img" src={img} alt={title} />
+        ) : (
+          <div className="img"></div>
+        )}
         <div className="big-pill-content">
           <span>{title}</span>
           <h2>{subTitle}</h2>
@@ -59,7 +63,7 @@ function BigPill({
           .big-pill:focus {
             background-color: rgba(255, 255, 255, 0.1);
           }
-          .big-pill img {
+          .big-pill .img {
             width: 100px;
             min-width: 100px;
             min-height: 100px;
@@ -268,7 +272,7 @@ export default function TrackPage({
             ) : null}
             {artistInfo && (
               <BigPill
-                img={artistInfo.images[0].url ?? artistInfo.images[0].url ?? ""}
+                img={artistInfo?.images?.[0]?.url}
                 title={"ARTIST"}
                 subTitle={artistInfo.name}
                 href={`/artist/${artistInfo.id}`}
@@ -451,7 +455,7 @@ export async function getServerSideProps({
     return { props: null };
   }
   const { accessToken, user } = (await getAuth(res, cookies)) || {};
-  const track = await getTrack(id, accessToken, cookies);
+  const track = await getTrack(id, user?.country ?? "US", accessToken, cookies);
   let lyrics: string | null = null;
 
   if (track?.name && track.artists[0].name) {

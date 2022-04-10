@@ -33,9 +33,13 @@ export async function play(
       position = { position: offset };
     }
 
-    body = JSON.stringify({ context_uri, offset: position });
+    body = JSON.stringify({ context_uri, offset: position, position_ms: 0 });
   } else if (Array.isArray(uris) && uris.length) {
-    body = JSON.stringify({ uris, offset: { position: offset } });
+    body = JSON.stringify({
+      uris: [...new Set(uris)],
+      offset: { position: offset },
+      position_ms: 0,
+    });
   }
 
   try {
@@ -125,7 +129,8 @@ export async function getUserPlaylists(
 
 export const getAllTracksFromPlaylist = async (
   accessToken: string,
-  playlist: string
+  playlist: string,
+  market: string
 ): Promise<AllTracksFromAPlaylistResponse> => {
   try {
     if (accessToken) {
@@ -135,6 +140,7 @@ export const getAllTracksFromPlaylist = async (
     const data = await spotifyAPI.getPlaylistTracks(playlist, {
       limit: 50,
       offset: 0,
+      market: market ?? "US",
     });
     const { body } = data;
 

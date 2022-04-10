@@ -4,6 +4,7 @@ import { takeCookie } from "../utils/cookies";
 export async function getPlaylistsRequest(
   offset: number,
   playlistLimit: number,
+  market: string,
   accessToken?: string | undefined
 ): Promise<Response> {
   const res = await fetch(`${SITE_URL}/api/playlists`, {
@@ -15,6 +16,7 @@ export async function getPlaylistsRequest(
       accessToken: accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE),
       offset,
       playlistLimit,
+      market: market ?? "US",
     }),
   });
   return res;

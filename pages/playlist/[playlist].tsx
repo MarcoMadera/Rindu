@@ -55,6 +55,7 @@ export async function getServerSideProps({
   );
   const playListTracks = await getTracksFromPlayList(
     playlist,
+    user?.country ?? "US",
     accessToken,
     cookies
   );

@@ -86,7 +86,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
 
   const isPlayable =
     (!isPremium && track?.audio) ||
-    (isPremium && !(track?.is_playable === false));
+    (isPremium && !(track?.is_playable === false) && !track.is_local);
 
   const isTheSameAsCurrentlyPlaying = currrentlyPlaying?.name === track?.name;
 
@@ -111,7 +111,9 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       style={style}
       className="trackItem"
       onDoubleClick={() => {
-        playThisTrack();
+        if (isPlayable) {
+          playThisTrack();
+        }
       }}
       role="button"
       tabIndex={0}
@@ -154,10 +156,12 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       <button
         className="playbutton"
         onClick={() => {
-          if (isPlaying && isTheSameAsCurrentlyPlaying) {
+          if (isPlaying && isTheSameAsCurrentlyPlaying && isPlayable) {
             player?.pause();
             setIsPlaying(false);
-          } else {
+            return;
+          }
+          if (isPlayable) {
             playThisTrack();
           }
         }}
@@ -175,15 +179,20 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         )}
       </button>
       <section>
-        {type !== "presentation" && track?.images ? (
-          //  eslint-disable-next-line @next/next/no-img-element
-          <img
-            loading="lazy"
-            src={track?.images[2]?.url ?? track?.images[1]?.url}
-            alt=""
-            width="48"
-            height="48"
-          />
+        {type !== "presentation" ? (
+          track?.images?.length ? (
+            //  eslint-disable-next-line @next/next/no-img-element
+            <img
+              loading="lazy"
+              src={track?.images[2]?.url ?? track?.images[1]?.url}
+              alt=""
+              className="img"
+              width="48"
+              height="48"
+            />
+          ) : (
+            <div className="img"></div>
+          )
         ) : null}
         <div className="trackArtistsContainer">
           <p className="trackName">{`${track?.name ?? ""}`}</p>
@@ -371,10 +380,12 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         .trackItem:focus {
           background-color: #ffffff4d;
         }
-        img {
+        .img {
           margin: 0;
           padding: 0;
           margin-right: 23px;
+          width: 48px;
+          height: 48px;
         }
       `}</style>
     </div>

@@ -156,7 +156,6 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
           return;
         }
       });
-      setPlaylistPlayingId(undefined);
     }
   }, [
     isPlaying,

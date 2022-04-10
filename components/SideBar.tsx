@@ -114,7 +114,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
               Create Playlist
             </button>
             <Link href="/collection/tracks">
-              <a>
+              <a className={playlistPlayingId === "liked-songs" ? "green" : ""}>
                 <div>
                   <Heart fill="#fff" width={13} height={13} />
                 </div>
@@ -146,6 +146,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
             display: grid;
             grid-template-rows: 86px 130px 120px 10fr;
           }
+          section:nth-of-type(2) a.green,
           .green {
             color: #1db954;
           }

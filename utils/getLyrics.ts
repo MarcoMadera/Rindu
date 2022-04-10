@@ -15,7 +15,7 @@ export async function getLyrics(
 
   if (res.ok) {
     const data: LyricsResponse = await res.json();
-    return data.lyrics.replace(/(\r\n|\r|\n)/g, "\n");
+    return data.lyrics.replace(/(\n\n)/g, "\n");
   }
   return null;
 }

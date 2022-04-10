@@ -41,6 +41,8 @@ interface Album extends Spotify.Album {
   artists?: Artist[];
   id?: string;
   release_date?: string;
+  external_urls?: SpotifyApi.ExternalUrlObject;
+  available_markets?: string[];
 }
 
 //Tracks

@@ -1,10 +1,10 @@
-import { NextApiRequest, NextApiResponse, NextPage } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import { useRouter } from "next/router";
 import { ContentHeader } from "components/forPlaylistsPage/ContentHeader";
 import formatNumber from "utils/formatNumber";
 import useAuth from "hooks/useAuth";
 import useAnalitycs from "hooks/useAnalytics";
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactElement } from "react";
 import { serverRedirect } from "utils/serverRedirect";
 import { getAuth } from "utils/getAuth";
 import { getArtistById } from "utils/spotifyCalls/getArtistById";
@@ -25,7 +25,7 @@ import { follow, Follow_type } from "utils/spotifyCalls/follow";
 import { unFollow } from "utils/spotifyCalls/unFollow";
 import { checkIfUserFollowArtistUser } from "utils/spotifyCalls/checkIfUserFollowArtistUser";
 
-interface CurrentUserProps {
+interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
   topTracks: SpotifyApi.MultipleTracksResponse | null;
   singleAlbums: SpotifyApi.ArtistsAlbumsResponse | null;
@@ -35,7 +35,7 @@ interface CurrentUserProps {
   user: SpotifyApi.UserObjectPrivate | null;
 }
 
-const CurrentUser: NextPage<CurrentUserProps> = ({
+export default function ArtistPage({
   currentArtist,
   topTracks,
   singleAlbums,
@@ -43,7 +43,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
   relatedArtists,
   user,
   accessToken,
-}) => {
+}: ArtistPageProps): ReactElement {
   const { setIsLogin, setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalitycs } = useAnalitycs();
   const { headerColor, setHeaderColor, setElement } = useHeader();
@@ -154,17 +154,21 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
   return (
     <main>
       <ContentHeader>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={currentArtist?.images?.[0].url}
-          alt=""
-          id="cover-image"
-          onLoad={() => {
-            setHeaderColor(
-              (prev) => getMainColorFromImage("cover-image") ?? prev
-            );
-          }}
-        />
+        {currentArtist?.images?.[0]?.url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={currentArtist?.images?.[0]?.url ?? ""}
+            alt=""
+            id="cover-image"
+            onLoad={() => {
+              setHeaderColor(
+                (prev) => getMainColorFromImage("cover-image") ?? prev
+              );
+            }}
+          />
+        ) : (
+          <div id="cover-image"></div>
+        )}
         <div className="info">
           <h2>ARTIST</h2>
           <h1>{currentArtist?.name}</h1>
@@ -216,31 +220,32 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
       <div className="content">
         <h3>Popular</h3>
         <div className="topTracks">
-          {topTracks?.tracks?.map((track, i) => {
-            const maxToShow = showMoreTopTracks ? 10 : 5;
-            if (i >= maxToShow) {
-              return null;
-            }
-            return (
-              <ModalCardTrack
-                accessToken={accessToken ?? ""}
-                isTrackInLibrary={false}
-                playlistUri=""
-                track={{
-                  ...track,
-                  media_type: "audio",
-                  audio: track.preview_url,
-                  images: track.album.images,
-                  duration: track.duration_ms,
-                  position: i,
-                }}
-                key={track.id}
-                isSingleTrack
-                position={i}
-                type="playlist"
-              />
-            );
-          })}
+          {topTracks?.tracks &&
+            topTracks?.tracks?.map((track, i) => {
+              const maxToShow = showMoreTopTracks ? 10 : 5;
+              if (i >= maxToShow) {
+                return null;
+              }
+              return (
+                <ModalCardTrack
+                  accessToken={accessToken ?? ""}
+                  isTrackInLibrary={false}
+                  playlistUri=""
+                  track={{
+                    ...track,
+                    media_type: "audio",
+                    audio: track.preview_url,
+                    images: track.album.images,
+                    duration: track.duration_ms,
+                    position: i,
+                  }}
+                  key={track.id}
+                  isSingleTrack
+                  position={i}
+                  type="playlist"
+                />
+              );
+            })}
         </div>
         <button
           className="show-more"
@@ -456,7 +461,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
           justify-content: center;
           margin-top: 32px;
         }
-        img {
+        #cover-image {
           border-radius: 50%;
           box-shadow: 0 4px 60px rgb(0 0 0 / 50%);
           margin-right: 15px;
@@ -472,9 +477,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
       `}</style>
     </main>
   );
-};
-
-export default CurrentUser;
+}
 
 export async function getServerSideProps({
   params: { artistId },
@@ -485,7 +488,7 @@ export async function getServerSideProps({
   req: NextApiRequest;
   res: NextApiResponse;
 }): Promise<{
-  props: CurrentUserProps | null;
+  props: ArtistPageProps | null;
 }> {
   const cookies = req?.headers?.cookie;
   if (!cookies) {
