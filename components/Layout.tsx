@@ -10,9 +10,9 @@ import {
   EXPIRE_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
 } from "utils/constants";
-import { RefreshResponse } from "types/spotify";
 import useAuth from "hooks/useAuth";
 import { useEffect } from "react";
+import { refreshAccessToken } from "utils/spotifyCalls/refreshAccessToken";
 
 const Layout: React.FC = ({ children }) => {
   const router = useRouter();
@@ -22,27 +22,28 @@ const Layout: React.FC = ({ children }) => {
     if (!user?.uri) {
       return;
     }
+
     const expireIn = parseInt(takeCookie(EXPIRE_TOKEN_COOKIE) || "3600", 10);
+
     setAccessToken(takeCookie(ACCESS_TOKEN_COOKIE) ?? "");
+
     const interval = setInterval(async () => {
       const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE);
       if (refreshToken) {
-        const res = await fetch("/api/spotify-refresh", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ refreshToken }),
-        });
-        const data: RefreshResponse = await res.json();
-        setAccessToken(data.accessToken);
-        makeCookie({
-          name: ACCESS_TOKEN_COOKIE,
-          value: data.accessToken,
-          age: expireIn,
-        });
+        const { accessToken } = (await refreshAccessToken(refreshToken)) || {};
+        if (accessToken) {
+          setAccessToken(accessToken);
+          makeCookie({
+            name: ACCESS_TOKEN_COOKIE,
+            value: accessToken,
+            age: 60 * 60 * 24 * 30 * 2,
+          });
+          return;
+        }
+        router.push("/");
       }
-    }, (expireIn - 300) * 1000);
+    }, (expireIn - 1000) * 1000);
+
     return () => clearTimeout(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.uri]);

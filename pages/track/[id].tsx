@@ -286,7 +286,7 @@ export default function TrackPage({
                   </span>
                   <h2>{track?.artists[0].name ?? ""}</h2>
                 </div>
-                {artistTopTracks?.map((track, i) => {
+                {artistTopTracks?.map((artistTrack, i) => {
                   const maxToShow = showMoreTopTracks ? 10 : 5;
                   if (i >= maxToShow) {
                     return null;
@@ -297,16 +297,16 @@ export default function TrackPage({
                       isTrackInLibrary={false}
                       playlistUri=""
                       track={{
-                        ...track,
+                        ...artistTrack,
                         media_type: "audio",
-                        audio: track.preview_url,
-                        images: track.album.images,
-                        duration: track.duration_ms,
+                        audio: artistTrack.preview_url,
+                        images: artistTrack.album.images,
+                        duration: artistTrack.duration_ms,
                         position: i,
                       }}
-                      key={track.id}
+                      key={artistTrack.id}
                       type="playlist"
-                      position={i + 1}
+                      position={artistTrack.uri === track?.uri ? 0 : i + 1}
                       isSingleTrack
                     />
                   );

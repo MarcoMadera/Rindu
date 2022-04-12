@@ -1,5 +1,12 @@
+import useAuth from "hooks/useAuth";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
-import { createContext, Dispatch, SetStateAction, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import {
   AllTracksFromAPlayList,
   PlaylistItems,
@@ -52,6 +59,73 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
   const [playlistPlayingId, setPlaylistPlayingId] = useState<string>();
   const [playlistDetails, setPlaylistDetails] =
     useState<SpotifyApi.SinglePlaylistResponse | null>(null);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (
+      "setPositionState" in navigator.mediaSession &&
+      currrentlyPlaying?.duration
+    ) {
+      navigator.mediaSession.setPositionState({
+        duration: currrentlyPlaying.duration,
+        playbackRate: 1,
+        position: currentlyPlayingPosition ?? 0,
+      });
+    }
+  }, [currentlyPlayingPosition, currrentlyPlaying?.duration]);
+
+  useEffect(() => {
+    if (player && "mediaSession" in navigator) {
+      try {
+        navigator.mediaSession.setActionHandler("play", function () {
+          player.togglePlay();
+        });
+        navigator.mediaSession.setActionHandler("pause", function () {
+          player.togglePlay();
+        });
+        navigator.mediaSession.setActionHandler("stop", function () {
+          player.pause();
+        });
+        navigator.mediaSession.setActionHandler("seekbackward", function () {
+          player.seek(
+            !currentlyPlayingPosition || currentlyPlayingPosition <= 10
+              ? 0
+              : currentlyPlayingPosition - 10
+          );
+        });
+        navigator.mediaSession.setActionHandler("seekforward", function () {
+          player.seek(
+            !currentlyPlayingPosition ? 10 : currentlyPlayingPosition + 10
+          );
+        });
+        navigator.mediaSession.setActionHandler("seekto", function (e) {
+          e.seekTime && player.seek(e.seekTime);
+        });
+        navigator.mediaSession.setActionHandler("previoustrack", function () {
+          player.previousTrack();
+        });
+        navigator.mediaSession.setActionHandler("nexttrack", function () {
+          player.nextTrack();
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [currentlyPlayingPosition, player, user]);
+
+  useEffect(() => {
+    if ("mediaSession" in navigator) {
+      if (isPlaying) {
+        navigator.mediaSession.playbackState = "playing";
+      }
+      if (!isPlaying) {
+        navigator.mediaSession.playbackState = "paused";
+      }
+      if (!isPlaying && !currrentlyPlaying) {
+        navigator.mediaSession.playbackState = "none";
+      }
+    }
+  }, [currrentlyPlaying, isPlaying]);
 
   return (
     <SpotifyContext.Provider

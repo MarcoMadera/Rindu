@@ -31,7 +31,7 @@ export async function getAuth(
     return { user: userFromRefreshedToken, accessToken };
   }
 
-  if (!user || !accessTokenFromCookie) {
+  if (!user || !accessTokenFromCookie || !refreshToken) {
     serverRedirect(res, "/");
     return null;
   }
