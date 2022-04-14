@@ -7,6 +7,7 @@ import {
 } from "react";
 import { AllTracksFromAPlayList } from "types/spotify";
 import useAuth from "./useAuth";
+import useToast from "./useToast";
 import useSpotify from "./useSpotify";
 
 export interface AudioPlayer extends HTMLAudioElement {
@@ -43,6 +44,7 @@ export default function useSpotifyPlayer({
   const spotifyPlayer = useRef<Spotify.Player>();
   const audioPlayer = useRef<AudioPlayer>();
   const { accessToken, user } = useAuth();
+  const { addToast } = useToast();
 
   useEffect(() => {
     const isPremium = user?.product === "premium";
@@ -218,13 +220,25 @@ export default function useSpotifyPlayer({
         }
       };
 
-      audioPlayer.current.ondurationchange = () =>
+      audioPlayer.current.ondurationchange = () => {
         setCurrentlyPlayingDuration(audioPlayer.current?.duration);
+      };
+
       setPlayer(audioPlayer.current);
     }
 
     if (!accessToken || !isPremium) {
       return;
+    }
+
+    if (window.Spotify) {
+      spotifyPlayer.current = new window.Spotify.Player({
+        getOAuthToken: (callback: CallableFunction) => {
+          callback(accessToken);
+        },
+        name,
+        volume,
+      });
     }
 
     window.onSpotifyWebPlaybackSDKReady = () => {
@@ -236,12 +250,14 @@ export default function useSpotifyPlayer({
         volume,
       });
 
-      setPlayer(spotifyPlayer.current);
-
       spotifyPlayer.current.addListener(
         "ready",
         ({ device_id }: { device_id: string }) => {
           setDeviceId(device_id);
+          addToast({
+            variant: "info",
+            message: "Spotify Player is ready",
+          });
         }
       );
 
@@ -301,6 +317,7 @@ export default function useSpotifyPlayer({
       );
 
       spotifyPlayer.current.connect();
+      setPlayer(spotifyPlayer.current);
     };
 
     document.addEventListener(

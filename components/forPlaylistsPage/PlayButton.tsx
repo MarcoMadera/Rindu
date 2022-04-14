@@ -34,6 +34,7 @@ export function PlayButton({
     setCurrentlyPlaying,
     setIsPlaying,
     currrentlyPlaying,
+    setPlayedSource,
   } = useSpotify();
   const { accessToken, user } = useAuth();
   const [isThisTrackPlaying, setIsThisTrackPlaying] = useState(false);
@@ -128,6 +129,15 @@ export function PlayButton({
             offset: 0,
           });
 
+          const source = track?.uri || playlistDetails?.uri;
+
+          const isCollection = source?.split(":")?.[3];
+          setPlayedSource(
+            isCollection && playlistDetails
+              ? `spotify:${playlistDetails?.type}:${playlistDetails?.id}`
+              : source
+          );
+
           return setCurrentlyPlaying(track);
         }
 
@@ -137,6 +147,13 @@ export function PlayButton({
         }).then(() => {
           if (playlistDetails) {
             setPlaylistPlayingId(playlistDetails.id);
+            const source = playlistDetails?.uri;
+            const isCollection = source?.split(":")?.[3];
+            setPlayedSource(
+              isCollection
+                ? `spotify:${playlistDetails?.type}:${playlistDetails?.id}`
+                : source
+            );
           }
         });
       }
@@ -181,6 +198,7 @@ export function PlayButton({
       playlistDetails,
       setCurrentlyPlaying,
       setIsPlaying,
+      setPlayedSource,
       setPlaylistPlayingId,
       track,
       user,

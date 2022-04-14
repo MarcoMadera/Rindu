@@ -75,6 +75,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
     setCurrentlyPlaying,
     playlistDetails,
     setPlaylistPlayingId,
+    setPlayedSource,
   } = useSpotify();
   const [mouseEnter, setMouseEnter] = useState(false);
   const [isHoveringHeart, setIsHoveringHeart] = useState(false);
@@ -104,6 +105,13 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       isSingleTrack,
       position,
     });
+    const source = playlistDetails?.uri;
+    const isCollection = source?.split(":")?.[3];
+    setPlayedSource(
+      isCollection && playlistDetails
+        ? `spotify:${playlistDetails?.type}:${playlistDetails?.id}`
+        : source
+    );
   }
 
   return (
@@ -139,7 +147,9 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         }
         if (e.key === " ") {
           e.preventDefault();
-          player?.togglePlay();
+          if (!isPremium) {
+            player?.togglePlay();
+          }
         }
         if (e.key === "Enter") {
           e.preventDefault();

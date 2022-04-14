@@ -119,6 +119,7 @@ export default function TrackPage({
   const { setPlaylistDetails, setAllTracks, playlistDetails } = useSpotify();
   const [artistInfo, setArtistInfo] =
     useState<SpotifyApi.SingleArtistResponse | null>(null);
+  const [sameTrackIndex, setSameTrackIndex] = useState(-1);
 
   useEffect(() => {
     if (track) {
@@ -165,6 +166,12 @@ export default function TrackPage({
         ...track,
         audio: track.preview_url,
       }));
+
+      const sameTrackIdx = artistTopTracksFor.findIndex(
+        (artistTrack) => artistTrack.uri === track.uri
+      );
+
+      setSameTrackIndex(sameTrackIdx);
 
       setAllTracks([
         { ...track, audio: track.preview_url },
@@ -291,6 +298,19 @@ export default function TrackPage({
                   if (i >= maxToShow) {
                     return null;
                   }
+                  const isTheSameAsTrack = artistTrack.uri
+                    ? artistTrack.uri === track?.uri
+                    : false;
+                  const mainTrackExistInArtistTopTracks = sameTrackIndex >= 0;
+                  const isValidPosition = i - sameTrackIndex > 0;
+                  const mainTrackIsFirstPosition = isTheSameAsTrack && i === 0;
+                  const position =
+                    mainTrackExistInArtistTopTracks && isValidPosition
+                      ? i
+                      : isTheSameAsTrack || mainTrackIsFirstPosition
+                      ? 0
+                      : i + 1;
+
                   return (
                     <ModalCardTrack
                       accessToken={accessToken ?? ""}
@@ -306,7 +326,7 @@ export default function TrackPage({
                       }}
                       key={artistTrack.id}
                       type="playlist"
-                      position={artistTrack.uri === track?.uri ? 0 : i + 1}
+                      position={position}
                       isSingleTrack
                     />
                   );

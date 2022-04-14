@@ -1,47 +1,15 @@
 import useAuth from "hooks/useAuth";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
-import {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useEffect, useState } from "react";
 import {
   AllTracksFromAPlayList,
+  ISpotifyContext,
   PlaylistItems,
   trackItem,
 } from "types/spotify";
 
-export interface Context {
-  playlists: PlaylistItems;
-  setPlaylists: Dispatch<SetStateAction<PlaylistItems>>;
-  totalPlaylists: number;
-  setTotalPlaylists: Dispatch<SetStateAction<number>>;
-  deviceId: string | undefined;
-  setDeviceId: Dispatch<SetStateAction<string | undefined>>;
-  allTracks: AllTracksFromAPlayList;
-  setAllTracks: Dispatch<SetStateAction<AllTracksFromAPlayList>>;
-  setIsPlaying: Dispatch<SetStateAction<boolean>>;
-  isPlaying: boolean;
-  setCurrentlyPlaying: Dispatch<SetStateAction<trackItem | undefined>>;
-  currrentlyPlaying: trackItem | undefined;
-  currentlyPlayingPosition: number | undefined;
-  currentlyPlayingDuration: number | undefined;
-  setCurrentlyPlayingPosition: Dispatch<SetStateAction<number | undefined>>;
-  setCurrentlyPlayingDuration: Dispatch<SetStateAction<number | undefined>>;
-  player: Spotify.Player | AudioPlayer | undefined;
-  setPlayer: Dispatch<SetStateAction<Spotify.Player | AudioPlayer | undefined>>;
-  playlistDetails: SpotifyApi.SinglePlaylistResponse | null;
-  setPlaylistPlayingId: Dispatch<SetStateAction<string | undefined>>;
-  playlistPlayingId: string | undefined;
-  setPlaylistDetails: Dispatch<
-    SetStateAction<SpotifyApi.SinglePlaylistResponse | null>
-  >;
-}
-
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SpotifyContext = createContext<Context>(null!);
+const SpotifyContext = createContext<ISpotifyContext>(null!);
 export default SpotifyContext;
 
 export const SpotifyContextProvider: React.FC = ({ children }) => {
@@ -50,6 +18,7 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
   const [allTracks, setAllTracks] = useState<AllTracksFromAPlayList>([]);
   const [deviceId, setDeviceId] = useState<string>();
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isShowingSideBarImg, setIsShowingSideBarImg] = useState(false);
   const [currrentlyPlaying, setCurrentlyPlaying] = useState<trackItem>();
   const [currentlyPlayingPosition, setCurrentlyPlayingPosition] =
     useState<number>();
@@ -57,8 +26,9 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
     useState<number>();
   const [player, setPlayer] = useState<Spotify.Player | AudioPlayer>();
   const [playlistPlayingId, setPlaylistPlayingId] = useState<string>();
+  const [playedSource, setPlayedSource] = useState<string>();
   const [playlistDetails, setPlaylistDetails] =
-    useState<SpotifyApi.SinglePlaylistResponse | null>(null);
+    useState<ISpotifyContext["playlistDetails"]>(null);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -152,6 +122,10 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
         setPlaylistPlayingId,
         playlistDetails,
         setPlaylistDetails,
+        playedSource,
+        setPlayedSource,
+        isShowingSideBarImg,
+        setIsShowingSideBarImg,
       }}
     >
       {children}

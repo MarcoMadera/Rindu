@@ -7,6 +7,7 @@ import { ContentHeader } from "./ContentHeader";
 import useHeader from "hooks/useHeader";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
 import { formatTime } from "utils/formatTime";
+import { ISpotifyContext } from "types/spotify";
 
 function getYear(date: string) {
   const year = new Date(date).getFullYear();
@@ -14,7 +15,7 @@ function getYear(date: string) {
 }
 
 export interface PlaylistPageHeaderProps {
-  playlistDetails: SpotifyApi.SinglePlaylistResponse | null;
+  playlistDetails: ISpotifyContext["playlistDetails"] | null;
   type?: string;
 }
 

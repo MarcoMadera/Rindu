@@ -5,19 +5,28 @@ import useAuth from "hooks/useAuth";
 import useSpotify from "hooks/useSpotify";
 import useSpotifyPlayer from "hooks/useSpotifyPlayer";
 import Script from "next/script";
-import { ReactElement, useCallback, useState } from "react";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 import { ProgressBar } from "./ProgressBar";
 import { NavbarLeft } from "./NavbarLeft";
+import useToast from "hooks/useToast";
 
 export default function SpotifyPlayer(): ReactElement {
   const [volume, setVolume] = useState(1);
   const [lastVolume, setLastVolume] = useState(1);
   useSpotifyPlayer({ volume, name: "Rindu" });
-  const { player } = useSpotify();
-  const { isPlaying, currrentlyPlaying } = useSpotify();
+  const { isPlaying, currrentlyPlaying, player } = useSpotify();
   const [isHoveringVolume, setIsHoveringVolume] = useState(false);
   const { user } = useAuth();
+  const { addToast } = useToast();
   const isPremium = user?.product === "premium";
+
+  useEffect(() => {
+    addToast({
+      variant: "info",
+      message: "Welcome to Rindu, getting ready",
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const getActualVolume = useCallback(() => {
     if (volume > 0) {

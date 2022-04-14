@@ -9,6 +9,7 @@ export default class MyDocument extends Document {
         <body>
           <Main />
           <div id="tracksModal" />
+          <div id="toast" />
           <div>
             <NextScript />
           </div>

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { AllTracksFromAPlaylistResponse } from "types/spotify";
+import { AllTracksFromAPlaylistResponse, ISpotifyContext } from "types/spotify";
 import PlaylistLayout from "layouts/playlist";
 import { getAuth } from "utils/getAuth";
 import { serverRedirect } from "utils/serverRedirect";
@@ -8,7 +8,7 @@ import { getTracksFromPlayList } from "utils/spotifyCalls/getTracksFromPlayList"
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 
 export interface PlaylistProps {
-  playlistDetails: SpotifyApi.SinglePlaylistResponse | null;
+  playlistDetails: ISpotifyContext["playlistDetails"] | null;
   tracksInLibrary: boolean[] | null;
   playListTracks: AllTracksFromAPlaylistResponse | null;
   accessToken: string | null;

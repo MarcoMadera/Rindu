@@ -1,3 +1,6 @@
+import { AudioPlayer } from "hooks/useSpotifyPlayer";
+import { Dispatch, SetStateAction } from "react";
+
 export type AuthorizationResponse = {
   accessToken: string;
   refreshToken: string;
@@ -74,3 +77,49 @@ export type AllTracksFromAPlaylistResponse = {
 };
 
 export type RemoveTracksResponse = string | undefined;
+
+type Identity<T> = { [P in keyof T]: T[P] };
+type Replace<T, K extends keyof T, TReplace> = Identity<
+  Pick<T, Exclude<keyof T, K>> & {
+    [P in K]: TReplace;
+  }
+>;
+
+export interface ISpotifyContext {
+  playlists: PlaylistItems;
+  setPlaylists: Dispatch<SetStateAction<PlaylistItems>>;
+  totalPlaylists: number;
+  setTotalPlaylists: Dispatch<SetStateAction<number>>;
+  deviceId: string | undefined;
+  setDeviceId: Dispatch<SetStateAction<string | undefined>>;
+  allTracks: AllTracksFromAPlayList;
+  setAllTracks: Dispatch<SetStateAction<AllTracksFromAPlayList>>;
+  setIsPlaying: Dispatch<SetStateAction<boolean>>;
+  isPlaying: boolean;
+  setIsShowingSideBarImg: Dispatch<SetStateAction<boolean>>;
+  isShowingSideBarImg: boolean;
+  setCurrentlyPlaying: Dispatch<SetStateAction<trackItem | undefined>>;
+  currrentlyPlaying: trackItem | undefined;
+  currentlyPlayingPosition: number | undefined;
+  currentlyPlayingDuration: number | undefined;
+  setCurrentlyPlayingPosition: Dispatch<SetStateAction<number | undefined>>;
+  setCurrentlyPlayingDuration: Dispatch<SetStateAction<number | undefined>>;
+  player: Spotify.Player | AudioPlayer | undefined;
+  setPlayer: Dispatch<SetStateAction<Spotify.Player | AudioPlayer | undefined>>;
+  playlistDetails: Replace<
+    SpotifyApi.SinglePlaylistResponse,
+    "type",
+    "playlist" | "artist" | "collection"
+  > | null;
+  setPlaylistPlayingId: Dispatch<SetStateAction<string | undefined>>;
+  playlistPlayingId: string | undefined;
+  setPlaylistDetails: Dispatch<
+    SetStateAction<Replace<
+      SpotifyApi.SinglePlaylistResponse,
+      "type",
+      "playlist" | "artist" | "collection"
+    > | null>
+  >;
+  playedSource: string | undefined;
+  setPlayedSource: Dispatch<SetStateAction<string | undefined>>;
+}

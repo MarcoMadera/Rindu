@@ -1,48 +1,18 @@
-import { Dispatch, SetStateAction, useCallback, useContext } from "react";
-import {
-  AllTracksFromAPlayList,
-  PlaylistItems,
-  RemoveTracksResponse,
-  UserPlaylistsResponse,
-  trackItem,
-} from "types/spotify";
+import { useCallback, useContext } from "react";
+import { UserPlaylistsResponse, ISpotifyContext } from "types/spotify";
 import { getTracksFromPlayList as getTracksFromPlayListFromAPI } from "utils/spotifyCalls/getTracksFromPlayList";
 import SpotifyContext from "../context/SpotifyContext";
 import { getPlaylistsRequest, removeTracksRequest } from "../lib/requests";
 import useAuth from "./useAuth";
-import { AudioPlayer } from "./useSpotifyPlayer";
 
-export default function useSpotify(): {
-  playlists: PlaylistItems;
-  totalPlaylists: number;
+export default function useSpotify(): ISpotifyContext & {
   getPlaylists: (offset: number, playlistLimit: number) => void;
   getTracksFromPlayList: (playlistId: string) => void;
-  allTracks: AllTracksFromAPlayList;
-  setAllTracks: Dispatch<SetStateAction<AllTracksFromAPlayList>>;
-  setPlaylists: Dispatch<SetStateAction<PlaylistItems>>;
-  deviceId: string | undefined;
-  setDeviceId: Dispatch<SetStateAction<string | undefined>>;
-  setIsPlaying: Dispatch<SetStateAction<boolean>>;
-  isPlaying: boolean;
-  setCurrentlyPlaying: Dispatch<SetStateAction<trackItem | undefined>>;
-  currrentlyPlaying: trackItem | undefined;
-  currentlyPlayingPosition: number | undefined;
-  currentlyPlayingDuration: number | undefined;
-  setCurrentlyPlayingPosition: Dispatch<SetStateAction<number | undefined>>;
-  setCurrentlyPlayingDuration: Dispatch<SetStateAction<number | undefined>>;
-  player: Spotify.Player | AudioPlayer | undefined;
-  setPlayer: Dispatch<SetStateAction<Spotify.Player | AudioPlayer | undefined>>;
-  playlistDetails: SpotifyApi.SinglePlaylistResponse | null;
-  setPlaylistPlayingId: Dispatch<SetStateAction<string | undefined>>;
-  playlistPlayingId: string | undefined;
-  setPlaylistDetails: Dispatch<
-    SetStateAction<SpotifyApi.SinglePlaylistResponse | null>
-  >;
   removeTracks: (
     playlist: string | undefined,
     tracks: number[],
     snapshotID: string | undefined
-  ) => Promise<RemoveTracksResponse>;
+  ) => Promise<string | undefined>;
 } {
   const {
     playlists,
@@ -67,6 +37,10 @@ export default function useSpotify(): {
     playlistPlayingId,
     playlistDetails,
     setPlaylistDetails,
+    playedSource,
+    setPlayedSource,
+    isShowingSideBarImg,
+    setIsShowingSideBarImg,
   } = useContext(SpotifyContext);
   const { user } = useAuth();
 
@@ -151,5 +125,10 @@ export default function useSpotify(): {
     setPlaylistPlayingId,
     playlistPlayingId,
     setPlaylistDetails,
+    playedSource,
+    setPlayedSource,
+    setTotalPlaylists,
+    isShowingSideBarImg,
+    setIsShowingSideBarImg,
   };
 }

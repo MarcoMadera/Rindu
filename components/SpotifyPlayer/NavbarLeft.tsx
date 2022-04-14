@@ -7,6 +7,8 @@ import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
 import useAuth from "hooks/useAuth";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import { getIdFromUri } from "utils/getIdFromUri";
+import useSpotify from "hooks/useSpotify";
+import { Chevron } from "components/icons/Chevron";
 
 export function NavbarLeft({
   currrentlyPlaying,
@@ -16,6 +18,9 @@ export function NavbarLeft({
   const [isHoveringHeart, setIsHoveringHeart] = useState(false);
   const [isLikedTrack, setIsLikedTrack] = useState(false);
   const { accessToken } = useAuth();
+  const { playedSource, isShowingSideBarImg, setIsShowingSideBarImg } =
+    useSpotify();
+
   useEffect(() => {
     if (!currrentlyPlaying?.id) return;
     checkTracksInLibrary([currrentlyPlaying?.id], accessToken || "").then(
@@ -24,19 +29,49 @@ export function NavbarLeft({
       }
     );
   }, [accessToken, currrentlyPlaying]);
-
+  const type = playedSource?.split(":")?.[1];
+  const id = playedSource?.split(":")?.[2];
   return (
-    <div>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={
-          currrentlyPlaying.album.images[2]?.url ??
-          currrentlyPlaying.album.images[1]?.url
-        }
-        alt={currrentlyPlaying.album.name}
-        width={64}
-        height={64}
-      />
+    <div className="navBar-left">
+      <div className="img-container">
+        <button
+          onClick={() => {
+            setIsShowingSideBarImg(true);
+          }}
+          className="show-img"
+        >
+          <Chevron rotation={"90deg"} />
+        </button>
+        {playedSource ? (
+          <Link href={`/${type}/${id}`}>
+            <a>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={
+                  currrentlyPlaying.album.images[2]?.url ??
+                  currrentlyPlaying.album.images[1]?.url
+                }
+                alt={currrentlyPlaying.album.name}
+                width={64}
+                height={64}
+              />
+            </a>
+          </Link>
+        ) : (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={
+                currrentlyPlaying.album.images[2]?.url ??
+                currrentlyPlaying.album.images[1]?.url
+              }
+              alt={currrentlyPlaying.album.name}
+              width={64}
+              height={64}
+            />
+          </>
+        )}
+      </div>
       <section>
         <Link href={`/track/${currrentlyPlaying.id}`}>
           <a>{currrentlyPlaying.name}</a>
@@ -96,6 +131,31 @@ export function NavbarLeft({
         ) : null}
       </button>
       <style jsx>{`
+        .img-container {
+          display: ${isShowingSideBarImg ? "none" : "block"};
+          position: relative;
+          margin-right: 23px;
+        }
+        .img-container:hover .show-img {
+          opacity: 1;
+        }
+        .show-img {
+          position: absolute;
+          opacity: 0;
+          top: 5px;
+          right: 5px;
+          width: 24px;
+          height: 24px;
+          background-color: rgba(0, 0, 0, 0.7);
+          z-index: 1;
+          cursor: auto;
+          border: none;
+          border-radius: 50%;
+          color: #b3b3b3;
+        }
+        .show-img:hover {
+          transform: scale(1.1);
+        }
         p.trackName {
           color: #fff;
           margin: 0;
@@ -129,7 +189,7 @@ export function NavbarLeft({
           color: #fff;
           text-decoration: underline;
         }
-        div {
+        .navBar-left {
           width: 100%;
           height: 65px;
           margin: 0;
@@ -144,7 +204,6 @@ export function NavbarLeft({
         img {
           margin: 0;
           padding: 0;
-          margin-right: 23px;
         }
       `}</style>
     </div>

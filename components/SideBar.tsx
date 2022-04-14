@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import Add from "./icons/Add";
 import { Heart } from "./icons/Heart";
 import useAuth from "hooks/useAuth";
+import { Chevron } from "components/icons/Chevron";
 
 interface SideBarProps {
   children: ReactNode;
@@ -64,7 +65,15 @@ async function getAllPlaylists(accessToken: string) {
 }
 
 export default function SideBar({ children }: SideBarProps): ReactElement {
-  const { playlists, setPlaylists, playlistPlayingId } = useSpotify();
+  const {
+    playlists,
+    setPlaylists,
+    playlistPlayingId,
+    currrentlyPlaying,
+    isShowingSideBarImg,
+    setIsShowingSideBarImg,
+    playedSource,
+  } = useSpotify();
   const { accessToken } = useAuth();
   const router = useRouter();
 
@@ -78,6 +87,9 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
     }
     getPlaylists();
   }, [accessToken, setPlaylists]);
+
+  const type = playedSource?.split(":")?.[1];
+  const id = playedSource?.split(":")?.[2];
 
   return (
     <>
@@ -106,7 +118,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
               </a>
             </Link>
           </section>
-          <section>
+          <section className="section-2">
             <button>
               <div>
                 <Add />
@@ -114,7 +126,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
               Create Playlist
             </button>
             <Link href="/collection/tracks">
-              <a className={playlistPlayingId === "liked-songs" ? "green" : ""}>
+              <a className={playlistPlayingId === "tracks" ? "green" : ""}>
                 <div>
                   <Heart fill="#fff" width={13} height={13} />
                 </div>
@@ -127,16 +139,93 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
             {playlists?.map(({ id, name }) => {
               return (
                 <Link key={id} href={`/playlist/${encodeURIComponent(id)}`}>
-                  <a className={playlistPlayingId === id ? "green" : ""}>
+                  <a
+                    className={
+                      playlistPlayingId === id ? "playlist green" : "playlist"
+                    }
+                  >
                     {name}
                   </a>
                 </Link>
               );
             })}
           </section>
+          <section className="sidebarImg-container">
+            {currrentlyPlaying && (
+              <>
+                <button
+                  onClick={() => {
+                    setIsShowingSideBarImg(false);
+                  }}
+                  className="show-img"
+                >
+                  <Chevron rotation={"270deg"} />
+                </button>
+                {playedSource ? (
+                  <Link href={`/${type}/${id}`}>
+                    <a>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={
+                          currrentlyPlaying.album.images[2]?.url ??
+                          currrentlyPlaying.album.images[1]?.url
+                        }
+                        alt={currrentlyPlaying.album.name}
+                      />
+                    </a>
+                  </Link>
+                ) : (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={
+                        currrentlyPlaying.album.images[2]?.url ??
+                        currrentlyPlaying.album.images[1]?.url
+                      }
+                      alt={currrentlyPlaying.album.name}
+                    />
+                  </>
+                )}
+              </>
+            )}
+          </section>
         </nav>
         {children}
         <style jsx>{`
+          .sidebarImg-container {
+            overflow-y: hidden;
+            position: relative;
+            align-self: end;
+            display: flex;
+          }
+          img {
+            width: 100%;
+            aspect-ratio: 1;
+            display: ${isShowingSideBarImg ? "block" : "none"};
+          }
+          .section-2 {
+            overflow-y: hidden;
+          }
+          .sidebarImg-container:hover .show-img {
+            opacity: 1;
+          }
+          .show-img {
+            position: absolute;
+            opacity: 0;
+            top: 5px;
+            right: 5px;
+            width: 24px;
+            height: 24px;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+            cursor: auto;
+            border: none;
+            border-radius: 50%;
+            color: #b3b3b3;
+          }
+          .show-img:hover {
+            transform: scale(1.1);
+          }
           nav {
             background-color: #010101;
             width: 245px;
@@ -144,7 +233,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
             overflow: hidden;
             height: 100%;
             display: grid;
-            grid-template-rows: 86px 130px 120px 10fr;
+            grid-template-rows: 86px 130px minmax(0, 120px) minmax(0, 1fr) min-content;
           }
           section:nth-of-type(2) a.green,
           .green {
@@ -257,6 +346,9 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
           }
           a:hover {
             color: #fff;
+          }
+          .playlist {
+            font-size: 14px;
           }
           section:nth-of-type(3) a {
             cursor: default;

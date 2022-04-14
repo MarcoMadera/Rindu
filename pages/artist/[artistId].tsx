@@ -127,7 +127,7 @@ export default function ArtistPage({
       owner: user,
       public: false,
       snapshot_id: "",
-      type: "playlist",
+      type: "artist",
       href: "",
     });
     setAllTracks(

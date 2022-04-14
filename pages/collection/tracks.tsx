@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { AllTracksFromAPlaylistResponse } from "types/spotify";
+import { AllTracksFromAPlaylistResponse, ISpotifyContext } from "types/spotify";
 import PlaylistLayout from "layouts/playlist";
 import { serverRedirect } from "utils/serverRedirect";
 import { getAuth } from "utils/getAuth";
@@ -7,7 +7,7 @@ import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import { getMyLikedSongs } from "utils/spotifyCalls/getMyLikedSongs";
 
 interface PlaylistProps {
-  playlistDetails: SpotifyApi.SinglePlaylistResponse;
+  playlistDetails: ISpotifyContext["playlistDetails"];
   playListTracks: AllTracksFromAPlaylistResponse;
   tracksInLibrary: boolean[] | null;
   accessToken: string | null;
@@ -60,13 +60,13 @@ export async function getServerSideProps({
     return { props: null };
   }
 
-  const playlistDetails: SpotifyApi.SinglePlaylistResponse = {
+  const playlistDetails: ISpotifyContext["playlistDetails"] = {
     collaborative: false,
     description: "",
     external_urls: { spotify: "https://open.spotify.com/collection/tracks" },
     followers: { total: 0, href: null },
     href: "",
-    id: "liked-songs",
+    id: "tracks",
     images: [
       {
         url: "https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png",
@@ -94,7 +94,7 @@ export async function getServerSideProps({
       next: playListTracks.next,
       offset: playListTracks.offset,
     },
-    type: "playlist",
+    type: "collection",
     uri: `spotify:user:${user?.id}:collection`,
   };
   return {
