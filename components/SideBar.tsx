@@ -1,5 +1,5 @@
 import useSpotify from "hooks/useSpotify";
-import { ReactElement, ReactNode, useEffect } from "react";
+import { ReactElement, ReactNode, useCallback, useEffect } from "react";
 import Logo from "./Logo";
 import Link from "next/link";
 import Home from "./icons/Home";
@@ -10,6 +10,151 @@ import Add from "./icons/Add";
 import { Heart } from "./icons/Heart";
 import useAuth from "hooks/useAuth";
 import { Chevron } from "components/icons/Chevron";
+import { Volume } from "./icons/Volume";
+import { play } from "lib/spotify";
+import useClickPreventionOnDoubleClick from "hooks/useClickPreventionOnDoubleClick";
+import { getUserPlaylists } from "utils/spotifyCalls/getUserPlaylists";
+
+function PlaylistText({
+  id,
+  uri,
+  name,
+  type,
+}: {
+  id: string;
+  uri: string;
+  name: string;
+  type: "playlist";
+}): ReactElement {
+  const {
+    volume,
+    setVolume,
+    lastVolume,
+    setLastVolume,
+    player,
+    deviceId,
+    setPlaylistPlayingId,
+    setPlayedSource,
+    playlistPlayingId,
+  } = useSpotify();
+  const router = useRouter();
+  const { user, accessToken } = useAuth();
+  const isPremium = user?.product === "premium";
+
+  const getActualVolume = useCallback(() => {
+    if (volume > 0) {
+      return 0;
+    }
+    if (lastVolume === 0 && volume === 0) {
+      return 1;
+    }
+    return lastVolume;
+  }, [lastVolume, volume]);
+
+  const onDoubleClick = useCallback(() => {
+    if (uri && accessToken && deviceId && isPremium) {
+      play(accessToken, deviceId, {
+        context_uri: uri,
+        offset: 0,
+      }).then(() => {
+        setPlaylistPlayingId(id);
+        const isCollection = id?.split(":")?.[3];
+        setPlayedSource(isCollection ? `spotify:${type}:${id}` : uri);
+      });
+    }
+  }, [
+    accessToken,
+    deviceId,
+    id,
+    isPremium,
+    setPlaylistPlayingId,
+    setPlayedSource,
+    uri,
+    type,
+  ]);
+
+  const onClick = useCallback(() => {
+    router.push(`/playlist/${encodeURIComponent(id)}`);
+  }, [id, router]);
+
+  const [handleClick, handleDoubleClick] = useClickPreventionOnDoubleClick(
+    onClick,
+    onDoubleClick
+  );
+
+  return (
+    <div key={id} className="playlistName">
+      <button
+        onClick={handleClick}
+        onDoubleClick={handleDoubleClick}
+        className={playlistPlayingId === id ? "playlist green" : "playlist"}
+      >
+        {name}
+      </button>
+      {playlistPlayingId === id ? (
+        <button
+          className="volume"
+          aria-label={`${volume > 0 ? "Mute" : "Unmute"}`}
+          onClick={() => {
+            setVolume(getActualVolume());
+            if (volume > 0) {
+              setLastVolume(volume);
+            }
+            player?.setVolume(getActualVolume());
+          }}
+        >
+          <Volume volume={volume} />
+        </button>
+      ) : (
+        <div className="volume"></div>
+      )}
+      <style jsx>{`
+        .playlistName {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+          justify-content: space-between;
+        }
+        .volume,
+        .playlist {
+          border: none;
+          background-color: transparent;
+        }
+        .volume {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 16px;
+          margin-left: 2px;
+        }
+        .volume :global(svg path) {
+          fill: ${volume > 0 ? "#1db954" : "#fff"};
+        }
+        .volume:hover :global(svg path) {
+          fill: #fff;
+        }
+        .playlist.green {
+          color: #1db954;
+        }
+        .playlist:hover {
+          color: #fff;
+        }
+        .playlist {
+          display: inline-block;
+          font-size: 14px;
+          color: #b3b3b3;
+          width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          width: 100%;
+          text-decoration: none;
+          text-align: left;
+        }
+      `}</style>
+    </div>
+  );
+}
 
 interface SideBarProps {
   children: ReactNode;
@@ -31,12 +176,13 @@ async function getPlaylist(offset: number, accessToken: string) {
 
 async function getAllPlaylists(accessToken: string) {
   const limit = 50;
-  const playlistsData: SpotifyApi.ListOfCurrentUsersPlaylistsResponse =
-    await getPlaylist(0, accessToken);
+  const playlistsData = await getUserPlaylists(accessToken, 0, 50);
 
   let restPlaylistsData:
     | SpotifyApi.ListOfCurrentUsersPlaylistsResponse
     | undefined;
+
+  if (!playlistsData) return;
   const max = Math.ceil(playlistsData.total / limit);
 
   if (max <= 1) {
@@ -81,9 +227,11 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
     if (!accessToken) return;
 
     async function getPlaylists() {
-      const allPlaylists: SpotifyApi.ListOfCurrentUsersPlaylistsResponse =
-        await getAllPlaylists(accessToken as string);
-      setPlaylists(allPlaylists.items);
+      const allPlaylists = await getAllPlaylists(accessToken as string);
+
+      if (allPlaylists) {
+        setPlaylists(allPlaylists.items);
+      }
     }
     getPlaylists();
   }, [accessToken, setPlaylists]);
@@ -136,17 +284,15 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
             <hr />
           </section>
           <section>
-            {playlists?.map(({ id, name }) => {
+            {playlists?.map(({ id, uri, name, type }) => {
               return (
-                <Link key={id} href={`/playlist/${encodeURIComponent(id)}`}>
-                  <a
-                    className={
-                      playlistPlayingId === id ? "playlist green" : "playlist"
-                    }
-                  >
-                    {name}
-                  </a>
-                </Link>
+                <PlaylistText
+                  key={id}
+                  id={id}
+                  uri={uri}
+                  name={name}
+                  type={type}
+                />
               );
             })}
           </section>
@@ -167,7 +313,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={
-                          currrentlyPlaying.album.images[2]?.url ??
+                          currrentlyPlaying.album.images[0]?.url ??
                           currrentlyPlaying.album.images[1]?.url
                         }
                         alt={currrentlyPlaying.album.name}
@@ -179,7 +325,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={
-                        currrentlyPlaying.album.images[2]?.url ??
+                        currrentlyPlaying.album.images[0]?.url ??
                         currrentlyPlaying.album.images[1]?.url
                       }
                       alt={currrentlyPlaying.album.name}
@@ -235,8 +381,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
             display: grid;
             grid-template-rows: 86px 130px minmax(0, 120px) minmax(0, 1fr) min-content;
           }
-          section:nth-of-type(2) a.green,
-          .green {
+          .section-2 .green {
             color: #1db954;
           }
           section {
@@ -332,7 +477,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
           }
           section:nth-of-type(3) {
             min-height: 100%;
-            padding: 0 24px 20px 24px;
+            padding: 0 8px 20px 24px;
             height: 100%;
           }
           a {
@@ -346,13 +491,6 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
           }
           a:hover {
             color: #fff;
-          }
-          .playlist {
-            font-size: 14px;
-          }
-          section:nth-of-type(3) a {
-            cursor: default;
-            margin-bottom: 10px;
           }
           div.container {
             height: calc(100vh - 90px);

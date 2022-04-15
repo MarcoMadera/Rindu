@@ -238,10 +238,18 @@ export async function getServerSideProps({
       serverRedirect(res, "/");
     }
     if (tokens) {
+      const expireCookieDate = new Date();
+      expireCookieDate.setDate(expireCookieDate.getDate() + 30);
       res.setHeader("Set-Cookie", [
-        `${ACCESS_TOKEN_COOKIE}=${tokens.accessToken}; Path=/;"`,
-        `${REFRESH_TOKEN_COOKIE}=${tokens.refreshToken}; Path=/;"`,
-        `${EXPIRE_TOKEN_COOKIE}=${tokens.expiresIn}; Path=/;"`,
+        `${ACCESS_TOKEN_COOKIE}=${
+          tokens.accessToken
+        }; Path=/; expires=${expireCookieDate.toUTCString()};`,
+        `${REFRESH_TOKEN_COOKIE}=${
+          tokens.refreshToken
+        }; Path=/; expires=${expireCookieDate.toUTCString()};`,
+        `${EXPIRE_TOKEN_COOKIE}=${
+          tokens.expiresIn
+        }; Path=/; expires=${expireCookieDate.toUTCString()};`,
       ]);
     }
   }

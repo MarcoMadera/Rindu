@@ -2,7 +2,6 @@ import Router from "next/router";
 import { NextPage } from "next";
 import { takeCookie } from "../utils/cookies";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "../utils/constants";
-import { validateAccessToken } from "../utils/spotifyCalls/validateAccessToken";
 import useAuth from "../hooks/useAuth";
 import { useEffect } from "react";
 import { refreshAccessToken } from "../utils/spotifyCalls/refreshAccessToken";
@@ -387,22 +386,17 @@ Home.getInitialProps = async ({
     res?.setHeader("Set-Cookie", [
       `${ACCESS_TOKEN_COOKIE}=${accessToken}; Path=/;"`,
     ]);
+
+    if (res) {
+      res.writeHead(307, { Location: "/dashboard" });
+      res.end();
+    } else {
+      Router.replace("/dashboard");
+    }
+
+    return { accessToken };
   }
+  removeTokensFromCookieServer(res);
 
-  const accessTokenFromCookies = takeCookie(ACCESS_TOKEN_COOKIE, cookies);
-  const user = await validateAccessToken(accessTokenFromCookies);
-
-  if (!user) {
-    removeTokensFromCookieServer(res);
-    return { accessToken: null };
-  }
-
-  if (res) {
-    res.writeHead(307, { Location: "/dashboard" });
-    res.end();
-  } else {
-    Router.replace("/dashboard");
-  }
-
-  return { accessToken: accessTokenFromCookies };
+  return { accessToken: null };
 };

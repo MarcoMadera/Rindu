@@ -58,7 +58,7 @@ const Navbar: React.FC = () => {
     <header>
       <Logo color="#fff" />
       {user ? (
-        <UserConfig name={user?.display_name} img={user?.images?.[0].url} />
+        <UserConfig name={user?.display_name} img={user?.images?.[0]?.url} />
       ) : (
         <div></div>
       )}

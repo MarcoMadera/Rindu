@@ -40,12 +40,8 @@ export default function useToast(): UseToast {
         }, displayTime),
       };
 
-      setToasts((allToasts) => {
-        if (!allToasts.length) {
-          return [newToast];
-        }
-
-        return [...allToasts, newToast];
+      setToasts(() => {
+        return [newToast];
       });
     },
     [setToasts, removeToast]

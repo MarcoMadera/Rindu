@@ -1,13 +1,15 @@
-import { getSpotifyAuthorization, getSpotifyUser } from "../../lib/spotify";
+import { getSpotifyAuthorization } from "../../lib/spotify";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { getMe } from "utils/spotifyCalls/getMe";
 
 export default async function login(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
+  const cookies = req.headers.cookie;
   if (req.body.accessToken) {
     try {
-      const data = await getSpotifyUser(req.body.accessToken);
+      const data = await getMe(req.body.accessToken, cookies);
       return res.json(data);
     } catch (err) {
       return res.status(400).json(err);

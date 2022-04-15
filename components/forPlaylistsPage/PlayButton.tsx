@@ -11,6 +11,7 @@ import { Pause, Play } from "components/icons";
 import { play } from "lib/spotify";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { useRouter } from "next/router";
+import useToast from "hooks/useToast";
 
 export function PlayButton({
   size,
@@ -40,6 +41,7 @@ export function PlayButton({
   const [isThisTrackPlaying, setIsThisTrackPlaying] = useState(false);
   const [isThisPlaylistPlaying, setIsThisPlaylistPlaying] = useState(false);
   const [isThisArtistPlaying, setIsThisArtistPlaying] = useState(false);
+  const { addToast } = useToast();
   const isPremium = user?.product === "premium";
   const router = useRouter();
 
@@ -92,9 +94,16 @@ export function PlayButton({
 
   const getCurrentState = useCallback(async () => {
     if (!player) return;
+    if (!(player as Spotify.Player)?.getCurrentState) {
+      addToast({
+        variant: "error",
+        message: "Not ready to play, if the issue persist refresh the page",
+      });
+      return;
+    }
     const data = await (player as Spotify.Player)?.getCurrentState();
     return data;
-  }, [player]);
+  }, [addToast, player]);
 
   const handleClick = useCallback(
     async (e: MouseEvent) => {
@@ -137,6 +146,7 @@ export function PlayButton({
               ? `spotify:${playlistDetails?.type}:${playlistDetails?.id}`
               : source
           );
+          setPlaylistPlayingId(undefined);
 
           return setCurrentlyPlaying(track);
         }

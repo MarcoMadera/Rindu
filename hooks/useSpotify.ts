@@ -41,6 +41,10 @@ export default function useSpotify(): ISpotifyContext & {
     setPlayedSource,
     isShowingSideBarImg,
     setIsShowingSideBarImg,
+    volume,
+    setVolume,
+    lastVolume,
+    setLastVolume,
   } = useContext(SpotifyContext);
   const { user } = useAuth();
 
@@ -130,5 +134,9 @@ export default function useSpotify(): ISpotifyContext & {
     setTotalPlaylists,
     isShowingSideBarImg,
     setIsShowingSideBarImg,
+    volume,
+    setVolume,
+    lastVolume,
+    setLastVolume,
   };
 }

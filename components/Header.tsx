@@ -75,7 +75,10 @@ export default function Header({
             </a>
           ) : null}
           {user ? (
-            <UserConfig name={user?.display_name} img={user?.images?.[0].url} />
+            <UserConfig
+              name={user?.display_name}
+              img={user?.images?.[0]?.url}
+            />
           ) : (
             <div className="userConfig"></div>
           )}

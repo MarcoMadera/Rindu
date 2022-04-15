@@ -2,8 +2,8 @@ import { NextApiResponse } from "next";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "./constants";
 import { takeCookie } from "./cookies";
 import { serverRedirect } from "./serverRedirect";
+import { getMe } from "./spotifyCalls/getMe";
 import { refreshAccessToken } from "./spotifyCalls/refreshAccessToken";
-import { validateAccessToken } from "./spotifyCalls/validateAccessToken";
 
 export async function getAuth(
   res: NextApiResponse,
@@ -11,7 +11,7 @@ export async function getAuth(
 ): Promise<{ user: SpotifyApi.UserObjectPrivate; accessToken: string } | null> {
   const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE, cookies);
   const accessTokenFromCookie = takeCookie(ACCESS_TOKEN_COOKIE, cookies);
-  const user = await validateAccessToken(accessTokenFromCookie);
+  const user = await getMe(accessTokenFromCookie, cookies);
 
   if (refreshToken && !user) {
     const { accessToken } = (await refreshAccessToken(refreshToken)) || {};
@@ -21,7 +21,7 @@ export async function getAuth(
       return null;
     }
 
-    const userFromRefreshedToken = await validateAccessToken(accessToken);
+    const userFromRefreshedToken = await getMe(accessToken, cookies);
 
     if (!userFromRefreshedToken) {
       serverRedirect(res, "/");

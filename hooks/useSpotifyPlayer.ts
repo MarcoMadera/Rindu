@@ -294,7 +294,10 @@ export default function useSpotifyPlayer({
           }
 
           spotifyPlayer.current?.on("authentication_error", () => {
-            console.error("The user has not been authenticated");
+            addToast({
+              variant: "error",
+              message: "The user has not been authenticated",
+            });
           });
 
           setIsPlaying(!trackWindow?.paused);
@@ -303,18 +306,30 @@ export default function useSpotifyPlayer({
         }
       );
 
-      spotifyPlayer.current.addListener("initialization_error", (error) =>
-        console.log(error)
-      );
-      spotifyPlayer.current.addListener("authentication_error", (error) =>
-        console.log(error)
-      );
-      spotifyPlayer.current.addListener("account_error", (error) =>
-        console.log(error)
-      );
-      spotifyPlayer.current.addListener("playback_error", (error) =>
-        console.log(error)
-      );
+      spotifyPlayer.current.addListener("initialization_error", () => {
+        addToast({
+          variant: "error",
+          message: "Error initializing Spotify Player",
+        });
+      });
+      spotifyPlayer.current.addListener("authentication_error", () => {
+        addToast({
+          variant: "error",
+          message: "Authentication Error",
+        });
+      });
+      spotifyPlayer.current.addListener("account_error", () => {
+        addToast({
+          variant: "error",
+          message: "Error getting account info",
+        });
+      });
+      spotifyPlayer.current.addListener("playback_error", () => {
+        addToast({
+          variant: "error",
+          message: "Error playing this track",
+        });
+      });
 
       spotifyPlayer.current.connect();
       setPlayer(spotifyPlayer.current);

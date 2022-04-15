@@ -105,6 +105,7 @@ export default function CollectionPlaylists(): ReactElement {
           grid-gap: 24px;
           margin: 20px 0 50px 0;
           justify-content: space-between;
+          padding-bottom: 50px;
         }
       `}</style>
     </main>

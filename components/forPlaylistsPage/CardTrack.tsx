@@ -14,6 +14,7 @@ import { normalTrackTypes } from "types/spotify";
 import { formatTime } from "utils/formatTime";
 import Link from "next/link";
 import useAuth from "hooks/useAuth";
+import useToast from "hooks/useToast";
 import { playCurrentTrack } from "utils/playCurrentTrack";
 import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibrary";
 import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
@@ -83,6 +84,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   const [isLikedTrack, setIsLikedTrack] = useState(isTrackInLibrary);
   const trackRef = useRef<HTMLDivElement>();
   const { user } = useAuth();
+  const { addToast } = useToast();
   const isPremium = user?.product === "premium";
 
   const isPlayable =
@@ -255,6 +257,10 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
                 (res) => {
                   if (res) {
                     setIsLikedTrack(false);
+                    addToast({
+                      variant: "success",
+                      message: "Track removed from library.",
+                    });
                   }
                 }
               );
@@ -262,6 +268,10 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
               saveTracksToLibrary([track.id ?? ""], accessToken).then((res) => {
                 if (res) {
                   setIsLikedTrack(true);
+                  addToast({
+                    variant: "success",
+                    message: "Track added to library",
+                  });
                 }
               });
             }

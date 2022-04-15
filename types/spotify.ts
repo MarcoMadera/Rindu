@@ -122,4 +122,8 @@ export interface ISpotifyContext {
   >;
   playedSource: string | undefined;
   setPlayedSource: Dispatch<SetStateAction<string | undefined>>;
+  volume: number;
+  setVolume: Dispatch<SetStateAction<number>>;
+  lastVolume: number;
+  setLastVolume: Dispatch<SetStateAction<number>>;
 }

@@ -48,8 +48,12 @@ const UserConfig: React.FC<UserConfigProps> = ({ name, img }) => {
           e.stopPropagation();
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={img} alt={name} />
+        {img ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img className="img" src={img} alt={name} />
+        ) : (
+          <div className="img"></div>
+        )}
         <p>{name}</p>
         <svg height="16" width="16" fill="#fff" viewBox="0 0 16 16">
           <path d="M3 6l5 5.794L13 6z"></path>
@@ -123,6 +127,7 @@ const UserConfig: React.FC<UserConfigProps> = ({ name, img }) => {
           background-color: #282828;
           box-shadow: 0px 2px 9px 0px rgb(0 0 0 / 5%);
           padding: 3px;
+          min-width: 100%;
         }
         .option {
           display: flex;
@@ -170,11 +175,12 @@ const UserConfig: React.FC<UserConfigProps> = ({ name, img }) => {
           padding: 2px;
           gap: 8px;
           color: #e5e5e5;
+          min-height: 28px;
         }
         .pill:hover {
           background-color: #161616;
         }
-        img {
+        .img {
           width: 28px;
           height: 28px;
           border-radius: 50%;

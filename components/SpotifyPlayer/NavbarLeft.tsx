@@ -9,6 +9,7 @@ import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import { getIdFromUri } from "utils/getIdFromUri";
 import useSpotify from "hooks/useSpotify";
 import { Chevron } from "components/icons/Chevron";
+import useToast from "hooks/useToast";
 
 export function NavbarLeft({
   currrentlyPlaying,
@@ -20,6 +21,7 @@ export function NavbarLeft({
   const { accessToken } = useAuth();
   const { playedSource, isShowingSideBarImg, setIsShowingSideBarImg } =
     useSpotify();
+  const { addToast } = useToast();
 
   useEffect(() => {
     if (!currrentlyPlaying?.id) return;
@@ -29,8 +31,10 @@ export function NavbarLeft({
       }
     );
   }, [accessToken, currrentlyPlaying]);
+
   const type = playedSource?.split(":")?.[1];
   const id = playedSource?.split(":")?.[2];
+
   return (
     <div className="navBar-left">
       <div className="img-container">
@@ -111,6 +115,10 @@ export function NavbarLeft({
             ).then((res) => {
               if (res) {
                 setIsLikedTrack(false);
+                addToast({
+                  variant: "success",
+                  message: "Track removed from library.",
+                });
               }
             });
           } else {
@@ -118,6 +126,10 @@ export function NavbarLeft({
               (res) => {
                 if (res) {
                   setIsLikedTrack(true);
+                  addToast({
+                    variant: "success",
+                    message: "Track added to library",
+                  });
                 }
               }
             );

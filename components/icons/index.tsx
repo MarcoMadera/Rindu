@@ -4,3 +4,5 @@ export { NextTrack } from "./NextTrack";
 export { Playing } from "./Playing";
 export { AngleBrackect } from "./AngleBrackect";
 export { PreviousTrack } from "./PreviousTrack";
+export { Suffle } from "./Suffle";
+export { Repeat } from "./Repeat";

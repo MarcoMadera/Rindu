@@ -3,7 +3,6 @@ import {
   AuthorizationResponse,
   RefreshResponse,
   RemoveTracksResponse,
-  UserPlaylistsResponse,
   AllTracksFromAPlaylistResponse,
 } from "types/spotify";
 
@@ -107,24 +106,6 @@ export async function getSpotifyUser(
   spotifyAPI.setAccessToken(accessToken);
   const data = await spotifyAPI.getMe();
   return data.body;
-}
-
-export async function getUserPlaylists(
-  accessToken: string,
-  offset = 0,
-  limit = 50
-): Promise<UserPlaylistsResponse> {
-  const res = await fetch(
-    `https://api.spotify.com/v1/me/playlists?limit=${limit}&offset=${offset}`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-  const data = await res.json();
-  return data;
 }
 
 export const getAllTracksFromPlaylist = async (

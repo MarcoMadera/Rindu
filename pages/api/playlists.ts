@@ -1,5 +1,6 @@
-import { getAllTracksFromPlaylist, getUserPlaylists } from "../../lib/spotify";
+import { getAllTracksFromPlaylist } from "../../lib/spotify";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { getUserPlaylists } from "utils/spotifyCalls/getUserPlaylists";
 
 export default async function playlists(
   req: NextApiRequest,

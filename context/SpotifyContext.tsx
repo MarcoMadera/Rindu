@@ -29,6 +29,8 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
   const [playedSource, setPlayedSource] = useState<string>();
   const [playlistDetails, setPlaylistDetails] =
     useState<ISpotifyContext["playlistDetails"]>(null);
+  const [volume, setVolume] = useState<number>(1);
+  const [lastVolume, setLastVolume] = useState<number>(1);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -39,7 +41,11 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
       navigator.mediaSession.setPositionState({
         duration: currrentlyPlaying.duration,
         playbackRate: 1,
-        position: currentlyPlayingPosition ?? 0,
+        position:
+          currentlyPlayingPosition &&
+          currentlyPlayingPosition <= currrentlyPlaying.duration
+            ? currentlyPlayingPosition
+            : 0,
       });
     }
   }, [currentlyPlayingPosition, currrentlyPlaying?.duration]);
@@ -126,6 +132,10 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
         setPlayedSource,
         isShowingSideBarImg,
         setIsShowingSideBarImg,
+        volume,
+        setVolume,
+        lastVolume,
+        setLastVolume,
       }}
     >
       {children}

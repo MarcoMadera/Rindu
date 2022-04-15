@@ -1,4 +1,11 @@
-import { NextTrack, Pause, Play, PreviousTrack } from "components/icons";
+import {
+  NextTrack,
+  Pause,
+  Play,
+  PreviousTrack,
+  Repeat,
+  Suffle,
+} from "components/icons";
 import { Volume } from "components/icons/Volume";
 import Slider from "components/Slider";
 import useAuth from "hooks/useAuth";
@@ -9,16 +16,33 @@ import { ReactElement, useCallback, useEffect, useState } from "react";
 import { ProgressBar } from "./ProgressBar";
 import { NavbarLeft } from "./NavbarLeft";
 import useToast from "hooks/useToast";
+import { suffle } from "utils/spotifyCalls/suffle";
+import { repeat } from "utils/spotifyCalls/repeat";
+import DeviceConnect from "components/icons/DeviceConnect";
+import { getAvailableDevices } from "utils/spotifyCalls/getAvailableDevices";
+import { transferPlayback } from "utils/spotifyCalls/transferPlayback";
 
 export default function SpotifyPlayer(): ReactElement {
-  const [volume, setVolume] = useState(1);
-  const [lastVolume, setLastVolume] = useState(1);
+  const {
+    isPlaying,
+    currrentlyPlaying,
+    player,
+    volume,
+    setVolume,
+    lastVolume,
+    setLastVolume,
+    deviceId,
+  } = useSpotify();
   useSpotifyPlayer({ volume, name: "Rindu" });
-  const { isPlaying, currrentlyPlaying, player } = useSpotify();
   const [isHoveringVolume, setIsHoveringVolume] = useState(false);
-  const { user } = useAuth();
+  const { user, accessToken } = useAuth();
   const { addToast } = useToast();
   const isPremium = user?.product === "premium";
+  const [suffleState, setSuffleState] = useState(false);
+  const [repeatState, setRepeatState] = useState<"track" | "off" | "context">(
+    "off"
+  );
+  const [devices, setDevices] = useState<SpotifyApi.UserDevice[]>([]);
 
   useEffect(() => {
     addToast({
@@ -52,30 +76,152 @@ export default function SpotifyPlayer(): ReactElement {
           <div className="player">
             <button
               onClick={() => {
+                if (!isPremium) {
+                  addToast({
+                    variant: "error",
+                    message: "You need to be premium to use this feature",
+                  });
+                  return;
+                }
+                if (!deviceId) {
+                  addToast({
+                    variant: "error",
+                    message: "No device connected",
+                  });
+                  return;
+                }
+                suffle(!suffleState, deviceId, accessToken).then((res) => {
+                  if (res) {
+                    setSuffleState((prev) => !prev);
+                  }
+                });
+              }}
+              className="button playerButton suffle"
+            >
+              <Suffle fill={suffleState ? "#1db954" : "#b3b3b3"} />
+            </button>
+            <button
+              onClick={() => {
                 player?.previousTrack();
               }}
-              className="playerButton"
+              className="button playerButton"
             >
               <PreviousTrack fill="#b3b3b3" />
             </button>
-            <button className="toggle" onClick={() => player?.togglePlay()}>
+            <button
+              className="button toggle"
+              onClick={() => player?.togglePlay()}
+            >
               {currrentlyPlaying && isPlaying ? <Pause /> : <Play />}
             </button>
             <button
               onClick={() => {
                 player?.nextTrack();
               }}
-              className="playerButton"
+              className="button playerButton"
             >
               <NextTrack fill="#b3b3b3" />
+            </button>
+            <button
+              onClick={() => {
+                if (!isPremium) {
+                  addToast({
+                    variant: "error",
+                    message: "You need to be premium to use this feature",
+                  });
+                  return;
+                }
+
+                const state =
+                  repeatState === "off"
+                    ? "context"
+                    : repeatState === "context"
+                    ? "track"
+                    : "off";
+                if (!deviceId) {
+                  addToast({
+                    variant: "error",
+                    message: "No device connected",
+                  });
+                  return;
+                }
+                repeat(state, deviceId, accessToken).then((res) => {
+                  if (res) {
+                    setRepeatState(state);
+                  }
+                });
+              }}
+              className="button playerButton repeat"
+            >
+              <Repeat
+                fill={repeatState === "off" ? "#b3b3b3" : "#1db954"}
+                state={repeatState}
+              />
             </button>
           </div>
           <ProgressBar />
         </section>
         <section>
           <div className="extras">
+            <div className="devices">
+              {devices.length > 0 && (
+                <div className="devices-container">
+                  <header>
+                    <h3>Connect to a device</h3>
+                    <div className="device-img-header-container">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="https://open.scdn.co/cdn/images/connect_header@1x.8f827808.png"
+                        alt="connect"
+                      />
+                    </div>
+                  </header>
+                  <ul>
+                    {devices.map((device) => (
+                      <button
+                        onClick={() => {
+                          if (device.id) {
+                            transferPlayback([device.id], accessToken);
+                          }
+                        }}
+                        key={device.id}
+                        className={`device ${device.is_active ? "active" : ""}`}
+                      >
+                        {device.name}
+                      </button>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <button
+                onClick={() => {
+                  if (!isPremium) {
+                    addToast({
+                      variant: "error",
+                      message: "You need to be premium to use this feature",
+                    });
+                    return;
+                  }
+
+                  if (devices.length === 0) {
+                    getAvailableDevices(accessToken).then((res) => {
+                      if (res?.devices) {
+                        setDevices(res.devices);
+                      }
+                    });
+                    return;
+                  }
+                  setDevices([]);
+                }}
+                className="button playerButton"
+              >
+                <DeviceConnect
+                  fill={devices.length > 0 ? "#1db954" : "#b3b3b3"}
+                />
+              </button>
+            </div>
             <button
-              className="volume"
+              className="button volume"
               onMouseEnter={() => {
                 setIsHoveringVolume(true);
               }}
@@ -112,6 +258,86 @@ export default function SpotifyPlayer(): ReactElement {
         </section>
       </div>
       <style jsx>{`
+        .devices {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 932;
+          max-height: calc(100vh - 114px);
+          overflow-y: auto;
+          padding: 5px;
+        }
+        .devices-container::before {
+          border: 10px solid transparent;
+          border-top-color: #282828;
+          bottom: -20px;
+          content: "";
+          position: absolute;
+          right: 141px;
+        }
+        .devices-container {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          bottom: 70px;
+          display: block;
+          border-radius: 5px;
+          background-color: #282828;
+          box-shadow: 0px 2px 9px 0px rgb(0 0 0 / 5%);
+          padding: 3px;
+          width: 300px;
+        }
+        .devices-container header {
+          display: grid;
+          justify-content: center;
+        }
+        .devices-container h3 {
+          display: block;
+          padding: 14px 35px 10px 14px;
+          font-size: 1.4rem;
+          line-height: 1.5rem;
+          text-transform: none;
+          letter-spacing: normal;
+          font-weight: 700;
+          color: #fff;
+        }
+        .device-img-header-container {
+          padding: 16px 0;
+          text-align: center;
+          display: flex;
+          justify-content: center;
+        }
+        .devices-container img {
+          width: 180px;
+        }
+        .device.active {
+          color: #1db954;
+        }
+        button.device {
+          background-color: transparent;
+          width: max-content;
+          min-width: 100%;
+          border: none;
+          display: flex;
+          align-content: center;
+          font-weight: 700;
+          font-size: 14px;
+          line-height: 16px;
+          color: #fff;
+          text-align: start;
+          text-decoration: none;
+          border-radius: 3px;
+          align-items: center;
+          justify-content: space-between;
+          padding: 8px 10px;
+          height: 40px;
+        }
+        button.device:hover {
+          outline: none;
+          background-color: #ffffff1a;
+        }
         .extras {
           display: flex;
           width: 100%;
@@ -130,28 +356,31 @@ export default function SpotifyPlayer(): ReactElement {
           justify-content: center;
           align-items: center;
           border: none;
+          background-color: transparent;
+          position: relative;
+        }
+        .button {
           width: 32px;
           height: 32px;
-          background-color: transparent;
         }
-        button.toggle {
+        .button.toggle {
           border-radius: 50%;
           background-color: #fff;
         }
-        button.playerButton:hover :global(svg path),
-        button.playerButton:focus :global(svg path) {
+        .button.playerButton:hover :global(svg path),
+        .button.playerButton:focus :global(svg path) {
           fill: #fff;
         }
-        button.playerButton:active :global(svg path) {
+        .button.playerButton:active :global(svg path) {
           fill: #b3b3b3;
         }
-        button.toggle:hover,
-        button.toggle:focus,
-        button.toggle:hover :global(svg),
-        button.toggle:focus :global(svg) {
+        .button.toggle:hover,
+        .button.toggle:focus,
+        .button.toggle:hover :global(svg),
+        .button.toggle:focus :global(svg) {
           transform: scale(1.05);
         }
-        button.toggle:active {
+        .button.toggle:active {
           transform: scale(1);
         }
         section:nth-child(1) {
@@ -170,7 +399,7 @@ export default function SpotifyPlayer(): ReactElement {
         }
         section:nth-child(2) div.player {
           display: flex;
-          column-gap: 32px;
+          column-gap: 16px;
           min-width: 280px;
           justify-content: center;
           width: 40%;
@@ -188,6 +417,30 @@ export default function SpotifyPlayer(): ReactElement {
           align-items: center;
           padding: 0 16px;
           height: 90px;
+        }
+        .repeat::after {
+          background-color: #1db954;
+          border-radius: 50%;
+          bottom: 0;
+          content: "";
+          display: block;
+          height: 4px;
+          left: 50%;
+          position: absolute;
+          -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+          width: 4px;
+        }
+        .repeat::after {
+          display: ${repeatState === "off" ? "none" : "block"};
+        }
+        .button.suffle.playerButton:hover :global(svg path),
+        .button.suffle.playerButton:focus :global(svg path) {
+          fill: ${!suffleState ? "#fff" : "#2fd669"};
+        }
+        .button.repeat.playerButton:hover :global(svg path),
+        .button.repeat.playerButton:focus :global(svg path) {
+          fill: ${repeatState === "off" ? "#fff" : "#2fd669"};
         }
         footer {
           width: 100%;
