@@ -9,6 +9,7 @@ import { AllTracksFromAPlayList } from "types/spotify";
 import useAuth from "./useAuth";
 import useToast from "./useToast";
 import useSpotify from "./useSpotify";
+import { getAccessToken } from "utils/spotifyCalls/getAccessToken";
 
 export interface AudioPlayer extends HTMLAudioElement {
   nextTrack: () => void;
@@ -43,7 +44,7 @@ export default function useSpotifyPlayer({
   } = useSpotify();
   const spotifyPlayer = useRef<Spotify.Player>();
   const audioPlayer = useRef<AudioPlayer>();
-  const { accessToken, user } = useAuth();
+  const { user } = useAuth();
   const { addToast } = useToast();
 
   useEffect(() => {
@@ -227,24 +228,17 @@ export default function useSpotifyPlayer({
       setPlayer(audioPlayer.current);
     }
 
-    if (!accessToken || !isPremium) {
+    if (!user?.uri || !isPremium) {
       return;
-    }
-
-    if (window.Spotify) {
-      spotifyPlayer.current = new window.Spotify.Player({
-        getOAuthToken: (callback: CallableFunction) => {
-          callback(accessToken);
-        },
-        name,
-        volume,
-      });
     }
 
     window.onSpotifyWebPlaybackSDKReady = () => {
       spotifyPlayer.current = new window.Spotify.Player({
-        getOAuthToken: (callback: CallableFunction) => {
-          callback(accessToken);
+        getOAuthToken: async (callback: CallableFunction) => {
+          const { accessToken } = (await getAccessToken()) || {};
+          if (accessToken) {
+            callback(accessToken);
+          }
         },
         name,
         volume,
@@ -347,11 +341,9 @@ export default function useSpotifyPlayer({
     );
 
     return () => {
-      if (!accessToken) {
-        spotifyPlayer.current?.removeListener("not_ready");
-        spotifyPlayer.current?.removeListener("ready");
-        spotifyPlayer.current?.disconnect();
-      }
+      spotifyPlayer.current?.removeListener("not_ready");
+      spotifyPlayer.current?.removeListener("ready");
+      spotifyPlayer.current?.disconnect();
       document.removeEventListener(
         "keydown",
         (event) => {
@@ -365,7 +357,7 @@ export default function useSpotifyPlayer({
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken]);
+  }, [user?.uri]);
 
   return { deviceId, player: spotifyPlayer ?? audioPlayer, setIsPlaying };
 }
