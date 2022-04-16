@@ -176,7 +176,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
       name: "",
       id: "",
       href: "",
-      album: { images: [{ url: "" }], name: "", uri: "" },
+      album: { images: [{ url: "" }], name: "", uri: "", type: "track" },
       media_type: "audio",
       type: "track",
     };

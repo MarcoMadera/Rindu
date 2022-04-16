@@ -1,4 +1,11 @@
-export function getIdFromUri(uri: string): string {
-  const id = uri.split(":")[2];
-  return id;
+export function getIdFromUri(uri: string, type: "type" | "id"): string {
+  if (type === "id") {
+    const id = uri.split(":")[2];
+    return id;
+  }
+  if (type === "type") {
+    const type = uri.split(":")[1];
+    return type;
+  }
+  return "";
 }

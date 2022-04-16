@@ -42,15 +42,37 @@ export default function SpotifyPlayer(): ReactElement {
   const [repeatState, setRepeatState] = useState<"track" | "off" | "context">(
     "off"
   );
+  const [repeatTrackUri, setRepeatTrackUri] = useState<string | undefined>();
   const [devices, setDevices] = useState<SpotifyApi.UserDevice[]>([]);
 
   useEffect(() => {
-    addToast({
-      variant: "info",
-      message: "Welcome to Rindu, getting ready",
-    });
+    if (!user?.product) {
+      return;
+    }
+
+    if (user?.product === "premium") {
+      addToast({
+        variant: "info",
+        message: "Welcome to Rindu, preparing your music for you",
+      });
+    } else {
+      addToast({
+        variant: "info",
+        message: "Welcome to Rindu, prepare to enjoy!",
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user?.product]);
+
+  useEffect(() => {
+    const isSameRepeating = repeatTrackUri
+      ? repeatTrackUri === currrentlyPlaying?.uri
+      : false;
+    if (repeatState === "track" && !isSameRepeating) {
+      setRepeatState("off");
+      setRepeatTrackUri("");
+    }
+  }, [currrentlyPlaying?.uri, repeatState, repeatTrackUri]);
 
   const getActualVolume = useCallback(() => {
     if (volume > 0) {
@@ -61,6 +83,7 @@ export default function SpotifyPlayer(): ReactElement {
     }
     return lastVolume;
   }, [lastVolume, volume]);
+
   return (
     <footer>
       <div className="container">
@@ -144,6 +167,9 @@ export default function SpotifyPlayer(): ReactElement {
                     message: "No device connected",
                   });
                   return;
+                }
+                if (state === "track") {
+                  setRepeatTrackUri(currrentlyPlaying?.uri);
                 }
                 repeat(state, deviceId, accessToken).then((res) => {
                   if (res) {

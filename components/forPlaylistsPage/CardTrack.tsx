@@ -83,13 +83,13 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   const [isFocusing, setIsFocusing] = useState(false);
   const [isLikedTrack, setIsLikedTrack] = useState(isTrackInLibrary);
   const trackRef = useRef<HTMLDivElement>();
-  const { user } = useAuth();
+  const { user, setAccessToken } = useAuth();
   const { addToast } = useToast();
   const isPremium = user?.product === "premium";
 
   const isPlayable =
     (!isPremium && track?.audio) ||
-    (isPremium && !(track?.is_playable === false) && !track.is_local);
+    (isPremium && !(track?.is_playable === false) && !track?.is_local);
 
   const isTheSameAsCurrentlyPlaying = currrentlyPlaying?.name === track?.name;
 
@@ -106,6 +106,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       setPlaylistPlayingId,
       isSingleTrack,
       position,
+      setAccessToken,
     });
     const source = playlistDetails?.uri;
     const isCollection = source?.split(":")?.[3];
@@ -213,7 +214,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
             {track?.artists?.map((artist, i) => {
               return (
                 <Fragment key={artist.id}>
-                  <Link href={`/artist/${artist.id}`}>
+                  <Link href={`/${artist.type ?? "artist"}/${artist.id}`}>
                     <a>{artist.name}</a>
                   </Link>
                   {i !== (track?.artists?.length && track?.artists?.length - 1)
@@ -229,7 +230,9 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         <>
           <section>
             <p className="trackArtists">
-              <Link href={`/album/${track?.album?.id}`}>
+              <Link
+                href={`/${track?.album?.type ?? "album"}/${track?.album?.id}`}
+              >
                 <a>{track?.album?.name}</a>
               </Link>
             </p>

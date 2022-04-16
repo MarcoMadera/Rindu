@@ -37,7 +37,7 @@ export function PlayButton({
     currrentlyPlaying,
     setPlayedSource,
   } = useSpotify();
-  const { accessToken, user } = useAuth();
+  const { accessToken, user, setAccessToken } = useAuth();
   const [isThisTrackPlaying, setIsThisTrackPlaying] = useState(false);
   const [isThisPlaylistPlaying, setIsThisPlaylistPlaying] = useState(false);
   const [isThisArtistPlaying, setIsThisArtistPlaying] = useState(false);
@@ -133,10 +133,15 @@ export function PlayButton({
               uris.push(track.uri);
             }
           });
-          play(accessToken, deviceId, {
-            uris: uris,
-            offset: 0,
-          });
+          play(
+            accessToken,
+            deviceId,
+            {
+              uris: uris,
+              offset: 0,
+            },
+            setAccessToken
+          );
 
           const source = track?.uri || playlistDetails?.uri;
 
@@ -151,10 +156,14 @@ export function PlayButton({
           return setCurrentlyPlaying(track);
         }
 
-        play(accessToken, deviceId, {
-          context_uri: playlistDetails?.uri,
-          offset: 0,
-        }).then(() => {
+        play(
+          accessToken,
+          deviceId,
+          {
+            context_uri: playlistDetails?.uri,
+          },
+          setAccessToken
+        ).then(() => {
           if (playlistDetails) {
             setPlaylistPlayingId(playlistDetails.id);
             const source = playlistDetails?.uri;
@@ -206,6 +215,7 @@ export function PlayButton({
       isThisTrackPlaying,
       player,
       playlistDetails,
+      setAccessToken,
       setCurrentlyPlaying,
       setIsPlaying,
       setPlayedSource,

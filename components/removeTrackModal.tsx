@@ -18,6 +18,7 @@ import { takeCookie } from "utils/cookies";
 import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 import { List } from "react-virtualized";
 import { LoadingSpinner } from "./LoadingSpinner";
+import useToast from "hooks/useToast";
 
 interface RemoveTracksModalProps {
   openModal: boolean;
@@ -39,6 +40,7 @@ export default function RemoveTracksModal({
     []
   );
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+  const { addToast } = useToast();
 
   useEffect(() => {
     async function getPlaylist(id: string | undefined) {
@@ -254,6 +256,16 @@ export default function RemoveTracksModal({
                       return true;
                     });
                   });
+                  setduplicatesSongs([]);
+                  addToast({
+                    variant: "success",
+                    message: "Tracks removed from playlist",
+                  });
+                } else {
+                  addToast({
+                    variant: "error",
+                    message: "Error removing tracks from playlist",
+                  });
                 }
               }
 
@@ -277,17 +289,28 @@ export default function RemoveTracksModal({
                     body: JSON.stringify({ ids }),
                   })
                 );
-                const snapshots = await Promise.all(promises);
-                if (snapshots) {
-                  setAllTracks((tracks) => {
-                    return tracks.filter((track) => {
-                      if (ids.includes(track.id ?? "")) {
-                        return false;
-                      }
-                      return true;
+                Promise.all(promises)
+                  .then(() => {
+                    setAllTracks((tracks) => {
+                      return tracks.filter((track) => {
+                        if (ids.includes(track.id ?? "")) {
+                          return false;
+                        }
+                        return true;
+                      });
+                    });
+                    setduplicatesSongs([]);
+                    addToast({
+                      variant: "success",
+                      message: "Tracks removed from library",
+                    });
+                  })
+                  .catch(() => {
+                    addToast({
+                      variant: "error",
+                      message: "Error removing tracks from library",
                     });
                   });
-                }
               }
             }}
           >

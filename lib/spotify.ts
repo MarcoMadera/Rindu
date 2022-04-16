@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react";
 import SpotifyWebAPI from "spotify-web-api-node";
 import {
   AuthorizationResponse,
@@ -5,6 +6,7 @@ import {
   RemoveTracksResponse,
   AllTracksFromAPlaylistResponse,
 } from "types/spotify";
+import { getAccessToken } from "utils/spotifyCalls/getAccessToken";
 
 const SPOTIFY_CLIENT_ID = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
 const SPOTIFY_REDIRECT_URL = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URL;
@@ -19,30 +21,31 @@ const spotifyAPI = new SpotifyWebAPI({
 export async function play(
   accessToken: string,
   deviceId: string,
-  options: { context_uri?: string; uris?: string[]; offset?: number }
+  options: { context_uri?: string; uris?: string[]; offset?: number },
+  setAccessToken: Dispatch<SetStateAction<string | undefined>>,
+  ignore?: boolean
 ): Promise<unknown> {
-  const { context_uri, offset = 0, uris } = options;
-  let body;
+  const { context_uri, offset, uris } = options;
+  const body: {
+    context_uri?: string;
+    uris?: string[];
+    offset?: { position: number };
+    position_ms: number;
+  } = { position_ms: 0 };
+
+  if (offset !== undefined) {
+    body.offset = { position: offset };
+  }
+  let data;
 
   if (context_uri) {
-    const isArtist = context_uri.indexOf("artist") >= 0;
-    let position;
-
-    if (!isArtist) {
-      position = { position: offset };
-    }
-
-    body = JSON.stringify({ context_uri, offset: position, position_ms: 0 });
+    body.context_uri = context_uri;
   } else if (Array.isArray(uris) && uris.length) {
-    body = JSON.stringify({
-      uris: [...new Set(uris)],
-      offset: { position: offset },
-      position_ms: 0,
-    });
+    body.uris = uris;
   }
 
   try {
-    const data = await fetch(
+    const res = await fetch(
       `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
       {
         method: "PUT",
@@ -50,10 +53,26 @@ export async function play(
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body,
+        body: JSON.stringify(body),
       }
     );
-    return data.status;
+
+    if (res.status === 401 && !ignore) {
+      const { accessToken: newAccessToken } = (await getAccessToken()) || {};
+      if (newAccessToken) {
+        setAccessToken(newAccessToken);
+        data = await play(
+          newAccessToken,
+          deviceId,
+          options,
+          setAccessToken,
+          true
+        );
+      }
+    }
+
+    data = await res.json();
+    return data;
   } catch (error) {
     return error;
   }

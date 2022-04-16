@@ -19,6 +19,7 @@ interface Config {
   setPlaylistPlayingId: Dispatch<SetStateAction<string | undefined>>;
   isSingleTrack?: boolean;
   position?: number;
+  setAccessToken: Dispatch<SetStateAction<string | undefined>>;
 }
 
 export async function playCurrentTrack(
@@ -35,6 +36,7 @@ export async function playCurrentTrack(
     setPlaylistPlayingId,
     isSingleTrack,
     position,
+    setAccessToken,
   }: Config
 ): Promise<unknown> {
   const isPremium = user?.product === "premium";
@@ -64,7 +66,7 @@ export async function playCurrentTrack(
           offset: track.position,
         };
 
-    const res = await play(accessToken, deviceId, playConfig);
+    const res = await play(accessToken, deviceId, playConfig, setAccessToken);
     setPlaylistPlayingId(playlistId);
     setCurrentlyPlaying(track);
     return res;

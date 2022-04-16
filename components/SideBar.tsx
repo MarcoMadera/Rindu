@@ -38,7 +38,7 @@ function PlaylistText({
     playlistPlayingId,
   } = useSpotify();
   const router = useRouter();
-  const { user, accessToken } = useAuth();
+  const { user, accessToken, setAccessToken } = useAuth();
   const isPremium = user?.product === "premium";
 
   const getActualVolume = useCallback(() => {
@@ -53,23 +53,28 @@ function PlaylistText({
 
   const onDoubleClick = useCallback(() => {
     if (uri && accessToken && deviceId && isPremium) {
-      play(accessToken, deviceId, {
-        context_uri: uri,
-        offset: 0,
-      }).then(() => {
+      play(
+        accessToken,
+        deviceId,
+        {
+          context_uri: uri,
+        },
+        setAccessToken
+      ).then(() => {
         setPlaylistPlayingId(id);
         const isCollection = id?.split(":")?.[3];
         setPlayedSource(isCollection ? `spotify:${type}:${id}` : uri);
       });
     }
   }, [
+    uri,
     accessToken,
     deviceId,
-    id,
     isPremium,
+    setAccessToken,
     setPlaylistPlayingId,
+    id,
     setPlayedSource,
-    uri,
     type,
   ]);
 

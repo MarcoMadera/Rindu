@@ -77,15 +77,19 @@ export function NavbarLeft({
         )}
       </div>
       <section>
-        <Link href={`/track/${currrentlyPlaying.id}`}>
+        <Link
+          href={`/${currrentlyPlaying.type ?? "track"}/${currrentlyPlaying.id}`}
+        >
           <a>{currrentlyPlaying.name}</a>
         </Link>
         <span className="trackArtists">
           {currrentlyPlaying.artists?.map((artist, i) => {
             return (
-              <Fragment key={artist.id ?? getIdFromUri(artist?.uri)}>
+              <Fragment key={artist.id ?? getIdFromUri(artist?.uri, "id")}>
                 <Link
-                  href={`/artist/${artist.id ?? getIdFromUri(artist?.uri)}`}
+                  href={`/${getIdFromUri(artist?.uri, "type") ?? "artist"}/${
+                    artist.id ?? getIdFromUri(artist?.uri, "id")
+                  }`}
                 >
                   <a>{artist.name}</a>
                 </Link>

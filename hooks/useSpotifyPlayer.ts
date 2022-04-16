@@ -250,7 +250,7 @@ export default function useSpotifyPlayer({
           setDeviceId(device_id);
           addToast({
             variant: "info",
-            message: "Spotify Player is ready",
+            message: "You are now connected to Spotify, enjoy!",
           });
         }
       );

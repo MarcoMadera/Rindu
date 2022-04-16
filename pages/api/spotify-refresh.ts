@@ -66,6 +66,10 @@ export default async function refresh(
         `${ACCESS_TOKEN_COOKIE}=${
           data.access_token
         }; Path=/; expires=${expireCookieDate.toUTCString()};`,
+        `${REFRESH_TOKEN_COOKIE}=${refreshTokenFromCookie}; Path=/; expires=${expireCookieDate.toUTCString()};`,
+        `${EXPIRE_TOKEN_COOKIE}=${
+          data.expires_in
+        }; Path=/; expires=${expireCookieDate.toUTCString()};`,
       ]);
       return res.json({ accessToken: data.access_token });
     }
