@@ -10,6 +10,9 @@ import { getIdFromUri } from "utils/getIdFromUri";
 import useSpotify from "hooks/useSpotify";
 import { Chevron } from "components/icons/Chevron";
 import useToast from "hooks/useToast";
+import { checkEpisodesInLibrary } from "utils/spotifyCalls/checkEpisodesInLibrary";
+import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFromLibrary";
+import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
 
 export function NavbarLeft({
   currrentlyPlaying,
@@ -25,11 +28,13 @@ export function NavbarLeft({
 
   useEffect(() => {
     if (!currrentlyPlaying?.id) return;
-    checkTracksInLibrary([currrentlyPlaying?.id], accessToken || "").then(
-      (res) => {
-        setIsLikedTrack(!!res?.[0]);
-      }
-    );
+    const checkInLibrary =
+      currrentlyPlaying.type === "episode"
+        ? checkEpisodesInLibrary
+        : checkTracksInLibrary;
+    checkInLibrary([currrentlyPlaying?.id], accessToken || "").then((res) => {
+      setIsLikedTrack(!!res?.[0]);
+    });
   }, [accessToken, currrentlyPlaying]);
 
   const type = playedSource?.split(":")?.[1];
@@ -112,27 +117,38 @@ export function NavbarLeft({
           setIsHoveringHeart(false);
         }}
         onClick={() => {
+          const removeFromLibrary =
+            currrentlyPlaying.type === "episode"
+              ? removeEpisodesFromLibrary
+              : removeTracksFromLibrary;
           if (isLikedTrack) {
-            removeTracksFromLibrary(
-              [currrentlyPlaying.id ?? ""],
-              accessToken
-            ).then((res) => {
-              if (res) {
-                setIsLikedTrack(false);
-                addToast({
-                  variant: "success",
-                  message: "Track removed from library.",
-                });
+            removeFromLibrary([currrentlyPlaying.id ?? ""], accessToken).then(
+              (res) => {
+                if (res) {
+                  setIsLikedTrack(false);
+                  addToast({
+                    variant: "success",
+                    message: `${
+                      currrentlyPlaying.type === "episode" ? "Episode" : "Song"
+                    } removed from library.`,
+                  });
+                }
               }
-            });
+            );
           } else {
-            saveTracksToLibrary([currrentlyPlaying.id ?? ""], accessToken).then(
+            const saveToLibrary =
+              currrentlyPlaying.type === "episode"
+                ? saveEpisodesToLibrary
+                : saveTracksToLibrary;
+            saveToLibrary([currrentlyPlaying.id ?? ""], accessToken).then(
               (res) => {
                 if (res) {
                   setIsLikedTrack(true);
                   addToast({
                     variant: "success",
-                    message: "Track added to library",
+                    message: `${
+                      currrentlyPlaying.type === "episode" ? "Episode" : "Song"
+                    } added to library`,
                   });
                 }
               }

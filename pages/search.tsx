@@ -22,6 +22,7 @@ import { serverRedirect } from "utils/serverRedirect";
 import FirstTrackContainer from "components/FirstTrackContainer";
 import { search } from "utils/spotifyCalls/search";
 import useSpotify from "hooks/useSpotify";
+import { getYear } from "utils/getYear";
 
 interface InputElementProps {
   setData: Dispatch<SetStateAction<SpotifyApi.SearchResponse | null>>;
@@ -352,20 +353,24 @@ export default function SearchPage({
             <>
               <h2>Albums</h2>
               <section className="playlists">
-                {data.albums?.items?.map(({ images, name, id, artists }) => {
-                  const artistNames = artists.map((artist) => artist.name);
-                  const subTitle = artistNames.join(", ");
-                  return (
-                    <PresentationCard
-                      type="album"
-                      key={id}
-                      images={images}
-                      title={name}
-                      subTitle={subTitle}
-                      id={id}
-                    />
-                  );
-                })}
+                {data.albums?.items?.map(
+                  ({ images, name, id, artists, release_date }) => {
+                    const artistNames = artists.map((artist) => artist.name);
+                    const subTitle = release_date
+                      ? `${getYear(release_date)} · Album`
+                      : artistNames.join(", ");
+                    return (
+                      <PresentationCard
+                        type="album"
+                        key={id}
+                        images={images}
+                        title={name}
+                        subTitle={subTitle}
+                        id={id}
+                      />
+                    );
+                  }
+                )}
               </section>
             </>
           ) : null}

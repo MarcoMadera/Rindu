@@ -4,6 +4,7 @@ import useAuth from "hooks/useAuth";
 import { useEffect, ReactElement, useState } from "react";
 import Link from "next/link";
 import PresentationCard from "components/forDashboardPage/PlaylistCard";
+import { getYear } from "utils/getYear";
 
 async function getAlbum(offset: number, accessToken: string) {
   const res = await fetch(
@@ -125,15 +126,17 @@ export default function CollectionPlaylists(): ReactElement {
       <section>
         {albums?.length > 0
           ? albums.map(({ album }) => {
+              const artistNames = album?.artists?.map((artist) => artist.name);
+              const subTitle = album?.release_date
+                ? `${getYear(album.release_date)} · Album`
+                : artistNames.join(", ");
               return (
                 <PresentationCard
                   type="album"
                   key={album.id}
                   images={album.images}
                   title={album.name}
-                  subTitle={`De ${album.artists
-                    .map(({ name }) => name)
-                    .join(", ")}`}
+                  subTitle={subTitle}
                   id={album.id}
                 />
               );

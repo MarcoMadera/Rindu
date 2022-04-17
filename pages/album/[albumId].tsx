@@ -1,12 +1,9 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { normalTrackTypes } from "types/spotify";
+import { HeaderType, normalTrackTypes } from "types/spotify";
 import { useRouter } from "next/router";
-import { ContentHeader } from "components/forPlaylistsPage/ContentHeader";
-import formatNumber from "utils/formatNumber";
 import useAuth from "hooks/useAuth";
 import useAnalitycs from "hooks/useAnalytics";
-import { Fragment, useEffect, useState } from "react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import List from "layouts/playlist/List";
 import { Heart, HeartShape } from "components/icons/Heart";
 import Titles from "components/forPlaylistsPage/Titles";
@@ -21,7 +18,8 @@ import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import { checkIfUserFollowAlbums } from "utils/spotifyCalls/checkIfUserFollowAlbums";
 import { unFollowAlbums } from "utils/spotifyCalls/unFollowAlbums";
 import { followAlbums } from "utils/spotifyCalls/followAlbums";
-import { getMainColorFromImage } from "utils/getMainColorFromImage";
+import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
+import { SITE_URL } from "utils/constants";
 
 interface CurrentUserProps {
   album: SpotifyApi.SingleAlbumResponse | null;
@@ -44,7 +42,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
   const router = useRouter();
   const [isPin, setIsPin] = useState(false);
   const [isFollowingThisAlbum, setIsFollowingThisAlbum] = useState(false);
-  const { headerColor, setHeaderColor, setElement } = useHeader({
+  const { setElement } = useHeader({
     showOnFixed: false,
   });
 
@@ -127,91 +125,60 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
     setElement,
   ]);
 
-  const albumName = album?.name ?? "";
-
   return (
     <main>
-      <section>
-        <ContentHeader>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={album?.images?.[0].url}
-            alt=""
-            id="cover-image"
-            onLoad={() => {
-              setHeaderColor(
-                (prev) => getMainColorFromImage("cover-image") ?? prev
-              );
-            }}
-          />
+      <PlaylistPageHeader
+        type={HeaderType.album}
+        title={album?.name ?? ""}
+        coverImg={
+          album?.images?.[0]?.url ??
+          album?.images?.[1]?.url ??
+          `${SITE_URL}/defaultSongCover.jpeg`
+        }
+        artists={album?.artists ?? []}
+        totalTracks={album?.tracks.total ?? 0}
+        release_date={album?.release_date ?? "1"}
+      />
+      <div className="tracksContainer">
+        <div className="options">
+          <PlayButton size={56} centerSize={28} />
           <div className="info">
-            <h2>ALBUM</h2>
-            <h1>{album?.name}</h1>
-            <div>
-              <p>
-                <span className="artists">
-                  {album?.artists?.map((artist, i) => {
-                    return (
-                      <Fragment key={artist.id}>
-                        <Link href={`/artist/${artist.id}`}>
-                          <a>{artist.name}</a>
-                        </Link>
-                        {i !==
-                        (album.artists?.length && album.artists?.length - 1)
-                          ? ", "
-                          : null}
-                      </Fragment>
-                    );
-                  })}
-                </span>
-                <span>
-                  &nbsp;&middot;{" "}
-                  {new Date(album?.release_date ?? 1).getFullYear()}
-                </span>
-                <span>
-                  &nbsp;&middot; {formatNumber(album?.tracks.total ?? 0)} songs
-                </span>
-              </p>
-            </div>
-          </div>
-        </ContentHeader>
-        <div className="tracksContainer">
-          <div className="bg-12"></div>
-          <div className="options">
-            <PlayButton size={56} centerSize={28} />
-            <div className="info">
-              <button
-                onClick={() => {
-                  if (!album) return;
-                  if (isFollowingThisAlbum) {
-                    unFollowAlbums([album.id]).then((res) => {
-                      if (res) {
-                        setIsFollowingThisAlbum(false);
-                      }
-                    });
-                  } else {
-                    followAlbums([album.id]).then((res) => {
-                      if (res) {
-                        setIsFollowingThisAlbum(true);
-                      }
-                    });
-                  }
-                }}
-              >
-                {isFollowingThisAlbum ? (
-                  <Heart width={36} height={36} />
-                ) : (
-                  <HeartShape fill="#ffffffb3" width={36} height={36} />
-                )}
-              </button>
-            </div>
-          </div>
-          <div className="trc">
-            <Titles type="album" setIsPin={setIsPin} isPin={isPin} />
-            <List type="album" initialTracksInLibrary={tracksInLibrary} />
+            <button
+              onClick={() => {
+                if (!album) return;
+                if (isFollowingThisAlbum) {
+                  unFollowAlbums([album.id]).then((res) => {
+                    if (res) {
+                      setIsFollowingThisAlbum(false);
+                    }
+                  });
+                } else {
+                  followAlbums([album.id]).then((res) => {
+                    if (res) {
+                      setIsFollowingThisAlbum(true);
+                    }
+                  });
+                }
+              }}
+            >
+              {isFollowingThisAlbum ? (
+                <Heart width={36} height={36} />
+              ) : (
+                <HeartShape fill="#ffffffb3" width={36} height={36} />
+              )}
+            </button>
           </div>
         </div>
-      </section>
+        <div className="trc">
+          <Titles type="album" setIsPin={setIsPin} isPin={isPin} />
+          <List type="album" initialTracksInLibrary={tracksInLibrary} />
+          <div className="copy">
+            {album?.copyrights?.map(({ text }, i) => {
+              return <p key={i}>{text}</p>;
+            })}
+          </div>
+        </div>
+      </div>
       <style jsx>{`
         main {
           display: block;
@@ -219,65 +186,22 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
           height: calc(100vh - 90px);
           width: calc(100vw - 245px);
         }
+        .copy {
+          margin-top: 16px;
+          padding-bottom: 24px;
+        }
+        p {
+          font-size: 0.6875rem;
+          line-height: 1rem;
+          text-transform: none;
+          letter-spacing: normal;
+          font-weight: 400;
+          color: #b3b3b3;
+          margin: 0;
+        }
         div.info {
           align-self: flex-end;
           width: calc(100% - 310px);
-        }
-        h1 {
-          color: #fff;
-          margin: 0;
-          pointer-events: none;
-          user-select: none;
-          padding: 0.08em 0px;
-          font-size: ${(albumName?.length ?? 0) < 20
-            ? "96px"
-            : (albumName?.length ?? 0) < 30
-            ? "72px"
-            : "48px"};
-          line-height: ${(albumName?.length ?? 0) < 20
-            ? "96px"
-            : (albumName?.length ?? 0) < 30
-            ? "72px"
-            : "48px"};
-          visibility: visible;
-          width: 100%;
-          font-weight: 900;
-          letter-spacing: -0.04em;
-          text-transform: none;
-          overflow: hidden;
-          text-align: left;
-          text-overflow: ellipsis;
-          white-space: unset;
-          -webkit-box-orient: vertical;
-          display: -webkit-box;
-          line-break: anywhere;
-          -webkit-line-clamp: 3;
-        }
-        h2 {
-          font-size: 12px;
-          margin-top: 4px;
-          margin-bottom: 0;
-          font-weight: 700;
-        }
-        img {
-          box-shadow: 0 4px 60px rgb(0 0 0 / 50%);
-          margin-right: 15px;
-          align-self: center;
-          align-self: flex-end;
-          height: 232px;
-          margin-inline-end: 24px;
-          min-width: 232px;
-          width: 232px;
-        }
-        .artists a {
-          color: white;
-          font-weight: 800;
-          font-size: 15px;
-          text-decoration: none;
-          font-family: "Lato";
-        }
-        .artists a:hover {
-          text-decoration: underline;
         }
         .info button {
           margin-left: 20px;
@@ -298,14 +222,6 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
         .info button:active {
           transform: scale(1);
         }
-        .bg-12 {
-          background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0, #121212 100%),
-            url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
-          height: 232px;
-          position: absolute;
-          width: 100%;
-          background-color: ${headerColor ?? "transparent"};
-        }
         .options {
           display: flex;
           padding: 24px 0;
@@ -321,12 +237,6 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
         }
         .trc {
           margin-bottom: 50px;
-        }
-        section {
-          display: flex;
-          flex-direction: column;
-          margin: 0 auto;
-          padding: 0;
         }
       `}</style>
     </main>

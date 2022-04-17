@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
 import { useRouter } from "next/router";
-import { ContentHeader } from "components/forPlaylistsPage/ContentHeader";
-import formatNumber from "utils/formatNumber";
 import useAuth from "hooks/useAuth";
 import useAnalitycs from "hooks/useAnalytics";
 import { useEffect } from "react";
@@ -9,8 +7,9 @@ import { serverRedirect } from "utils/serverRedirect";
 import { getAuth } from "utils/getAuth";
 import { getUserById } from "utils/spotifyCalls/getUserById";
 import { getPlaylistsFromUser } from "utils/spotifyCalls/getPlaylistsFromUser";
-import useHeader from "hooks/useHeader";
-import { getMainColorFromImage } from "utils/getMainColorFromImage";
+import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
+import { HeaderType } from "types/spotify";
+import { SITE_URL } from "utils/constants";
 
 interface CurrentUserProps {
   currentUser: SpotifyApi.UserObjectPublic | null;
@@ -28,7 +27,6 @@ const CurrentUser: NextPage<CurrentUserProps | null> = ({
   const { setIsLogin, setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalitycs } = useAnalitycs();
   const router = useRouter();
-  const { setHeaderColor } = useHeader();
 
   useEffect(() => {
     if (!currentUser) {
@@ -54,99 +52,23 @@ const CurrentUser: NextPage<CurrentUserProps | null> = ({
 
   return (
     <main>
-      <ContentHeader>
-        {currentUser?.images?.[0]?.url ? (
-          <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={currentUser?.images?.[0]?.url}
-              alt=""
-              id="cover-image"
-              onLoad={() => {
-                setHeaderColor(
-                  (prev) => getMainColorFromImage("cover-image") ?? prev
-                );
-              }}
-            />
-          </>
-        ) : (
-          <div id="cover-image"></div>
-        )}
-        <div className="info">
-          <h2>PROFILE</h2>
-          <h1>{currentUser?.display_name}</h1>
-          <div>
-            <p>
-              <span>
-                {formatNumber(currentUser?.followers?.total ?? 0)} seguidores
-              </span>
-              <span>
-                &nbsp;&middot; {formatNumber(currentUserPlaylists?.total ?? 0)}{" "}
-                playlists publicas
-              </span>
-            </p>
-          </div>
-        </div>
-      </ContentHeader>
+      <PlaylistPageHeader
+        type={HeaderType.profile}
+        title={currentUser?.display_name ?? ""}
+        coverImg={
+          currentUser?.images?.[0]?.url ??
+          currentUser?.images?.[1]?.url ??
+          `${SITE_URL}/defaultSongCover.jpeg`
+        }
+        totalPublicPlaylists={currentUserPlaylists?.total ?? 0}
+        totalFollowers={currentUser?.followers?.total ?? 0}
+      />
       <style jsx>{`
         main {
           display: block;
           margin: -60px auto 0 auto;
           height: calc(100vh - 90px);
           width: calc(100vw - 245px);
-        }
-        div.info {
-          align-self: flex-end;
-          width: calc(100% - 310px);
-        }
-        h1 {
-          color: #fff;
-          margin: 0;
-          pointer-events: none;
-          user-select: none;
-          padding: 0.08em 0px;
-          font-size: ${(currentUser?.display_name?.length ?? 0) < 20
-            ? "96px"
-            : (currentUser?.display_name?.length ?? 0) < 30
-            ? "72px"
-            : "48px"};
-          line-height: ${(currentUser?.display_name?.length ?? 0) < 20
-            ? "96px"
-            : (currentUser?.display_name?.length ?? 0) < 30
-            ? "72px"
-            : "48px"};
-          visibility: visible;
-          width: 100%;
-          font-weight: 900;
-          letter-spacing: -0.04em;
-          text-transform: none;
-          overflow: hidden;
-          text-align: left;
-          text-overflow: ellipsis;
-          white-space: unset;
-          -webkit-box-orient: vertical;
-          display: -webkit-box;
-          line-break: anywhere;
-          -webkit-line-clamp: 3;
-        }
-        h2 {
-          font-size: 12px;
-          margin-top: 4px;
-          margin-bottom: 0;
-          font-weight: 700;
-        }
-        #cover-image {
-          border-radius: 50%;
-          box-shadow: 0 4px 60px rgb(0 0 0 / 50%);
-          margin-right: 15px;
-          align-self: center;
-          align-self: flex-end;
-          height: 232px;
-          margin-inline-end: 24px;
-          min-width: 232px;
-          width: 232px;
-          object-fit: cover;
-          object-position: center center;
         }
       `}</style>
     </main>

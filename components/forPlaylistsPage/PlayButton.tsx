@@ -133,6 +133,9 @@ export function PlayButton({
               uris.push(track.uri);
             }
           });
+          if (uris.length === 0 && track?.uri) {
+            uris.push(track.uri);
+          }
           play(
             accessToken,
             deviceId,

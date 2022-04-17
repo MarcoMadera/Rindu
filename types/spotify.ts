@@ -13,6 +13,16 @@ export type RefreshResponse = {
   expiresIn: number;
 };
 
+export enum HeaderType {
+  song = "SONG",
+  playlist = "PLAYLIST",
+  album = "ALBUM",
+  artist = "ARTIST",
+  profile = "PROFILE",
+  podcast = "PODCAST",
+  episode = "EPISODE",
+}
+
 export type SpotifyUserResponse = {
   name: string | undefined;
   image: string | undefined;

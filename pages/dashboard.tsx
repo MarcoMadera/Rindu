@@ -22,6 +22,7 @@ import { getCategories } from "utils/spotifyCalls/getCategories";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import FirstTrackContainer from "components/FirstTrackContainer";
 import useSpotify from "hooks/useSpotify";
+import { getYear } from "utils/getYear";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -117,9 +118,13 @@ const Dashboard: NextPage<DashboardProps> = ({
             <h2>{newReleases.message ?? "Lo más nuevo"}</h2>
             <section className="playlists">
               {newReleases.albums?.items?.map(
-                ({ images, name, id, artists }) => {
+                ({ images, name, id, artists, release_date }) => {
                   const artistNames = artists.map((artist) => artist.name);
-                  const subTitle = artistNames.join(", ");
+                  const subTitle = release_date
+                    ? `Album · ${getYear(release_date)} · ${artistNames.join(
+                        ", "
+                      )}`
+                    : artistNames.join(", ");
                   return (
                     <PresentationCard
                       type="album"
@@ -212,6 +217,20 @@ const Dashboard: NextPage<DashboardProps> = ({
           grid-gap: 24px;
           margin: 20px 0 50px 0;
           justify-content: space-between;
+        }
+        h2 {
+          color: #fff;
+          display: inline-block;
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          font-size: 2.2rem;
+          font-weight: 700;
+          letter-spacing: -0.04em;
+          line-height: 45px;
+          text-transform: none;
+          margin: 0;
         }
       `}</style>
     </>

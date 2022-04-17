@@ -19,6 +19,8 @@ import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
 import { getArtistTopTracks } from "utils/spotifyCalls/getArtistTopTracks";
 import { getArtistById } from "utils/spotifyCalls/getArtistById";
 import Link from "next/link";
+import { HeaderType } from "types/spotify";
+import { SITE_URL } from "utils/constants";
 
 function BigPill({
   img,
@@ -107,7 +109,7 @@ export default function TrackPage({
   accessToken,
   user,
 }: TrackPageProps): ReactElement {
-  const { setElement, setHeaderColor, headerColor } = useHeader({
+  const { setElement, setHeaderColor } = useHeader({
     showOnFixed: false,
   });
   const { setUser, setAccessToken } = useAuth();
@@ -116,7 +118,7 @@ export default function TrackPage({
   const [artistTopTracks, setArtistTopTracks] = useState<
     SpotifyApi.TrackObjectFull[]
   >([]);
-  const { setPlaylistDetails, setAllTracks, playlistDetails } = useSpotify();
+  const { setPlaylistDetails, setAllTracks } = useSpotify();
   const [artistInfo, setArtistInfo] =
     useState<SpotifyApi.SingleArtistResponse | null>(null);
   const [sameTrackIndex, setSameTrackIndex] = useState(-1);
@@ -232,131 +234,132 @@ export default function TrackPage({
       <Head>
         <title>Rindu - {track?.name ?? "Canciones"}</title>
       </Head>
-      <section>
-        <PlaylistPageHeader type={"SONG"} playlistDetails={playlistDetails} />
-        <div className="tracksContainer">
-          <div className="bg-12"></div>
-          <div className="content">
-            <div className="options">
-              <PlayButton
-                size={56}
-                centerSize={28}
-                isSingle
-                track={track ?? undefined}
-              />
-              <div className="info">
-                <button
-                  onClick={() => {
-                    if (!track) return;
-                    if (isTrackInLibrary) {
-                      removeTracksFromLibrary([track.id]).then((res) => {
-                        if (res) {
-                          setIsTrackInLibrary(false);
-                        }
-                      });
-                    } else {
-                      saveTracksToLibrary([track.id]).then((res) => {
-                        if (res) {
-                          setIsTrackInLibrary(true);
-                        }
-                      });
-                    }
-                  }}
-                >
-                  {isTrackInLibrary ? (
-                    <Heart width={36} height={36} />
-                  ) : (
-                    <HeartShape fill="#ffffffb3" width={36} height={36} />
-                  )}
-                </button>
-              </div>
-            </div>
-            {lyrics ? (
-              <div className="lyrics-container">
-                <h2>Letra</h2>
-                <p className="lyrics">{lyrics}</p>
-              </div>
-            ) : null}
-            {artistInfo && (
-              <BigPill
-                img={artistInfo?.images?.[0]?.url}
-                title={"ARTIST"}
-                subTitle={artistInfo.name}
-                href={`/artist/${artistInfo.id}`}
-              />
-            )}
-            {artistTopTracks.length > 0 && (
-              <div className="topTracks">
-                <div className="topTracks-header">
-                  <span className="topTracks-header-d">
-                    Canciones populares de
-                  </span>
-                  <h2>{track?.artists[0].name ?? ""}</h2>
-                </div>
-                {artistTopTracks?.map((artistTrack, i) => {
-                  const maxToShow = showMoreTopTracks ? 10 : 5;
-                  if (i >= maxToShow) {
-                    return null;
+      <PlaylistPageHeader
+        type={HeaderType.song}
+        title={track?.name ?? ""}
+        coverImg={
+          track?.album?.images?.[0]?.url ??
+          track?.album?.images?.[1]?.url ??
+          `${SITE_URL}/defaultSongCover.jpeg`
+        }
+        duration_s={track?.duration_ms ? track?.duration_ms / 1000 : 0}
+        artists={track?.artists ?? []}
+        release_date={track?.album?.release_date ?? ""}
+      />
+      <div className="tracksContainer">
+        <div className="content">
+          <div className="options">
+            <PlayButton
+              size={56}
+              centerSize={28}
+              isSingle
+              track={track ?? undefined}
+            />
+            <div className="info">
+              <button
+                onClick={() => {
+                  if (!track) return;
+                  if (isTrackInLibrary) {
+                    removeTracksFromLibrary([track.id]).then((res) => {
+                      if (res) {
+                        setIsTrackInLibrary(false);
+                      }
+                    });
+                  } else {
+                    saveTracksToLibrary([track.id]).then((res) => {
+                      if (res) {
+                        setIsTrackInLibrary(true);
+                      }
+                    });
                   }
-                  const isTheSameAsTrack = artistTrack.uri
-                    ? artistTrack.uri === track?.uri
-                    : false;
-                  const mainTrackExistInArtistTopTracks = sameTrackIndex >= 0;
-                  const isValidPosition = i - sameTrackIndex > 0;
-                  const mainTrackIsFirstPosition = isTheSameAsTrack && i === 0;
-                  const position =
-                    mainTrackExistInArtistTopTracks && isValidPosition
-                      ? i
-                      : isTheSameAsTrack || mainTrackIsFirstPosition
-                      ? 0
-                      : i + 1;
-
-                  return (
-                    <ModalCardTrack
-                      accessToken={accessToken ?? ""}
-                      isTrackInLibrary={false}
-                      playlistUri=""
-                      track={{
-                        ...artistTrack,
-                        media_type: "audio",
-                        audio: artistTrack.preview_url,
-                        images: artistTrack.album.images,
-                        duration: artistTrack.duration_ms,
-                        position: i,
-                      }}
-                      key={artistTrack.id}
-                      type="playlist"
-                      position={position}
-                      isSingleTrack
-                    />
-                  );
-                })}
-                <button
-                  className="show-more"
-                  onClick={() => {
-                    setShowMoreTopTracks((prev) => !prev);
-                  }}
-                >
-                  {showMoreTopTracks ? "MOSTRAR MENOS" : "MOSTRAR MÁS"}
-                </button>
-              </div>
-            )}
+                }}
+              >
+                {isTrackInLibrary ? (
+                  <Heart width={36} height={36} />
+                ) : (
+                  <HeartShape fill="#ffffffb3" width={36} height={36} />
+                )}
+              </button>
+            </div>
           </div>
-        </div>
-      </section>
+          {lyrics ? (
+            <div className="lyrics-container">
+              <h2>Letra</h2>
+              <p className="lyrics">{lyrics}</p>
+            </div>
+          ) : null}
+          {artistInfo && (
+            <BigPill
+              img={artistInfo?.images?.[0]?.url}
+              title={"ARTIST"}
+              subTitle={artistInfo.name}
+              href={`/artist/${artistInfo.id}`}
+            />
+          )}
+          {artistTopTracks.length > 0 && (
+            <div className="topTracks">
+              <div className="topTracks-header">
+                <span className="topTracks-header-d">
+                  Canciones populares de
+                </span>
+                <h2>{track?.artists[0].name ?? ""}</h2>
+              </div>
+              {artistTopTracks?.map((artistTrack, i) => {
+                const maxToShow = showMoreTopTracks ? 10 : 5;
+                if (i >= maxToShow) {
+                  return null;
+                }
+                const isTheSameAsTrack = artistTrack.uri
+                  ? artistTrack.uri === track?.uri
+                  : false;
+                const mainTrackExistInArtistTopTracks = sameTrackIndex >= 0;
+                const isValidPosition = i - sameTrackIndex > 0;
+                const mainTrackIsFirstPosition = isTheSameAsTrack && i === 0;
+                const position =
+                  mainTrackExistInArtistTopTracks && isValidPosition
+                    ? i
+                    : isTheSameAsTrack || mainTrackIsFirstPosition
+                    ? 0
+                    : i + 1;
 
+                return (
+                  <ModalCardTrack
+                    accessToken={accessToken ?? ""}
+                    isTrackInLibrary={false}
+                    playlistUri=""
+                    track={{
+                      ...artistTrack,
+                      media_type: "audio",
+                      audio: artistTrack.preview_url,
+                      images: artistTrack.album.images,
+                      duration: artistTrack.duration_ms,
+                      position: i,
+                    }}
+                    key={artistTrack.id}
+                    type="playlist"
+                    position={position}
+                    isSingleTrack
+                  />
+                );
+              })}
+              <button
+                className="show-more"
+                onClick={() => {
+                  setShowMoreTopTracks((prev) => !prev);
+                }}
+              >
+                {showMoreTopTracks ? "MOSTRAR MENOS" : "MOSTRAR MÁS"}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
       <style jsx>{`
         main {
           display: block;
           margin: -60px auto 0 auto;
           height: calc(100vh - 90px);
           width: calc(100vw - 245px);
-        }
-        section {
-          display: flex;
-          flex-direction: column;
-          margin: 0 auto;
-          padding: 0;
         }
         .topTracks-header {
           display: block;
@@ -418,14 +421,6 @@ export default function TrackPage({
           color: rgba(255, 255, 255, 0.7);
           padding: 18px;
           font-weight: bold;
-        }
-        .bg-12 {
-          background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0, #121212 100%),
-            url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
-          height: 232px;
-          position: absolute;
-          width: 100%;
-          background-color: ${headerColor ?? "transparent"};
         }
         .content {
           margin: 0 32px;

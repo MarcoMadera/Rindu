@@ -1,113 +1,213 @@
 import React, { Fragment } from "react";
 import { decode } from "html-entities";
-import { SITE_URL } from "../../utils/constants";
 import Link from "next/link";
 import formatNumber from "utils/formatNumber";
 import { ContentHeader } from "./ContentHeader";
 import useHeader from "hooks/useHeader";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
 import { formatTime } from "utils/formatTime";
-import { ISpotifyContext } from "types/spotify";
+import { HeaderType } from "types/spotify";
+import { getYear } from "utils/getYear";
 
-function getYear(date: string) {
-  const year = new Date(date).getFullYear();
-  return year;
+interface PageHeaderDefault {
+  title: string;
+  description?: string;
+  coverImg: string;
 }
 
-export interface PlaylistPageHeaderProps {
-  playlistDetails: ISpotifyContext["playlistDetails"] | null;
-  type?: string;
-}
+type HeaderProps =
+  | (PageHeaderDefault & {
+      type: HeaderType.album | never;
+      artists: SpotifyApi.ArtistObjectSimplified[];
+      release_date: string;
+      totalTracks: number;
+      duration_s?: never;
+      ownerId?: never;
+      ownerDisplayName?: never;
+      totalFollowers?: never;
+      popularity?: never;
+      totalPublicPlaylists?: never;
+    })
+  | (PageHeaderDefault & {
+      type: HeaderType.profile | never;
+      totalPublicPlaylists: number;
+      totalFollowers: number;
+      totalTracks?: never;
+      artists?: never;
+      release_date?: never;
+      duration_s?: never;
+      ownerId?: never;
+      ownerDisplayName?: never;
+      popularity?: never;
+    })
+  | (PageHeaderDefault & {
+      type: HeaderType.artist | never;
+      popularity: number;
+      totalFollowers: number;
+      totalTracks?: never;
+      artists?: never;
+      release_date?: never;
+      duration_s?: never;
+      ownerId?: never;
+      ownerDisplayName?: never;
+      totalPublicPlaylists?: never;
+    })
+  | (PageHeaderDefault & {
+      type: HeaderType.song | never;
+      artists: SpotifyApi.ArtistObjectSimplified[];
+      release_date: string;
+      duration_s: number;
+      ownerId?: never;
+      ownerDisplayName?: never;
+      totalTracks?: never;
+      totalFollowers?: never;
+      popularity?: never;
+      totalPublicPlaylists?: never;
+    })
+  | (PageHeaderDefault & {
+      type: HeaderType.episode | never;
+      ownerId: string;
+      ownerDisplayName: string;
+      artists?: never;
+      duration_s?: never;
+      release_date?: never;
+      totalTracks?: never;
+      totalFollowers?: never;
+      popularity?: never;
+      totalPublicPlaylists?: never;
+    })
+  | (PageHeaderDefault & {
+      type: HeaderType.playlist | never;
+      ownerId: string;
+      ownerDisplayName: string;
+      totalFollowers: number;
+      totalTracks: number;
+      artists?: never;
+      duration_s?: never;
+      release_date?: never;
+      popularity?: never;
+      totalPublicPlaylists?: never;
+    })
+  | (PageHeaderDefault & {
+      type: HeaderType;
+      ownerId: string;
+      ownerDisplayName: string;
+      totalTracks?: never;
+      totalFollowers?: never;
+      artists?: never;
+      release_date?: never;
+      duration_s?: never;
+      popularity?: never;
+      totalPublicPlaylists?: never;
+    });
 
-export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
-  playlistDetails,
+export const PlaylistPageHeader: React.FC<HeaderProps> = ({
   type,
+  coverImg,
+  title,
+  description,
+  artists,
+  ownerId,
+  ownerDisplayName,
+  totalTracks,
+  duration_s,
+  totalFollowers,
+  release_date,
+  popularity,
+  totalPublicPlaylists,
 }) => {
   const { setHeaderColor } = useHeader();
-  const coverImg =
-    playlistDetails?.images[0]?.url ??
-    playlistDetails?.images[1]?.url ??
-    `${SITE_URL}/defaultSongCover.jpeg`;
-
-  const playlistName = playlistDetails?.name ?? "";
-  const durationInSeconds = playlistDetails?.tracks?.items?.[0]?.track
-    ?.duration_ms
-    ? playlistDetails?.tracks.items[0].track.duration_ms / 1000
-    : 0;
 
   return (
     <ContentHeader>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={coverImg}
-        alt=""
-        id="cover-image"
-        onLoad={() => {
-          setHeaderColor(
-            (prev) => getMainColorFromImage("cover-image") ?? prev
-          );
-        }}
-      />
+      {coverImg ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={coverImg}
+          alt=""
+          id="cover-image"
+          onLoad={() => {
+            setHeaderColor(
+              (prev) => getMainColorFromImage("cover-image") ?? prev
+            );
+          }}
+        />
+      ) : (
+        <div id="cover-image"></div>
+      )}
       <div className="playlistInfo">
-        <h2>{type ?? "PLAYLIST"}</h2>
-        <h1>{playlistDetails?.name}</h1>
-        <p className="description">{decode(playlistDetails?.description)}</p>
+        <h2>{type}</h2>
+        <h1>{title}</h1>
+        <p className="description">{decode(description)}</p>
         <div>
           <p>
-            {type === "SONG" ? (
+            {type === HeaderType.song || type === HeaderType.album ? (
               <span className="trackArtists">
-                {playlistDetails?.tracks?.items[0]?.track?.artists &&
-                  playlistDetails.tracks.items[0].track.artists?.map(
-                    (artist, i) => {
-                      return (
-                        <Fragment key={artist.id}>
-                          <Link href={`/artist/${artist.id}`}>
-                            <a className="userLink">{artist.name}</a>
-                          </Link>
-                          {i !==
-                          (playlistDetails?.tracks.items[0].track.artists
-                            ?.length &&
-                            playlistDetails?.tracks.items[0].track.artists
-                              ?.length - 1)
-                            ? ", "
-                            : null}
-                        </Fragment>
-                      );
-                    }
-                  )}
+                {artists &&
+                  artists?.map((artist, i) => {
+                    return (
+                      <Fragment key={artist.id}>
+                        <Link href={`/artist/${artist.id}`}>
+                          <a className="userLink">{artist.name}</a>
+                        </Link>
+                        {i !== (artists?.length && artists?.length - 1)
+                          ? ", "
+                          : null}
+                      </Fragment>
+                    );
+                  })}
               </span>
+            ) : type === HeaderType.podcast ? (
+              <h2 className="singleDisplayName">{decode(ownerDisplayName)}</h2>
             ) : (
-              <Link href={`/user/${playlistDetails?.owner.id}`}>
-                <a className="userLink">
-                  {decode(playlistDetails?.owner.display_name)}
-                </a>
+              <Link
+                href={`/${
+                  type === HeaderType.episode ? "show" : "user"
+                }/${ownerId}`}
+              >
+                <a className="userLink">{decode(ownerDisplayName)}</a>
               </Link>
             )}
-            {(playlistDetails?.followers.total ?? 0) > 0 ? (
+            {(totalFollowers ?? 0) > 0 ? (
               <span>
-                &nbsp;&middot;{" "}
-                {formatNumber(playlistDetails?.followers.total ?? 0)} seguidores
+                {!(
+                  type === HeaderType.profile || type === HeaderType.artist
+                ) ? (
+                  <>&nbsp;&middot;</>
+                ) : (
+                  ""
+                )}{" "}
+                {formatNumber(totalFollowers ?? 0)} followers
               </span>
             ) : null}
-            {type === "SONG" &&
-            playlistDetails?.tracks?.items?.[0]?.track?.album?.release_date ? (
+            {(type === HeaderType.song || type === HeaderType.album) &&
+            release_date ? (
               <>
-                <span>
-                  &nbsp;&middot;{" "}
-                  {getYear(
-                    playlistDetails?.tracks.items[0].track.album.release_date
-                  )}
-                </span>
-                <span>
-                  &nbsp;&middot; {formatTime(durationInSeconds ?? 0)} minutos
-                </span>
+                <span>&nbsp;&middot; {getYear(release_date)}</span>
+                {type === HeaderType.song && duration_s ? (
+                  <span>
+                    &nbsp;&middot; {formatTime(duration_s ?? 0)} minutos
+                  </span>
+                ) : null}
               </>
-            ) : (
+            ) : null}
+            {totalTracks ? (
               <span>
-                &nbsp;&middot;{" "}
-                {formatNumber(playlistDetails?.tracks.total ?? 0)} canciones
+                &nbsp;&middot; {formatNumber(totalTracks ?? 0)}{" "}
+                {totalTracks === 1 ? "song" : "songs"}
               </span>
-            )}
+            ) : null}
+            {popularity ? (
+              <span>
+                &nbsp;&middot; {formatNumber(popularity ?? 0)} popularity
+              </span>
+            ) : null}
+            {totalPublicPlaylists ? (
+              <span>
+                &nbsp;&middot; {formatNumber(totalPublicPlaylists)} playlists
+                publicas
+              </span>
+            ) : null}
           </p>
         </div>
       </div>
@@ -119,14 +219,16 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
             pointer-events: none;
             user-select: none;
             padding: 0.08em 0px;
-            font-size: ${playlistName.length < 18
+            font-size: ${title.length < 16
               ? "96px"
-              : playlistName.length < 30
+              : title.length < 21
               ? "72px"
+              : title.length < 30
+              ? "64px"
               : "48px"};
-            line-height: ${playlistName.length < 20
+            line-height: ${title.length < 20
               ? "96px"
-              : playlistName.length < 30
+              : title.length < 30
               ? "72px"
               : "48px"};
             visibility: visible;
@@ -148,6 +250,12 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
             margin-top: 4px;
             margin-bottom: 0;
             font-weight: 700;
+          }
+          .singleDisplayName {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 28px;
+            color: #fff;
           }
           div.playlistInfo {
             align-self: flex-end;
@@ -189,8 +297,7 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
             font-size: 14px;
             display: inline-block;
           }
-
-          img {
+          #cover-image {
             margin-right: 15px;
             align-self: center;
             align-self: flex-end;
@@ -199,6 +306,14 @@ export const PlaylistPageHeader: React.FC<PlaylistPageHeaderProps> = ({
             min-width: 232px;
             width: 232px;
             box-shadow: 0 4px 60px rgb(0 0 0 / 50%);
+            border-radius: ${type === HeaderType.artist ||
+            type === HeaderType.profile
+              ? "50%"
+              : type === HeaderType.episode || type === HeaderType.podcast
+              ? "12px"
+              : "0px"};
+            object-fit: cover;
+            object-position: center center;
           }
         `}
       </style>

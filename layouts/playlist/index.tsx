@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
-import { normalTrackTypes } from "types/spotify";
+import { HeaderType, normalTrackTypes } from "types/spotify";
 import { PlaylistPageHeader } from "../../components/forPlaylistsPage/PlaylistPageHeader";
 import useAnalitycs from "../../hooks/useAnalytics";
 import useAuth from "hooks/useAuth";
@@ -16,7 +16,7 @@ import RemoveTracksModal from "components/removeTrackModal";
 import { ExtraHeader } from "./ExtraHeader";
 import { Heart, HeartShape } from "components/icons/Heart";
 import { takeCookie } from "utils/cookies";
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
+import { ACCESS_TOKEN_COOKIE, SITE_URL } from "utils/constants";
 import { PlaylistProps } from "pages/playlist/[playlist]";
 
 async function followPlaylist(id?: string, accessToken?: string) {
@@ -98,7 +98,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
     setPlaylistDetails,
     setAllTracks,
   } = useSpotify();
-  const { headerColor, setElement } = useHeader({ showOnFixed: false });
+  const { setElement } = useHeader({ showOnFixed: false });
   const [isPin, setIsPin] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const isMyPlaylist = playlistDetails?.owner.id === user?.id;
@@ -195,61 +195,71 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
       <Head>
         <title>{`Rindu: ${playlistDetails?.name}`}</title>
       </Head>
-      <section>
-        <PlaylistPageHeader playlistDetails={playlistDetails} />
-        <div className="tracksContainer">
-          <div className="bg-12"></div>
-          <div className="options">
-            <PlayButton size={56} centerSize={28} />
-            <div className="info">
-              <button
-                onClick={() => {
-                  if (isMyPlaylist) {
-                    setOpenModal(true);
-                    return;
-                  }
-                  if (isFollowingThisPlaylist) {
-                    unfollowPlaylist(playlistDetails?.id).then((res) => {
-                      if (res) {
-                        setIsFollowingThisPlaylist(false);
-                      }
-                    });
-                  } else {
-                    followPlaylist(playlistDetails?.id).then((res) => {
-                      if (res) {
-                        setIsFollowingThisPlaylist(true);
-                      }
-                    });
-                  }
-                }}
-              >
-                {isMyPlaylist ? (
-                  <Broom width={32} height={32} />
-                ) : isFollowingThisPlaylist ? (
-                  <Heart width={36} height={36} />
-                ) : (
-                  <HeartShape fill="#ffffffb3" width={36} height={36} />
-                )}
-              </button>
-            </div>
-          </div>
-          <div className="trc">
-            <Titles isPin={isPin} type="playlist" setIsPin={setIsPin} />
-            <List
-              type="playlist"
-              isLibrary={isLibrary}
-              initialTracksInLibrary={tracksInLibrary}
-            />
+      <PlaylistPageHeader
+        type={HeaderType.playlist}
+        title={playlistDetails?.name ?? ""}
+        description={playlistDetails?.description ?? ""}
+        coverImg={
+          playlistDetails?.images?.[0]?.url ??
+          playlistDetails?.images?.[1]?.url ??
+          `${SITE_URL}/defaultSongCover.jpeg`
+        }
+        ownerDisplayName={playlistDetails?.owner?.display_name ?? ""}
+        ownerId={playlistDetails?.owner?.id ?? ""}
+        totalFollowers={playlistDetails?.followers.total ?? 0}
+        totalTracks={playlistDetails?.tracks?.total ?? 0}
+      />
+      <div className="tracksContainer">
+        <div className="options">
+          <PlayButton size={56} centerSize={28} />
+          <div className="info">
+            <button
+              onClick={() => {
+                if (isMyPlaylist) {
+                  setOpenModal(true);
+                  return;
+                }
+                if (isFollowingThisPlaylist) {
+                  unfollowPlaylist(playlistDetails?.id).then((res) => {
+                    if (res) {
+                      setIsFollowingThisPlaylist(false);
+                    }
+                  });
+                } else {
+                  followPlaylist(playlistDetails?.id).then((res) => {
+                    if (res) {
+                      setIsFollowingThisPlaylist(true);
+                    }
+                  });
+                }
+              }}
+            >
+              {isMyPlaylist ? (
+                <Broom width={32} height={32} />
+              ) : isFollowingThisPlaylist ? (
+                <Heart width={36} height={36} />
+              ) : (
+                <HeartShape fill="#ffffffb3" width={36} height={36} />
+              )}
+            </button>
           </div>
         </div>
-        {openModal ? (
-          <RemoveTracksModal
-            openModal={openModal}
-            setOpenModal={setOpenModal}
+        <div className="trc">
+          <Titles isPin={isPin} type="playlist" setIsPin={setIsPin} />
+          <List
+            type="playlist"
             isLibrary={isLibrary}
+            initialTracksInLibrary={tracksInLibrary}
           />
-        ) : null}
-      </section>
+        </div>
+      </div>
+      {openModal ? (
+        <RemoveTracksModal
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+          isLibrary={isLibrary}
+        />
+      ) : null}
       <style jsx>{`
         .info button {
           margin-left: 20px;
@@ -282,14 +292,6 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
         .options,
         .trc {
           padding: 0 32px;
-        }
-        .bg-12 {
-          background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0, #121212 100%),
-            url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
-          height: 232px;
-          position: absolute;
-          width: 100%;
-          background-color: ${headerColor ?? "transparent"};
         }
         .trc {
           margin-bottom: 50px;
@@ -335,12 +337,6 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
           margin: -60px auto 0 auto;
           height: calc(100vh - 90px);
           width: calc(100vw - 245px);
-        }
-        section {
-          display: flex;
-          flex-direction: column;
-          margin: 0 auto;
-          padding: 0;
         }
       `}</style>
     </main>

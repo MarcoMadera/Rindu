@@ -1,132 +1,26 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { ContentHeader } from "components/forPlaylistsPage/ContentHeader";
-import { decode } from "html-entities";
-import formatNumber from "utils/formatNumber";
 import Link from "next/link";
 import ThreeDots from "components/icons/ThreeDots";
 import Add from "components/icons/Add";
 import { Pause, Play } from "components/icons";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ExplicitSign } from "components/forPlaylistsPage/CardTrack";
 import { formatTime } from "utils/formatTime";
 import { getTimeAgo } from "utils/getTimeAgo";
 import { getAuth } from "utils/getAuth";
 import { serverRedirect } from "utils/serverRedirect";
 import { getShow } from "utils/spotifyCalls/getShow";
-import useHeader from "hooks/useHeader";
-import { getMainColorFromImage } from "utils/getMainColorFromImage";
-
-function Header({ show }: { show: SpotifyApi.SingleShowResponse | null }) {
-  const showName = show?.name ?? "";
-  return (
-    <ContentHeader>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={show?.images[1].url} alt="" />
-      <div className="playlistInfo">
-        <h2>PODCAST</h2>
-        <h1>{show?.name}</h1>
-        <p className="description">{decode(show?.publisher)}</p>
-        <div>
-          <p>
-            <span>{formatNumber(show?.episodes?.total ?? 0)} episodes</span>
-          </p>
-        </div>
-      </div>
-      <style jsx>
-        {`
-          h1 {
-            color: #fff;
-            margin: 0;
-            pointer-events: none;
-            user-select: none;
-            padding: 0.08em 0px;
-            font-size: ${showName.length < 18
-              ? "96px"
-              : showName.length < 30
-              ? "72px"
-              : "48px"};
-            line-height: ${showName.length < 20
-              ? "96px"
-              : showName.length < 30
-              ? "72px"
-              : "48px"};
-            visibility: visible;
-            width: 100%;
-            font-weight: 900;
-            letter-spacing: -0.04em;
-            text-transform: none;
-            overflow: hidden;
-            text-align: left;
-            text-overflow: ellipsis;
-            white-space: unset;
-            -webkit-box-orient: vertical;
-            display: -webkit-box;
-            line-break: anywhere;
-            -webkit-line-clamp: 3;
-          }
-          h2 {
-            font-size: 12px;
-            margin-top: 4px;
-            margin-bottom: 0;
-            font-weight: 700;
-          }
-          div.playlistInfo {
-            align-self: flex-end;
-            width: calc(100% - 310px);
-          }
-          p.description {
-            margin-bottom: 4px;
-            font-size: 14px;
-            word-spacing: 2px;
-            line-height: 1.4;
-          }
-          .userLink {
-            display: inline-block;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: normal;
-            line-height: 16px;
-            text-transform: none;
-            color: #fff;
-            text-decoration: none;
-          }
-          .userLink:hover,
-          .userLink:focus {
-            text-decoration: underline;
-          }
-          button {
-            border: none;
-            border-radius: 4px;
-            background-color: #e83636;
-            cursor: pointer;
-            padding: 4px 6px;
-            color: #fff;
-          }
-          p {
-            margin: 0;
-            color: #ffffffb3;
-          }
-          span {
-            font-size: 14px;
-            display: inline-block;
-          }
-
-          img {
-            margin-right: 15px;
-            align-self: center;
-            align-self: flex-end;
-            height: 232px;
-            margin-inline-end: 24px;
-            min-width: 232px;
-            width: 232px;
-            box-shadow: 0 4px 60px rgb(0 0 0 / 50%);
-            border-radius: 16px;
-          }
-        `}
-      </style>
-    </ContentHeader>
-  );
-}
+import { AllTracksFromAPlayList, HeaderType } from "types/spotify";
+import { SITE_URL } from "utils/constants";
+import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
+import { PlayButton } from "components/forPlaylistsPage/PlayButton";
+import { Heart, HeartShape } from "components/icons/Heart";
+import { removeShowsFromLibrary } from "utils/spotifyCalls/removeShowsFromLibrary";
+import { saveShowsToLibrary } from "utils/spotifyCalls/saveShowsToLibrary";
+import useAuth from "hooks/useAuth";
+import { checkIfUserFollowShows } from "utils/spotifyCalls/checkIfUserFollowShows";
+import useSpotify from "hooks/useSpotify";
+import { playCurrentTrack } from "utils/playCurrentTrack";
 
 interface PlaylistProps {
   show: SpotifyApi.SingleShowResponse | null;
@@ -134,31 +28,34 @@ interface PlaylistProps {
   user: SpotifyApi.UserObjectPrivate | null;
 }
 
-function EpisodeCard({ item }: { item: SpotifyApi.EpisodeObjectSimplified }) {
-  const [currrentlyPlaying, setCurrrentlyPlaying] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const { setHeaderColor } = useHeader();
-
-  useEffect(() => {
-    setCurrrentlyPlaying(false);
-    setIsPlaying(false);
-  }, []);
+function EpisodeCard({
+  item,
+  position,
+  show,
+}: {
+  item: SpotifyApi.EpisodeObjectSimplified;
+  position: number;
+  show: SpotifyApi.ShowObject;
+}) {
+  const {
+    isPlaying,
+    currrentlyPlaying,
+    deviceId,
+    player,
+    allTracks,
+    playlistDetails,
+    setCurrentlyPlaying,
+    setPlaylistPlayingId,
+  } = useSpotify();
+  const { user, accessToken, setAccessToken } = useAuth();
+  const isThisEpisodePlaying = currrentlyPlaying?.uri === item.uri;
 
   return (
     <div className="episodeCard">
       <div className="coverImage">
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={item.images[1].url}
-            alt={item.name}
-            id="cover-image"
-            onLoad={() => {
-              setHeaderColor(
-                (prev) => getMainColorFromImage("cover-image") ?? prev
-              );
-            }}
-          />
+          <img src={item?.images?.[1]?.url} alt={item?.name} />
         </div>
       </div>
       <div className="header">
@@ -196,7 +93,74 @@ function EpisodeCard({ item }: { item: SpotifyApi.EpisodeObjectSimplified }) {
         </button>
       </div>
       <div className="play">
-        <button>{currrentlyPlaying && isPlaying ? <Pause /> : <Play />}</button>
+        <button
+          onClick={() => {
+            if (isThisEpisodePlaying) {
+              player?.togglePlay();
+              return;
+            }
+            playCurrentTrack(
+              {
+                album: {
+                  album_type: "single",
+                  artists: [
+                    {
+                      external_urls: {
+                        spotify: `https://open.spotify.com/show/${show?.id}`,
+                      },
+                      name: show.name ?? "",
+                      id: show.id ?? "",
+                      type: "artist",
+                      href: `https://open.spotify.com/show/${show?.id}`,
+                      uri: `spotify:show:${show?.id}`,
+                    },
+                  ],
+                  external_urls: { spotify: "" },
+                  id: show?.id ?? "",
+                  images: item?.images ?? [],
+                  name: show?.name ?? "",
+                  release_date: item?.release_date ?? "",
+                  type: "album",
+                  uri: show?.uri ?? "",
+                },
+                artists: [
+                  {
+                    external_urls: {
+                      spotify: `https://open.spotify.com/show/${show?.id}`,
+                    },
+                    name: show.name ?? "",
+                    id: show.id ?? "",
+                    type: "artist",
+                    href: `https://open.spotify.com/show/${show?.id}`,
+                    uri: `spotify:show:${show?.id}`,
+                  },
+                ],
+                id: item?.id ?? "",
+                name: item?.name ?? "",
+                explicit: item?.explicit ?? false,
+                type: "track",
+                uri: item?.uri ?? "",
+                href: "",
+              },
+              {
+                player,
+                user,
+                allTracks,
+                accessToken,
+                deviceId,
+                playlistUri: playlistDetails?.uri,
+                playlistId: playlistDetails?.id,
+                setCurrentlyPlaying,
+                setPlaylistPlayingId,
+                isSingleTrack: true,
+                position,
+                setAccessToken,
+              }
+            );
+          }}
+        >
+          {isThisEpisodePlaying && isPlaying ? <Pause /> : <Play />}
+        </button>
       </div>
       <style jsx>{`
         .episodeCard {
@@ -372,21 +336,265 @@ function EpisodeCard({ item }: { item: SpotifyApi.EpisodeObjectSimplified }) {
           justify-content: center;
           align-items: center;
         }
+        .play button:hover,
+        .play button:focus {
+          transform: scale(1.1);
+        }
+        .play button:active {
+          transform: scale(1);
+        }
       `}</style>
     </div>
   );
 }
 
-const Playlist: NextPage<PlaylistProps> = ({ show }) => {
-  const { headerColor } = useHeader();
+const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
+  const [isShowInLibrary, setIsShowInLibrary] = useState(false);
+  const { setIsLogin, setAccessToken, setUser } = useAuth();
+  const { setPlaylistDetails, setAllTracks } = useSpotify();
+  useEffect(() => {
+    setIsLogin(true);
+
+    setAccessToken(accessToken);
+
+    setUser(user);
+  }, [accessToken, setAccessToken, setIsLogin, setUser, user]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const userFollowThisShow = await checkIfUserFollowShows(
+        [show?.id || ""],
+        accessToken
+      );
+      setIsShowInLibrary(!!userFollowThisShow?.[0]);
+    }
+    fetchData();
+  }, [accessToken, show?.id]);
+
+  const allTracks: AllTracksFromAPlayList | undefined = useMemo(
+    () =>
+      show?.episodes.items.map((episode) => ({
+        album: {
+          album_type: "single",
+          artists: [
+            {
+              external_urls: {
+                spotify: `https://open.spotify.com/artist/${show?.id}`,
+              },
+              name: show.publisher ?? "",
+              id: show.id ?? "",
+              type: "artist",
+              href: `https://open.spotify.com/show/${show?.id}`,
+              uri: `spotify:show:${show?.id}`,
+            },
+          ],
+          external_urls: { spotify: "" },
+          href: "",
+          id: show.id ?? "",
+          images: show.images ?? [],
+          name: show.name ?? "",
+          release_date: episode?.release_date ?? "",
+          release_date_precision: "year",
+          type: "album",
+          uri: show?.uri ?? "",
+        },
+        artists: [
+          {
+            external_urls: {
+              spotify: `https://open.spotify.com/episode/${episode?.id}`,
+            },
+            name: show.publisher ?? "",
+            id: show.id ?? "",
+            type: "artist",
+            href: `https://open.spotify.com/show/${show?.id}`,
+            uri: `spotify:show:${show?.id}`,
+          },
+        ],
+        id: episode?.id ?? "",
+        name: episode?.name ?? "",
+        disc_number: 1,
+        duration_ms: episode?.duration_ms ?? 0,
+        explicit: episode?.explicit ?? false,
+        preview_url: episode?.audio_preview_url ?? "",
+        track_number: 1,
+        type: "track",
+        uri: episode?.uri ?? "",
+        external_ids: {},
+        popularity: 0,
+        available_markets: [],
+        external_urls: { spotify: "" },
+        href: "",
+      })),
+    [show]
+  );
+
+  useEffect(() => {
+    setAllTracks(allTracks ?? []);
+  }, [allTracks, setAllTracks]);
+
+  useEffect(() => {
+    setPlaylistDetails({
+      collaborative: false,
+      description: "",
+      external_urls: show?.external_urls ?? { spotify: "" },
+      followers: { href: null, total: 0 },
+      href: show?.href ?? "",
+      id: show?.id ?? "",
+      images: show?.images ?? [],
+      name: show?.name ?? "",
+      tracks: {
+        href: show?.href ?? "",
+        total: show?.episodes.total ?? 0,
+        items:
+          show?.episodes.items.map((episode) => ({
+            added_at: episode.release_date ?? "",
+            added_by: {
+              type: "user",
+              href: "",
+              images: [],
+              external_urls: { spotify: "" },
+              id: "",
+              uri: "",
+              display_name: "",
+              followers: { href: null, total: 0 },
+            },
+            is_local: false,
+            track: {
+              album: {
+                album_type: "single",
+                artists: [
+                  {
+                    external_urls: {
+                      spotify: `https://open.spotify.com/artist/${show?.id}`,
+                    },
+                    name: show.publisher ?? "",
+                    id: show.id ?? "",
+                    type: "artist",
+                    href: `https://open.spotify.com/show/${show?.id}`,
+                    uri: `spotify:show:${show?.id}`,
+                  },
+                ],
+                external_urls: { spotify: "" },
+                href: "",
+                id: show.id ?? "",
+                images: show.images ?? [],
+                name: show.name ?? "",
+                release_date: episode?.release_date ?? "",
+                release_date_precision: "year",
+                type: "album",
+                uri: show?.uri ?? "",
+              },
+              artists: [
+                {
+                  external_urls: {
+                    spotify: `https://open.spotify.com/episode/${episode?.id}`,
+                  },
+                  name: show.publisher ?? "",
+                  id: show.id ?? "",
+                  type: "artist",
+                  href: `https://open.spotify.com/show/${show?.id}`,
+                  uri: `spotify:show:${show?.id}`,
+                },
+              ],
+              id: episode?.id ?? "",
+              name: episode?.name ?? "",
+              disc_number: 1,
+              duration_ms: episode?.duration_ms ?? 0,
+              explicit: episode?.explicit ?? false,
+              preview_url: episode?.audio_preview_url ?? "",
+              track_number: 1,
+              type: "track",
+              uri: episode?.uri ?? "",
+              external_ids: {},
+              popularity: 0,
+              available_markets: [],
+              external_urls: { spotify: "" },
+              href: "",
+            },
+          })) ?? [],
+        limit: 1,
+        next: "",
+        offset: 0,
+        previous: "",
+      },
+      owner: {
+        type: "user",
+        href: "",
+        images: [],
+        external_urls: { spotify: "" },
+        id: "",
+        uri: "",
+        display_name: "",
+        followers: { href: null, total: 0 },
+      },
+      public: true,
+      snapshot_id: "",
+      type: "playlist",
+      uri: show?.uri ?? "",
+    });
+  }, [setPlaylistDetails, show]);
+
   return (
     <main>
-      <Header show={show} />
-      <div className="bg-12"></div>
+      <PlaylistPageHeader
+        type={HeaderType.podcast}
+        title={show?.name ?? ""}
+        coverImg={
+          show?.images?.[0]?.url ??
+          show?.images?.[1]?.url ??
+          `${SITE_URL}/defaultSongCover.jpeg`
+        }
+        ownerDisplayName={show?.publisher ?? ""}
+        ownerId={show?.id ?? ""}
+      />
       <section>
-        {show?.episodes.items.map((item) => {
-          return <EpisodeCard key={item.id} item={item} />;
-        })}
+        <div className="options">
+          <PlayButton size={56} centerSize={28} />
+          <div className="info">
+            <button
+              onClick={() => {
+                if (!show) return;
+                if (isShowInLibrary) {
+                  removeShowsFromLibrary([show.id]).then((res) => {
+                    if (res) {
+                      setIsShowInLibrary(false);
+                    }
+                  });
+                } else {
+                  saveShowsToLibrary([show.id]).then((res) => {
+                    if (res) {
+                      setIsShowInLibrary(true);
+                    }
+                  });
+                }
+              }}
+            >
+              {isShowInLibrary ? (
+                <Heart width={36} height={36} />
+              ) : (
+                <HeartShape fill="#ffffffb3" width={36} height={36} />
+              )}
+            </button>
+          </div>
+        </div>
+        <div className="content">
+          <div className="episodes">
+            {show?.episodes.items.map((item, i) => {
+              return (
+                <EpisodeCard
+                  key={item.id}
+                  item={item}
+                  show={show}
+                  position={i}
+                />
+              );
+            })}
+          </div>
+          <div className="description">
+            <h2>About</h2>
+            <p>{show?.description}</p>
+          </div>
+        </div>
       </section>
       <style jsx>{`
         main {
@@ -395,25 +603,76 @@ const Playlist: NextPage<PlaylistProps> = ({ show }) => {
           height: calc(100vh - 90px);
           width: calc(100vw - 245px);
         }
+        .content {
+          display: grid;
+          grid-template-columns: 700px 1fr;
+        }
         section {
-          padding: 50px;
+          margin: 0 32px;
           position: relative;
           z-index: 1;
         }
-        .bg-12 {
-          background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0, #121212 100%),
-            url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
-          height: 232px;
-          position: absolute;
+        div.info {
+          align-self: flex-end;
+          width: calc(100% - 310px);
+        }
+        .info button {
+          margin-left: 20px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 56px;
+          height: 56px;
+          min-width: 56px;
+          min-height: 56px;
+          background-color: transparent;
+          border: none;
+        }
+        .info button:focus,
+        .info button:hover {
+          transform: scale(1.06);
+        }
+        .info button:active {
+          transform: scale(1);
+        }
+        .options {
+          display: flex;
+          padding: 24px 0;
+          position: relative;
           width: 100%;
-          background-color: ${headerColor ?? "transparent"};
+          align-items: center;
+          flex-direction: row;
+        }
+        h2 {
+          color: #fff;
+          display: inline-block;
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          font-size: 24px;
+          font-weight: 700;
+          letter-spacing: -0.04em;
+          line-height: 28px;
+          text-transform: none;
+          margin: 0;
+        }
+        p {
+          font-size: 1rem;
+          line-height: 1.5rem;
+          text-transform: none;
+          letter-spacing: normal;
+          font-weight: 400;
+          box-sizing: border-box;
+          color: #b3b3b3;
+          font-family: "Lato", sans-serif;
         }
       `}</style>
     </main>
   );
 };
 
-export default Playlist;
+export default Shows;
 
 export async function getServerSideProps({
   params: { show },

@@ -41,7 +41,7 @@ export async function play(
   if (context_uri) {
     body.context_uri = context_uri;
   } else if (Array.isArray(uris) && uris.length) {
-    body.uris = uris;
+    body.uris = [...new Set(uris)];
   }
 
   try {

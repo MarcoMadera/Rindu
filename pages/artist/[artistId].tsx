@@ -1,14 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { useRouter } from "next/router";
-import { ContentHeader } from "components/forPlaylistsPage/ContentHeader";
-import formatNumber from "utils/formatNumber";
 import useAuth from "hooks/useAuth";
 import useAnalitycs from "hooks/useAnalytics";
 import { useEffect, useState, ReactElement } from "react";
 import { serverRedirect } from "utils/serverRedirect";
 import { getAuth } from "utils/getAuth";
 import { getArtistById } from "utils/spotifyCalls/getArtistById";
-import { getMainColorFromImage } from "utils/getMainColorFromImage";
 import useHeader from "hooks/useHeader";
 import { getArtistTopTracks } from "utils/spotifyCalls/getArtistTopTracks";
 import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
@@ -24,6 +21,10 @@ import { PlayButton } from "components/forPlaylistsPage/PlayButton";
 import { follow, Follow_type } from "utils/spotifyCalls/follow";
 import { unFollow } from "utils/spotifyCalls/unFollow";
 import { checkIfUserFollowArtistUser } from "utils/spotifyCalls/checkIfUserFollowArtistUser";
+import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
+import { HeaderType } from "types/spotify";
+import { SITE_URL } from "utils/constants";
+import { getYear } from "utils/getYear";
 
 interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
@@ -46,7 +47,7 @@ export default function ArtistPage({
 }: ArtistPageProps): ReactElement {
   const { setIsLogin, setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalitycs } = useAnalitycs();
-  const { headerColor, setHeaderColor, setElement } = useHeader();
+  const { setElement } = useHeader();
   const router = useRouter();
   const { setPlaylistDetails, setAllTracks } = useSpotify();
   const [showMoreTopTracks, setShowMoreTopTracks] = useState(false);
@@ -153,39 +154,17 @@ export default function ArtistPage({
 
   return (
     <main>
-      <ContentHeader>
-        {currentArtist?.images?.[0]?.url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={currentArtist?.images?.[0]?.url ?? ""}
-            alt=""
-            id="cover-image"
-            onLoad={() => {
-              setHeaderColor(
-                (prev) => getMainColorFromImage("cover-image") ?? prev
-              );
-            }}
-          />
-        ) : (
-          <div id="cover-image"></div>
-        )}
-        <div className="info">
-          <h2>ARTIST</h2>
-          <h1>{currentArtist?.name}</h1>
-          <div>
-            <p>
-              <span>
-                {formatNumber(currentArtist?.followers?.total ?? 0)} seguidores
-              </span>
-              <span>
-                &nbsp;&middot; {formatNumber(currentArtist?.popularity ?? 0)}{" "}
-                popularity
-              </span>
-            </p>
-          </div>
-        </div>
-      </ContentHeader>
-      <div className="bg-12"></div>
+      <PlaylistPageHeader
+        type={HeaderType.artist}
+        title={currentArtist?.name ?? ""}
+        coverImg={
+          currentArtist?.images?.[0]?.url ??
+          currentArtist?.images?.[1]?.url ??
+          `${SITE_URL}/defaultSongCover.jpeg`
+        }
+        totalFollowers={currentArtist?.followers?.total ?? 0}
+        popularity={currentArtist?.popularity ?? 0}
+      />
       <div className="options">
         <PlayButton size={56} centerSize={28} />
         <div className="info button-inof">
@@ -259,20 +238,24 @@ export default function ArtistPage({
           <>
             <h3>Albums</h3>
             <section className="playlists">
-              {singleAlbums?.items?.map(({ images, name, id, artists }) => {
-                const artistNames = artists.map((artist) => artist.name);
-                const subTitle = artistNames.join(", ");
-                return (
-                  <PresentationCard
-                    type="album"
-                    key={id}
-                    images={images}
-                    title={name}
-                    subTitle={subTitle}
-                    id={id}
-                  />
-                );
-              })}
+              {singleAlbums?.items?.map(
+                ({ images, name, id, artists, release_date }) => {
+                  const artistNames = artists.map((artist) => artist.name);
+                  const subTitle = release_date
+                    ? `${getYear(release_date)} · Album`
+                    : artistNames.join(", ");
+                  return (
+                    <PresentationCard
+                      type="album"
+                      key={id}
+                      images={images}
+                      title={name}
+                      subTitle={subTitle}
+                      id={id}
+                    />
+                  );
+                }
+              )}
             </section>
           </>
         ) : null}
@@ -280,20 +263,24 @@ export default function ArtistPage({
           <>
             <h3>Aparece en</h3>
             <section className="playlists">
-              {appearAlbums?.items?.map(({ images, name, id, artists }) => {
-                const artistNames = artists.map((artist) => artist.name);
-                const subTitle = artistNames.join(", ");
-                return (
-                  <PresentationCard
-                    type="album"
-                    key={id}
-                    images={images}
-                    title={name}
-                    subTitle={subTitle}
-                    id={id}
-                  />
-                );
-              })}
+              {appearAlbums?.items?.map(
+                ({ images, name, id, artists, release_date }) => {
+                  const artistNames = artists.map((artist) => artist.name);
+                  const subTitle = release_date
+                    ? `${getYear(release_date)} · Album`
+                    : artistNames.join(", ");
+                  return (
+                    <PresentationCard
+                      type="album"
+                      key={id}
+                      images={images}
+                      title={name}
+                      subTitle={subTitle}
+                      id={id}
+                    />
+                  );
+                }
+              )}
             </section>
           </>
         ) : null}
@@ -382,14 +369,6 @@ export default function ArtistPage({
         .trc {
           padding: 0 32px;
         }
-        .bg-12 {
-          background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0, #121212 100%),
-            url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
-          height: 232px;
-          position: absolute;
-          width: 100%;
-          background-color: ${headerColor ?? "transparent"};
-        }
         .info button {
           background-color: transparent;
           border: 1px solid rgba(255, 255, 255, 0.3);
@@ -407,36 +386,6 @@ export default function ArtistPage({
           font-weight: bold;
           margin-right: 24px;
         }
-        h1 {
-          color: #fff;
-          margin: 0;
-          pointer-events: none;
-          user-select: none;
-          padding: 0.08em 0px;
-          font-size: ${(currentArtist?.name?.length ?? 0) < 20
-            ? "96px"
-            : (currentArtist?.name?.length ?? 0) < 30
-            ? "72px"
-            : "48px"};
-          line-height: ${(currentArtist?.name?.length ?? 0) < 20
-            ? "96px"
-            : (currentArtist?.name?.length ?? 0) < 30
-            ? "72px"
-            : "48px"};
-          visibility: visible;
-          width: 100%;
-          font-weight: 900;
-          letter-spacing: -0.04em;
-          text-transform: none;
-          overflow: hidden;
-          text-align: left;
-          text-overflow: ellipsis;
-          white-space: unset;
-          -webkit-box-orient: vertical;
-          display: -webkit-box;
-          line-break: anywhere;
-          -webkit-line-clamp: 3;
-        }
         .content {
           margin: 32px;
           padding-bottom: 30px;
@@ -449,30 +398,11 @@ export default function ArtistPage({
           margin: 20px 0 50px 0;
           justify-content: space-between;
         }
-        h2 {
-          font-size: 12px;
-          margin-top: 4px;
-          margin-bottom: 0;
-          font-weight: 700;
-        }
         .topTracks {
           display: flex;
           flex-wrap: wrap;
           justify-content: center;
           margin-top: 32px;
-        }
-        #cover-image {
-          border-radius: 50%;
-          box-shadow: 0 4px 60px rgb(0 0 0 / 50%);
-          margin-right: 15px;
-          align-self: center;
-          align-self: flex-end;
-          height: 232px;
-          margin-inline-end: 24px;
-          min-width: 232px;
-          width: 232px;
-          object-fit: cover;
-          object-position: center center;
         }
       `}</style>
     </main>
