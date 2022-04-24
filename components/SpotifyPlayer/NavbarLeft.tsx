@@ -13,6 +13,8 @@ import useToast from "hooks/useToast";
 import { checkEpisodesInLibrary } from "utils/spotifyCalls/checkEpisodesInLibrary";
 import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFromLibrary";
 import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
+import { callPictureInPicture } from "utils/callPictureInPicture";
+import { PictureInPicture } from "components/icons/PictureInPicture";
 
 export function NavbarLeft({
   currrentlyPlaying,
@@ -22,8 +24,14 @@ export function NavbarLeft({
   const [isHoveringHeart, setIsHoveringHeart] = useState(false);
   const [isLikedTrack, setIsLikedTrack] = useState(false);
   const { accessToken } = useAuth();
-  const { playedSource, isShowingSideBarImg, setIsShowingSideBarImg } =
-    useSpotify();
+  const {
+    playedSource,
+    isShowingSideBarImg,
+    setIsShowingSideBarImg,
+    pictureInPictureCanvas,
+    videoRef,
+    setIsPip,
+  } = useSpotify();
   const { addToast } = useToast();
 
   useEffect(() => {
@@ -109,7 +117,7 @@ export function NavbarLeft({
         </span>
       </section>
       <button
-        className="like-button"
+        className="navBar-Button"
         onMouseEnter={() => {
           setIsHoveringHeart(true);
         }}
@@ -162,6 +170,20 @@ export function NavbarLeft({
           <HeartShape fill={isHoveringHeart ? "#fff" : "#ffffffb3"} />
         ) : null}
       </button>
+      <button
+        className="navBar-Button"
+        onClick={() => {
+          if (pictureInPictureCanvas.current && videoRef.current) {
+            callPictureInPicture(
+              pictureInPictureCanvas.current,
+              videoRef.current
+            );
+            setIsPip((prev) => !prev);
+          }
+        }}
+      >
+        <PictureInPicture />
+      </button>
       <style jsx>{`
         .img-container {
           display: ${isShowingSideBarImg ? "none" : "block"};
@@ -196,11 +218,15 @@ export function NavbarLeft({
         span.trackArtists {
           font-size: 14px;
         }
-        .like-button {
+        .navBar-Button {
           background: transparent;
           border: none;
           outline: none;
           margin: 0 10px;
+          color: #ffffffb3;
+        }
+        .navBar-Button:hover {
+          color: #fff;
         }
         p,
         span {

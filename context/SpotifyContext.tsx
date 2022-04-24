@@ -1,18 +1,30 @@
 import useAuth from "hooks/useAuth";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
-import { createContext, useEffect, useState } from "react";
+import {
+  createContext,
+  ReactElement,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   AllTracksFromAPlayList,
   ISpotifyContext,
   PlaylistItems,
   trackItem,
 } from "types/spotify";
+import { callPictureInPicture } from "utils/callPictureInPicture";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const SpotifyContext = createContext<ISpotifyContext>(null!);
 export default SpotifyContext;
 
-export const SpotifyContextProvider: React.FC = ({ children }) => {
+export function SpotifyContextProvider({
+  children,
+}: {
+  children: ReactNode;
+}): ReactElement {
   const [playlists, setPlaylists] = useState<PlaylistItems>([]);
   const [totalPlaylists, setTotalPlaylists] = useState<number>(0);
   const [allTracks, setAllTracks] = useState<AllTracksFromAPlayList>([]);
@@ -31,7 +43,55 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
     useState<ISpotifyContext["playlistDetails"]>(null);
   const [volume, setVolume] = useState<number>(1);
   const [lastVolume, setLastVolume] = useState<number>(1);
+  const [isPip, setIsPip] = useState(false);
+  const pictureInPictureCanvas = useRef<HTMLCanvasElement>();
+  const videoRef = useRef<HTMLVideoElement>();
+
   const { user } = useAuth();
+
+  useEffect(() => {
+    if (currrentlyPlaying && "mediaSession" in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: currrentlyPlaying.name,
+        artist: currrentlyPlaying.artists?.[0]?.name,
+        album: currrentlyPlaying.album.name,
+        artwork: currrentlyPlaying.album.images?.map(
+          ({ url, width, height }) => {
+            return {
+              src: url,
+              sizes: `${width}x${height}`,
+              type: "",
+            };
+          }
+        ),
+      });
+    }
+
+    if (
+      pictureInPictureCanvas.current &&
+      videoRef.current &&
+      document.pictureInPictureElement
+    ) {
+      callPictureInPicture(pictureInPictureCanvas.current, videoRef.current);
+    }
+  }, [currrentlyPlaying]);
+
+  useEffect(() => {
+    if (
+      (videoRef.current || pictureInPictureCanvas.current || !isPlaying,
+      !currrentlyPlaying)
+    ) {
+      return;
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = 512;
+    const video = document.createElement("video");
+
+    video.muted = true;
+    video.srcObject = canvas.captureStream();
+    pictureInPictureCanvas.current = canvas;
+    videoRef.current = video;
+  }, [isPlaying, currrentlyPlaying]);
 
   useEffect(() => {
     if (
@@ -136,9 +196,13 @@ export const SpotifyContextProvider: React.FC = ({ children }) => {
         setVolume,
         lastVolume,
         setLastVolume,
+        pictureInPictureCanvas,
+        videoRef,
+        isPip,
+        setIsPip,
       }}
     >
       {children}
     </SpotifyContext.Provider>
   );
-};
+}

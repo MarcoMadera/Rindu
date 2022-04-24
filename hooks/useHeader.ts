@@ -8,12 +8,13 @@ import {
 } from "react";
 
 export default function useHeader(
-  options?: Partial<{ showOnFixed: boolean }>
+  options?: Partial<{ showOnFixed: boolean; alwaysDisplayColor: boolean }>
 ): {
   element: ReactElement | null;
   setDisplayOnFixed: Dispatch<SetStateAction<boolean>>;
   headerColor: string;
   setHeaderColor: Dispatch<SetStateAction<string>>;
+  alwaysDisplayColor: boolean;
   displayOnFixed: boolean;
   setElement: Dispatch<SetStateAction<ReactElement | null>>;
 } {
@@ -24,18 +25,30 @@ export default function useHeader(
     displayOnFixed,
     headerColor,
     setHeaderColor,
+    setAlwaysDisplayColor,
+    alwaysDisplayColor,
   } = useContext(HeaderContext);
 
   useEffect(() => {
     if (options?.showOnFixed) {
       setDisplayOnFixed(options.showOnFixed);
     }
+    if (options?.alwaysDisplayColor) {
+      setAlwaysDisplayColor(options.alwaysDisplayColor);
+    }
 
     return () => {
       setDisplayOnFixed(false);
+      setAlwaysDisplayColor(false);
       setElement(null);
     };
-  }, [options?.showOnFixed, setDisplayOnFixed, setElement]);
+  }, [
+    options?.alwaysDisplayColor,
+    options?.showOnFixed,
+    setAlwaysDisplayColor,
+    setDisplayOnFixed,
+    setElement,
+  ]);
 
   return {
     element,
@@ -44,5 +57,6 @@ export default function useHeader(
     displayOnFixed,
     headerColor,
     setHeaderColor,
+    alwaysDisplayColor,
   };
 }

@@ -1,4 +1,5 @@
 import { NextApiResponse } from "next";
+import { RefreshResponse } from "types/spotify";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "./constants";
 import { takeCookie } from "./cookies";
 import { serverRedirect } from "./serverRedirect";
@@ -7,12 +8,14 @@ import { refreshAccessToken } from "./spotifyCalls/refreshAccessToken";
 
 export async function getAuth(
   res: NextApiResponse,
-  cookies: string
+  cookies: string,
+  tokens?: Record<string, string | null> | RefreshResponse
 ): Promise<{ user: SpotifyApi.UserObjectPrivate; accessToken: string } | null> {
-  const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE, cookies);
-  const accessTokenFromCookie = takeCookie(ACCESS_TOKEN_COOKIE, cookies);
+  const refreshToken =
+    tokens?.refreshToken ?? takeCookie(REFRESH_TOKEN_COOKIE, cookies);
+  const accessTokenFromCookie =
+    tokens?.accessToken ?? takeCookie(ACCESS_TOKEN_COOKIE, cookies);
   const user = await getMe(accessTokenFromCookie, cookies);
-
   if (refreshToken && !user) {
     const { accessToken } = (await refreshAccessToken(refreshToken)) || {};
 

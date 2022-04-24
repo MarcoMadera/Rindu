@@ -1,5 +1,5 @@
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, MutableRefObject, SetStateAction } from "react";
 
 export type AuthorizationResponse = {
   accessToken: string;
@@ -107,7 +107,9 @@ export interface ISpotifyContext {
   setAllTracks: Dispatch<SetStateAction<AllTracksFromAPlayList>>;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
   isPlaying: boolean;
+  isPip: boolean;
   setIsShowingSideBarImg: Dispatch<SetStateAction<boolean>>;
+  setIsPip: Dispatch<SetStateAction<boolean>>;
   isShowingSideBarImg: boolean;
   setCurrentlyPlaying: Dispatch<SetStateAction<trackItem | undefined>>;
   currrentlyPlaying: trackItem | undefined;
@@ -137,4 +139,6 @@ export interface ISpotifyContext {
   setVolume: Dispatch<SetStateAction<number>>;
   lastVolume: number;
   setLastVolume: Dispatch<SetStateAction<number>>;
+  pictureInPictureCanvas: MutableRefObject<HTMLCanvasElement | undefined>;
+  videoRef: MutableRefObject<HTMLVideoElement | undefined>;
 }

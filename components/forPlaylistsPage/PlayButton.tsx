@@ -128,11 +128,13 @@ export function PlayButton({
 
         if (track || isSingle) {
           const uris: string[] = [];
-          allTracks.forEach((track) => {
-            if (track.uri) {
-              uris.push(track.uri);
-            }
-          });
+          if (!isSingle) {
+            allTracks.forEach((track) => {
+              if (track.uri) {
+                uris.push(track.uri);
+              }
+            });
+          }
           if (uris.length === 0 && track?.uri) {
             uris.push(track.uri);
           }

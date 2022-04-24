@@ -48,6 +48,7 @@ export default function useSpotifyPlayer({
   const { addToast } = useToast();
 
   useEffect(() => {
+    if (!user) return;
     const isPremium = user?.product === "premium";
 
     if (!isPremium) {
@@ -116,29 +117,12 @@ export default function useSpotifyPlayer({
           player?.play();
           setIsPlaying(true);
           setCurrentlyPlaying(nextTrack.track);
-
-          if ("mediaSession" in navigator && nextTrack.track) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-              title: nextTrack.track.name,
-              artist: nextTrack.track.artists?.[0]?.name,
-              album: nextTrack.track.album.name,
-              artwork: nextTrack.track.album.images?.map(
-                ({ url, width, height }) => {
-                  return {
-                    src: url,
-                    sizes: `${width}x${height}`,
-                    type: "",
-                  };
-                }
-              ),
-            });
-          }
         }
       };
 
       audioPlayer.current.previousTrack = function () {
         const player = audioPlayer.current;
-        function getpreViousrack() {
+        function getPreviousTrack() {
           const currentTrackIndex = player?.allTracks.findIndex(
             ({ audio }) => audio === player?.src
           );
@@ -158,49 +142,15 @@ export default function useSpotifyPlayer({
             previousTrackIndex--;
           }
 
-          if ("mediaSession" in navigator && previousTrack) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-              title: previousTrack.track?.name,
-              artist: previousTrack.track?.artists?.[0]?.name,
-              album: previousTrack.track?.album.name,
-              artwork: previousTrack.track?.album.images?.map(
-                ({ url, width, height }) => {
-                  return {
-                    src: url,
-                    sizes: `${width}x${height}`,
-                    type: "",
-                  };
-                }
-              ),
-            });
-          }
-
           return previousTrack;
         }
 
-        const previousTrack = getpreViousrack();
+        const previousTrack = getPreviousTrack();
 
         if (previousTrack?.audio && player) {
           player.src = previousTrack.audio;
           player?.play();
           setCurrentlyPlaying(previousTrack.track);
-
-          if ("mediaSession" in navigator && previousTrack.track) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-              title: previousTrack.track.name,
-              artist: previousTrack.track.artists?.[0]?.name,
-              album: previousTrack.track.album.name,
-              artwork: previousTrack.track.album.images?.map(
-                ({ url, width, height }) => {
-                  return {
-                    src: url,
-                    sizes: `${width}x${height}`,
-                    type: "",
-                  };
-                }
-              ),
-            });
-          }
         }
       };
 
@@ -268,24 +218,6 @@ export default function useSpotifyPlayer({
           setCurrentlyPlaying(trackWindow?.track_window.current_track);
           setCurrentlyPlayingPosition(trackWindow?.position);
           setCurrentlyPlayingDuration(trackWindow?.duration);
-
-          if ("mediaSession" in navigator) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-              title: trackWindow?.track_window.current_track.name,
-              artist: trackWindow?.track_window.current_track.artists[0]?.name,
-              album: trackWindow?.track_window.current_track.album.name,
-              artwork:
-                trackWindow?.track_window.current_track.album.images?.map(
-                  ({ url, width, height }) => {
-                    return {
-                      src: url,
-                      sizes: `${width}x${height}`,
-                      type: "",
-                    };
-                  }
-                ),
-            });
-          }
 
           spotifyPlayer.current?.on("authentication_error", () => {
             addToast({

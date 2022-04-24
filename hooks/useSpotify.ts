@@ -45,6 +45,10 @@ export default function useSpotify(): ISpotifyContext & {
     setVolume,
     lastVolume,
     setLastVolume,
+    pictureInPictureCanvas,
+    videoRef,
+    isPip,
+    setIsPip,
   } = useContext(SpotifyContext);
   const { user } = useAuth();
 
@@ -138,5 +142,9 @@ export default function useSpotify(): ISpotifyContext & {
     setVolume,
     lastVolume,
     setLastVolume,
+    pictureInPictureCanvas,
+    videoRef,
+    isPip,
+    setIsPip,
   };
 }

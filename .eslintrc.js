@@ -7,11 +7,9 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
     "plugin:jsx-a11y/recommended",
     "prettier",
     "next",
-    "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
   ],
@@ -23,13 +21,7 @@ module.exports = {
     ecmaVersion: 11,
     sourceType: "module",
   },
-  plugins: [
-    "react",
-    "jsx-a11y",
-    "react-hooks",
-    "prettier",
-    "@typescript-eslint",
-  ],
+  plugins: ["react", "jsx-a11y", "prettier", "@typescript-eslint"],
   rules: {
     "react/prop-types": 0,
     "prettier/prettier": ["error", { endOfLine: "auto" }],

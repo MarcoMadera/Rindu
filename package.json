@@ -11,8 +11,8 @@
     "test:ci": "jest --ci"
   },
   "dependencies": {
-    "html-entities": "^2.3.2",
-    "next": "12.1.0",
+    "html-entities": "^2.3.3",
+    "next": "12.1.5",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-virtualized": "^9.22.3",
@@ -20,27 +20,27 @@
     "spotify-web-api-node": "^5.0.2"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.16.2",
-    "@testing-library/react": "^12.1.3",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.1.1",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
-    "@types/react-virtualized": "^9.21.20",
+    "@types/react-virtualized": "^9.21.21",
     "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/spotify-web-api-node": "^5.0.7",
     "@types/spotify-web-playback-sdk": "^0.1.12",
-    "@typescript-eslint/eslint-plugin": "^5.12.1",
-    "@typescript-eslint/parser": "^5.12.1",
-    "eslint": "^8.10.0",
-    "eslint-config-next": "^12.1.4",
-    "eslint-config-prettier": "^8.4.0",
-    "eslint-plugin-jest": "^26.1.1",
+    "@typescript-eslint/eslint-plugin": "^5.20.0",
+    "@typescript-eslint/parser": "^5.20.0",
+    "eslint": "^8.14.0",
+    "eslint-config-next": "^12.1.5",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jest": "^26.1.5",
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.29.2",
-    "eslint-plugin-react-hooks": "^4.3.0",
-    "eslint-plugin-testing-library": "^5.2.1",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.4.0",
+    "eslint-plugin-testing-library": "^5.3.1",
     "jest": "^27.5.1",
-    "prettier": "^2.5.1",
-    "typescript": "^4.5.5"
+    "prettier": "^2.6.2",
+    "typescript": "^4.6.3"
   }
 }

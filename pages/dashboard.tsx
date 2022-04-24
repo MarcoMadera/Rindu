@@ -23,6 +23,113 @@ import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import FirstTrackContainer from "components/FirstTrackContainer";
 import useSpotify from "hooks/useSpotify";
 import { getYear } from "utils/getYear";
+import { takeCookie } from "utils/cookies";
+import { RefreshResponse } from "types/spotify";
+import { PlayButton } from "components/forPlaylistsPage/PlayButton";
+import { getMainColorFromImage } from "utils/getMainColorFromImage";
+import Link from "next/link";
+
+interface ISingleTrackCard {
+  track: SpotifyApi.TrackObjectFull;
+}
+
+function SingleTrackCard({ track }: ISingleTrackCard) {
+  const { setHeaderColor } = useHeader({
+    showOnFixed: false,
+    alwaysDisplayColor: true,
+  });
+  const [mainTrackColor, setMainTrackColor] = useState<string>();
+  return (
+    <Link href={`/track/${track.id}`}>
+      <a
+        onMouseEnter={() => {
+          setHeaderColor((prev) => {
+            return mainTrackColor ?? prev;
+          });
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={track.album.images[0].url}
+          alt={track.name}
+          id={`cover-image-${track.id}`}
+          onLoad={() => {
+            setMainTrackColor(
+              (prev) => getMainColorFromImage(`cover-image-${track.id}`) ?? prev
+            );
+          }}
+        />
+        <div>
+          <p>{track.name}</p>
+          <span>
+            <PlayButton isSingle track={track} centerSize={24} size={48} />
+          </span>
+        </div>
+        <style jsx>
+          {`
+            img {
+              width: 80px;
+              height: 80px;
+              border-radius: 4px 0 0 4px;
+              box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
+              background-color: rgba(255, 255, 255, 0.2);
+            }
+            span {
+              border-radius: 500px;
+              box-shadow: 0 8px 8px rgb(0 0 0 / 30%);
+              display: flex;
+              opacity: 0;
+              position: relative;
+              transition: all 0.3s ease;
+              margin-left: 8px;
+              flex-shrink: 0;
+            }
+            a {
+              display: flex;
+              background-color: rgba(255, 255, 255, 0.1);
+              border-radius: 4px;
+              height: 80px;
+              position: relative;
+              transition: background-color 0.3s ease;
+              text-decoration: none;
+            }
+            a:hover,
+            a:focus {
+              background-color: rgba(255, 255, 255, 0.2);
+            }
+            a:hover span,
+            a:focus span {
+              opacity: 1;
+            }
+            div {
+              display: flex;
+              color: #fff;
+              flex: 1;
+              justify-content: space-between;
+              padding: 0 16px;
+              align-items: center;
+            }
+            p {
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+              display: -webkit-box;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              white-space: normal;
+              word-break: break-word;
+              font-size: 1rem;
+              line-height: 1.5rem;
+              text-transform: none;
+              letter-spacing: normal;
+              margin: 0;
+            }
+          `}
+        </style>
+      </a>
+    </Link>
+  );
+}
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -30,6 +137,9 @@ interface DashboardProps {
   featuredPlaylists: SpotifyApi.ListOfFeaturedPlaylistsResponse | null;
   newReleases: SpotifyApi.ListOfNewReleasesResponse | null;
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
+  topTracks: SpotifyApi.UsersTopTracksResponse | null;
+  tracksRecommendations: SpotifyApi.TrackObjectFull[] | null;
+  tracksInLibrary: boolean[] | null;
 }
 
 const Dashboard: NextPage<DashboardProps> = ({
@@ -38,46 +148,36 @@ const Dashboard: NextPage<DashboardProps> = ({
   featuredPlaylists,
   newReleases,
   categories,
+  topTracks,
+  tracksRecommendations,
+  tracksInLibrary,
 }) => {
   const { setIsLogin, setUser } = useAuth();
-  const { setHeaderColor } = useHeader();
+  const { setHeaderColor } = useHeader({
+    showOnFixed: false,
+    alwaysDisplayColor: true,
+  });
   const router = useRouter();
-  const [tracksRecommendations, setTracksRecommendations] = useState<
-    SpotifyApi.TrackObjectFull[] | null
-  >([]);
-  const [tracksInLibrary, setTracksInLibrary] = useState<boolean[] | null>([]);
   const { setAllTracks } = useSpotify();
 
   useEffect(() => {
+    if (!user) return;
     setIsLogin(true);
 
     setUser(user);
-    getMyTopTracks(accessToken, 5).then((res) => {
-      const seed_tracks = res?.items?.map((item) => item.id) ?? [];
-      if (seed_tracks.length > 0) {
-        getRecommendations(seed_tracks, user?.country ?? "US", accessToken)
-          .then((res) => {
-            setTracksRecommendations(res);
-            setAllTracks(() => {
-              if (!res) return [];
-              return res?.map((track) => ({
-                ...track,
-                audio: track.preview_url,
-                corruptedTrack: false,
-              }));
-            });
-            return res;
-          })
-          .then((res) => {
-            const tracks = res?.map((item) => item.id) ?? [];
-            checkTracksInLibrary(tracks, accessToken ?? "").then(
-              setTracksInLibrary
-            );
-          });
-      }
+  }, [setIsLogin, setUser, user]);
+
+  useEffect(() => {
+    if (!tracksRecommendations) return;
+    setAllTracks(() => {
+      return tracksRecommendations?.map((track) => ({
+        ...track,
+        audio: track.preview_url,
+        corruptedTrack: false,
+      }));
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     setHeaderColor("#242424");
@@ -86,7 +186,18 @@ const Dashboard: NextPage<DashboardProps> = ({
   return (
     <>
       <main>
-        <header></header>
+        {topTracks && topTracks?.items.length > 0 ? (
+          <>
+            <h2>Esto te encanta</h2>
+            <section className="top-tracks">
+              {topTracks &&
+                topTracks?.items?.map((track, i) => {
+                  if (i >= 9) return null;
+                  return <SingleTrackCard key={track.id} track={track} />;
+                })}
+            </section>
+          </>
+        ) : null}
         {featuredPlaylists &&
         featuredPlaylists?.playlists?.items?.length > 0 ? (
           <>
@@ -206,6 +317,11 @@ const Dashboard: NextPage<DashboardProps> = ({
           grid-gap: 20px;
           margin: 10px 0 30px;
         }
+        .top-tracks {
+          grid-gap: 16px 24px;
+          display: grid;
+          grid-template: auto/repeat(auto-fill, minmax(max(270px, 25%), 1fr));
+        }
         h1 {
           color: #fff;
           font-weight: bold;
@@ -231,6 +347,8 @@ const Dashboard: NextPage<DashboardProps> = ({
           line-height: 45px;
           text-transform: none;
           margin: 0;
+          z-index: 1;
+          position: relative;
         }
       `}</style>
     </>
@@ -250,46 +368,83 @@ export async function getServerSideProps({
   props: DashboardProps;
 }> {
   const cookies = req?.headers?.cookie ?? "";
+  let tokens: Record<string, string | null> | RefreshResponse = {
+    accessToken: takeCookie(ACCESS_TOKEN_COOKIE, cookies),
+    refreshToken: takeCookie(REFRESH_TOKEN_COOKIE, cookies),
+    expiresIn: takeCookie(EXPIRE_TOKEN_COOKIE, cookies),
+  };
 
   if (query.code) {
-    const tokens = await getAuthorizationByCode(query.code);
-    if (!tokens) {
+    const authorization = await getAuthorizationByCode(query.code);
+    if (authorization) {
+      tokens = authorization;
+    }
+    if (!tokens.accessToken) {
       serverRedirect(res, "/");
     }
-    if (tokens) {
-      const expireCookieDate = new Date();
-      expireCookieDate.setDate(expireCookieDate.getDate() + 30);
-      res.setHeader("Set-Cookie", [
-        `${ACCESS_TOKEN_COOKIE}=${
-          tokens.accessToken
-        }; Path=/; expires=${expireCookieDate.toUTCString()};`,
-        `${REFRESH_TOKEN_COOKIE}=${
-          tokens.refreshToken
-        }; Path=/; expires=${expireCookieDate.toUTCString()};`,
-        `${EXPIRE_TOKEN_COOKIE}=${
-          tokens.expiresIn
-        }; Path=/; expires=${expireCookieDate.toUTCString()};`,
-      ]);
-    }
+
+    const expireCookieDate = new Date();
+    expireCookieDate.setDate(expireCookieDate.getDate() + 30);
+    res.setHeader("Set-Cookie", [
+      `${ACCESS_TOKEN_COOKIE}=${
+        tokens.accessToken
+      }; Path=/; expires=${expireCookieDate.toUTCString()};`,
+      `${REFRESH_TOKEN_COOKIE}=${
+        tokens.refreshToken
+      }; Path=/; expires=${expireCookieDate.toUTCString()};`,
+      `${EXPIRE_TOKEN_COOKIE}=${
+        tokens.expiresIn
+      }; Path=/; expires=${expireCookieDate.toUTCString()};`,
+    ]);
   }
 
-  const { accessToken, user } = (await getAuth(res, cookies)) || {};
-  const featuredPlaylists = await getFeaturedPlaylists(
+  const { accessToken, user } = (await getAuth(res, cookies, tokens)) || {};
+
+  const featuredPlaylistsProm = getFeaturedPlaylists(
     user?.country ?? "US",
     5,
     accessToken,
     cookies
   );
-  const newReleases = await getNewReleases(
+  const newReleasesProm = getNewReleases(
     user?.country ?? "US",
     5,
     accessToken,
     cookies
   );
 
-  const categories = await getCategories(
+  const categoriesProm = getCategories(
     user?.country ?? "US",
     5,
+    accessToken,
+    cookies
+  );
+  const topTracksProm = getMyTopTracks(accessToken, 10, "short_term", cookies);
+
+  const [featuredPlaylists, newReleases, categories, topTracks] =
+    await Promise.allSettled([
+      featuredPlaylistsProm,
+      newReleasesProm,
+      categoriesProm,
+      topTracksProm,
+    ]);
+
+  const seed_tracks =
+    topTracks.status === "fulfilled"
+      ? topTracks.value?.items?.map((item) => item.id) ?? []
+      : [];
+
+  const tracksRecommendations = await getRecommendations(
+    seed_tracks.slice(0, 5),
+    user?.country ?? "US",
+    accessToken
+  );
+
+  const recommendedTracksIds =
+    tracksRecommendations?.map((item) => item.id) || [];
+
+  const tracksInLibrary = await checkTracksInLibrary(
+    recommendedTracksIds,
     accessToken,
     cookies
   );
@@ -298,9 +453,16 @@ export async function getServerSideProps({
     props: {
       user: user || null,
       accessToken: accessToken ?? null,
-      featuredPlaylists,
-      newReleases,
-      categories,
+      featuredPlaylists:
+        featuredPlaylists.status === "fulfilled"
+          ? featuredPlaylists.value
+          : null,
+      newReleases:
+        newReleases.status === "fulfilled" ? newReleases.value : null,
+      categories: categories.status === "fulfilled" ? categories.value : null,
+      topTracks: topTracks.status === "fulfilled" ? topTracks.value : null,
+      tracksRecommendations,
+      tracksInLibrary,
     },
   };
 }

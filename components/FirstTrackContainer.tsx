@@ -27,7 +27,7 @@ export default function FirstTrackContainer({
       <Link href={`/track/${track.id}`}>
         <a className="firstTrack">
           {isPlayable ? (
-            <PlayButton size={60} centerSize={24} track={track} isSingle />
+            <PlayButton size={60} centerSize={24} track={track} />
           ) : null}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -42,22 +42,24 @@ export default function FirstTrackContainer({
             }}
           />
           <h3>{track.name}</h3>
-          <span>
-            {track.artists?.map((artist, i) => {
-              return (
-                <Fragment key={artist.id}>
-                  <Link href={`/artist/${artist.id}`}>
-                    <a className="link">{artist.name}</a>
-                  </Link>
-                  {i !== (track.artists?.length && track.artists?.length - 1)
-                    ? ", "
-                    : null}
-                </Fragment>
-              );
-            })}
-          </span>
         </a>
       </Link>
+      <div className="artists">
+        <span>
+          {track.artists?.map((artist, i) => {
+            return (
+              <Fragment key={artist.id}>
+                <Link href={`/artist/${artist.id}`}>
+                  <a className="link">{artist.name}</a>
+                </Link>
+                {i !== (track.artists?.length && track.artists?.length - 1)
+                  ? ", "
+                  : null}
+              </Fragment>
+            );
+          })}
+        </span>
+      </div>
       <style jsx>{`
         img {
           box-shadow: 0 4px 60px rgb(0 0 0 / 50%);
@@ -96,6 +98,15 @@ export default function FirstTrackContainer({
           width: 100%;
           height: 260px;
         }
+        .artists {
+          position: absolute;
+          z-index: 20;
+          width: 100%;
+          bottom: 50px;
+          left: 20px;
+          max-width: 80%;
+          width: fit-content;
+        }
         .firstTrack-Container span {
           -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;
@@ -107,6 +118,7 @@ export default function FirstTrackContainer({
           text-overflow: ellipsis;
           white-space: unset;
           max-width: 80%;
+          display: inline;
         }
         .firstTrack-Container h3 {
           font-size: 32px;

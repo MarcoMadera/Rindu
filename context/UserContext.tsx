@@ -2,6 +2,8 @@ import { useRouter } from "next/router";
 import {
   createContext,
   Dispatch,
+  ReactElement,
+  ReactNode,
   SetStateAction,
   useEffect,
   useState,
@@ -20,7 +22,11 @@ export interface Context {
 const UserContext = createContext<Context>(null!);
 export default UserContext;
 
-export const UserContextProvider: React.FC = ({ children }) => {
+export function UserContextProvider({
+  children,
+}: {
+  children: ReactNode;
+}): ReactElement {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [user, setUser] = useState<SpotifyApi.UserObjectPrivate | null>(null);
@@ -45,4 +51,4 @@ export const UserContextProvider: React.FC = ({ children }) => {
       {children}
     </UserContext.Provider>
   );
-};
+}

@@ -11,10 +11,14 @@ import {
   REFRESH_TOKEN_COOKIE,
 } from "utils/constants";
 import useAuth from "hooks/useAuth";
-import { useEffect } from "react";
+import { ReactElement, ReactNode, useEffect } from "react";
 import { refreshAccessToken } from "utils/spotifyCalls/refreshAccessToken";
 
-const Layout: React.FC = ({ children }) => {
+export default function Layout({
+  children,
+}: {
+  children: ReactNode;
+}): ReactElement {
   const router = useRouter();
   const { user, setAccessToken } = useAuth();
 
@@ -66,6 +70,4 @@ const Layout: React.FC = ({ children }) => {
       {router.asPath === "/" ? <Footer /> : <SpotifyPlayer />}
     </>
   );
-};
-
-export default Layout;
+}

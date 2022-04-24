@@ -21,9 +21,9 @@ export default function Header({
   const router = useRouter();
   const appRef = useRef<HTMLDivElement>();
   const { user } = useAuth();
-  const { headerColor, element, displayOnFixed } = useHeader();
+  const { headerColor, element, displayOnFixed, alwaysDisplayColor } =
+    useHeader();
   const isPremium = user?.product === "premium";
-
   useEffect(() => {
     const app = appRef.current;
     function onScroll() {
@@ -34,7 +34,9 @@ export default function Header({
     }
     router.events.on("routeChangeComplete", () => {
       document.getElementsByClassName("app")?.[0]?.scrollTo(0, 0);
-      setShowFixed(false);
+      if (!alwaysDisplayColor) {
+        setShowFixed(false);
+      }
     });
 
     app?.addEventListener("scroll", onScroll);
@@ -46,7 +48,7 @@ export default function Header({
       });
       app?.removeEventListener("scroll", onScroll);
     };
-  }, [showFixed, router]);
+  }, [showFixed, router, alwaysDisplayColor]);
 
   return (
     <div
@@ -84,8 +86,18 @@ export default function Header({
           )}
         </header>
       </div>
+      {alwaysDisplayColor && <div className="bg-12"></div>}
       {children}
       <style jsx>{`
+        .bg-12 {
+          background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0, #121212 100%),
+            url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
+          height: 232px;
+          position: absolute;
+          width: 100%;
+          background-color: ${headerColor ?? "transparent"};
+          transition: background-color 0.25s;
+        }
         .app {
           overflow-y: overlay;
           height: calc(100vh - 90px);
@@ -141,7 +153,7 @@ export default function Header({
         }
         div.background {
           background-color: ${headerColor ?? "#797979"};
-          opacity: ${showFixed ? 1 : 0};
+          opacity: ${showFixed || alwaysDisplayColor ? 1 : 0};
           bottom: 0;
           left: 0;
           overflow: hidden;
