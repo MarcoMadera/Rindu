@@ -49,6 +49,8 @@ export default function useSpotify(): ISpotifyContext & {
     videoRef,
     isPip,
     setIsPip,
+    showHamburguerMenu,
+    setShowHamburguerMenu,
   } = useContext(SpotifyContext);
   const { user } = useAuth();
 
@@ -146,5 +148,7 @@ export default function useSpotify(): ISpotifyContext & {
     videoRef,
     isPip,
     setIsPip,
+    showHamburguerMenu,
+    setShowHamburguerMenu,
   };
 }

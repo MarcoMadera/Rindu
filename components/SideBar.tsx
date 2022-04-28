@@ -224,6 +224,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
     isShowingSideBarImg,
     setIsShowingSideBarImg,
     playedSource,
+    showHamburguerMenu,
   } = useSpotify();
   const { accessToken } = useAuth();
   const router = useRouter();
@@ -385,6 +386,11 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
             height: 100%;
             display: grid;
             grid-template-rows: 86px 130px minmax(0, 120px) minmax(0, 1fr) min-content;
+          }
+          @media (max-width: 1000px) {
+            nav {
+              display: ${showHamburguerMenu ? "grid" : "none"};
+            }
           }
           .section-2 .green {
             color: #1db954;

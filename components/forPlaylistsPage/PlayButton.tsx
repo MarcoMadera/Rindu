@@ -18,11 +18,13 @@ export function PlayButton({
   centerSize,
   track,
   isSingle,
+  uri,
 }: {
   size: number;
   centerSize: number;
   track?: SpotifyApi.TrackObjectFull;
   isSingle?: boolean;
+  uri?: string;
 }): ReactElement | null {
   const {
     isPlaying,
@@ -64,7 +66,7 @@ export function PlayButton({
       allTracks?.[0]?.artists?.[0]?.uri ===
         currrentlyPlaying?.artists?.[0]?.uri;
 
-    if (isTheSameArtistPlaying && isPlaying) {
+    if (isTheSameArtistPlaying && isPlaying && !uri) {
       setIsThisArtistPlaying(true);
     } else {
       setIsThisArtistPlaying(false);
@@ -72,7 +74,8 @@ export function PlayButton({
 
     const isTheSamePlaylistPlaying =
       playlistPlayingId &&
-      playlistPlayingId === playlistDetails?.id &&
+      (playlistPlayingId === playlistDetails?.id ||
+        playlistPlayingId === uri) &&
       !isSingle;
     if (isTheSamePlaylistPlaying && isPlaying) {
       setIsThisPlaylistPlaying(true);
@@ -90,6 +93,7 @@ export function PlayButton({
     router.asPath,
     allTracks,
     isSingle,
+    uri,
   ]);
 
   const getCurrentState = useCallback(async () => {
@@ -108,7 +112,7 @@ export function PlayButton({
   const handleClick = useCallback(
     async (e: MouseEvent) => {
       e.preventDefault();
-      if (!accessToken || (!playlistDetails && !track) || !user) {
+      if (!accessToken || (!playlistDetails && !track && !uri) || !user) {
         return;
       }
 
@@ -121,7 +125,7 @@ export function PlayButton({
           !track);
 
       if (isPremium && deviceId) {
-        if (playbackRefersToThisPlaylist) {
+        if (playbackRefersToThisPlaylist && !uri) {
           isPlaying ? player?.pause() : (player as Spotify.Player)?.resume();
           return;
         }
@@ -165,13 +169,13 @@ export function PlayButton({
           accessToken,
           deviceId,
           {
-            context_uri: playlistDetails?.uri,
+            context_uri: uri ?? playlistDetails?.uri,
           },
           setAccessToken
         ).then(() => {
-          if (playlistDetails) {
-            setPlaylistPlayingId(playlistDetails.id);
-            const source = playlistDetails?.uri;
+          if (playlistDetails || uri) {
+            setPlaylistPlayingId(uri ?? playlistDetails?.id);
+            const source = uri ?? playlistDetails?.uri;
             const isCollection = source?.split(":")?.[3];
             setPlayedSource(
               isCollection
@@ -227,6 +231,7 @@ export function PlayButton({
       setPlaylistPlayingId,
       track,
       user,
+      uri,
     ]
   );
 
@@ -240,7 +245,10 @@ export function PlayButton({
       >
         {(isThisTrackPlaying && !isThisPlaylistPlaying) ||
         isThisArtistPlaying ||
-        (isThisPlaylistPlaying && !isThisTrackPlaying && !track) ? (
+        (isThisPlaylistPlaying &&
+          !isThisArtistPlaying &&
+          !isThisTrackPlaying &&
+          !track) ? (
           <Pause fill="#fff" width={centerSize} height={centerSize} />
         ) : (
           <Play fill="#fff" width={centerSize} height={centerSize} />
@@ -258,6 +266,7 @@ export function PlayButton({
           border-radius: 50%;
           min-width: ${size}px;
           z-index: 1;
+          box-shadow: 0 8px 8px rgb(0 0 0 / 30%);
         }
         .play-Button:focus,
         .play-Button:hover {

@@ -128,7 +128,13 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
   return (
     <main>
       <PlaylistPageHeader
-        type={HeaderType.album}
+        type={
+          album?.album_type === "single"
+            ? HeaderType.single
+            : album?.album_type === "compilation"
+            ? HeaderType.compilation
+            : HeaderType.album
+        }
         title={album?.name ?? ""}
         coverImg={
           album?.images?.[0]?.url ??

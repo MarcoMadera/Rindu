@@ -30,7 +30,7 @@ export function HeaderContextProvider({
   const [displayOnFixed, setDisplayOnFixed] = useState<boolean>(false);
   const [alwaysDisplayColor, setAlwaysDisplayColor] = useState<boolean>(false);
   const [element, setElement] = useState<ReactElement | null>(null);
-  const [headerColor, setHeaderColor] = useState<string>("#181818");
+  const [headerColor, setHeaderColor] = useState<string>("#7a7a7a");
   return (
     <HeaderContext.Provider
       value={{

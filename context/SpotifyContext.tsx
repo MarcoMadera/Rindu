@@ -44,6 +44,7 @@ export function SpotifyContextProvider({
   const [volume, setVolume] = useState<number>(1);
   const [lastVolume, setLastVolume] = useState<number>(1);
   const [isPip, setIsPip] = useState(false);
+  const [showHamburguerMenu, setShowHamburguerMenu] = useState(false);
   const pictureInPictureCanvas = useRef<HTMLCanvasElement>();
   const videoRef = useRef<HTMLVideoElement>();
 
@@ -200,6 +201,8 @@ export function SpotifyContextProvider({
         videoRef,
         isPip,
         setIsPip,
+        showHamburguerMenu,
+        setShowHamburguerMenu,
       }}
     >
       {children}

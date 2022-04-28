@@ -25,6 +25,7 @@ import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHead
 import { HeaderType } from "types/spotify";
 import { SITE_URL } from "utils/constants";
 import { getYear } from "utils/getYear";
+import Carousel from "components/Carousel";
 
 interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
@@ -235,76 +236,64 @@ export default function ArtistPage({
           {showMoreTopTracks ? "MOSTRAR MENOS" : "MOSTRAR MÁS"}
         </button>
         {singleAlbums && singleAlbums?.items?.length > 0 ? (
-          <>
-            <h3>Albums</h3>
-            <section className="playlists">
-              {singleAlbums?.items?.map(
-                ({ images, name, id, artists, release_date }) => {
-                  const artistNames = artists.map((artist) => artist.name);
-                  const subTitle = release_date
-                    ? `${getYear(release_date)} · Album`
-                    : artistNames.join(", ");
-                  return (
-                    <PresentationCard
-                      type="album"
-                      key={id}
-                      images={images}
-                      title={name}
-                      subTitle={subTitle}
-                      id={id}
-                    />
-                  );
-                }
-              )}
-            </section>
-          </>
-        ) : null}
-        {appearAlbums && appearAlbums?.items?.length > 0 ? (
-          <>
-            <h3>Aparece en</h3>
-            <section className="playlists">
-              {appearAlbums?.items?.map(
-                ({ images, name, id, artists, release_date }) => {
-                  const artistNames = artists.map((artist) => artist.name);
-                  const subTitle = release_date
-                    ? `${getYear(release_date)} · Album`
-                    : artistNames.join(", ");
-                  return (
-                    <PresentationCard
-                      type="album"
-                      key={id}
-                      images={images}
-                      title={name}
-                      subTitle={subTitle}
-                      id={id}
-                    />
-                  );
-                }
-              )}
-            </section>
-          </>
-        ) : null}
-        {relatedArtists && relatedArtists?.artists?.length > 0 ? (
-          <>
-            <h3>Te pueden gustar</h3>
-            <section className="playlists">
-              {relatedArtists?.artists?.map(({ images, name, id }, i) => {
-                if (i > 4) {
-                  return;
-                }
+          <Carousel title={"Albums"} gap={24}>
+            {singleAlbums?.items?.map(
+              ({ images, name, id, artists, release_date }) => {
+                const artistNames = artists.map((artist) => artist.name);
+                const subTitle = release_date
+                  ? `${getYear(release_date)} · Album`
+                  : artistNames.join(", ");
                 return (
                   <PresentationCard
-                    type="artist"
+                    type="album"
                     key={id}
                     images={images}
                     title={name}
-                    subTitle={"Artist"}
+                    subTitle={subTitle}
                     id={id}
                   />
                 );
-              })}
-            </section>
-          </>
+              }
+            )}
+          </Carousel>
+        ) : null}
+        {appearAlbums && appearAlbums?.items?.length > 0 ? (
+          <Carousel title={"Aparece en"} gap={24}>
+            {appearAlbums?.items?.map(
+              ({ images, name, id, artists, release_date }) => {
+                const artistNames = artists.map((artist) => artist.name);
+                const subTitle = release_date
+                  ? `${getYear(release_date)} · Album`
+                  : artistNames.join(", ");
+                return (
+                  <PresentationCard
+                    type="album"
+                    key={id}
+                    images={images}
+                    title={name}
+                    subTitle={subTitle}
+                    id={id}
+                  />
+                );
+              }
+            )}
+          </Carousel>
+        ) : null}
+        {relatedArtists && relatedArtists?.artists?.length > 0 ? (
+          <Carousel title={"Te pueden gustar"} gap={24}>
+            {relatedArtists?.artists?.map(({ images, name, id }) => {
+              return (
+                <PresentationCard
+                  type="artist"
+                  key={id}
+                  images={images}
+                  title={name}
+                  subTitle={"Artist"}
+                  id={id}
+                />
+              );
+            })}
+          </Carousel>
         ) : null}
       </div>
       <style jsx>{`
@@ -390,13 +379,6 @@ export default function ArtistPage({
           margin: 32px;
           padding-bottom: 30px;
           position: relative;
-        }
-        .playlists {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-          grid-gap: 24px;
-          margin: 20px 0 50px 0;
-          justify-content: space-between;
         }
         .topTracks {
           display: flex;

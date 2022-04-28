@@ -41,7 +41,7 @@ export function getMainColorFromImage(imageId: string): string | undefined {
   }
 
   if (luma < 30) {
-    return "#181818";
+    return "#7a7a7a";
   }
   const hex = rgbToHex(rgb);
   return hex;

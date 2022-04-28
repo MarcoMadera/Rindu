@@ -20,6 +20,8 @@ export enum HeaderType {
   artist = "ARTIST",
   profile = "PROFILE",
   podcast = "PODCAST",
+  single = "SINGLE",
+  compilation = "COMPILATION",
   episode = "EPISODE",
 }
 
@@ -141,4 +143,6 @@ export interface ISpotifyContext {
   setLastVolume: Dispatch<SetStateAction<number>>;
   pictureInPictureCanvas: MutableRefObject<HTMLCanvasElement | undefined>;
   videoRef: MutableRefObject<HTMLVideoElement | undefined>;
+  showHamburguerMenu: boolean;
+  setShowHamburguerMenu: Dispatch<SetStateAction<boolean>>;
 }

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import PresentationCard from "components/forDashboardPage/PlaylistCard";
 import useAuth from "hooks/useAuth";
 import {
@@ -22,114 +22,11 @@ import { getCategories } from "utils/spotifyCalls/getCategories";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import FirstTrackContainer from "components/FirstTrackContainer";
 import useSpotify from "hooks/useSpotify";
-import { getYear } from "utils/getYear";
 import { takeCookie } from "utils/cookies";
 import { RefreshResponse } from "types/spotify";
-import { PlayButton } from "components/forPlaylistsPage/PlayButton";
-import { getMainColorFromImage } from "utils/getMainColorFromImage";
-import Link from "next/link";
-
-interface ISingleTrackCard {
-  track: SpotifyApi.TrackObjectFull;
-}
-
-function SingleTrackCard({ track }: ISingleTrackCard) {
-  const { setHeaderColor } = useHeader({
-    showOnFixed: false,
-    alwaysDisplayColor: true,
-  });
-  const [mainTrackColor, setMainTrackColor] = useState<string>();
-  return (
-    <Link href={`/track/${track.id}`}>
-      <a
-        onMouseEnter={() => {
-          setHeaderColor((prev) => {
-            return mainTrackColor ?? prev;
-          });
-        }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={track.album.images[0].url}
-          alt={track.name}
-          id={`cover-image-${track.id}`}
-          onLoad={() => {
-            setMainTrackColor(
-              (prev) => getMainColorFromImage(`cover-image-${track.id}`) ?? prev
-            );
-          }}
-        />
-        <div>
-          <p>{track.name}</p>
-          <span>
-            <PlayButton isSingle track={track} centerSize={24} size={48} />
-          </span>
-        </div>
-        <style jsx>
-          {`
-            img {
-              width: 80px;
-              height: 80px;
-              border-radius: 4px 0 0 4px;
-              box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
-              background-color: rgba(255, 255, 255, 0.2);
-            }
-            span {
-              border-radius: 500px;
-              box-shadow: 0 8px 8px rgb(0 0 0 / 30%);
-              display: flex;
-              opacity: 0;
-              position: relative;
-              transition: all 0.3s ease;
-              margin-left: 8px;
-              flex-shrink: 0;
-            }
-            a {
-              display: flex;
-              background-color: rgba(255, 255, 255, 0.1);
-              border-radius: 4px;
-              height: 80px;
-              position: relative;
-              transition: background-color 0.3s ease;
-              text-decoration: none;
-            }
-            a:hover,
-            a:focus {
-              background-color: rgba(255, 255, 255, 0.2);
-            }
-            a:hover span,
-            a:focus span {
-              opacity: 1;
-            }
-            div {
-              display: flex;
-              color: #fff;
-              flex: 1;
-              justify-content: space-between;
-              padding: 0 16px;
-              align-items: center;
-            }
-            p {
-              -webkit-line-clamp: 2;
-              -webkit-box-orient: vertical;
-              display: -webkit-box;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              white-space: normal;
-              word-break: break-word;
-              font-size: 1rem;
-              line-height: 1.5rem;
-              text-transform: none;
-              letter-spacing: normal;
-              margin: 0;
-            }
-          `}
-        </style>
-      </a>
-    </Link>
-  );
-}
+import SingleTrackCard from "components/SingleTrackCard";
+import Carousel from "components/Carousel";
+import { capitalizeFirstLetter } from "utils/capitalizeFirstLetter";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -200,12 +97,12 @@ const Dashboard: NextPage<DashboardProps> = ({
         ) : null}
         {featuredPlaylists &&
         featuredPlaylists?.playlists?.items?.length > 0 ? (
-          <>
-            <h2>
-              {featuredPlaylists.message ?? "Disfruta de estás playlists"}
-            </h2>
-            <section className="playlists">
-              {featuredPlaylists.playlists?.items?.map(
+          <Carousel
+            title={featuredPlaylists.message ?? "Disfruta de estás playlists"}
+            gap={24}
+          >
+            {featuredPlaylists &&
+              featuredPlaylists.playlists?.items?.map(
                 ({ images, name, description, id, owner }) => {
                   return (
                     <PresentationCard
@@ -214,42 +111,38 @@ const Dashboard: NextPage<DashboardProps> = ({
                       images={images}
                       title={name}
                       subTitle={
-                        decode(description) || `De ${owner.display_name}`
+                        decode(description) || `De ${owner?.display_name ?? ""}`
                       }
                       id={id}
                     />
                   );
                 }
               )}
-            </section>
-          </>
+          </Carousel>
         ) : null}
         {newReleases && newReleases.albums?.items?.length > 0 ? (
-          <>
-            <h2>{newReleases.message ?? "Lo más nuevo"}</h2>
-            <section className="playlists">
-              {newReleases.albums?.items?.map(
-                ({ images, name, id, artists, release_date }) => {
-                  const artistNames = artists.map((artist) => artist.name);
-                  const subTitle = release_date
-                    ? `Album · ${getYear(release_date)} · ${artistNames.join(
-                        ", "
-                      )}`
-                    : artistNames.join(", ");
-                  return (
-                    <PresentationCard
-                      type="album"
-                      key={id}
-                      images={images}
-                      title={name}
-                      subTitle={subTitle}
-                      id={id}
-                    />
-                  );
-                }
-              )}
-            </section>
-          </>
+          <Carousel title={newReleases.message ?? "Lo más nuevo"} gap={24}>
+            {newReleases.albums?.items?.map(
+              ({ images, name, id, artists, release_date, album_type }) => {
+                const artistNames = artists.map((artist) => artist.name);
+                const subTitle = release_date
+                  ? `${capitalizeFirstLetter(album_type)} · ${artistNames.join(
+                      ", "
+                    )}`
+                  : artistNames.join(", ");
+                return (
+                  <PresentationCard
+                    type="album"
+                    key={id}
+                    images={images}
+                    title={name}
+                    subTitle={subTitle}
+                    id={id}
+                  />
+                );
+              }
+            )}
+          </Carousel>
         ) : null}
         {tracksRecommendations && tracksRecommendations?.length > 0 && (
           <>
@@ -287,8 +180,7 @@ const Dashboard: NextPage<DashboardProps> = ({
             </section>
           </>
         )}
-        <h2>Categorias</h2>
-        <section className="playlists">
+        <Carousel title={"Categorias"} gap={24}>
           {categories?.items.map(({ name, id, icons }) => {
             return (
               <PresentationCard
@@ -301,7 +193,7 @@ const Dashboard: NextPage<DashboardProps> = ({
               />
             );
           })}
-        </section>
+        </Carousel>
       </main>
 
       <style jsx>{`
@@ -317,6 +209,11 @@ const Dashboard: NextPage<DashboardProps> = ({
           grid-gap: 20px;
           margin: 10px 0 30px;
         }
+        @media (max-width: 1000px) {
+          .tracks {
+            grid-template-columns: 100%;
+          }
+        }
         .top-tracks {
           grid-gap: 16px 24px;
           display: grid;
@@ -328,11 +225,12 @@ const Dashboard: NextPage<DashboardProps> = ({
           margin: 0;
         }
         section {
-          display: grid;
+          display: flex;
           grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
           grid-gap: 24px;
           margin: 20px 0 50px 0;
           justify-content: space-between;
+          transform 400ms ease-in;
         }
         h2 {
           color: #fff;
@@ -402,20 +300,20 @@ export async function getServerSideProps({
 
   const featuredPlaylistsProm = getFeaturedPlaylists(
     user?.country ?? "US",
-    5,
+    10,
     accessToken,
     cookies
   );
   const newReleasesProm = getNewReleases(
     user?.country ?? "US",
-    5,
+    10,
     accessToken,
     cookies
   );
 
   const categoriesProm = getCategories(
     user?.country ?? "US",
-    5,
+    30,
     accessToken,
     cookies
   );

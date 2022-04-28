@@ -85,12 +85,12 @@ export default function FirstTrackContainer({
           width: 100%;
           height: 100%;
           z-index: 1;
-          border-radius: 4px;
-          background-color: ${backgroundColor || containerColor || "#181818"};
+          border-radius: 16px;
+          background-color: ${backgroundColor || containerColor || "#7a7a7a"};
         }
         .firstTrack-Container {
-          background: ${backgroundColor || containerColor || "#181818"};
-          border-radius: 4px;
+          background: ${backgroundColor || containerColor || "#7a7a7a"};
+          border-radius: 16px;
           flex: 1;
           isolation: isolate;
           position: relative;

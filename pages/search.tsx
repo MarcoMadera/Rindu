@@ -23,6 +23,7 @@ import FirstTrackContainer from "components/FirstTrackContainer";
 import { search } from "utils/spotifyCalls/search";
 import useSpotify from "hooks/useSpotify";
 import { getYear } from "utils/getYear";
+import Carousel from "components/Carousel";
 
 interface InputElementProps {
   setData: Dispatch<SetStateAction<SpotifyApi.SearchResponse | null>>;
@@ -270,7 +271,7 @@ export default function SearchPage({
                 <FirstTrackContainer
                   track={data.tracks.items[0]}
                   preview={data.tracks.items[0].preview_url}
-                  backgroundColor={"#181818"}
+                  backgroundColor={"#7a7a7a"}
                 />
 
                 <div className="trackSearch">
@@ -299,6 +300,22 @@ export default function SearchPage({
                   })}
                 </div>
               </section>
+              <Carousel gap={24}>
+                {data.tracks?.items.slice(5)?.map((track) => {
+                  return (
+                    <PresentationCard
+                      type="track"
+                      key={track.id}
+                      track={track}
+                      images={track.album.images}
+                      title={track.name}
+                      subTitle={track.artists[0].name}
+                      id={track.id}
+                      isSingle
+                    />
+                  );
+                })}
+              </Carousel>
             </>
           ) : null}
           {data.playlists?.items && data.playlists?.items?.length > 0 ? (

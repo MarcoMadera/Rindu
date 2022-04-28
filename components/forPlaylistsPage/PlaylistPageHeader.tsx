@@ -17,7 +17,11 @@ interface PageHeaderDefault {
 
 type HeaderProps =
   | (PageHeaderDefault & {
-      type: HeaderType.album | never;
+      type:
+        | HeaderType.album
+        | HeaderType.single
+        | HeaderType.compilation
+        | never;
       artists: SpotifyApi.ArtistObjectSimplified[];
       release_date: string;
       totalTracks: number;
@@ -117,6 +121,10 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
   totalPublicPlaylists,
 }) => {
   const { setHeaderColor } = useHeader();
+  const isAlbumVariant =
+    type === HeaderType.album ||
+    type === HeaderType.single ||
+    type === HeaderType.compilation;
 
   return (
     <ContentHeader>
@@ -141,7 +149,7 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
         <p className="description">{decode(description)}</p>
         <div>
           <p>
-            {type === HeaderType.song || type === HeaderType.album ? (
+            {type === HeaderType.song || isAlbumVariant ? (
               <span className="trackArtists">
                 {artists &&
                   artists?.map((artist, i) => {
@@ -180,8 +188,7 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
                 {formatNumber(totalFollowers ?? 0)} followers
               </span>
             ) : null}
-            {(type === HeaderType.song || type === HeaderType.album) &&
-            release_date ? (
+            {(type === HeaderType.song || isAlbumVariant) && release_date ? (
               <>
                 <span>&nbsp;&middot; {getYear(release_date)}</span>
                 {type === HeaderType.song && duration_s ? (

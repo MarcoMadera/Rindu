@@ -5,7 +5,7 @@ interface CardContentProps {
   images?: SpotifyApi.ImageObject[];
   title: string;
   subTitle: string;
-  type: "playlist" | "album" | "artist" | "user" | "show" | "genre";
+  type: "playlist" | "album" | "artist" | "user" | "show" | "genre" | "track";
 }
 export const CardContent: React.FC<CardContentProps> = ({
   type,
@@ -59,6 +59,7 @@ export const CardContent: React.FC<CardContentProps> = ({
         article {
           background-color: #181818;
           width: 100%;
+          min-width: 100%;
           height: 100%;
           text-align: left;
           border-radius: 4px;
@@ -67,13 +68,14 @@ export const CardContent: React.FC<CardContentProps> = ({
           padding: 16px;
           position: relative;
           transition: background-color 0.3s ease;
+          max-width: min-content;
         }
         article:hover {
           background-color: #282828;
         }
         img {
-          width: 160px;
-          height: 160px;
+          width: 100%;
+          min-width: 160px;
           margin-bottom: 16px;
           border-radius: ${type === "artist" || type === "user"
             ? "50%"
@@ -81,6 +83,7 @@ export const CardContent: React.FC<CardContentProps> = ({
           box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
           object-fit: cover;
           object-position: center center;
+          aspect-ratio: 1;
         }
       `}</style>
     </article>

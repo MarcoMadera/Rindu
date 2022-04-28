@@ -11,6 +11,7 @@ import UserConfig from "./navbar/UserConfig";
 import RouterButtons from "./RouterButtons";
 import { useRouter } from "next/router";
 import useHeader from "hooks/useHeader";
+import useSpotify from "hooks/useSpotify";
 
 export default function Header({
   children,
@@ -24,6 +25,8 @@ export default function Header({
   const { headerColor, element, displayOnFixed, alwaysDisplayColor } =
     useHeader();
   const isPremium = user?.product === "premium";
+  const { setShowHamburguerMenu } = useSpotify();
+
   useEffect(() => {
     const app = appRef.current;
     function onScroll() {
@@ -61,6 +64,16 @@ export default function Header({
           <div className="background">
             <div className="noise"></div>
           </div>
+          <button
+            onClick={() => {
+              setShowHamburguerMenu((prev) => !prev);
+            }}
+            className="hamburguerMenu"
+          >
+            <div className="hamburguerMenu-line"></div>
+            <div className="hamburguerMenu-line"></div>
+            <div className="hamburguerMenu-line"></div>
+          </button>
           <RouterButtons />
           <div className="extraElement">
             {displayOnFixed || (element && showFixed) ? <>{element}</> : null}
@@ -98,12 +111,39 @@ export default function Header({
           background-color: ${headerColor ?? "transparent"};
           transition: background-color 0.25s;
         }
+        .hamburguerMenu {
+          width: 50px;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          flex-direction: column;
+          background: none;
+          border: none;
+          margin-right: 20px;
+          display: none;
+        }
+        @media (max-width: 1000px) {
+          .hamburguerMenu {
+            display: flex;
+          }
+        }
+        .hamburguerMenu-line {
+          background-color: #fff;
+          height: 2px;
+          width: 30px;
+          margin: 4px 5px;
+        }
         .app {
           overflow-y: overlay;
           height: calc(100vh - 90px);
           overflow-x: hidden;
           width: calc(100vw - 245px);
           position: relative;
+        }
+        @media (max-width: 1000px) {
+          .app {
+            width: 100vw;
+          }
         }
         .extraElement {
           white-space: nowrap;
