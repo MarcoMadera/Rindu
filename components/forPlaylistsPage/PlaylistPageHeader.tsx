@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useRef } from "react";
 import { decode } from "html-entities";
 import Link from "next/link";
 import formatNumber from "utils/formatNumber";
@@ -121,6 +121,7 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
   totalPublicPlaylists,
 }) => {
   const { setHeaderColor } = useHeader();
+  const image = useRef<HTMLImageElement>(null);
   const isAlbumVariant =
     type === HeaderType.album ||
     type === HeaderType.single ||
@@ -132,6 +133,7 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={coverImg}
+          ref={image}
           alt=""
           id="cover-image"
           onLoad={() => {

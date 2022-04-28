@@ -1,6 +1,7 @@
 import useHeader from "hooks/useHeader";
 import Link from "next/link";
-import { ReactElement, useState } from "react";
+import { useRouter } from "next/router";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
 import { PlayButton } from "./forPlaylistsPage/PlayButton";
 
@@ -16,6 +17,18 @@ export default function SingleTrackCard({
     alwaysDisplayColor: true,
   });
   const [mainTrackColor, setMainTrackColor] = useState<string>();
+  const [imageIsLoaded, setImageIsLoaded] = useState(false);
+  const image = useRef<HTMLImageElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (image.current?.complete || imageIsLoaded) {
+      setMainTrackColor(
+        (prev) => getMainColorFromImage(`cover-image-${track.id}`) ?? prev
+      );
+    }
+  }, [imageIsLoaded, track.id, router.asPath]);
+
   return (
     <Link href={`/track/${track.id}`}>
       <a
@@ -29,11 +42,13 @@ export default function SingleTrackCard({
         <img
           src={track.album.images[0].url}
           alt={track.name}
+          ref={image}
           id={`cover-image-${track.id}`}
           onLoad={() => {
             setMainTrackColor(
               (prev) => getMainColorFromImage(`cover-image-${track.id}`) ?? prev
             );
+            setImageIsLoaded(true);
           }}
         />
         <div>

@@ -31,6 +31,7 @@ export function ContentHeader({
           position: absolute;
           width: 100%;
           background-color: ${headerColor ?? "transparent"};
+          transition: background-color 0.3s ease;
         }
         header {
           display: flex;
@@ -45,6 +46,7 @@ export function ContentHeader({
         }
         div.b-1 {
           background-color: ${headerColor ?? "transparent"};
+          transition: background-color 0.3s ease;
         }
         div.b-2 {
           background: linear-gradient(transparent 0, rgba(0, 0, 0, 0.5) 100%),

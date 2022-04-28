@@ -109,7 +109,7 @@ export default function Header({
           position: absolute;
           width: 100%;
           background-color: ${headerColor ?? "transparent"};
-          transition: background-color 0.25s;
+          transition: background-color 0.3s ease;
         }
         .hamburguerMenu {
           width: 50px;

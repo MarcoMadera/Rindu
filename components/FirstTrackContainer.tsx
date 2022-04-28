@@ -1,7 +1,8 @@
 import { PlayButton } from "components/forPlaylistsPage/PlayButton";
 import useAuth from "hooks/useAuth";
 import Link from "next/link";
-import { Fragment, ReactElement, useState } from "react";
+import { useRouter } from "next/router";
+import { Fragment, ReactElement, useEffect, useRef, useState } from "react";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
 
 export default function FirstTrackContainer({
@@ -21,6 +22,17 @@ export default function FirstTrackContainer({
   const isPlayable =
     (!isPremium && preview) ||
     (isPremium && !(track?.is_playable === false) && !track.is_local);
+  const [imageIsLoaded, setImageIsLoaded] = useState(false);
+  const image = useRef<HTMLImageElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if ((image.current?.complete || imageIsLoaded) && backgroundColor) {
+      if (backgroundColor) return;
+      setContainerColor(getMainColorFromImage("cover-image"));
+    }
+  }, [backgroundColor, imageIsLoaded, router.asPath]);
+
   return (
     <div className="firstTrack-Container">
       <div className="bg-12"></div>
@@ -35,10 +47,12 @@ export default function FirstTrackContainer({
             width={100}
             height={100}
             alt=""
+            ref={image}
             id="cover-image"
             onLoad={() => {
               if (backgroundColor) return;
               setContainerColor(getMainColorFromImage("cover-image"));
+              setImageIsLoaded(true);
             }}
           />
           <h3>{track.name}</h3>
@@ -87,6 +101,7 @@ export default function FirstTrackContainer({
           z-index: 1;
           border-radius: 16px;
           background-color: ${backgroundColor || containerColor || "#7a7a7a"};
+          transition: background-color 0.3s ease;
         }
         .firstTrack-Container {
           background: ${backgroundColor || containerColor || "#7a7a7a"};
