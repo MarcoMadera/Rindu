@@ -145,13 +145,6 @@ export const getAllTracksFromPlaylist = async (
     const { body } = data;
 
     tracks = body.items;
-    // if (body.total > 100)
-    //   for (let i = 1; i < Math.ceil(body.total / 100); i++) {
-    //     const add = await spotifyAPI.getPlaylistTracks(playlist, {
-    //       offset: 100 * i,
-    //     });
-    //     tracks = [...tracks, ...add.body.items];
-    //   }
     return {
       tracks: tracks.map(({ track, added_at, is_local }, i) => {
         return {

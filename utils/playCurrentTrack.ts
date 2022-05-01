@@ -20,6 +20,7 @@ interface Config {
   isSingleTrack?: boolean;
   position?: number;
   setAccessToken: Dispatch<SetStateAction<string | undefined>>;
+  uri?: string | undefined;
 }
 
 export async function playCurrentTrack(
@@ -37,6 +38,7 @@ export async function playCurrentTrack(
     isSingleTrack,
     position,
     setAccessToken,
+    uri,
   }: Config
 ): Promise<unknown> {
   const isPremium = user?.product === "premium";
@@ -58,8 +60,8 @@ export async function playCurrentTrack(
     });
     const playConfig = isSingleTrack
       ? {
-          uris: uris,
-          offset: position,
+          uris: uri ? [uri] : uris,
+          offset: uri ? 0 : position,
         }
       : {
           context_uri: playlistUri,

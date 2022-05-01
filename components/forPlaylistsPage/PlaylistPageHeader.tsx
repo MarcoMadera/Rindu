@@ -1,4 +1,4 @@
-import React, { Fragment, useRef } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { decode } from "html-entities";
 import Link from "next/link";
 import formatNumber from "utils/formatNumber";
@@ -8,6 +8,7 @@ import { getMainColorFromImage } from "utils/getMainColorFromImage";
 import { formatTime } from "utils/formatTime";
 import { HeaderType } from "types/spotify";
 import { getYear } from "utils/getYear";
+import { useRouter } from "next/router";
 
 interface PageHeaderDefault {
   title: string;
@@ -122,10 +123,18 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
 }) => {
   const { setHeaderColor } = useHeader();
   const image = useRef<HTMLImageElement>(null);
+  const [imageIsLoaded, setImageIsLoaded] = useState(false);
+  const router = useRouter();
   const isAlbumVariant =
     type === HeaderType.album ||
     type === HeaderType.single ||
     type === HeaderType.compilation;
+
+  useEffect(() => {
+    if (image.current?.complete || imageIsLoaded) {
+      setHeaderColor((prev) => getMainColorFromImage("cover-image") ?? prev);
+    }
+  }, [imageIsLoaded, router.asPath, setHeaderColor]);
 
   return (
     <ContentHeader>
@@ -140,6 +149,7 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
             setHeaderColor(
               (prev) => getMainColorFromImage("cover-image") ?? prev
             );
+            setImageIsLoaded(true);
           }}
         />
       ) : (

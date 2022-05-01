@@ -18,6 +18,9 @@ import { Heart, HeartShape } from "components/icons/Heart";
 import { takeCookie } from "utils/cookies";
 import { ACCESS_TOKEN_COOKIE, SITE_URL } from "utils/constants";
 import { PlaylistProps } from "pages/playlist/[playlist]";
+import { SearchInputElement } from "components/SearchInputElement";
+import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
+import { addItemsToPlaylist } from "utils/spotifyCalls/addItemsToPlaylist";
 
 async function followPlaylist(id?: string, accessToken?: string) {
   if (!id) {
@@ -97,12 +100,15 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
     setPlaylistPlayingId,
     setPlaylistDetails,
     setAllTracks,
+    allTracks,
   } = useSpotify();
   const { setElement } = useHeader({ showOnFixed: false });
   const [isPin, setIsPin] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const isMyPlaylist = playlistDetails?.owner.id === user?.id;
   const [isFollowingThisPlaylist, setIsFollowingThisPlaylist] = useState(false);
+  const [searchedData, setSearchedData] =
+    useState<SpotifyApi.SearchResponse | null>(null);
 
   const tracks = useMemo(() => playListTracks?.tracks ?? [], [playListTracks]);
 
@@ -210,48 +216,164 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
         totalTracks={playlistDetails?.tracks?.total ?? 0}
       />
       <div className="tracksContainer">
-        <div className="options">
-          <PlayButton size={56} centerSize={28} />
-          <div className="info">
-            <button
-              onClick={() => {
-                if (isMyPlaylist) {
-                  setOpenModal(true);
-                  return;
-                }
-                if (isFollowingThisPlaylist) {
-                  unfollowPlaylist(playlistDetails?.id).then((res) => {
-                    if (res) {
-                      setIsFollowingThisPlaylist(false);
+        {allTracks.length > 0 ? (
+          <>
+            <div className="options">
+              <PlayButton size={56} centerSize={28} />
+              <div className="info">
+                <button
+                  onClick={() => {
+                    if (isMyPlaylist) {
+                      setOpenModal(true);
+                      return;
                     }
-                  });
-                } else {
-                  followPlaylist(playlistDetails?.id).then((res) => {
-                    if (res) {
-                      setIsFollowingThisPlaylist(true);
+                    if (isFollowingThisPlaylist) {
+                      unfollowPlaylist(playlistDetails?.id).then((res) => {
+                        if (res) {
+                          setIsFollowingThisPlaylist(false);
+                        }
+                      });
+                    } else {
+                      followPlaylist(playlistDetails?.id).then((res) => {
+                        if (res) {
+                          setIsFollowingThisPlaylist(true);
+                        }
+                      });
                     }
-                  });
-                }
-              }}
-            >
-              {isMyPlaylist ? (
-                <Broom width={32} height={32} />
-              ) : isFollowingThisPlaylist ? (
-                <Heart width={36} height={36} />
-              ) : (
-                <HeartShape fill="#ffffffb3" width={36} height={36} />
-              )}
-            </button>
+                  }}
+                >
+                  {isMyPlaylist ? (
+                    <Broom width={32} height={32} />
+                  ) : isFollowingThisPlaylist ? (
+                    <Heart width={36} height={36} />
+                  ) : (
+                    <HeartShape fill="#ffffffb3" width={36} height={36} />
+                  )}
+                </button>
+              </div>
+            </div>
+            <div className="trc">
+              <Titles isPin={isPin} type="playlist" setIsPin={setIsPin} />
+              <List
+                type="playlist"
+                isLibrary={isLibrary}
+                initialTracksInLibrary={tracksInLibrary}
+              />
+            </div>
+          </>
+        ) : null}
+        {playListTracks && playListTracks?.tracks?.length === 0 ? (
+          <div className="noTracks">
+            <h3>Let&apos;s find something for your playlist</h3>
+            <SearchInputElement setData={setSearchedData} source="playlist" />
+            {searchedData?.tracks && searchedData.tracks.items.length > 0 && (
+              <>
+                <h5>Songs</h5>
+                {searchedData.tracks?.items?.map((track, i) => {
+                  return (
+                    <ModalCardTrack
+                      accessToken={accessToken ?? ""}
+                      isTrackInLibrary={tracksInLibrary?.[i] ?? false}
+                      playlistUri=""
+                      track={{
+                        ...track,
+                        media_type: "audio",
+                        audio: track.preview_url,
+                        images: track.album.images,
+                        duration: track.duration_ms,
+                      }}
+                      onClickAdd={() => {
+                        if (!playlistDetails?.id) return;
+                        addItemsToPlaylist(playlistDetails.id, [
+                          track.uri,
+                        ]).then((res) => {
+                          if (res?.snapshot_id) {
+                            setAllTracks((prev) => {
+                              return [
+                                ...prev,
+                                {
+                                  ...track,
+                                  position: prev.length,
+                                  images: track.album.images,
+                                  duration: track.duration_ms,
+                                  added_at: Date.now(),
+                                },
+                              ];
+                            });
+                          }
+                        });
+                      }}
+                      key={track.id}
+                      type="presentation"
+                      position={i}
+                      isSingleTrack
+                      uri={track.uri}
+                    />
+                  );
+                })}
+              </>
+            )}
+            {searchedData?.episodes && searchedData.episodes.items.length > 0 && (
+              <>
+                <h5>Episodes</h5>
+                {searchedData.episodes?.items?.map((track, i) => {
+                  return (
+                    <ModalCardTrack
+                      accessToken={accessToken ?? ""}
+                      isTrackInLibrary={tracksInLibrary?.[i] ?? false}
+                      playlistUri=""
+                      track={{
+                        ...track,
+                        media_type: "audio",
+                        audio: track.audio_preview_url,
+                        images: track.images,
+                        duration: track.duration_ms,
+                        album: {
+                          images: track.images,
+                          name: track.name,
+                          uri: track.uri,
+                        },
+                      }}
+                      onClickAdd={() => {
+                        if (!playlistDetails?.id) return;
+                        addItemsToPlaylist(playlistDetails.id, [
+                          track.uri,
+                        ]).then((res) => {
+                          if (res?.snapshot_id) {
+                            setAllTracks((prev) => {
+                              return [
+                                ...prev,
+                                {
+                                  ...track,
+                                  position: prev.length,
+                                  images: track.images,
+                                  duration: track.duration_ms,
+                                  added_at: Date.now(),
+                                  album: {
+                                    images: track.images,
+                                    name: track.name,
+                                    uri: track.uri,
+                                    id: track.id,
+                                    type: "episode",
+                                  },
+                                },
+                              ];
+                            });
+                          }
+                        });
+                      }}
+                      key={track.id}
+                      type="presentation"
+                      position={i}
+                      isSingleTrack
+                      uri={track.uri}
+                    />
+                  );
+                })}
+              </>
+            )}
           </div>
-        </div>
-        <div className="trc">
-          <Titles isPin={isPin} type="playlist" setIsPin={setIsPin} />
-          <List
-            type="playlist"
-            isLibrary={isLibrary}
-            initialTracksInLibrary={tracksInLibrary}
-          />
-        </div>
+        ) : null}
       </div>
       {openModal ? (
         <RemoveTracksModal
@@ -261,6 +383,30 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
         />
       ) : null}
       <style jsx>{`
+        h3,
+        h5 {
+          color: #fff;
+          display: inline-block;
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          font-weight: 700;
+          letter-spacing: -0.04em;
+          line-height: 1.75rem;
+          text-transform: none;
+          margin: 0;
+          z-index: 1;
+          position: relative;
+          margin: 16px 0;
+        }
+        h3 {
+          font-size: 1.5rem;
+        }
+        h5 {
+          margin-top: 20px;
+          font-size: 1.1rem;
+        }
         .info button {
           margin-left: 20px;
           display: flex;
@@ -289,12 +435,15 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
           margin: 16px 0;
           flex-direction: row;
         }
-        .options,
-        .trc {
+        .tracksContainer {
           padding: 0 32px;
         }
         .trc {
           margin-bottom: 50px;
+        }
+        .noTracks {
+          z-index: 2;
+          position: relative;
         }
         .trc :global(.titles) {
           border-bottom: 1px solid transparent;
@@ -310,7 +459,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
           background-color: ${isPin ? "#181818" : "transparent"};
           border-bottom: 1px solid #ffffff1a;
           grid-template-columns: [index] 48px [first] 6fr [var1] 4fr [var2] 3fr [last] minmax(
-              120px,
+              160px,
               1fr
             );
         }
@@ -337,6 +486,11 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
           margin: -60px auto 0 auto;
           height: calc(100vh - 90px);
           width: calc(100vw - 245px);
+        }
+        @media (max-width: 1000px) {
+          main {
+            width: 100vw;
+          }
         }
       `}</style>
     </main>

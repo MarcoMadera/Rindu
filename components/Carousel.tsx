@@ -16,7 +16,7 @@ export default function Carousel({
   title?: string;
   gap: number;
   children: ReactNode;
-}): ReactElement {
+}): ReactElement | null {
   const [timesMoveCarousel, setTimesMoveCarousel] = useState(0);
   const totalItems = Children.count(children);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -54,7 +54,7 @@ export default function Carousel({
   }, [gap, timesMoveCarousel, totalItems]);
 
   if (totalItems === 0) {
-    throw new Error("Carousel must have at least one child");
+    return null;
   }
 
   return (

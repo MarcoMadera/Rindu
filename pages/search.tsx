@@ -1,15 +1,6 @@
 import Head from "next/head";
 import useHeader from "hooks/useHeader";
-import {
-  useEffect,
-  ReactElement,
-  useRef,
-  MutableRefObject,
-  useState,
-  Dispatch,
-  SetStateAction,
-} from "react";
-import Search from "components/icons/Search";
+import { useEffect, ReactElement, useState } from "react";
 import { NextApiRequest, NextApiResponse } from "next";
 import Link from "next/link";
 import useAuth from "hooks/useAuth";
@@ -20,142 +11,9 @@ import { getAuth } from "utils/getAuth";
 import { getCategories } from "utils/spotifyCalls/getCategories";
 import { serverRedirect } from "utils/serverRedirect";
 import FirstTrackContainer from "components/FirstTrackContainer";
-import { search } from "utils/spotifyCalls/search";
-import useSpotify from "hooks/useSpotify";
 import { getYear } from "utils/getYear";
 import Carousel from "components/Carousel";
-
-interface InputElementProps {
-  setData: Dispatch<SetStateAction<SpotifyApi.SearchResponse | null>>;
-}
-
-function InputElement({ setData }: InputElementProps) {
-  const inputRef = useRef<HTMLInputElement>();
-  const [isTyping, setIsTyping] = useState(false);
-  const [query, setQuery] = useState("");
-  const [shouldSearch, setShouldSearch] = useState(false);
-  const { setAllTracks } = useSpotify();
-
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (!isTyping && query) {
-      timer = setTimeout(() => {
-        if (!isTyping && query) {
-          setShouldSearch(true);
-        }
-      }, 1500);
-    }
-
-    if (!query) {
-      setData(null);
-    }
-
-    return () => {
-      if (timer) {
-        clearTimeout(timer);
-      }
-    };
-  }, [query, isTyping, setData]);
-
-  useEffect(() => {
-    async function searchQuery() {
-      const searchData = await search(query);
-      setData(searchData);
-      if (searchData?.tracks?.items.length) {
-        setAllTracks(() => {
-          if (!searchData?.tracks) return [];
-          return searchData.tracks?.items?.map((track) => ({
-            ...track,
-            audio: track.preview_url,
-            corruptedTrack: false,
-          }));
-        });
-      }
-      setShouldSearch(false);
-    }
-    if (shouldSearch && query) {
-      searchQuery();
-    }
-  }, [query, shouldSearch, setData, setAllTracks]);
-
-  return (
-    <div>
-      <form role="search" onSubmit={(e) => e.preventDefault()}>
-        <input
-          ref={inputRef as MutableRefObject<HTMLInputElement>}
-          maxLength={80}
-          autoCorrect="off"
-          autoCapitalize="off"
-          spellCheck="false"
-          placeholder="Artists, songs, or podcasts"
-          defaultValue=""
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setIsTyping(true);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === " ") {
-              e.stopPropagation();
-            }
-          }}
-          onKeyUp={() => {
-            setIsTyping(false);
-          }}
-        />
-      </form>
-      <Search fill="#121212" />
-      <style jsx>{`
-        div {
-          max-width: 364px;
-          position: relative;
-        }
-        div :global(svg) {
-          position: absolute;
-          display: flex;
-          align-items: center;
-          left: 12px;
-          pointer-events: none;
-          height: 100%;
-          right: 12px;
-          top: 0;
-          bottom: 0;
-          border: 0;
-          margin: 0;
-          padding: 0;
-          vertical-align: baseline;
-        }
-        form {
-          border: 0;
-          margin: 0;
-          padding: 0;
-          vertical-align: baseline;
-        }
-        input {
-          border: 0;
-          border-radius: 500px;
-          background-color: #fff;
-          color: #000;
-          height: 40px;
-          padding: 6px 48px;
-          text-overflow: ellipsis;
-          width: 100%;
-          font-size: 14px;
-          font-weight: 400;
-          letter-spacing: normal;
-          line-height: 16px;
-          text-transform: none;
-        }
-        input:focus {
-          outline: none;
-        }
-      `}</style>
-    </div>
-  );
-}
+import { SearchInputElement } from "components/SearchInputElement";
 
 interface SearchPageProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
@@ -241,7 +99,7 @@ export default function SearchPage({
   const [data, setData] = useState<SpotifyApi.SearchResponse | null>(null);
 
   useEffect(() => {
-    setElement(() => <InputElement setData={setData} />);
+    setElement(() => <SearchInputElement source="search" setData={setData} />);
 
     setHeaderColor("#242424");
 
@@ -319,77 +177,100 @@ export default function SearchPage({
             </>
           ) : null}
           {data.playlists?.items && data.playlists?.items?.length > 0 ? (
-            <>
-              <h2>Playlists</h2>
-              <section className="playlists">
-                {data.playlists?.items?.map(
-                  ({ images, name, description, id, owner }, i) => {
-                    if (i > 4) {
-                      return;
-                    }
-                    return (
-                      <PresentationCard
-                        type="playlist"
-                        key={id}
-                        images={images}
-                        title={name}
-                        subTitle={
-                          decode(description) || `De ${owner.display_name}`
-                        }
-                        id={id}
-                      />
-                    );
-                  }
-                )}
-              </section>
-            </>
-          ) : null}
-          {data.artists?.items && data.artists?.items?.length > 0 ? (
-            <>
-              <h2>Artists</h2>
-              <section className="playlists">
-                {data.artists?.items?.map(({ images, name, id }, i) => {
+            <Carousel title={"Playlists"} gap={24}>
+              {data.playlists?.items?.map(
+                ({ images, name, description, id, owner }, i) => {
                   if (i > 4) {
                     return;
                   }
                   return (
                     <PresentationCard
-                      type="artist"
+                      type="playlist"
                       key={id}
                       images={images}
                       title={name}
-                      subTitle={"Artist"}
+                      subTitle={
+                        decode(description) || `De ${owner.display_name}`
+                      }
                       id={id}
                     />
                   );
-                })}
-              </section>
-            </>
+                }
+              )}
+            </Carousel>
+          ) : null}
+          {data.artists?.items && data.artists?.items?.length > 0 ? (
+            <Carousel title={"Artists"} gap={24}>
+              {data.artists?.items?.map(({ images, name, id }) => {
+                return (
+                  <PresentationCard
+                    type="artist"
+                    key={id}
+                    images={images}
+                    title={name}
+                    subTitle={"Artist"}
+                    id={id}
+                  />
+                );
+              })}
+            </Carousel>
           ) : null}
           {data.albums?.items && data.albums?.items?.length > 0 ? (
-            <>
-              <h2>Albums</h2>
-              <section className="playlists">
-                {data.albums?.items?.map(
-                  ({ images, name, id, artists, release_date }) => {
-                    const artistNames = artists.map((artist) => artist.name);
-                    const subTitle = release_date
-                      ? `${getYear(release_date)} · Album`
-                      : artistNames.join(", ");
-                    return (
-                      <PresentationCard
-                        type="album"
-                        key={id}
-                        images={images}
-                        title={name}
-                        subTitle={subTitle}
-                        id={id}
-                      />
-                    );
-                  }
-                )}
-              </section>
-            </>
+            <Carousel title={"Albums"} gap={24}>
+              {data.albums?.items?.map(
+                ({ images, name, id, artists, release_date }) => {
+                  const artistNames = artists.map((artist) => artist.name);
+                  const subTitle = release_date
+                    ? `${getYear(release_date)} · Album`
+                    : artistNames.join(", ");
+                  return (
+                    <PresentationCard
+                      type="album"
+                      key={id}
+                      images={images}
+                      title={name}
+                      subTitle={subTitle}
+                      id={id}
+                    />
+                  );
+                }
+              )}
+            </Carousel>
+          ) : null}
+          {data.shows?.items && data.shows?.items?.length > 0 ? (
+            <Carousel title={"Shows"} gap={24}>
+              {data.shows?.items?.map(({ images, name, id, publisher }) => {
+                return (
+                  <PresentationCard
+                    type="show"
+                    key={id}
+                    images={images}
+                    title={name}
+                    subTitle={publisher}
+                    id={id}
+                  />
+                );
+              })}
+            </Carousel>
+          ) : null}
+          {data.episodes?.items && data.episodes?.items?.length > 0 ? (
+            <Carousel title={"Episodes"} gap={24}>
+              {(
+                data.episodes as SpotifyApi.PagingObject<SpotifyApi.EpisodeObject>
+              )?.items?.map(({ images, name, id, description }) => {
+                return (
+                  <PresentationCard
+                    type="episode"
+                    key={id}
+                    images={images}
+                    title={name}
+                    subTitle={description}
+                    id={id}
+                    isSingle
+                  />
+                );
+              })}
+            </Carousel>
           ) : null}
         </div>
       ) : (
@@ -418,6 +299,11 @@ export default function SearchPage({
           width: calc(100vw - 245px);
           max-width: 1955px;
           padding: 20px 32px 40px;
+        }
+        @media (max-width: 1000px) {
+          main {
+            width: 100vw;
+          }
         }
         h2 {
           color: #fff;

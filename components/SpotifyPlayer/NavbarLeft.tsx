@@ -93,7 +93,7 @@ export function NavbarLeft({
         <Link
           href={`/${currrentlyPlaying.type ?? "track"}/${currrentlyPlaying.id}`}
         >
-          <a>{currrentlyPlaying.name}</a>
+          <a className="trackName">{currrentlyPlaying.name}</a>
         </Link>
         <span className="trackArtists">
           {currrentlyPlaying.artists?.map((artist, i) => {
@@ -210,11 +210,6 @@ export function NavbarLeft({
         .show-img:hover {
           transform: scale(1.1);
         }
-        p.trackName {
-          color: #fff;
-          margin: 0;
-          padding: 0;
-        }
         span.trackArtists {
           font-size: 14px;
         }
@@ -229,7 +224,8 @@ export function NavbarLeft({
           color: #fff;
         }
         p,
-        span {
+        span,
+        .trackName {
           margin: 0px;
           overflow: hidden;
           text-align: left;
@@ -238,6 +234,9 @@ export function NavbarLeft({
           -webkit-box-orient: vertical;
           display: -webkit-box;
           -webkit-line-clamp: 1;
+        }
+        .trackName {
+          -webkit-line-clamp: 2;
         }
         a {
           text-decoration: none;

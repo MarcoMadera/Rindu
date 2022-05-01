@@ -65,6 +65,11 @@ export default function Category({
           max-width: 1955px;
           padding: 40px 32px;
         }
+        @media (max-width: 1000px) {
+          main {
+            width: 100vw;
+          }
+        }
         section {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));

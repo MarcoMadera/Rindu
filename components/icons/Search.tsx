@@ -1,11 +1,11 @@
-import { ReactElement } from "react";
+import { ReactElement, SVGProps } from "react";
 
 export default function Search({
   fill,
   ...props
 }: {
   fill: string;
-}): ReactElement {
+} & SVGProps<SVGSVGElement>): ReactElement {
   return (
     <svg viewBox="0 0 512 512" width="24" height="24" {...props}>
       <path

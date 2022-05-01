@@ -20,6 +20,7 @@ import { unFollowAlbums } from "utils/spotifyCalls/unFollowAlbums";
 import { followAlbums } from "utils/spotifyCalls/followAlbums";
 import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
 import { SITE_URL } from "utils/constants";
+import useToast from "hooks/useToast";
 
 interface CurrentUserProps {
   album: SpotifyApi.SingleAlbumResponse | null;
@@ -45,6 +46,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
   const { setElement } = useHeader({
     showOnFixed: false,
   });
+  const { addToast } = useToast();
 
   useEffect(() => {
     async function fetchData() {
@@ -158,11 +160,19 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
                       setIsFollowingThisAlbum(false);
                     }
                   });
+                  addToast({
+                    message: "Album removed from your library",
+                    variant: "success",
+                  });
                 } else {
                   followAlbums([album.id]).then((res) => {
                     if (res) {
                       setIsFollowingThisAlbum(true);
                     }
+                  });
+                  addToast({
+                    message: "Album added to your library",
+                    variant: "success",
                   });
                 }
               }}
@@ -191,6 +201,11 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
           margin: -60px auto 0 auto;
           height: calc(100vh - 90px);
           width: calc(100vw - 245px);
+        }
+        @media (max-width: 1000px) {
+          main {
+            width: 100vw;
+          }
         }
         .copy {
           margin-top: 16px;

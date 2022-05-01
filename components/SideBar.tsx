@@ -14,6 +14,8 @@ import { Volume } from "./icons/Volume";
 import { play } from "lib/spotify";
 import useClickPreventionOnDoubleClick from "hooks/useClickPreventionOnDoubleClick";
 import { getUserPlaylists } from "utils/spotifyCalls/getUserPlaylists";
+import { createPlaylist } from "utils/spotifyCalls/createPlaylist";
+import useToast from "hooks/useToast";
 
 function PlaylistText({
   id,
@@ -226,8 +228,9 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
     playedSource,
     showHamburguerMenu,
   } = useSpotify();
-  const { accessToken } = useAuth();
+  const { accessToken, user } = useAuth();
   const router = useRouter();
+  const { addToast } = useToast();
 
   useEffect(() => {
     if (!accessToken) return;
@@ -273,7 +276,22 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
             </Link>
           </section>
           <section className="section-2">
-            <button>
+            <button
+              onClick={() => {
+                if (!user?.id) return;
+                createPlaylist(user.id, accessToken).then((res) => {
+                  if (!res) {
+                    addToast({
+                      message: "Error creating playlist",
+                      variant: "error",
+                    });
+                    return;
+                  }
+                  setPlaylists((prev) => [res, ...prev]);
+                  router.push(`/playlist/${res.id}`);
+                });
+              }}
+            >
               <div>
                 <Add />
               </div>

@@ -361,6 +361,11 @@ export default function TrackPage({
           height: calc(100vh - 90px);
           width: calc(100vw - 245px);
         }
+        @media (max-width: 1000px) {
+          main {
+            width: 100vw;
+          }
+        }
         .topTracks-header {
           display: block;
           margin-bottom: 20px;

@@ -2,7 +2,7 @@ import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
 import useAuth from "hooks/useAuth";
 import useSpotify from "hooks/useSpotify";
 import { getTracksFromPlaylist } from "lib/requests";
-import { ReactElement, useState } from "react";
+import { ReactElement, useCallback, useState } from "react";
 import {
   AutoSizer,
   IndexRange,
@@ -80,49 +80,61 @@ export default function Playlist({
     initialTracksInLibrary
   );
 
-  function addTracksToPlaylists(
-    tracks: AllTracksFromAPlayList,
-    tracksInLibrary: boolean[] | null,
-    position: number
-  ): void {
-    function spliceTracks<T>(allTracks: T[] | null, newTracks: T[]) {
+  const spliceTracks = useCallback(
+    <T,>(allTracks: T[] | null, newTracks: T[], position: number): T[] => {
       if (!allTracks) {
         return [...newTracks];
       }
       const tracks = [...allTracks];
       tracks.splice(position, 50, ...newTracks);
       return tracks;
-    }
+    },
+    []
+  );
 
-    setAllTracks((allTracks) => spliceTracks(allTracks, tracks));
+  const addTracksToPlaylists = useCallback(
+    (
+      tracks: AllTracksFromAPlayList,
+      tracksInLibrary: boolean[] | null,
+      position: number
+    ): void => {
+      setAllTracks((allTracks) => spliceTracks(allTracks, tracks, position));
 
-    if (!tracksInLibrary) return;
+      if (!tracksInLibrary) return;
 
-    setTracksInLibrary((allTracks) => spliceTracks(allTracks, tracksInLibrary));
-  }
+      setTracksInLibrary((allTracks) =>
+        spliceTracks(allTracks, tracksInLibrary, position)
+      );
+    },
+    [setAllTracks, spliceTracks]
+  );
 
-  async function loadMoreRows({ startIndex }: IndexRange) {
-    const data = isLibrary
-      ? await getTracksFromLibrary(startIndex, accessToken)
-      : await getTracksFromPlaylist(
-          playlistDetails?.id ?? "",
-          startIndex,
-          accessToken
-        );
-    const items = data.items;
-    const tracks = mapPlaylistItems(items, startIndex);
-    const trackIds = tracks.map((track) => track.id ?? "");
-    const tracksInLibrary = await checkTracksInLibrary(
-      trackIds,
-      accessToken || ""
-    );
-    addTracksToPlaylists(tracks, tracksInLibrary, startIndex);
-  }
+  const loadMoreRows = useCallback(
+    async ({ startIndex }: IndexRange) => {
+      const data = isLibrary
+        ? await getTracksFromLibrary(startIndex, accessToken)
+        : await getTracksFromPlaylist(
+            playlistDetails?.id ?? "",
+            startIndex,
+            accessToken
+          );
+      const items = data.items;
+      const tracks = mapPlaylistItems(items, startIndex);
+      const trackIds = tracks.map((track) => track.id ?? "");
+      const tracksInLibrary = await checkTracksInLibrary(
+        trackIds,
+        accessToken || ""
+      );
+      addTracksToPlaylists(tracks, tracksInLibrary, startIndex);
+    },
+    [accessToken, addTracksToPlaylists, isLibrary, playlistDetails?.id]
+  );
 
-  return __isServer__ ? (
-    <div></div>
-  ) : (
-    <WindowScroller scrollElement={document.getElementsByClassName("app")[0]}>
+  const scrollElement = !__isServer__
+    ? document?.getElementsByClassName("app")?.[0]
+    : undefined;
+  return (
+    <WindowScroller scrollElement={scrollElement}>
       {({ height, isScrolling, onChildScroll, scrollTop }) => {
         return (
           <AutoSizer disableHeight>
@@ -130,10 +142,12 @@ export default function Playlist({
               return (
                 <InfiniteLoader
                   isRowLoaded={({ index }) => {
-                    return !!allTracks[index]?.name;
+                    return !!allTracks?.[index]?.name;
                   }}
                   loadMoreRows={loadMoreRows}
-                  rowCount={playlistDetails?.tracks.total}
+                  rowCount={
+                    (playlistDetails?.tracks.total || allTracks?.length) ?? 0
+                  }
                 >
                   {({ onRowsRendered, registerChild }) => (
                     <List
@@ -144,12 +158,15 @@ export default function Playlist({
                       ref={registerChild}
                       onScroll={onChildScroll}
                       overscanRowCount={2}
-                      rowCount={playlistDetails?.tracks.total ?? 0}
+                      rowCount={
+                        (playlistDetails?.tracks.total || allTracks?.length) ??
+                        0
+                      }
                       rowHeight={65}
                       scrollTop={scrollTop}
                       width={width}
                       rowRenderer={({ index, style, key }) => {
-                        if (allTracks[index]?.corruptedTrack) {
+                        if (allTracks?.[index]?.corruptedTrack) {
                           return null;
                         }
 
@@ -158,11 +175,11 @@ export default function Playlist({
                             accessToken={accessToken}
                             key={key}
                             style={style}
-                            track={allTracks[index]}
+                            track={allTracks?.[index]}
                             playlistUri={playlistDetails?.uri ?? ""}
                             isTrackInLibrary={
                               tracksInLibrary?.[
-                                allTracks[index]?.position ?? -1
+                                allTracks?.[index]?.position ?? -1
                               ]
                             }
                             type={type}

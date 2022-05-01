@@ -5,7 +5,15 @@ import { PlayButton } from "components/forPlaylistsPage/PlayButton";
 import useAuth from "hooks/useAuth";
 
 interface PresentationCardProps {
-  type: "playlist" | "album" | "artist" | "user" | "show" | "genre" | "track";
+  type:
+    | "playlist"
+    | "album"
+    | "artist"
+    | "user"
+    | "show"
+    | "genre"
+    | "track"
+    | "episode";
   id: string;
   images?: SpotifyApi.ImageObject[];
   title: string;

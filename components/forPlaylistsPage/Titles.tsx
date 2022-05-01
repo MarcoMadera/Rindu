@@ -73,10 +73,10 @@ export default function Titles({
           background-color: ${isPin ? "#181818" : "transparent"};
           border-bottom: 1px solid #ffffff1a;
           grid-template-columns: ${type === "playlist"
-            ? "[index] 48px [first] 6fr [var1] 4fr [var2] 3fr [last] minmax(120px,1fr)"
+            ? "[index] 48px [first] 6fr [var1] 4fr [var2] 3fr [last] minmax(160px,1fr)"
             : type === "album"
-            ? "[index] 48px [first] 6fr [last] minmax(120px,1fr)"
-            : "[index] 55px [first] 4fr [last] minmax(120px,1fr)"};
+            ? "[index] 48px [first] 6fr [last] minmax(160px,1fr)"
+            : "[index] 55px [first] 4fr [last] minmax(160px,1fr)"};
         }
         .titles span {
           display: flex;

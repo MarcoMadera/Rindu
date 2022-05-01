@@ -3,7 +3,7 @@ import { AllTracksFromAPlaylistResponse, ISpotifyContext } from "types/spotify";
 import PlaylistLayout from "layouts/playlist";
 import { getAuth } from "utils/getAuth";
 import { serverRedirect } from "utils/serverRedirect";
-import { getPlaylistDetailsById } from "utils/spotifyCalls/getPlaylistDetailsById";
+import { getPlaylistDetails } from "utils/spotifyCalls/getPlaylistDetails";
 import { getTracksFromPlayList } from "utils/spotifyCalls/getTracksFromPlayList";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 
@@ -48,7 +48,7 @@ export async function getServerSideProps({
   }
   const { accessToken, user } = (await getAuth(res, cookies)) || {};
 
-  const playlistDetails = await getPlaylistDetailsById(
+  const playlistDetails = await getPlaylistDetails(
     playlist,
     accessToken,
     cookies

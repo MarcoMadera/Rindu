@@ -152,6 +152,11 @@ export default function CollectionPlaylists(): ReactElement {
           margin: 0 auto;
           padding: 0px 30px;
         }
+        @media (max-width: 1000px) {
+          main {
+            width: 100vw;
+          }
+        }
         h2 {
           color: #fff;
           display: inline-block;

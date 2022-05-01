@@ -201,7 +201,7 @@ export default function Header({
           position: absolute;
           right: 0;
           top: 0;
-          transition: background-color 0.25s;
+          transition: background-color 0.3s;
           z-index: -1;
         }
         .container {

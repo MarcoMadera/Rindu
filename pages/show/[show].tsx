@@ -603,6 +603,11 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
           height: calc(100vh - 90px);
           width: calc(100vw - 245px);
         }
+        @media (max-width: 1000px) {
+          main {
+            width: 100vw;
+          }
+        }
         .content {
           display: grid;
           grid-template-columns: 700px 1fr;

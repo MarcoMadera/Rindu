@@ -7,7 +7,7 @@ export async function search(
 ): Promise<SpotifyApi.SearchResponse> {
   const q = query.replaceAll(" ", "+");
   const res = await fetch(
-    `https://api.spotify.com/v1/search?q=${q}&type=album,track,artist,playlist&market=from_token&limit=10`,
+    `https://api.spotify.com/v1/search?q=${q}&type=album,track,artist,playlist,show,episode&market=from_token&limit=10`,
     {
       headers: {
         "Content-Type": "application/json",

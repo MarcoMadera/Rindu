@@ -303,6 +303,11 @@ export default function ArtistPage({
           height: calc(100vh - 90px);
           width: calc(100vw - 245px);
         }
+        @media (max-width: 1000px) {
+          main {
+            width: 100vw;
+          }
+        }
         .content button {
           background: none;
           border: none;

@@ -5,7 +5,15 @@ interface CardContentProps {
   images?: SpotifyApi.ImageObject[];
   title: string;
   subTitle: string;
-  type: "playlist" | "album" | "artist" | "user" | "show" | "genre" | "track";
+  type:
+    | "playlist"
+    | "album"
+    | "artist"
+    | "user"
+    | "show"
+    | "genre"
+    | "track"
+    | "episode";
 }
 export const CardContent: React.FC<CardContentProps> = ({
   type,
@@ -55,6 +63,7 @@ export const CardContent: React.FC<CardContentProps> = ({
           text-align: left;
           text-overflow: ellipsis;
           white-space: unset;
+          word-break: break-all;
         }
         article {
           background-color: #181818;

@@ -139,8 +139,9 @@ export function PlayButton({
               }
             });
           }
-          if (uris.length === 0 && track?.uri) {
-            uris.push(track.uri);
+          const singleUri = track?.uri || uri;
+          if (uris.length === 0 && singleUri) {
+            uris.push(singleUri);
           }
           play(
             accessToken,

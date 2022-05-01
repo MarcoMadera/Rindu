@@ -8,16 +8,19 @@ export async function getTracksFromPlayList(
   accessToken?: string,
   cookies?: string | undefined
 ): Promise<AllTracksFromAPlaylistResponse | null> {
-  const res = await fetch(`${SITE_URL}/api/playlists?market=${market}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      accessToken: accessToken ?? takeCookie(ACCESS_TOKEN_COOKIE, cookies),
-      playlistId,
-    }),
-  });
+  const res = await fetch(
+    `${SITE_URL}/api/playlists?market=${market}&additional_types=track,episode  `,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        accessToken: accessToken ?? takeCookie(ACCESS_TOKEN_COOKIE, cookies),
+        playlistId,
+      }),
+    }
+  );
   if (res.ok) {
     const data: AllTracksFromAPlaylistResponse = await res.json();
     return data;

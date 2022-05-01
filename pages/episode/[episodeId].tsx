@@ -8,7 +8,6 @@ import { serverRedirect } from "utils/serverRedirect";
 import { ExtraHeader } from "layouts/playlist/ExtraHeader";
 import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
 import { PlayButton } from "components/forPlaylistsPage/PlayButton";
-import { Heart, HeartShape } from "components/icons/Heart";
 import { getEpisodeById } from "utils/spotifyCalls/getEpisodeById";
 import { SITE_URL } from "utils/constants";
 import { HeaderType } from "types/spotify";
@@ -35,7 +34,6 @@ export default function EpisodePage({
   const { setUser, setAccessToken } = useAuth();
   const [isEpisodeInLibrary, setIsEpisodeInLibrary] = useState(false);
   const { setPlaylistDetails } = useSpotify();
-
   const episodeTrack: SpotifyApi.TrackObjectFull = useMemo(
     () => ({
       album: {
@@ -180,6 +178,7 @@ export default function EpisodePage({
           />
           <div className="info">
             <button
+              className="follow-button"
               onClick={() => {
                 if (!episode) return;
                 if (isEpisodeInLibrary) {
@@ -197,11 +196,7 @@ export default function EpisodePage({
                 }
               }}
             >
-              {isEpisodeInLibrary ? (
-                <Heart width={36} height={36} />
-              ) : (
-                <HeartShape fill="#ffffffb3" width={36} height={36} />
-              )}
+              {isEpisodeInLibrary ? "Siguiendo" : "Seguir"}
             </button>
           </div>
         </div>
@@ -217,6 +212,11 @@ export default function EpisodePage({
           margin: -60px auto 0 auto;
           height: calc(100vh - 90px);
           width: calc(100vw - 245px);
+        }
+        @media (max-width: 1000px) {
+          main {
+            width: 100vw;
+          }
         }
         .container {
           margin: 0 32px;
@@ -275,24 +275,27 @@ export default function EpisodePage({
           text-transform: none;
           margin: 0;
         }
-        .info button {
-          margin-left: 20px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 56px;
-          height: 56px;
-          min-width: 56px;
-          min-height: 56px;
+        .info .follow-button {
           background-color: transparent;
-          border: none;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          border-radius: 4px;
+          box-sizing: border-box;
+          color: #fff;
+          font-size: 16px;
+          width: auto;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+          line-height: 16px;
+          padding: 7px 15px;
+          text-align: center;
+          text-transform: uppercase;
+          font-weight: bold;
+          margin-right: 24px;
+          margin-left: 20px;
         }
         .info button:focus,
         .info button:hover {
-          transform: scale(1.06);
-        }
-        .info button:active {
-          transform: scale(1);
+          border: 1px solid #fff;
         }
         .options {
           display: flex;
