@@ -15,6 +15,7 @@ import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFrom
 import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
 import { callPictureInPicture } from "utils/callPictureInPicture";
 import { PictureInPicture } from "components/icons/PictureInPicture";
+import useContextMenu from "hooks/useContextMenu";
 
 export function NavbarLeft({
   currrentlyPlaying,
@@ -33,6 +34,7 @@ export function NavbarLeft({
     setIsPip,
   } = useSpotify();
   const { addToast } = useToast();
+  const { addContextMenu } = useContextMenu();
 
   useEffect(() => {
     if (!currrentlyPlaying?.id) return;
@@ -93,7 +95,21 @@ export function NavbarLeft({
         <Link
           href={`/${currrentlyPlaying.type ?? "track"}/${currrentlyPlaying.id}`}
         >
-          <a className="trackName">{currrentlyPlaying.name}</a>
+          <a
+            className="trackName"
+            onContextMenu={(e) => {
+              e.preventDefault();
+              const x = e.pageX;
+              const y = e.pageY;
+              addContextMenu({
+                type: "cardTrack",
+                data: currrentlyPlaying,
+                position: { x, y },
+              });
+            }}
+          >
+            {currrentlyPlaying.name}
+          </a>
         </Link>
         <span className="trackArtists">
           {currrentlyPlaying.artists?.map((artist, i) => {

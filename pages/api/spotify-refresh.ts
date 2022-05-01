@@ -22,7 +22,7 @@ export default async function refresh(
           data.accessToken
         }; Path=/; expires=${expireCookieDate.toUTCString()};`,
         `${REFRESH_TOKEN_COOKIE}=${
-          data.refreshToken
+          data.refreshToken ?? req.body.refreshToken
         }; Path=/; expires=${expireCookieDate.toUTCString()};`,
         `${EXPIRE_TOKEN_COOKIE}=${
           data.expiresIn
@@ -62,15 +62,17 @@ export default async function refresh(
       const data = await response.json();
       const expireCookieDate = new Date();
       expireCookieDate.setDate(expireCookieDate.getDate() + 30);
-      res.setHeader("Set-Cookie", [
-        `${ACCESS_TOKEN_COOKIE}=${
-          data.access_token
-        }; Path=/; expires=${expireCookieDate.toUTCString()};`,
-        `${REFRESH_TOKEN_COOKIE}=${refreshTokenFromCookie}; Path=/; expires=${expireCookieDate.toUTCString()};`,
-        `${EXPIRE_TOKEN_COOKIE}=${
-          data.expires_in
-        }; Path=/; expires=${expireCookieDate.toUTCString()};`,
-      ]);
+      if (refreshTokenFromCookie) {
+        res.setHeader("Set-Cookie", [
+          `${ACCESS_TOKEN_COOKIE}=${
+            data.access_token
+          }; Path=/; expires=${expireCookieDate.toUTCString()};`,
+          `${REFRESH_TOKEN_COOKIE}=${refreshTokenFromCookie}; Path=/; expires=${expireCookieDate.toUTCString()};`,
+          `${EXPIRE_TOKEN_COOKIE}=${
+            data.expires_in
+          }; Path=/; expires=${expireCookieDate.toUTCString()};`,
+        ]);
+      }
       return res.json({ accessToken: data.access_token });
     }
   }

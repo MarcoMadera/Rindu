@@ -209,6 +209,10 @@ export default function useSpotifyPlayer({
         "not_ready",
         ({ device_id }: { device_id: string }) => {
           console.log("Device ID has gone offline", device_id);
+          addToast({
+            variant: "error",
+            message: "Connection failed, please try again later",
+          });
         }
       );
 
@@ -225,8 +229,9 @@ export default function useSpotifyPlayer({
               message: "The user has not been authenticated",
             });
           });
-
-          setIsPlaying(!trackWindow?.paused);
+          if (trackWindow) {
+            setIsPlaying(!trackWindow.paused);
+          }
           // trackWindow?.track_window.next_tracks
           // trackWindow?.track_window.previous_tracks
         }

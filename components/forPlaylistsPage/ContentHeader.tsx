@@ -1,15 +1,34 @@
+import useContextMenu from "hooks/useContextMenu";
 import useHeader from "hooks/useHeader";
 import React, { ReactElement, ReactNode } from "react";
+import { normalTrackTypes } from "types/spotify";
 
 export function ContentHeader({
   children,
+  data,
 }: {
   children: ReactNode;
+  data: normalTrackTypes | null;
 }): ReactElement {
   const { headerColor } = useHeader();
+  const { addContextMenu } = useContextMenu();
+
   return (
     <>
-      <header>
+      <header
+        onContextMenu={(e) => {
+          e.preventDefault();
+          const x = e.pageX;
+          const y = e.pageY;
+          if (data) {
+            addContextMenu({
+              type: "cardTrack",
+              data,
+              position: { x, y },
+            });
+          }
+        }}
+      >
         <div className="b-1"></div>
         <div className="b-2"></div>
         <section>{children}</section>

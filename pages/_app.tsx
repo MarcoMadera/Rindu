@@ -3,6 +3,7 @@ import { UserContextProvider } from "../context/UserContext";
 import { SpotifyContextProvider } from "../context/SpotifyContext";
 import { HeaderContextProvider } from "../context/HeaderContext";
 import { ToastContextProvider } from "context/ToastContext";
+import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import type { AppProps } from "next/app";
 import { ReactElement } from "react";
 import Layout from "../components/Layout";
@@ -14,10 +15,12 @@ const MyApp = ({ Component, pageProps }: AppProps): ReactElement => {
       <UserContextProvider>
         <HeaderContextProvider>
           <SpotifyContextProvider>
-            <Seo />
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+            <ContextMenuContextProvider>
+              <Seo />
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </ContextMenuContextProvider>
           </SpotifyContextProvider>
         </HeaderContextProvider>
       </UserContextProvider>

@@ -40,7 +40,6 @@ export default function Toast(): ReactPortal | null {
           bottom: 90px;
           transform: translate(-50%, -50%);
           margin: 0 auto;
-          transition: 0.3s ease 0s;
         }
       `}</style>
     </section>,

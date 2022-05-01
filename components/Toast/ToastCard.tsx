@@ -23,17 +23,15 @@ export default function ToastCard({
       aria-labelledby="alertText"
       className={dissapearCard ? "notificationDissapear" : ""}
     >
-      <div>
-        <p id="alertText">{message}</p>
-      </div>
+      <p id="alertText">{message}</p>
       <style jsx>{`
         article {
           background: ${variant === "info"
-            ? "#09c"
+            ? "#2e77d0"
             : variant === "error"
             ? "#ff5a5f"
             : variant === "success"
-            ? "#1db954"
+            ? "#2e77d0"
             : "#ff0"};
         }
       `}</style>
@@ -45,15 +43,21 @@ export default function ToastCard({
           overflow-wrap: break-word;
           margin: 0 10px;
         }
-        div {
-          padding: 10px 10px 8px 10px;
-        }
         article {
-          border-radius: 4px;
+          border-radius: 8px;
           width: 100%;
           text-decoration: none;
           transition: 0.3s ease 0s;
           opacity: 1;
+          box-shadow: 0 4px 12px 4px rgb(0 0 0 / 50%);
+          color: #fff;
+          display: inline-block;
+          font-size: 1rem;
+          line-height: 20px;
+          max-width: 450px;
+          padding: 12px 36px;
+          text-align: center;
+          transition: none 0.5s cubic-bezier(0.3, 0, 0.4, 1);
         }
         article.notificationDissapear {
           animation: fadeout 2s ease-in-out;

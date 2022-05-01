@@ -1,3 +1,4 @@
+import useContextMenu from "hooks/useContextMenu";
 import useHeader from "hooks/useHeader";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -18,6 +19,7 @@ export default function SingleTrackCard({
   });
   const [mainTrackColor, setMainTrackColor] = useState<string>();
   const [imageIsLoaded, setImageIsLoaded] = useState(false);
+  const { addContextMenu } = useContextMenu();
   const image = useRef<HTMLImageElement>(null);
   const router = useRouter();
 
@@ -35,6 +37,16 @@ export default function SingleTrackCard({
         onMouseEnter={() => {
           setHeaderColor((prev) => {
             return mainTrackColor ?? prev;
+          });
+        }}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          const x = e.pageX;
+          const y = e.pageY;
+          addContextMenu({
+            type: "cardTrack",
+            data: track,
+            position: { x, y },
           });
         }}
       >

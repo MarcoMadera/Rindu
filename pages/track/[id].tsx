@@ -245,6 +245,7 @@ export default function TrackPage({
         duration_s={track?.duration_ms ? track?.duration_ms / 1000 : 0}
         artists={track?.artists ?? []}
         release_date={track?.album?.release_date ?? ""}
+        data={track}
       />
       <div className="tracksContainer">
         <div className="content">

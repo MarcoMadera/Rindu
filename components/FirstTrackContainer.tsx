@@ -1,5 +1,6 @@
 import { PlayButton } from "components/forPlaylistsPage/PlayButton";
 import useAuth from "hooks/useAuth";
+import useContextMenu from "hooks/useContextMenu";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, ReactElement, useEffect, useRef, useState } from "react";
@@ -18,6 +19,7 @@ export default function FirstTrackContainer({
     backgroundColor
   );
   const { user } = useAuth();
+  const { addContextMenu } = useContextMenu();
   const isPremium = user?.product === "premium";
   const isPlayable =
     (!isPremium && preview) ||
@@ -34,7 +36,19 @@ export default function FirstTrackContainer({
   }, [backgroundColor, imageIsLoaded, router.asPath]);
 
   return (
-    <div className="firstTrack-Container">
+    <div
+      className="firstTrack-Container"
+      onContextMenu={(e) => {
+        e.preventDefault();
+        const x = e.pageX;
+        const y = e.pageY;
+        addContextMenu({
+          type: "cardTrack",
+          data: track,
+          position: { x, y },
+        });
+      }}
+    >
       <div className="bg-12"></div>
       <Link href={`/track/${track.id}`}>
         <a className="firstTrack">

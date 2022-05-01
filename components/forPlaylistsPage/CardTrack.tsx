@@ -20,6 +20,7 @@ import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibr
 import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
 import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFromLibrary";
 import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
+import useContextMenu from "hooks/useContextMenu";
 
 interface ModalCardTrackProps {
   track: normalTrackTypes;
@@ -90,6 +91,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   const [isLikedTrack, setIsLikedTrack] = useState(isTrackInLibrary);
   const trackRef = useRef<HTMLDivElement>();
   const { user, setAccessToken } = useAuth();
+  const { addContextMenu } = useContextMenu();
   const { addToast } = useToast();
   const isPremium = user?.product === "premium";
 
@@ -138,6 +140,16 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       tabIndex={0}
       onMouseEnter={() => {
         setMouseEnter(true);
+      }}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        const x = e.pageX;
+        const y = e.pageY;
+        addContextMenu({
+          type: "cardTrack",
+          data: track,
+          position: { x, y },
+        });
       }}
       onFocus={() => {
         setIsFocusing(true);

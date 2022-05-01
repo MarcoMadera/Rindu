@@ -9,6 +9,7 @@ export default function MyDocument(): ReactElement {
         <Main />
         <div id="tracksModal" />
         <div id="toast" />
+        <div id="contextMenu" />
         <div>
           <NextScript />
         </div>

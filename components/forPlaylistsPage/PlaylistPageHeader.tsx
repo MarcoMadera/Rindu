@@ -6,7 +6,7 @@ import { ContentHeader } from "./ContentHeader";
 import useHeader from "hooks/useHeader";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
 import { formatTime } from "utils/formatTime";
-import { HeaderType } from "types/spotify";
+import { HeaderType, normalTrackTypes } from "types/spotify";
 import { getYear } from "utils/getYear";
 import { useRouter } from "next/router";
 
@@ -32,6 +32,7 @@ type HeaderProps =
       totalFollowers?: never;
       popularity?: never;
       totalPublicPlaylists?: never;
+      data?: never;
     })
   | (PageHeaderDefault & {
       type: HeaderType.profile | never;
@@ -44,6 +45,7 @@ type HeaderProps =
       ownerId?: never;
       ownerDisplayName?: never;
       popularity?: never;
+      data?: never;
     })
   | (PageHeaderDefault & {
       type: HeaderType.artist | never;
@@ -56,6 +58,7 @@ type HeaderProps =
       ownerId?: never;
       ownerDisplayName?: never;
       totalPublicPlaylists?: never;
+      data?: never;
     })
   | (PageHeaderDefault & {
       type: HeaderType.song | never;
@@ -68,6 +71,7 @@ type HeaderProps =
       totalFollowers?: never;
       popularity?: never;
       totalPublicPlaylists?: never;
+      data: normalTrackTypes | null;
     })
   | (PageHeaderDefault & {
       type: HeaderType.episode | never;
@@ -80,6 +84,7 @@ type HeaderProps =
       totalFollowers?: never;
       popularity?: never;
       totalPublicPlaylists?: never;
+      data?: never;
     })
   | (PageHeaderDefault & {
       type: HeaderType.playlist | never;
@@ -92,6 +97,7 @@ type HeaderProps =
       release_date?: never;
       popularity?: never;
       totalPublicPlaylists?: never;
+      data?: never;
     })
   | (PageHeaderDefault & {
       type: HeaderType;
@@ -104,6 +110,7 @@ type HeaderProps =
       duration_s?: never;
       popularity?: never;
       totalPublicPlaylists?: never;
+      data?: never;
     });
 
 export const PlaylistPageHeader: React.FC<HeaderProps> = ({
@@ -120,11 +127,13 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
   release_date,
   popularity,
   totalPublicPlaylists,
+  data,
 }) => {
   const { setHeaderColor } = useHeader();
   const image = useRef<HTMLImageElement>(null);
   const [imageIsLoaded, setImageIsLoaded] = useState(false);
   const router = useRouter();
+
   const isAlbumVariant =
     type === HeaderType.album ||
     type === HeaderType.single ||
@@ -137,7 +146,7 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
   }, [imageIsLoaded, router.asPath, setHeaderColor]);
 
   return (
-    <ContentHeader>
+    <ContentHeader data={data ?? null}>
       {coverImg ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
