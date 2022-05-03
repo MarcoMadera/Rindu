@@ -39,7 +39,7 @@ export function NavbarLeft({
   useEffect(() => {
     if (!currrentlyPlaying?.id) return;
     const checkInLibrary =
-      currrentlyPlaying.type === "episode"
+      currrentlyPlaying?.type === "episode"
         ? checkEpisodesInLibrary
         : checkTracksInLibrary;
     checkInLibrary([currrentlyPlaying?.id], accessToken || "").then((res) => {
@@ -93,7 +93,9 @@ export function NavbarLeft({
       </div>
       <section>
         <Link
-          href={`/${currrentlyPlaying.type ?? "track"}/${currrentlyPlaying.id}`}
+          href={`/${currrentlyPlaying?.type ?? "track"}/${
+            currrentlyPlaying?.id
+          }`}
         >
           <a
             className="trackName"
@@ -142,7 +144,7 @@ export function NavbarLeft({
         }}
         onClick={() => {
           const removeFromLibrary =
-            currrentlyPlaying.type === "episode"
+            currrentlyPlaying?.type === "episode"
               ? removeEpisodesFromLibrary
               : removeTracksFromLibrary;
           if (isLikedTrack) {

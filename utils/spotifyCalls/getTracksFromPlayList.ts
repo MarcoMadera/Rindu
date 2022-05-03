@@ -9,7 +9,7 @@ export async function getTracksFromPlayList(
   cookies?: string | undefined
 ): Promise<AllTracksFromAPlaylistResponse | null> {
   const res = await fetch(
-    `${SITE_URL}/api/playlists?market=${market}&additional_types=track,episode  `,
+    `${SITE_URL}/api/playlists?market=${market}&additional_types=track,episode`,
     {
       method: "POST",
       headers: {

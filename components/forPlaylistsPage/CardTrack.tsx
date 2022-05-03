@@ -96,7 +96,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   const isPremium = user?.product === "premium";
 
   const isPlayable =
-    track.type === "episode" ||
+    track?.type === "episode" ||
     (!isPremium && track?.audio) ||
     (isPremium && !(track?.is_playable === false) && !track?.is_local);
 
@@ -133,7 +133,19 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       className="trackItem"
       onDoubleClick={() => {
         if (isPlayable) {
+          if (track?.corruptedTrack) {
+            addToast({
+              variant: "error",
+              message: "This track is corrupted and cannot be played",
+            });
+            return;
+          }
           playThisTrack();
+        } else {
+          addToast({
+            variant: "info",
+            message: "This content is not available",
+          });
         }
       }}
       role="button"
@@ -175,13 +187,27 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           }
         }
         if (e.key === "Enter") {
+          if (track?.corruptedTrack) {
+            addToast({
+              variant: "error",
+              message: "This track is corrupted and cannot be played",
+            });
+            return;
+          }
           e.preventDefault();
           if (isPlaying && isTheSameAsCurrentlyPlaying) {
             player?.pause();
             setIsPlaying(false);
             setPlaylistPlayingId(playlistDetails?.id);
           } else {
-            playThisTrack();
+            if (isPlayable) {
+              playThisTrack();
+            } else {
+              addToast({
+                variant: "info",
+                message: "This content is not available",
+              });
+            }
           }
         }
       }}
@@ -195,7 +221,19 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
             return;
           }
           if (isPlayable) {
+            if (track?.corruptedTrack) {
+              addToast({
+                variant: "error",
+                message: "This track is corrupted and cannot be played",
+              });
+              return;
+            }
             playThisTrack();
+          } else {
+            addToast({
+              variant: "info",
+              message: "This content is not available",
+            });
           }
         }}
       >
@@ -233,9 +271,9 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
             {track?.explicit && <ExplicitSign />}
             {track?.artists?.map((artist, i) => {
               return (
-                <Fragment key={artist.id}>
-                  <Link href={`/${artist.type ?? "artist"}/${artist.id}`}>
-                    <a>{artist.name}</a>
+                <Fragment key={artist?.id}>
+                  <Link href={`/${artist?.type ?? "artist"}/${artist?.id}`}>
+                    <a>{artist?.name}</a>
                   </Link>
                   {i !== (track?.artists?.length && track?.artists?.length - 1)
                     ? ", "
@@ -276,24 +314,24 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           }}
           onClick={() => {
             const removeFromLibrary =
-              track.type === "episode"
+              track?.type === "episode"
                 ? removeEpisodesFromLibrary
                 : removeTracksFromLibrary;
             if (isLikedTrack) {
-              removeFromLibrary([track.id ?? ""], accessToken).then((res) => {
+              removeFromLibrary([track?.id ?? ""], accessToken).then((res) => {
                 if (res) {
                   setIsLikedTrack(false);
                   addToast({
                     variant: "success",
                     message: `${
-                      track.type === "episode" ? "Episode" : "Song"
+                      track?.type === "episode" ? "Episode" : "Song"
                     } removed from library.`,
                   });
                 }
               });
             } else {
               const saveToLibrary =
-                track.type === "episode"
+                track?.type === "episode"
                   ? saveEpisodesToLibrary
                   : saveTracksToLibrary;
               saveToLibrary([track.id ?? ""], accessToken).then((res) => {
@@ -302,7 +340,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
                   addToast({
                     variant: "success",
                     message: `${
-                      track.type === "episode" ? "Episode" : "Song"
+                      track?.type === "episode" ? "Episode" : "Song"
                     } added to library`,
                   });
                 }

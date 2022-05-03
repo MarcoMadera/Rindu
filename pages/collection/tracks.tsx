@@ -103,6 +103,10 @@ export async function getServerSideProps({
       tracksInLibrary,
       playListTracks: {
         tracks: playListTracks.items.map(({ track, added_at }, i: number) => {
+          const isCorrupted =
+            !track?.name &&
+            !track?.artists?.[0]?.name &&
+            track?.duration_ms === 0;
           return {
             name: track?.name,
             images: track?.album.images,
@@ -113,11 +117,11 @@ export async function getServerSideProps({
             explicit: track?.explicit,
             duration: track?.duration_ms,
             audio: track?.preview_url,
-            corruptedTrack: !track?.uri,
+            corruptedTrack: isCorrupted,
             position: i,
             album: track.album,
             added_at,
-            type: track.type,
+            type: track?.type,
             media_type: "audio",
             is_local: track.is_local,
           };

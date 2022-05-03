@@ -24,6 +24,8 @@ export function mapPlaylistItems(
   startIndex: number
 ): normalTrackTypes[] {
   return items?.map(({ track, added_at, is_local }, i) => {
+    const isCorrupted =
+      !track?.name && !track?.artists?.[0]?.name && track?.duration_ms === 0;
     return {
       name: track?.name,
       images: track?.album.images,
@@ -34,7 +36,7 @@ export function mapPlaylistItems(
       explicit: track?.explicit,
       duration: track?.duration_ms,
       audio: track?.preview_url,
-      corruptedTrack: !track?.uri,
+      corruptedTrack: isCorrupted,
       position: startIndex + i,
       album: track?.album,
       added_at,
@@ -166,10 +168,6 @@ export default function Playlist({
                       scrollTop={scrollTop}
                       width={width}
                       rowRenderer={({ index, style, key }) => {
-                        if (allTracks?.[index]?.corruptedTrack) {
-                          return null;
-                        }
-
                         return (
                           <ModalCardTrack
                             accessToken={accessToken}

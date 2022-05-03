@@ -292,6 +292,8 @@ export async function getServerSideProps({
   );
   const tracks: normalTrackTypes[] | undefined = album?.tracks.items.map(
     (track) => {
+      const isCorrupted =
+        !track?.name && !track?.artists?.[0]?.name && track?.duration_ms === 0;
       return {
         name: track.name,
         album: {
@@ -302,11 +304,11 @@ export async function getServerSideProps({
           uri: album.uri,
         },
         media_type: "audio",
-        type: track.type,
+        type: track?.type,
         added_at: album.release_date,
         artists: track.artists,
         audio: track.preview_url,
-        corruptedTrack: !track.name,
+        corruptedTrack: isCorrupted,
         duration: track.duration_ms,
         explicit: track.explicit,
         href: track.href,

@@ -62,11 +62,17 @@ export function SearchInputElement({
       if (searchData?.tracks?.items.length && source === "search") {
         setAllTracks(() => {
           if (!searchData?.tracks) return [];
-          return searchData.tracks?.items?.map((track) => ({
-            ...track,
-            audio: track.preview_url,
-            corruptedTrack: false,
-          }));
+          return searchData.tracks?.items?.map((track) => {
+            const isCorrupted =
+              !track?.name &&
+              !track?.artists?.[0]?.name &&
+              track?.duration_ms === 0;
+            return {
+              ...track,
+              audio: track.preview_url,
+              corruptedTrack: isCorrupted,
+            };
+          });
         });
       }
       setShouldSearch(false);

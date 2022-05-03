@@ -67,11 +67,17 @@ const Dashboard: NextPage<DashboardProps> = ({
   useEffect(() => {
     if (!tracksRecommendations) return;
     setAllTracks(() => {
-      return tracksRecommendations?.map((track) => ({
-        ...track,
-        audio: track.preview_url,
-        corruptedTrack: false,
-      }));
+      return tracksRecommendations?.map((track) => {
+        const isCorrupted =
+          !track?.name &&
+          !track?.artists?.[0]?.name &&
+          track?.duration_ms === 0;
+        return {
+          ...track,
+          audio: track.preview_url,
+          corruptedTrack: isCorrupted,
+        };
+      });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

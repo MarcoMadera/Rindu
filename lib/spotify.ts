@@ -147,6 +147,10 @@ export const getAllTracksFromPlaylist = async (
     tracks = body.items;
     return {
       tracks: tracks.map(({ track, added_at, is_local }, i) => {
+        const isCorrupted =
+          !track?.name &&
+          !track?.artists?.[0]?.name &&
+          track?.duration_ms === 0;
         return {
           name: track?.name,
           images: track?.album.images,
@@ -157,11 +161,11 @@ export const getAllTracksFromPlaylist = async (
           explicit: track?.explicit,
           duration: track?.duration_ms,
           audio: track?.preview_url,
-          corruptedTrack: !track?.uri,
+          corruptedTrack: isCorrupted,
           position: i,
           album: track.album,
           added_at,
-          type: track.type,
+          type: track?.type,
           media_type: "audio",
           is_playable: track.is_playable,
           is_local,
