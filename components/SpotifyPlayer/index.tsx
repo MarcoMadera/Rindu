@@ -133,7 +133,16 @@ export default function SpotifyPlayer(): ReactElement {
             </button>
             <button
               className="button toggle"
-              onClick={() => player?.togglePlay()}
+              onClick={() => {
+                if (!currrentlyPlaying) {
+                  addToast({
+                    variant: "error",
+                    message: "No song playing",
+                  });
+                  return;
+                }
+                player?.togglePlay();
+              }}
             >
               {currrentlyPlaying && isPlaying ? <Pause /> : <Play />}
             </button>

@@ -365,7 +365,20 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
             Add
           </button>
         )}
-        <button className="options">
+        <button
+          className="options"
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            const x = e.pageX;
+            const y = e.pageY;
+            addContextMenu({
+              type: "cardTrack",
+              data: track,
+              position: { x, y },
+            });
+          }}
+        >
           {mouseEnter || isFocusing ? (
             <ThreeDots />
           ) : (

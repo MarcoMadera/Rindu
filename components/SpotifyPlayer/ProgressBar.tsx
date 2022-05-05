@@ -2,6 +2,7 @@ import Slider from "components/Slider";
 import useAuth from "hooks/useAuth";
 import useSpotify from "hooks/useSpotify";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
+import useToast from "hooks/useToast";
 import { ReactElement, useEffect, useState } from "react";
 import { formatTime } from "utils/formatTime";
 
@@ -11,10 +12,12 @@ export function ProgressBar(): ReactElement {
     currentlyPlayingPosition,
     isPlaying,
     player,
+    currrentlyPlaying,
   } = useSpotify();
   const [progressSeconds, setProgressSeconds] = useState(0);
   const [progressFromSpotify, setProgressFromSpotify] = useState(0);
   const { user } = useAuth();
+  const { addToast } = useToast();
   const isPremium = user?.product === "premium";
   const durationInSeconds = currentlyPlayingDuration
     ? isPremium
@@ -80,6 +83,13 @@ export function ProgressBar(): ReactElement {
         value={progressSeconds}
         maxValue={durationInSeconds}
         action={(progressPercent) => {
+          if (!currrentlyPlaying) {
+            addToast({
+              variant: "error",
+              message: "No song playing",
+            });
+            return;
+          }
           player?.seek(
             (progressPercent * (currentlyPlayingDuration ?? 0)) / 100
           );

@@ -180,7 +180,6 @@ const Home: NextPage<HomeProps> = () => {
             min-height: calc(100vh - 124px);
             width: 100%;
             display: block;
-            max-width: 1400px;
             margin: 0 auto;
           }
           .hero-title {

@@ -70,7 +70,6 @@ const Navbar: React.FC = () => {
           flex-wrap: wrap;
           justify-content: space-between;
           margin: 0 auto;
-          max-width: 1400px;
           padding: 20px;
         }
       `}</style>

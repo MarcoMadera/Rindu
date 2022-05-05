@@ -24,30 +24,31 @@ export default function Carousel({
   const [maxMoves, setMaxMoves] = useState(0);
 
   useEffect(() => {
-    if (!carouselRef.current || !containerRef.current) return;
-
-    const carousel = carouselRef.current;
-    const itemWidth = carousel.children[0].clientWidth + gap;
-    const container = containerRef.current;
-    const containerWidth = container.offsetWidth;
-    const itemsInMainContainer = Math.floor(containerWidth / itemWidth);
-    const maximumMoves = Math.ceil(totalItems / itemsInMainContainer) - 1;
-    const shouldMove =
-      timesMoveCarousel >= 0 && timesMoveCarousel <= maximumMoves;
-    const spaceToMove = timesMoveCarousel * itemsInMainContainer * itemWidth;
-    setMaxMoves(maximumMoves);
-
     function updateSize() {
+      if (!carouselRef.current || !containerRef.current) return;
+      const carousel = carouselRef.current;
+      const itemWidth = carousel.children[0].clientWidth + gap;
+      const container = containerRef.current;
+      const containerWidth = container.offsetWidth;
+      const itemsInMainContainer = Math.floor(containerWidth / itemWidth);
+      const maximumMoves = Math.ceil(totalItems / itemsInMainContainer) - 1;
+      const shouldMove =
+        timesMoveCarousel >= 0 && timesMoveCarousel <= maximumMoves;
+      const spaceToMove = timesMoveCarousel * itemsInMainContainer * itemWidth;
+      setMaxMoves(maximumMoves);
+
+      if (timesMoveCarousel > maximumMoves) {
+        setTimesMoveCarousel(maximumMoves);
+      }
       if (!carousel) return;
       carousel.style.transform = `translateX(-${spaceToMove}px)`;
+      if (shouldMove) {
+        carouselRef.current.style.transform = `translateX(-${spaceToMove}px)`;
+      }
     }
 
     window.addEventListener("resize", updateSize);
-
-    if (shouldMove) {
-      carouselRef.current.style.transform = `translateX(-${spaceToMove}px)`;
-    }
-
+    updateSize();
     return () => {
       window.removeEventListener("resize", updateSize);
     };

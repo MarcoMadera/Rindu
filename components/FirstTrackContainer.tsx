@@ -100,7 +100,7 @@ export default function FirstTrackContainer({
           height: 100%;
           padding: 20px;
           position: relative;
-          z-index: 2;
+          z-index: 15;
         }
         .bg-12 {
           background-image: linear-gradient(
@@ -129,7 +129,7 @@ export default function FirstTrackContainer({
         }
         .artists {
           position: absolute;
-          z-index: 20;
+          z-index: 10;
           width: 100%;
           bottom: 50px;
           left: 20px;
@@ -172,8 +172,8 @@ export default function FirstTrackContainer({
         }
         .firstTrack-Container :global(.play-Button) {
           position: absolute;
-          top: 58%;
-          left: 79%;
+          bottom: 50px;
+          right: 50px;
         }
       `}</style>
     </div>

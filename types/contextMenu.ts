@@ -14,18 +14,6 @@ export interface ContextMenuContextProviderProps {
   >;
 }
 
-interface NewToast {
-  variant: "info" | "error" | "success";
-  message: string;
-  displayTime?: number;
-}
-
-export interface IToast extends NewToast {
-  timeOut: NodeJS.Timeout;
-  id: string;
-  displayTime: number;
-}
-
 export interface UseContextMenu {
   contextMenuData: ContextMenuContextProviderProps["contextMenuData"];
   addContextMenu: (

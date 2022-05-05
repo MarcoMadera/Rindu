@@ -81,7 +81,6 @@ export default function CollectionPlaylists(): ReactElement {
           display: block;
           height: calc(100vh - 90px);
           width: calc(100vw - 245px);
-          max-width: 1400px;
           margin: 0 auto;
           padding: 0 20px;
         }

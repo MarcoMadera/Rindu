@@ -44,8 +44,6 @@ export default function Slider({
   const [progressPercent, setProgressPercent] = useState(initialValuePercent);
   const [isPressingMouse, setIsPressingMouse] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [sliderPositionX, setSliderPositionX] = useState(0);
-  const [sliderWidth, setSliderWidth] = useState(0);
   const sliderRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
@@ -83,20 +81,20 @@ export default function Slider({
     onDragging,
   ]);
 
-  const getMyCurrentPositionPercent = useCallback(
-    (e) => {
-      const myposition = e.screenX;
-      const myPositionInSlider =
-        myposition > sliderPositionX + sliderWidth
-          ? sliderWidth
-          : myposition < sliderPositionX
-          ? 0
-          : myposition - sliderPositionX;
-      const currentPositionPercent = (myPositionInSlider * 100) / sliderWidth;
-      return currentPositionPercent;
-    },
-    [sliderPositionX, sliderWidth]
-  );
+  const getMyCurrentPositionPercent = useCallback((e) => {
+    const myposition = e.pageX;
+    const sliderPositionX = sliderRef.current?.parentElement?.offsetLeft ?? 0;
+    const sliderWidth = sliderRef.current?.clientWidth ?? 0;
+    const sliderXEnd = sliderPositionX + sliderWidth;
+    const myPositionInSlider =
+      myposition > sliderXEnd
+        ? sliderWidth
+        : myposition < sliderPositionX
+        ? 0
+        : myposition - sliderPositionX;
+    const currentPositionPercent = (myPositionInSlider * 100) / sliderWidth;
+    return currentPositionPercent;
+  }, []);
 
   useEffect(() => {
     if (!isPressingMouse) {
@@ -136,17 +134,9 @@ export default function Slider({
     action,
     isDragging,
     progressPercent,
-    sliderPositionX,
-    sliderWidth,
     onProgressChange,
     getMyCurrentPositionPercent,
   ]);
-
-  // Remove this because won't change resizing the screen
-  useEffect(() => {
-    setSliderWidth(sliderRef.current?.clientWidth ?? 0);
-    setSliderPositionX(sliderRef.current?.parentElement?.offsetLeft ?? 0);
-  }, []);
 
   return (
     <div className="barContainer">
@@ -170,7 +160,9 @@ export default function Slider({
         onMouseMove={(e) => {
           if (isPressingMouse) {
             setProgressPercent(
-              ((e.screenX - sliderPositionX) * 100) / sliderWidth
+              ((e.pageX - (sliderRef.current?.parentElement?.offsetLeft ?? 0)) *
+                100) /
+                (sliderRef.current?.clientWidth ?? 0)
             );
             const currentPositionPercent = getMyCurrentPositionPercent(e);
             setProgressPercent(currentPositionPercent);
@@ -180,7 +172,9 @@ export default function Slider({
         onMouseDown={(e) => {
           setIsPressingMouse(true);
           setProgressPercent(
-            ((e.screenX - sliderPositionX) * 100) / sliderWidth
+            ((e.pageX - (sliderRef.current?.parentElement?.offsetLeft ?? 0)) *
+              100) /
+              (sliderRef.current?.clientWidth ?? 0)
           );
           const currentPositionPercent = getMyCurrentPositionPercent(e);
           onProgressChange(currentPositionPercent);
@@ -202,16 +196,14 @@ export default function Slider({
             <div
               className="line"
               style={{
-                transform: `translateX(calc(-100% + ${
-                  progressPercent >= 100 ? 100 : progressPercent
-                }%))`,
+                transform: `translateX(calc(-100% + ${progressPercent}%))`,
               }}
             ></div>
           </div>
           <div
             className="dot"
             style={{
-              left: `${progressPercent >= 100 ? 100 : progressPercent}%`,
+              left: `${progressPercent}%`,
             }}
           ></div>
         </div>

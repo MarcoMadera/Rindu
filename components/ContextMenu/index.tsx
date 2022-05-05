@@ -34,15 +34,21 @@ export default function ContextMenu(): ReactPortal | null {
   }, []);
 
   useEffect(() => {
-    document.querySelector("#__next")?.addEventListener("click", () => {
-      removeContextMenu();
-    });
+    if (!contextMenuData) return;
+
+    document.querySelector("#__next")?.addEventListener(
+      "click",
+      () => {
+        removeContextMenu();
+      },
+      { once: true }
+    );
     return () => {
       document.querySelector("#__next")?.removeEventListener("click", () => {
         removeContextMenu();
       });
     };
-  }, [removeContextMenu]);
+  }, [contextMenuData, removeContextMenu]);
 
   useLayoutEffect(() => {
     setIsDifferentPosX(false);
