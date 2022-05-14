@@ -100,7 +100,9 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
     (!isPremium && track?.audio) ||
     (isPremium && !(track?.is_playable === false) && !track?.is_local);
 
-  const isTheSameAsCurrentlyPlaying = currrentlyPlaying?.name === track?.name;
+  const isTheSameAsCurrentlyPlaying =
+    currrentlyPlaying?.name === track?.name &&
+    currrentlyPlaying?.album.name === track?.album.name;
 
   function playThisTrack() {
     playCurrentTrack(track, {

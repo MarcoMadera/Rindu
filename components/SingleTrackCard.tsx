@@ -102,7 +102,7 @@ export default function SingleTrackCard({
               background-color: rgba(255, 255, 255, 0.2);
             }
             a:hover span,
-            a:focus span {
+            a:focus-within span {
               opacity: 1;
             }
             div {

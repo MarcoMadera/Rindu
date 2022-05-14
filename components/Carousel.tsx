@@ -5,6 +5,8 @@ import {
   useEffect,
   useRef,
   useState,
+  isValidElement,
+  cloneElement,
 } from "react";
 import { Chevron } from "./icons/Chevron";
 
@@ -88,7 +90,23 @@ export default function Carousel({
         </div>
       </div>
       <section ref={carouselRef} className="carousel-content">
-        {children}
+        {Children.map(children, (child, number) => {
+          if (isValidElement(child) && carouselRef.current) {
+            const itemWidth = carouselRef.current.children[0].clientWidth + gap;
+            const containerWidth = containerRef.current?.offsetWidth;
+            if (!containerWidth) return;
+            const itemsInMainContainer = Math.floor(containerWidth / itemWidth);
+            const minRange = itemsInMainContainer * timesMoveCarousel;
+            const maxRange = itemsInMainContainer * (timesMoveCarousel + 1);
+            const shouldFocus = number < maxRange && number >= minRange;
+            return cloneElement(child, {
+              ...child.props,
+              tabIndex: shouldFocus ? 0 : -1,
+              "aria-hidden": shouldFocus ? "false" : "true",
+            });
+          }
+          return <>{child}</>;
+        })}
       </section>
       <style jsx>{`
         .carousel-container {

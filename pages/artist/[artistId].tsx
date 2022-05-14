@@ -86,7 +86,7 @@ export default function ArtistPage({
   }, [accessToken, currentArtist?.id, router]);
 
   useEffect(() => {
-    setElement(() => <ExtraHeader />);
+    setElement(() => <ExtraHeader uri={currentArtist?.uri} />);
     const user: SpotifyApi.UserObjectPublic = {
       display_name: currentArtist?.name,
       id: currentArtist?.id ?? "",
@@ -167,7 +167,7 @@ export default function ArtistPage({
         popularity={currentArtist?.popularity ?? 0}
       />
       <div className="options">
-        <PlayButton size={56} centerSize={28} />
+        <PlayButton uri={currentArtist?.uri} size={56} centerSize={28} />
         <div className="info button-inof">
           <button
             className="follow-button"

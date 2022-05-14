@@ -32,6 +32,7 @@ export function NavbarLeft({
     pictureInPictureCanvas,
     videoRef,
     setIsPip,
+    isPip,
   } = useSpotify();
   const { addToast } = useToast();
   const { addContextMenu } = useContextMenu();
@@ -189,20 +190,28 @@ export function NavbarLeft({
         ) : null}
       </button>
       <button
-        className="navBar-Button"
+        className="navBar-Button pictureInPicture"
         onClick={() => {
           if (pictureInPictureCanvas.current && videoRef.current) {
-            callPictureInPicture(
-              pictureInPictureCanvas.current,
-              videoRef.current
-            );
-            setIsPip((prev) => !prev);
+            if (isPip && document.pictureInPictureElement) {
+              setIsPip(false);
+              document.exitPictureInPicture();
+            } else {
+              callPictureInPicture(
+                pictureInPictureCanvas.current,
+                videoRef.current
+              );
+              setIsPip(true);
+            }
           }
         }}
       >
         <PictureInPicture />
       </button>
       <style jsx>{`
+        .navBar-Button.pictureInPicture {
+          color: ${isPip ? "#1db954" : "#ffffffb3"};
+        }
         .img-container {
           display: ${isShowingSideBarImg ? "none" : "block"};
           position: relative;
@@ -238,6 +247,7 @@ export function NavbarLeft({
           margin: 0 10px;
           color: #ffffffb3;
         }
+        .navBar-Button.pictureInPicture:hover,
         .navBar-Button:hover {
           color: #fff;
         }

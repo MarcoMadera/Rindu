@@ -29,9 +29,9 @@ export function ProgressBar(): ReactElement {
     if (!isPlaying) {
       return;
     }
-    if (currentlyPlayingPosition) {
+    if (currentlyPlayingPosition !== undefined) {
       setProgressFromSpotify(
-        !!currentlyPlayingPosition && currentlyPlayingDuration
+        currentlyPlayingPosition > 0 && currentlyPlayingDuration
           ? 100 * (currentlyPlayingPosition / currentlyPlayingDuration)
           : 0
       );

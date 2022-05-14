@@ -283,6 +283,10 @@ export default function SpotifyPlayer(): ReactElement {
               action={() => {
                 player?.setVolume(volume);
                 setLastVolume(volume);
+                localStorage.setItem(
+                  "playback",
+                  encodeURI(JSON.stringify({ volume }))
+                );
               }}
               valueText={`${volume}`}
               initialValuePercent={100}

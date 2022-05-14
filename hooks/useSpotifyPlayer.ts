@@ -216,26 +216,24 @@ export default function useSpotifyPlayer({
         }
       );
 
-      spotifyPlayer.current.addListener(
-        "player_state_changed",
-        (trackWindow) => {
-          setCurrentlyPlaying(trackWindow?.track_window.current_track);
-          setCurrentlyPlayingPosition(trackWindow?.position);
-          setCurrentlyPlayingDuration(trackWindow?.duration);
+      spotifyPlayer.current?.on("player_state_changed", (trackWindow) => {
+        setCurrentlyPlayingDuration(trackWindow?.duration);
+        setCurrentlyPlayingPosition(trackWindow?.position);
+        setCurrentlyPlaying(trackWindow?.track_window.current_track);
 
-          spotifyPlayer.current?.on("authentication_error", () => {
-            addToast({
-              variant: "error",
-              message: "The user has not been authenticated",
-            });
-          });
-          if (trackWindow) {
-            setIsPlaying(!trackWindow.paused);
-          }
-          // trackWindow?.track_window.next_tracks
-          // trackWindow?.track_window.previous_tracks
+        if (trackWindow) {
+          setIsPlaying(!trackWindow.paused);
         }
-      );
+        // trackWindow?.track_window.next_tracks
+        // trackWindow?.track_window.previous_tracks
+      });
+
+      spotifyPlayer.current?.on("authentication_error", () => {
+        addToast({
+          variant: "error",
+          message: "The user has not been authenticated",
+        });
+      });
 
       spotifyPlayer.current.addListener("initialization_error", () => {
         addToast({

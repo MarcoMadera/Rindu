@@ -51,6 +51,14 @@ export function SpotifyContextProvider({
   const { user } = useAuth();
 
   useEffect(() => {
+    const playback = localStorage.getItem("playback");
+    if (playback) {
+      const playbackObj = JSON.parse(decodeURI(playback));
+      setVolume(playbackObj.volume);
+    }
+  }, []);
+
+  useEffect(() => {
     if (currrentlyPlaying && "mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: currrentlyPlaying.name,
@@ -87,12 +95,27 @@ export function SpotifyContextProvider({
     const canvas = document.createElement("canvas");
     canvas.width = canvas.height = 512;
     const video = document.createElement("video");
+    video.addEventListener("leavepictureinpicture", () => {
+      setIsPip(false);
+    });
+    video.addEventListener("enterpictureinpicture", () => {
+      setIsPip(true);
+    });
 
     video.muted = true;
     video.srcObject = canvas.captureStream();
     pictureInPictureCanvas.current = canvas;
     videoRef.current = video;
-  }, [isPlaying, currrentlyPlaying]);
+
+    return () => {
+      video.removeEventListener("leavepictureinpicture", () => {
+        setIsPip(false);
+      });
+      video.removeEventListener("enterpictureinpicture", () => {
+        setIsPip(true);
+      });
+    };
+  }, [currrentlyPlaying, isPlaying]);
 
   useEffect(() => {
     if (
