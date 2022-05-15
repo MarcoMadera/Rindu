@@ -70,7 +70,6 @@ export async function playCurrentTrack(
 
     const res = await play(accessToken, deviceId, playConfig, setAccessToken);
     setPlaylistPlayingId(isSingleTrack ? undefined : playlistId);
-    setCurrentlyPlaying(track);
     return res;
   }
 

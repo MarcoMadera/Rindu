@@ -36,6 +36,20 @@ export function NavbarLeft({
   } = useSpotify();
   const { addToast } = useToast();
   const { addContextMenu } = useContextMenu();
+  const [hideImg, setHideImg] = useState(false);
+
+  useEffect(() => {
+    if (!isShowingSideBarImg) {
+      return setHideImg(false);
+    }
+    const timer = setTimeout(() => {
+      setHideImg(true);
+    }, 400);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [isShowingSideBarImg]);
 
   useEffect(() => {
     if (!currrentlyPlaying?.id) return;
@@ -67,6 +81,7 @@ export function NavbarLeft({
             <a>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
+                className={`${isShowingSideBarImg ? "hide" : ""}`}
                 src={
                   currrentlyPlaying.album.images[2]?.url ??
                   currrentlyPlaying.album.images[1]?.url
@@ -81,6 +96,7 @@ export function NavbarLeft({
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
+              className={`${isShowingSideBarImg ? "hide" : ""}`}
               src={
                 currrentlyPlaying.album.images[2]?.url ??
                 currrentlyPlaying.album.images[1]?.url
@@ -213,7 +229,7 @@ export function NavbarLeft({
           color: ${isPip ? "#1db954" : "#ffffffb3"};
         }
         .img-container {
-          display: ${isShowingSideBarImg ? "none" : "block"};
+          display: ${hideImg ? "none" : "block"};
           position: relative;
           margin-right: 23px;
         }
@@ -289,6 +305,24 @@ export function NavbarLeft({
         img {
           margin: 0;
           padding: 0;
+        }
+        .hide {
+          animation: slide-out-top 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53)
+            both;
+        }
+        @keyframes slide-out-top {
+          0% {
+            transform: translateY(0);
+            opacity: 1;
+          }
+          50% {
+            transform: translateY(-30px);
+            opacity: 0.2;
+          }
+          100% {
+            transform: translateY(-50px);
+            opacity: 0;
+          }
         }
       `}</style>
     </div>

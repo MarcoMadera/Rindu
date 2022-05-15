@@ -21,6 +21,7 @@ import { getArtistById } from "utils/spotifyCalls/getArtistById";
 import Link from "next/link";
 import { HeaderType } from "types/spotify";
 import { SITE_URL } from "utils/constants";
+import useToast from "hooks/useToast";
 
 function BigPill({
   img,
@@ -122,6 +123,7 @@ export default function TrackPage({
   const [artistInfo, setArtistInfo] =
     useState<SpotifyApi.SingleArtistResponse | null>(null);
   const [sameTrackIndex, setSameTrackIndex] = useState(-1);
+  const { addToast } = useToast();
 
   useEffect(() => {
     if (track) {
@@ -264,12 +266,20 @@ export default function TrackPage({
                     removeTracksFromLibrary([track.id]).then((res) => {
                       if (res) {
                         setIsTrackInLibrary(false);
+                        addToast({
+                          variant: "success",
+                          message: "Song removed from library.",
+                        });
                       }
                     });
                   } else {
                     saveTracksToLibrary([track.id]).then((res) => {
                       if (res) {
                         setIsTrackInLibrary(true);
+                        addToast({
+                          variant: "success",
+                          message: "Song added to library.",
+                        });
                       }
                     });
                   }

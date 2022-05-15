@@ -145,4 +145,5 @@ export interface ISpotifyContext {
   videoRef: MutableRefObject<HTMLVideoElement | undefined>;
   showHamburguerMenu: boolean;
   setShowHamburguerMenu: Dispatch<SetStateAction<boolean>>;
+  recentlyPlayed: normalTrackTypes[];
 }

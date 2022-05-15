@@ -20,10 +20,11 @@ export default function SubTitle({
       {releaseYear && <>{getYear(releaseYear)} · </>}
       {albumType && <>{capitalizeFirstLetter(albumType)} · </>}
       {artists?.map((artist, i) => {
+        const idFromUri = artist.uri.split(":")[2];
         if (i > 2) return null;
         return (
-          <Fragment key={artist.id}>
-            <Link href={`/artist/${artist.id}`}>
+          <Fragment key={artist.id ?? idFromUri}>
+            <Link href={`/artist/${artist.id ?? idFromUri}`}>
               <a
                 className="link"
                 aria-hidden={isVisible ? "false" : "true"}

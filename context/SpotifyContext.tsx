@@ -11,6 +11,7 @@ import {
 import {
   AllTracksFromAPlayList,
   ISpotifyContext,
+  normalTrackTypes,
   PlaylistItems,
   trackItem,
 } from "types/spotify";
@@ -45,18 +46,61 @@ export function SpotifyContextProvider({
   const [lastVolume, setLastVolume] = useState<number>(1);
   const [isPip, setIsPip] = useState(false);
   const [showHamburguerMenu, setShowHamburguerMenu] = useState(false);
+  const [recentlyPlayed, setRecentlyPlayed] = useState<normalTrackTypes[]>([]);
   const pictureInPictureCanvas = useRef<HTMLCanvasElement>();
   const videoRef = useRef<HTMLVideoElement>();
 
   const { user } = useAuth();
+  useEffect(() => {
+    if (playedSource) {
+      const type = playedSource.split(":")[1];
+      if (type === "track" && currrentlyPlaying) {
+        setRecentlyPlayed((prev) => {
+          if (prev.some((el) => el.uri === currrentlyPlaying.uri)) {
+            localStorage.setItem(
+              `${user?.id}:recentlyPlayed`,
+              JSON.stringify(prev)
+            );
+            return prev;
+          }
+
+          if (prev.length === 10) {
+            const newRecentlyPlayedwithLimit = [
+              currrentlyPlaying,
+              ...prev.slice(0, -1),
+            ];
+            localStorage.setItem(
+              `${user?.id}:recentlyPlayed`,
+              JSON.stringify(newRecentlyPlayedwithLimit)
+            );
+            return newRecentlyPlayedwithLimit;
+          }
+          const newRecentlyPlayed = [currrentlyPlaying, ...prev];
+          localStorage.setItem(
+            `${user?.id}:recentlyPlayed`,
+            JSON.stringify(newRecentlyPlayed)
+          );
+
+          return newRecentlyPlayed;
+        });
+      }
+    }
+  }, [playedSource, currrentlyPlaying, user?.id]);
 
   useEffect(() => {
     const playback = localStorage.getItem("playback");
+    const recentlyPlayedFromLocal = localStorage.getItem(
+      `${user?.id}:recentlyPlayed`
+    );
     if (playback) {
       const playbackObj = JSON.parse(decodeURI(playback));
       setVolume(playbackObj.volume);
     }
-  }, []);
+    if (recentlyPlayedFromLocal) {
+      const recentlyPlayedObj = JSON.parse(recentlyPlayedFromLocal);
+      setRecentlyPlayed(recentlyPlayedObj);
+    }
+  }, [user?.id]);
 
   useEffect(() => {
     if (currrentlyPlaying && "mediaSession" in navigator) {
@@ -226,6 +270,7 @@ export function SpotifyContextProvider({
         setIsPip,
         showHamburguerMenu,
         setShowHamburguerMenu,
+        recentlyPlayed,
       }}
     >
       {children}

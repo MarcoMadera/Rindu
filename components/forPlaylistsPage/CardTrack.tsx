@@ -127,7 +127,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
     setPlayedSource(
       isCollection && playlistDetails
         ? `spotify:${playlistDetails?.type}:${playlistDetails?.id}`
-        : source
+        : source ?? track.uri
     );
   }
 

@@ -67,6 +67,9 @@ const PresentationCard: React.FC<
         }
         div {
           position: relative;
+          background-color: #181818;
+          transition: background-color 0.3s ease;
+          border-radius: 4px;
         }
         span {
           position: absolute;
@@ -75,6 +78,10 @@ const PresentationCard: React.FC<
           transition: all 0.3s ease;
           opacity: 0;
           display: ${!isPremium || !uri ? "none" : "flex"};
+        }
+        div:hover,
+        div:focus-within {
+          background-color: #282828;
         }
         div:focus-within span,
         div:hover span {

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PresentationCard from "components/forDashboardPage/PlaylistCard";
 import useAuth from "hooks/useAuth";
 import {
@@ -14,7 +14,7 @@ import { getAuthorizationByCode } from "utils/spotifyCalls/getAuthorizationByCod
 import useHeader from "hooks/useHeader";
 import { useRouter } from "next/router";
 import { getRecommendations } from "utils/spotifyCalls/getRecommendations";
-import { getMyTopTracks } from "utils/spotifyCalls/getMyTopTracks";
+import { getMyTop, TopType } from "utils/spotifyCalls/getMyTop";
 import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
 import { getFeaturedPlaylists } from "utils/spotifyCalls/getFeaturedPlaylists";
 import { getNewReleases } from "utils/spotifyCalls/getNewReleases";
@@ -35,6 +35,7 @@ interface DashboardProps {
   newReleases: SpotifyApi.ListOfNewReleasesResponse | null;
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
   topTracks: SpotifyApi.UsersTopTracksResponse | null;
+  topArtists: SpotifyApi.UsersTopArtistsResponse | null;
   tracksRecommendations: SpotifyApi.TrackObjectFull[] | null;
   tracksInLibrary: boolean[] | null;
 }
@@ -59,6 +60,7 @@ const Dashboard: NextPage<DashboardProps> = ({
   topTracks,
   tracksRecommendations,
   tracksInLibrary,
+  topArtists,
 }) => {
   const { setIsLogin, setUser } = useAuth();
   const { setHeaderColor } = useHeader({
@@ -66,7 +68,36 @@ const Dashboard: NextPage<DashboardProps> = ({
     alwaysDisplayColor: true,
   });
   const router = useRouter();
-  const { setAllTracks } = useSpotify();
+  const { setAllTracks, recentlyPlayed } = useSpotify();
+  const [recentListeningRecommendations, setRecentListeningRecommendations] =
+    useState<SpotifyApi.TrackObjectFull[]>([]);
+
+  useEffect(() => {
+    if (
+      recentlyPlayed.length > 0 &&
+      user?.country &&
+      recentListeningRecommendations.length === 0
+    ) {
+      const seeds: string[] = [];
+      recentlyPlayed.forEach((track) => {
+        if (track.id) {
+          seeds.push(track.id);
+        }
+      });
+      getRecommendations(seeds.slice(0, 5), user?.country, accessToken).then(
+        (res) => {
+          if (res) {
+            setRecentListeningRecommendations(res);
+          }
+        }
+      );
+    }
+  }, [
+    recentlyPlayed,
+    user,
+    accessToken,
+    recentListeningRecommendations.length,
+  ]);
 
   useEffect(() => {
     if (!user) return;
@@ -137,6 +168,64 @@ const Dashboard: NextPage<DashboardProps> = ({
               )}
           </Carousel>
         ) : null}
+        {recentlyPlayed && recentlyPlayed?.length > 0 ? (
+          <Carousel title="Recién escuchaste" gap={24}>
+            {recentlyPlayed.map((track) => {
+              return (
+                <PresentationCard
+                  type="track"
+                  key={track.id}
+                  images={track.album.images as SpotifyApi.ImageObject[]}
+                  title={track.name ?? ""}
+                  subTitle={
+                    track.artists ? (
+                      <SubTitle
+                        artists={
+                          track.artists as SpotifyApi.ArtistObjectSimplified[]
+                        }
+                      />
+                    ) : (
+                      ""
+                    )
+                  }
+                  id={track.id ?? ""}
+                  isSingle
+                  track={{
+                    ...track,
+                    album: {
+                      ...track.album,
+                      images: track.album.images as SpotifyApi.ImageObject[],
+                      release_date_precision: "day",
+                      href: "",
+                      album_type: "album",
+                      artists:
+                        track.artists as SpotifyApi.ArtistObjectSimplified[],
+                      id: track.album.id ?? "",
+                      release_date: track.album.release_date ?? "",
+                      type: "album",
+                      external_urls: { spotify: "" },
+                    },
+                    external_ids: { isrc: "" },
+                    disc_number: 1,
+                    duration_ms: 0,
+                    popularity: 0,
+                    preview_url: "",
+                    external_urls: { spotify: "" },
+                    track_number: 1,
+                    href: "",
+                    artists:
+                      track.artists as SpotifyApi.ArtistObjectSimplified[],
+                    explicit: false,
+                    id: track.id ?? "",
+                    name: track.name ?? "",
+                    type: "track",
+                    uri: track.uri ?? "",
+                  }}
+                />
+              );
+            })}
+          </Carousel>
+        ) : null}
         {newReleases && newReleases.albums?.items?.length > 0 ? (
           <Carousel title={newReleases.message ?? "Lo más nuevo"} gap={24}>
             {newReleases.albums?.items?.map(
@@ -201,20 +290,57 @@ const Dashboard: NextPage<DashboardProps> = ({
             </Carousel>
           </>
         )}
-        <Carousel title={"Categorias"} gap={24}>
-          {categories?.items.map(({ name, id, icons }) => {
-            return (
-              <PresentationCard
-                type="genre"
-                key={id}
-                images={icons}
-                title={name}
-                subTitle={""}
-                id={id}
-              />
-            );
-          })}
-        </Carousel>
+        {recentListeningRecommendations &&
+        recentListeningRecommendations?.length > 0 ? (
+          <Carousel title={"Basado en lo que escuchaste"} gap={24}>
+            {recentListeningRecommendations?.map((track) => {
+              return (
+                <PresentationCard
+                  type="track"
+                  key={track.id}
+                  images={track.album.images}
+                  title={track.name}
+                  subTitle={<SubTitle artists={track.artists} />}
+                  id={track.id}
+                  isSingle
+                  track={track}
+                />
+              );
+            })}
+          </Carousel>
+        ) : null}
+        {topArtists && topArtists.items?.length > 0 ? (
+          <Carousel title={"Disfruta de tus artistas favoritos"} gap={24}>
+            {topArtists.items?.map(({ images, name, id }) => {
+              return (
+                <PresentationCard
+                  type="artist"
+                  key={id}
+                  images={images}
+                  title={name}
+                  subTitle={"Artist"}
+                  id={id}
+                />
+              );
+            })}
+          </Carousel>
+        ) : null}
+        {categories && categories?.items?.length > 0 ? (
+          <Carousel title={"Categorias"} gap={24}>
+            {categories?.items.map(({ name, id, icons }) => {
+              return (
+                <PresentationCard
+                  type="genre"
+                  key={id}
+                  images={icons}
+                  title={name}
+                  subTitle={""}
+                  id={id}
+                />
+              );
+            })}
+          </Carousel>
+        ) : null}
       </main>
 
       <style jsx>{`
@@ -338,14 +464,28 @@ export async function getServerSideProps({
     accessToken,
     cookies
   );
-  const topTracksProm = getMyTopTracks(accessToken, 10, "short_term", cookies);
+  const topTracksProm = getMyTop(
+    TopType.TRACKS,
+    accessToken,
+    10,
+    "short_term",
+    cookies
+  );
+  const topArtistsProm = getMyTop(
+    TopType.ARTISTS,
+    accessToken,
+    20,
+    "long_term",
+    cookies
+  );
 
-  const [featuredPlaylists, newReleases, categories, topTracks] =
+  const [featuredPlaylists, newReleases, categories, topTracks, topArtists] =
     await Promise.allSettled([
       featuredPlaylistsProm,
       newReleasesProm,
       categoriesProm,
       topTracksProm,
+      topArtistsProm,
     ]);
 
   const seed_tracks =
@@ -380,6 +520,7 @@ export async function getServerSideProps({
         newReleases.status === "fulfilled" ? newReleases.value : null,
       categories: categories.status === "fulfilled" ? categories.value : null,
       topTracks: topTracks.status === "fulfilled" ? topTracks.value : null,
+      topArtists: topArtists.status === "fulfilled" ? topArtists.value : null,
       tracksRecommendations,
       tracksInLibrary,
     },

@@ -51,6 +51,7 @@ export default function useSpotify(): ISpotifyContext & {
     setIsPip,
     showHamburguerMenu,
     setShowHamburguerMenu,
+    recentlyPlayed,
   } = useContext(SpotifyContext);
   const { user } = useAuth();
 
@@ -150,5 +151,6 @@ export default function useSpotify(): ISpotifyContext & {
     setIsPip,
     showHamburguerMenu,
     setShowHamburguerMenu,
+    recentlyPlayed,
   };
 }

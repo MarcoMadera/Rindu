@@ -28,8 +28,8 @@ export const CardContent: React.FC<CardContentProps> = ({
         <img
           loading="lazy"
           src={
-            images[1]?.url ??
-            (images[0]?.url || `${SITE_URL}/defaultSongCover.jpeg`)
+            images[0]?.url ??
+            (images[1]?.url || `${SITE_URL}/defaultSongCover.jpeg`)
           }
           alt={title}
         />
@@ -73,7 +73,6 @@ export const CardContent: React.FC<CardContentProps> = ({
           color: #b3b3b3;
         }
         article {
-          background-color: #181818;
           width: 100%;
           min-width: 100%;
           height: 100%;
@@ -83,11 +82,7 @@ export const CardContent: React.FC<CardContentProps> = ({
           isolation: isolate;
           padding: 16px;
           position: relative;
-          transition: background-color 0.3s ease;
           max-width: min-content;
-        }
-        article:hover {
-          background-color: #282828;
         }
         img {
           width: 100%;

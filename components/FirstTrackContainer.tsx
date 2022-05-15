@@ -63,14 +63,6 @@ export default function FirstTrackContainer({
           // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
           tabIndex={isVisible ? 0 : -1}
         >
-          {isPlayable ? (
-            <PlayButton
-              size={60}
-              centerSize={28}
-              track={track}
-              position={position}
-            />
-          ) : null}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={track.album.images[1].url}
@@ -90,6 +82,14 @@ export default function FirstTrackContainer({
           <h3>{track.name}</h3>
         </a>
       </Link>
+      {isPlayable ? (
+        <PlayButton
+          size={60}
+          centerSize={28}
+          track={track}
+          position={position}
+        />
+      ) : null}
       <div className="artists">
         <span>
           {track.artists?.map((artist, i) => {
@@ -116,6 +116,8 @@ export default function FirstTrackContainer({
       <style jsx>{`
         img {
           box-shadow: 0 4px 60px rgb(0 0 0 / 50%);
+          position: relative;
+          z-index: 32293;
         }
         .firstTrack {
           text-decoration: none;
@@ -125,7 +127,7 @@ export default function FirstTrackContainer({
           height: 100%;
           padding: 20px;
           position: relative;
-          z-index: 15;
+          z-index: 2323223;
         }
         .bg-12 {
           background-image: linear-gradient(
@@ -160,6 +162,7 @@ export default function FirstTrackContainer({
           left: 20px;
           max-width: 80%;
           width: fit-content;
+          z-index: 32323231;
         }
         .firstTrack-Container span {
           -webkit-line-clamp: 3;
@@ -185,6 +188,8 @@ export default function FirstTrackContainer({
           white-space: nowrap;
           color: #fff;
           max-width: 80%;
+          position: relative;
+          z-index: 3294343;
         }
         .firstTrack-Container a {
           color: #b3b3b3;
@@ -192,13 +197,14 @@ export default function FirstTrackContainer({
         }
         .firstTrack-Container .link:hover,
         .firstTrack-Container .link:focus {
-          text-decoration: none;
+          text-decoration: underline;
           color: #fff;
         }
         .firstTrack-Container :global(.play-Button) {
           position: absolute;
           bottom: 50px;
           right: 50px;
+          z-index: 32323232;
         }
       `}</style>
     </div>

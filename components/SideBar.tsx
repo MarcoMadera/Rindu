@@ -320,7 +320,11 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
               );
             })}
           </section>
-          <section className="sidebarImg-container">
+          <section
+            className={`sidebarImg-container ${
+              isShowingSideBarImg ? "animate" : ""
+            }`}
+          >
             {currrentlyPlaying && (
               <>
                 <button
@@ -362,16 +366,47 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
         </nav>
         {children}
         <style jsx>{`
+          section:nth-of-type(1) a:nth-of-type(1) {
+            color: ${router.asPath === "/dashboard" ? "#fff" : "inherit"};
+            background: ${router.asPath === "/dashboard" ? "#282828" : "unset"};
+          }
+          section:nth-of-type(1) a:nth-of-type(2) {
+            color: ${router.asPath === "/search" ? "#fff" : "inherit"};
+            background: ${router.asPath === "/search" ? "#282828" : "unset"};
+          }
+          section:nth-of-type(1) a:nth-of-type(3) {
+            color: ${router.asPath === "/library" ? "#fff" : "inherit"};
+            background: ${router.asPath === "/library" ? "#282828" : "unset"};
+          }
+        `}</style>
+        <style jsx>{`
           .sidebarImg-container {
             overflow-y: hidden;
             position: relative;
             align-self: end;
             display: flex;
+            position: relative;
+            display: ${isShowingSideBarImg ? "block" : "none"};
+          }
+          .animate {
+            animation: scale-in-ver-bottom 0.4s
+              cubic-bezier(0.785, 0.135, 0.15, 0.86) both;
+          }
+          @keyframes scale-in-ver-bottom {
+            0% {
+              transform: scaleY(0);
+              transform-origin: 0% 100%;
+              opacity: 1;
+            }
+            100% {
+              transform: scaleY(1);
+              transform-origin: 0% 100%;
+              opacity: 1;
+            }
           }
           img {
             width: 100%;
             aspect-ratio: 1;
-            display: ${isShowingSideBarImg ? "block" : "none"};
           }
           .section-2 {
             overflow-y: hidden;
@@ -434,18 +469,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
             color: #b3b3b3;
             font-size: 13px;
           }
-          section:nth-of-type(1) a:nth-of-type(1) {
-            color: ${router.asPath === "/dashboard" ? "#fff" : "inherit"};
-            background: ${router.asPath === "/dashboard" ? "#282828" : "unset"};
-          }
-          section:nth-of-type(1) a:nth-of-type(2) {
-            color: ${router.asPath === "/search" ? "#fff" : "inherit"};
-            background: ${router.asPath === "/search" ? "#282828" : "unset"};
-          }
-          section:nth-of-type(1) a:nth-of-type(3) {
-            color: ${router.asPath === "/library" ? "#fff" : "inherit"};
-            background: ${router.asPath === "/library" ? "#282828" : "unset"};
-          }
+
           section:nth-of-type(1) a:hover {
             color: #fff;
           }

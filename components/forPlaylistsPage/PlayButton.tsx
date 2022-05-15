@@ -160,8 +160,7 @@ export function PlayButton({
           );
 
           setPlaylistPlayingId(uriId);
-
-          return setCurrentlyPlaying(track);
+          return;
         }
 
         play(

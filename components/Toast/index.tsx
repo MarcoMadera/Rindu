@@ -41,6 +41,10 @@ export default function Toast(): ReactPortal | null {
           transform: translate(-50%, -50%);
           margin: 0 auto;
         }
+        :global(#toast) {
+          position: relative;
+          z-index: 993332323233232399;
+        }
       `}</style>
     </section>,
     targetNode
