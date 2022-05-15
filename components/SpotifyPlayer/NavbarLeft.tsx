@@ -238,7 +238,7 @@ export function NavbarLeft({
           transform: scale(1.1);
         }
         span.trackArtists {
-          font-size: 14px;
+          font-size: 12px;
         }
         .navBar-Button {
           background: transparent;

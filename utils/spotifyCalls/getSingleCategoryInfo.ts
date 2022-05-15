@@ -1,16 +1,13 @@
 import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 import { takeCookie } from "utils/cookies";
 
-export async function getCategories(
-  country: string,
-  limit?: number,
+export async function getSingleCategoryInfo(
+  category: string,
   accessToken?: string,
   cookies?: string
-): Promise<SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null> {
+): Promise<SpotifyApi.SingleCategoryResponse | null> {
   const res = await fetch(
-    `https://api.spotify.com/v1/browse/categories?country=${country}&limit=${
-      limit ?? 5
-    }`,
+    `https://api.spotify.com/v1/browse/categories/${category}`,
     {
       method: "GET",
       headers: {
@@ -21,10 +18,9 @@ export async function getCategories(
       },
     }
   );
-
   if (res.ok) {
-    const data: SpotifyApi.MultipleCategoriesResponse = await res.json();
-    return data.categories as SpotifyApi.PagingObject<SpotifyApi.CategoryObject>;
+    const data = await res.json();
+    return data;
   }
   return null;
 }

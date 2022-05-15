@@ -17,7 +17,7 @@ interface PresentationCardProps {
   id: string;
   images?: SpotifyApi.ImageObject[];
   title: string;
-  subTitle: string;
+  subTitle: string | JSX.Element;
   track?: SpotifyApi.TrackObjectFull;
   isSingle?: boolean;
 }

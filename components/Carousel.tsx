@@ -121,7 +121,7 @@ export default function Carousel({
           display: flex;
           grid-gap: ${gap}px;
           margin: 20px 0 50px 0;
-          transform 400ms ease-in;
+          transition: 400ms ease-in;
         }
         h2 {
           color: #fff;

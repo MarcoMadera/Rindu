@@ -1,6 +1,7 @@
 import { PlayButton } from "components/forPlaylistsPage/PlayButton";
 import useAuth from "hooks/useAuth";
 import useContextMenu from "hooks/useContextMenu";
+import useOnScreen from "hooks/useOnScreen";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, ReactElement, useEffect, useRef, useState } from "react";
@@ -10,10 +11,12 @@ export default function FirstTrackContainer({
   preview,
   track,
   backgroundColor,
+  position,
 }: {
   preview: string | null;
   track: SpotifyApi.TrackObjectFull;
   backgroundColor?: string;
+  position?: number;
 }): ReactElement {
   const [containerColor, setContainerColor] = useState<string | undefined>(
     backgroundColor
@@ -27,13 +30,15 @@ export default function FirstTrackContainer({
   const [imageIsLoaded, setImageIsLoaded] = useState(false);
   const image = useRef<HTMLImageElement>(null);
   const router = useRouter();
+  const cardRef = useRef<HTMLAnchorElement>(null);
+  const isVisible = useOnScreen(cardRef, "-60px");
 
   useEffect(() => {
     if ((image.current?.complete || imageIsLoaded) && backgroundColor) {
       if (backgroundColor) return;
-      setContainerColor(getMainColorFromImage("cover-image"));
+      setContainerColor(getMainColorFromImage(`cover-image-${track.id}`));
     }
-  }, [backgroundColor, imageIsLoaded, router.asPath]);
+  }, [backgroundColor, imageIsLoaded, router.asPath, track.id]);
 
   return (
     <div
@@ -51,9 +56,20 @@ export default function FirstTrackContainer({
     >
       <div className="bg-12"></div>
       <Link href={`/track/${track.id}`}>
-        <a className="firstTrack">
+        <a
+          className="firstTrack"
+          ref={cardRef}
+          aria-hidden={isVisible ? "false" : "true"}
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+          tabIndex={isVisible ? 0 : -1}
+        >
           {isPlayable ? (
-            <PlayButton size={60} centerSize={24} track={track} />
+            <PlayButton
+              size={60}
+              centerSize={28}
+              track={track}
+              position={position}
+            />
           ) : null}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -62,10 +78,12 @@ export default function FirstTrackContainer({
             height={100}
             alt=""
             ref={image}
-            id="cover-image"
+            id={`cover-image-${track.id}`}
             onLoad={() => {
               if (backgroundColor) return;
-              setContainerColor(getMainColorFromImage("cover-image"));
+              setContainerColor(
+                getMainColorFromImage(`cover-image-${track.id}`)
+              );
               setImageIsLoaded(true);
             }}
           />
@@ -78,7 +96,14 @@ export default function FirstTrackContainer({
             return (
               <Fragment key={artist.id}>
                 <Link href={`/artist/${artist.id}`}>
-                  <a className="link">{artist.name}</a>
+                  <a
+                    className="link"
+                    aria-hidden={isVisible ? "false" : "true"}
+                    // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+                    tabIndex={isVisible ? 0 : -1}
+                  >
+                    {artist.name}
+                  </a>
                 </Link>
                 {i !== (track.artists?.length && track.artists?.length - 1)
                   ? ", "

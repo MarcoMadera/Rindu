@@ -6,11 +6,9 @@ export async function getCategoryPlaylists(
   country?: string,
   accessToken?: string,
   cookies?: string
-): Promise<SpotifyApi.PagingObject<SpotifyApi.PlaylistObjectSimplified> | null> {
+): Promise<SpotifyApi.CategoryPlaylistsReponse | null> {
   const res = await fetch(
-    `https://api.spotify.com/v1/browse/categories/${category}/playlists?limit=50&country=${
-      country ?? "MX"
-    }`,
+    `https://api.spotify.com/v1/browse/categories/${category}/playlists?country=${country}`,
     {
       method: "GET",
       headers: {
@@ -23,7 +21,7 @@ export async function getCategoryPlaylists(
   );
   if (res.ok) {
     const data = await res.json();
-    return data.playlists;
+    return data;
   }
   return null;
 }

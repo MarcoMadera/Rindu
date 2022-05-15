@@ -21,6 +21,7 @@ import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
 import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFromLibrary";
 import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
 import useContextMenu from "hooks/useContextMenu";
+import useOnScreen from "hooks/useOnScreen";
 
 interface ModalCardTrackProps {
   track: normalTrackTypes;
@@ -89,11 +90,12 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   const [isHoveringHeart, setIsHoveringHeart] = useState(false);
   const [isFocusing, setIsFocusing] = useState(false);
   const [isLikedTrack, setIsLikedTrack] = useState(isTrackInLibrary);
-  const trackRef = useRef<HTMLDivElement>();
+  const trackRef = useRef<HTMLDivElement>(null);
   const { user, setAccessToken } = useAuth();
   const { addContextMenu } = useContextMenu();
   const { addToast } = useToast();
   const isPremium = user?.product === "premium";
+  const isVisible = useOnScreen(trackRef);
 
   const isPlayable =
     track?.type === "episode" ||
@@ -151,7 +153,8 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         }
       }}
       role="button"
-      tabIndex={0}
+      tabIndex={isVisible ? 0 : -1}
+      aria-hidden={isVisible ? "false" : "true"}
       onMouseEnter={() => {
         setMouseEnter(true);
       }}
@@ -238,6 +241,8 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
             });
           }
         }}
+        tabIndex={isVisible ? 0 : -1}
+        aria-hidden={isVisible ? "false" : "true"}
       >
         {mouseEnter && isTheSameAsCurrentlyPlaying && isPlaying ? (
           <Pause fill="#fff" />
@@ -275,7 +280,13 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
               return (
                 <Fragment key={artist?.id}>
                   <Link href={`/${artist?.type ?? "artist"}/${artist?.id}`}>
-                    <a>{artist?.name}</a>
+                    <a
+                      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+                      tabIndex={isVisible ? 0 : -1}
+                      aria-hidden={isVisible ? "false" : "true"}
+                    >
+                      {artist?.name}
+                    </a>
                   </Link>
                   {i !== (track?.artists?.length && track?.artists?.length - 1)
                     ? ", "
@@ -293,7 +304,13 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
               <Link
                 href={`/${track?.album?.type ?? "album"}/${track?.album?.id}`}
               >
-                <a>{track?.album?.name}</a>
+                <a
+                  // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+                  tabIndex={isVisible ? 0 : -1}
+                  aria-hidden={isVisible ? "false" : "true"}
+                >
+                  {track?.album?.name}
+                </a>
               </Link>
             </p>
           </section>
@@ -308,6 +325,8 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       ) : null}
       <section>
         <button
+          tabIndex={isVisible ? 0 : -1}
+          aria-hidden={isVisible ? "false" : "true"}
           onMouseEnter={() => {
             setIsHoveringHeart(true);
           }}
@@ -363,7 +382,12 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         </p>
 
         {onClickAdd && (
-          <button className="add" onClick={onClickAdd}>
+          <button
+            className="add"
+            onClick={onClickAdd}
+            tabIndex={isVisible ? 0 : -1}
+            aria-hidden={isVisible ? "false" : "true"}
+          >
             Add
           </button>
         )}
@@ -380,6 +404,8 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
               position: { x, y },
             });
           }}
+          tabIndex={isVisible ? 0 : -1}
+          aria-hidden={isVisible ? "false" : "true"}
         >
           {mouseEnter || isFocusing ? (
             <ThreeDots />
@@ -480,7 +506,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           font-family: "Lato", "sans-serif";
           font-weight: 400;
           color: #b3b3b3;
-          font-size: 14px;
+          font-size: 13px;
         }
         strong {
           font-weight: bold;

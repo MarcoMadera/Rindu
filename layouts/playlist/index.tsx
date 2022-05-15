@@ -132,7 +132,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
       router.push("/");
     }
 
-    setElement(() => <ExtraHeader />);
+    setElement(() => <ExtraHeader uri={playlistDetails?.uri} />);
 
     setPlaylistDetails(playlistDetails);
     trackWithGoogleAnalitycs();
@@ -219,7 +219,11 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
         {allTracks.length > 0 ? (
           <>
             <div className="options">
-              <PlayButton size={56} centerSize={28} />
+              <PlayButton
+                uri={playlistDetails?.uri}
+                size={56}
+                centerSize={28}
+              />
               <div className="info">
                 <button
                   onClick={() => {

@@ -26,7 +26,7 @@ import { takeCookie } from "utils/cookies";
 import { RefreshResponse } from "types/spotify";
 import SingleTrackCard from "components/SingleTrackCard";
 import Carousel from "components/Carousel";
-import { capitalizeFirstLetter } from "utils/capitalizeFirstLetter";
+import SubTitle from "components/SubtTitle";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -37,6 +37,17 @@ interface DashboardProps {
   topTracks: SpotifyApi.UsersTopTracksResponse | null;
   tracksRecommendations: SpotifyApi.TrackObjectFull[] | null;
   tracksInLibrary: boolean[] | null;
+}
+
+function divideArray<T>(array: T[], chunkSize: number) {
+  const res: T[][] = [];
+  array.forEach((_, i) => {
+    const condition = i % chunkSize;
+    if (!condition) {
+      res.push(array.slice(i, i + chunkSize));
+    }
+  });
+  return res;
 }
 
 const Dashboard: NextPage<DashboardProps> = ({
@@ -129,20 +140,16 @@ const Dashboard: NextPage<DashboardProps> = ({
         {newReleases && newReleases.albums?.items?.length > 0 ? (
           <Carousel title={newReleases.message ?? "Lo más nuevo"} gap={24}>
             {newReleases.albums?.items?.map(
-              ({ images, name, id, artists, release_date, album_type }) => {
-                const artistNames = artists.map((artist) => artist.name);
-                const subTitle = release_date
-                  ? `${capitalizeFirstLetter(album_type)} · ${artistNames.join(
-                      ", "
-                    )}`
-                  : artistNames.join(", ");
+              ({ images, name, id, artists, album_type }) => {
                 return (
                   <PresentationCard
                     type="album"
                     key={id}
                     images={images}
                     title={name}
-                    subTitle={subTitle}
+                    subTitle={
+                      <SubTitle artists={artists} albumType={album_type} />
+                    }
                     id={id}
                   />
                 );
@@ -152,38 +159,46 @@ const Dashboard: NextPage<DashboardProps> = ({
         ) : null}
         {tracksRecommendations && tracksRecommendations?.length > 0 && (
           <>
-            <h2>Te van a gustar</h2>
-            <section className="tracks">
-              <FirstTrackContainer
-                track={tracksRecommendations?.[0]}
-                preview={tracksRecommendations?.[0].preview_url}
-              />
-              <div className="trackSearch">
-                {tracksRecommendations?.map((track, i) => {
-                  if (i === 0 || i > 4) {
-                    return null;
-                  }
-                  return (
-                    <ModalCardTrack
-                      accessToken={accessToken ?? ""}
-                      isTrackInLibrary={tracksInLibrary?.[i] ?? false}
-                      playlistUri=""
-                      track={{
-                        ...track,
-                        media_type: "audio",
-                        audio: track.preview_url,
-                        images: track.album.images,
-                        duration: track.duration_ms,
-                      }}
-                      key={track.id}
-                      type="presentation"
-                      position={i}
-                      isSingleTrack
+            <Carousel title="Te van a gustar" gap={24}>
+              {divideArray(tracksRecommendations, 5).map((chunk, i) => {
+                return (
+                  <div className="tracks" key={i}>
+                    <FirstTrackContainer
+                      track={chunk?.[0]}
+                      preview={chunk?.[0].preview_url}
+                      position={i * 5}
                     />
-                  );
-                })}
-              </div>
-            </section>
+                    <div className="trackSearch">
+                      {chunk?.map((track, chunkIndex) => {
+                        if (chunkIndex === 0 || chunkIndex > 4) {
+                          return null;
+                        }
+                        const index = i * 5 + chunkIndex;
+
+                        return (
+                          <ModalCardTrack
+                            accessToken={accessToken ?? ""}
+                            isTrackInLibrary={tracksInLibrary?.[index] ?? false}
+                            playlistUri=""
+                            track={{
+                              ...track,
+                              media_type: "audio",
+                              audio: track.preview_url,
+                              images: track.album.images,
+                              duration: track.duration_ms,
+                            }}
+                            key={track.id}
+                            type="presentation"
+                            position={index}
+                            isSingleTrack
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </Carousel>
           </>
         )}
         <Carousel title={"Categorias"} gap={24}>
@@ -213,6 +228,7 @@ const Dashboard: NextPage<DashboardProps> = ({
           width: 100%;
           grid-gap: 20px;
           margin: 10px 0 30px;
+          min-width: calc(100% - 24px);
         }
         @media (max-width: 1000px) {
           .tracks {
@@ -235,7 +251,7 @@ const Dashboard: NextPage<DashboardProps> = ({
           grid-gap: 24px;
           margin: 20px 0 50px 0;
           justify-content: space-between;
-          transform 400ms ease-in;
+          transition: 400ms ease-in;
         }
         h2 {
           color: #fff;

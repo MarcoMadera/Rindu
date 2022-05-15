@@ -64,7 +64,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
       router.push("/");
     }
 
-    setElement(() => <ExtraHeader />);
+    setElement(() => <ExtraHeader uri={album?.uri} />);
     trackWithGoogleAnalitycs();
 
     setIsLogin(true);
@@ -149,7 +149,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
       />
       <div className="tracksContainer">
         <div className="options">
-          <PlayButton size={56} centerSize={28} />
+          <PlayButton uri={album?.uri} size={56} centerSize={28} />
           <div className="info">
             <button
               onClick={() => {

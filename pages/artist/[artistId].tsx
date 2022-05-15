@@ -24,8 +24,8 @@ import { checkIfUserFollowArtistUser } from "utils/spotifyCalls/checkIfUserFollo
 import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
 import { HeaderType } from "types/spotify";
 import { SITE_URL } from "utils/constants";
-import { getYear } from "utils/getYear";
 import Carousel from "components/Carousel";
+import SubTitle from "components/SubtTitle";
 
 interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
@@ -238,18 +238,20 @@ export default function ArtistPage({
         {singleAlbums && singleAlbums?.items?.length > 0 ? (
           <Carousel title={"Albums"} gap={24}>
             {singleAlbums?.items?.map(
-              ({ images, name, id, artists, release_date }) => {
-                const artistNames = artists.map((artist) => artist.name);
-                const subTitle = release_date
-                  ? `${getYear(release_date)} · Album`
-                  : artistNames.join(", ");
+              ({ images, name, id, artists, release_date, album_type }) => {
                 return (
                   <PresentationCard
                     type="album"
                     key={id}
                     images={images}
                     title={name}
-                    subTitle={subTitle}
+                    subTitle={
+                      <SubTitle
+                        artists={artists}
+                        albumType={album_type}
+                        releaseYear={release_date}
+                      />
+                    }
                     id={id}
                   />
                 );
@@ -260,18 +262,20 @@ export default function ArtistPage({
         {appearAlbums && appearAlbums?.items?.length > 0 ? (
           <Carousel title={"Aparece en"} gap={24}>
             {appearAlbums?.items?.map(
-              ({ images, name, id, artists, release_date }) => {
-                const artistNames = artists.map((artist) => artist.name);
-                const subTitle = release_date
-                  ? `${getYear(release_date)} · Album`
-                  : artistNames.join(", ");
+              ({ images, name, id, artists, release_date, album_type }) => {
                 return (
                   <PresentationCard
                     type="album"
                     key={id}
                     images={images}
                     title={name}
-                    subTitle={subTitle}
+                    subTitle={
+                      <SubTitle
+                        artists={artists}
+                        albumType={album_type}
+                        releaseYear={release_date}
+                      />
+                    }
                     id={id}
                   />
                 );

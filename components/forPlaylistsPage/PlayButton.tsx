@@ -4,6 +4,7 @@ import React, {
   ReactElement,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import useAuth from "hooks/useAuth";
@@ -12,6 +13,7 @@ import { Pause, Play } from "components/icons";
 import { play } from "lib/spotify";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import useToast from "hooks/useToast";
+import useOnScreen from "hooks/useOnScreen";
 
 export function PlayButton({
   size,
@@ -19,6 +21,7 @@ export function PlayButton({
   track,
   isSingle,
   uri,
+  position,
   ...props
 }: {
   size: number;
@@ -26,6 +29,7 @@ export function PlayButton({
   track?: SpotifyApi.TrackObjectFull;
   isSingle?: boolean;
   uri?: string;
+  position?: number;
 } & HTMLAttributes<HTMLButtonElement>): ReactElement | null {
   const {
     isPlaying,
@@ -47,6 +51,8 @@ export function PlayButton({
   const { addToast } = useToast();
   const isPremium = user?.product === "premium";
   const uriId = uri?.split(":")?.[2];
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const isVisible = useOnScreen(buttonRef);
 
   useEffect(() => {
     if (track?.id) {
@@ -108,8 +114,8 @@ export function PlayButton({
 
       const playbackState = isPremium ? await getCurrentState() : undefined;
       const playbackRefersToThisPlaylist =
-        (playbackState?.track_window?.current_track.uri &&
-          playbackState?.track_window?.current_track.uri === track?.uri) ||
+        (playbackState?.track_window?.current_track?.uri &&
+          playbackState?.track_window?.current_track?.uri === track?.uri) ||
         (playlistPlayingId && playlistPlayingId === uriId && !isSingle) ||
         (playbackState?.context.uri &&
           playbackState?.context.uri === playlistDetails?.uri &&
@@ -139,7 +145,7 @@ export function PlayButton({
             deviceId,
             {
               uris: uris,
-              offset: 0,
+              offset: position ?? 0,
             },
             setAccessToken
           );
@@ -218,6 +224,7 @@ export function PlayButton({
       player,
       playlistDetails,
       playlistPlayingId,
+      position,
       setAccessToken,
       setCurrentlyPlaying,
       setIsPlaying,
@@ -237,6 +244,9 @@ export function PlayButton({
         onClick={(e) => {
           handleClick(e);
         }}
+        ref={buttonRef}
+        aria-hidden={isVisible ? "false" : "true"}
+        tabIndex={isVisible ? 0 : -1}
         {...props}
       >
         {(isThisTrackPlaying && !isThisPlaylistPlaying) ||
@@ -252,7 +262,7 @@ export function PlayButton({
       </button>
       <style jsx>{`
         .play-Button {
-          background-color: #1db954;
+          background-color: #1ed760;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -267,6 +277,7 @@ export function PlayButton({
         .play-Button:focus,
         .play-Button:hover {
           transform: scale(1.06);
+          background-color: #1fdf64;
         }
         .play-Button:active {
           transform: scale(1);

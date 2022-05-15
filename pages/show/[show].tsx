@@ -21,6 +21,8 @@ import useAuth from "hooks/useAuth";
 import { checkIfUserFollowShows } from "utils/spotifyCalls/checkIfUserFollowShows";
 import useSpotify from "hooks/useSpotify";
 import { playCurrentTrack } from "utils/playCurrentTrack";
+import { ExtraHeader } from "layouts/playlist/ExtraHeader";
+import useHeader from "hooks/useHeader";
 
 interface PlaylistProps {
   show: SpotifyApi.SingleShowResponse | null;
@@ -352,13 +354,26 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
   const [isShowInLibrary, setIsShowInLibrary] = useState(false);
   const { setIsLogin, setAccessToken, setUser } = useAuth();
   const { setPlaylistDetails, setAllTracks } = useSpotify();
+  const { setElement } = useHeader({
+    showOnFixed: false,
+  });
   useEffect(() => {
     setIsLogin(true);
+
+    setElement(() => <ExtraHeader uri={show?.uri} />);
 
     setAccessToken(accessToken);
 
     setUser(user);
-  }, [accessToken, setAccessToken, setIsLogin, setUser, user]);
+  }, [
+    accessToken,
+    setAccessToken,
+    setElement,
+    setIsLogin,
+    setUser,
+    show?.uri,
+    user,
+  ]);
 
   useEffect(() => {
     async function fetchData() {
@@ -549,7 +564,7 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
       />
       <section>
         <div className="options">
-          <PlayButton size={56} centerSize={28} />
+          <PlayButton uri={show?.uri} size={56} centerSize={28} />
           <div className="info">
             <button
               onClick={() => {

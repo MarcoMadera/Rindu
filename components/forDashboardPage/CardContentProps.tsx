@@ -4,7 +4,7 @@ import { SITE_URL } from "utils/constants";
 interface CardContentProps {
   images?: SpotifyApi.ImageObject[];
   title: string;
-  subTitle: string;
+  subTitle: string | JSX.Element;
   type:
     | "playlist"
     | "album"
@@ -36,7 +36,11 @@ export const CardContent: React.FC<CardContentProps> = ({
       )}
       <div>
         <strong>{title}</strong>
-        <p>{decode(subTitle)}</p>
+        <p>
+          {typeof subTitle === "string"
+            ? decode(subTitle).slice(0, 200)
+            : subTitle}
+        </p>
       </div>
       <style jsx>{`
         div {
@@ -44,7 +48,6 @@ export const CardContent: React.FC<CardContentProps> = ({
         }
         strong {
           display: block;
-          margin-top: 4px;
           -webkit-line-clamp: 1;
           -webkit-box-orient: vertical;
           display: -webkit-box;
@@ -52,6 +55,8 @@ export const CardContent: React.FC<CardContentProps> = ({
           text-align: left;
           text-overflow: ellipsis;
           white-space: unset;
+          word-break: break-all;
+          margin: 4px 0;
         }
         p {
           font-weight: 300;
@@ -64,6 +69,8 @@ export const CardContent: React.FC<CardContentProps> = ({
           text-overflow: ellipsis;
           white-space: unset;
           word-break: break-all;
+          font-size: 15px;
+          color: #b3b3b3;
         }
         article {
           background-color: #181818;
