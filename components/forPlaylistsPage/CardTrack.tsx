@@ -85,6 +85,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
     playlistDetails,
     setPlaylistPlayingId,
     setPlayedSource,
+    setReconnectionError,
   } = useSpotify();
   const [mouseEnter, setMouseEnter] = useState(false);
   const [isHoveringHeart, setIsHoveringHeart] = useState(false);
@@ -121,14 +122,31 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       position,
       setAccessToken,
       uri,
+    }).then((status) => {
+      if (status === 404) {
+        (player as Spotify.Player).disconnect();
+        addToast({
+          variant: "error",
+          message: "Unable to play, trying to reconnect, please wait...",
+        });
+        setReconnectionError(true);
+      }
+      if (status === 200) {
+        const source = playlistDetails?.uri;
+        const isCollection = source?.split(":")?.[3];
+        setPlayedSource(
+          isCollection && playlistDetails
+            ? `spotify:${playlistDetails?.type}:${playlistDetails?.id}`
+            : source ?? track.uri
+        );
+      }
+      if (status === 400) {
+        addToast({
+          variant: "error",
+          message: "Error playing this track",
+        });
+      }
     });
-    const source = playlistDetails?.uri;
-    const isCollection = source?.split(":")?.[3];
-    setPlayedSource(
-      isCollection && playlistDetails
-        ? `spotify:${playlistDetails?.type}:${playlistDetails?.id}`
-        : source ?? track.uri
-    );
   }
 
   return (

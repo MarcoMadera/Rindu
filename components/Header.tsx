@@ -140,9 +140,14 @@ export default function Header({
           width: calc(100vw - 245px);
           position: relative;
         }
+        @media (max-width: 685px) {
+          .app {
+            height: calc(100vh - 270px);
+          }
+        }
         @media (max-width: 1000px) {
           .app {
-            width: 100vw;
+            width: 100%;
           }
         }
         .extraElement {

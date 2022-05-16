@@ -40,7 +40,7 @@ export async function playCurrentTrack(
     setAccessToken,
     uri,
   }: Config
-): Promise<unknown> {
+): Promise<number> {
   const isPremium = user?.product === "premium";
   if (!isPremium && track?.audio) {
     (player as AudioPlayer).currentTime = 0;
@@ -49,8 +49,9 @@ export async function playCurrentTrack(
     (player as AudioPlayer).allTracks = allTracks;
     setCurrentlyPlaying(track);
     setPlaylistPlayingId(playlistId);
-    return;
+    return 200;
   }
+
   if (accessToken && track && deviceId) {
     const uris: string[] = [];
     allTracks.forEach((track) => {
@@ -68,10 +69,22 @@ export async function playCurrentTrack(
           offset: track.position,
         };
 
-    const res = await play(accessToken, deviceId, playConfig, setAccessToken);
-    setPlaylistPlayingId(isSingleTrack ? undefined : playlistId);
-    return res;
+    const playStatus = await play(
+      accessToken,
+      deviceId,
+      playConfig,
+      setAccessToken
+    ).then((res) => {
+      if (res.status === 404) {
+        return 404;
+      }
+      if (res.ok) {
+        setPlaylistPlayingId(isSingleTrack ? undefined : playlistId);
+        return 200;
+      }
+      return 400;
+    });
+    return playStatus;
   }
-
-  return setPlaylistPlayingId(isSingleTrack ? undefined : playlistId);
+  return 400;
 }

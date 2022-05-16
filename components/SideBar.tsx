@@ -38,10 +38,12 @@ function PlaylistText({
     setPlaylistPlayingId,
     setPlayedSource,
     playlistPlayingId,
+    setReconnectionError,
   } = useSpotify();
   const router = useRouter();
   const { user, accessToken, setAccessToken } = useAuth();
   const isPremium = user?.product === "premium";
+  const { addToast } = useToast();
 
   const getActualVolume = useCallback(() => {
     if (volume > 0) {
@@ -62,10 +64,20 @@ function PlaylistText({
           context_uri: uri,
         },
         setAccessToken
-      ).then(() => {
-        setPlaylistPlayingId(id);
-        const isCollection = id?.split(":")?.[3];
-        setPlayedSource(isCollection ? `spotify:${type}:${id}` : uri);
+      ).then((res) => {
+        if (res.status === 404) {
+          (player as Spotify.Player).disconnect();
+          addToast({
+            variant: "error",
+            message: "Unable to play, trying to reconnect, please wait...",
+          });
+          setReconnectionError(true);
+        }
+        if (res.ok) {
+          setPlaylistPlayingId(id);
+          const isCollection = id?.split(":")?.[3];
+          setPlayedSource(isCollection ? `spotify:${type}:${id}` : uri);
+        }
       });
     }
   }, [
@@ -74,6 +86,9 @@ function PlaylistText({
     deviceId,
     isPremium,
     setAccessToken,
+    player,
+    addToast,
+    setReconnectionError,
     setPlaylistPlayingId,
     id,
     setPlayedSource,
@@ -548,6 +563,12 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
           div.container {
             height: calc(100vh - 90px);
             display: flex;
+          }
+          @media (max-width: 685px) {
+            div.container {
+              height: calc(100vh - 270px);
+              display: flex;
+            }
           }
           .logo {
             width: 100%;

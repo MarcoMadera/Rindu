@@ -205,7 +205,7 @@ export default function useSpotifyPlayer({
         }
       );
 
-      spotifyPlayer.current.addListener(
+      spotifyPlayer.current.on(
         "not_ready",
         ({ device_id }: { device_id: string }) => {
           console.log("Device ID has gone offline", device_id);
@@ -232,6 +232,12 @@ export default function useSpotifyPlayer({
         addToast({
           variant: "error",
           message: "The user has not been authenticated",
+        });
+      });
+      spotifyPlayer.current?.on("autoplay_failed", () => {
+        addToast({
+          variant: "error",
+          message: "The track failed to play",
         });
       });
 

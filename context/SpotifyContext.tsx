@@ -49,8 +49,23 @@ export function SpotifyContextProvider({
   const [recentlyPlayed, setRecentlyPlayed] = useState<normalTrackTypes[]>([]);
   const pictureInPictureCanvas = useRef<HTMLCanvasElement>();
   const videoRef = useRef<HTMLVideoElement>();
+  const [reconnectionError, setReconnectionError] = useState(false);
 
   const { user } = useAuth();
+  const isPremium = user?.product === "premium";
+
+  useEffect(() => {
+    if (!reconnectionError || !isPremium) return;
+    const timer = setTimeout(() => {
+      (player as Spotify.Player).connect();
+      setReconnectionError(false);
+    }, 2000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [isPremium, player, reconnectionError]);
+
   useEffect(() => {
     if (playedSource) {
       const type = playedSource.split(":")[1];
@@ -271,6 +286,7 @@ export function SpotifyContextProvider({
         showHamburguerMenu,
         setShowHamburguerMenu,
         recentlyPlayed,
+        setReconnectionError,
       }}
     >
       {children}

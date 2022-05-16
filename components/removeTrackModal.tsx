@@ -228,7 +228,7 @@ export default function RemoveTracksModal({
               : duplicateTracksIdx.length === 0 && corruptedSongsIdx.length > 1
               ? "Hay " + corruptedSongsIdx.length + " canciones corruptas"
               : duplicateTracksIdx.length > 1 && corruptedSongsIdx.length === 0
-              ? "Hay " + corruptedSongsIdx.length + " canciones duplicadas"
+              ? "Hay " + duplicateTracksIdx.length + " canciones duplicadas"
               : `${corruptedSongsIdx.length} canciones corruptas y ${duplicateTracksIdx.length} canciones duplicadas`}
           </h3>
         )}

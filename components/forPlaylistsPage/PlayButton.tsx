@@ -43,6 +43,7 @@ export function PlayButton({
     setIsPlaying,
     currrentlyPlaying,
     setPlayedSource,
+    setReconnectionError,
   } = useSpotify();
   const { accessToken, user, setAccessToken } = useAuth();
   const [isThisTrackPlaying, setIsThisTrackPlaying] = useState(false);
@@ -119,7 +120,8 @@ export function PlayButton({
         (playlistPlayingId && playlistPlayingId === uriId && !isSingle) ||
         (playbackState?.context.uri &&
           playbackState?.context.uri === playlistDetails?.uri &&
-          !track);
+          !track &&
+          !uri);
 
       if (isPremium && deviceId) {
         if (playbackRefersToThisPlaylist) {
@@ -148,18 +150,29 @@ export function PlayButton({
               offset: position ?? 0,
             },
             setAccessToken
-          );
+          ).then((res) => {
+            if (res.status === 404) {
+              (player as Spotify.Player).disconnect();
+              addToast({
+                variant: "error",
+                message: "Unable to play, trying to reconnect, please wait...",
+              });
+              setReconnectionError(true);
+            }
+            if (res.ok) {
+              const source = track?.uri || playlistDetails?.uri;
 
-          const source = track?.uri || playlistDetails?.uri;
+              const isCollection = source?.split(":")?.[3];
+              setPlayedSource(
+                isCollection && playlistDetails
+                  ? `spotify:${playlistDetails?.type}:${playlistDetails?.id}`
+                  : source
+              );
 
-          const isCollection = source?.split(":")?.[3];
-          setPlayedSource(
-            isCollection && playlistDetails
-              ? `spotify:${playlistDetails?.type}:${playlistDetails?.id}`
-              : source
-          );
+              setPlaylistPlayingId(uriId);
+            }
+          });
 
-          setPlaylistPlayingId(uriId);
           return;
         }
 
@@ -170,8 +183,16 @@ export function PlayButton({
             context_uri: uri ?? playlistDetails?.uri,
           },
           setAccessToken
-        ).then(() => {
-          if (playlistDetails || uri) {
+        ).then((res) => {
+          if (res.status === 404) {
+            (player as Spotify.Player).disconnect();
+            addToast({
+              variant: "error",
+              message: "Unable to play, trying to reconnect, please wait...",
+            });
+            setReconnectionError(true);
+          }
+          if (res.ok && (playlistDetails || uri)) {
             setPlaylistPlayingId(uriId ?? playlistDetails?.id);
             const source = uri ?? playlistDetails?.uri;
             const isCollection = source?.split(":")?.[3];
@@ -212,6 +233,7 @@ export function PlayButton({
     },
     [
       accessToken,
+      addToast,
       allTracks,
       deviceId,
       getCurrentState,
@@ -229,6 +251,7 @@ export function PlayButton({
       setIsPlaying,
       setPlayedSource,
       setPlaylistPlayingId,
+      setReconnectionError,
       track,
       uri,
       uriId,

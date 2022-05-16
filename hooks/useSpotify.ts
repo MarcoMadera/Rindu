@@ -52,6 +52,7 @@ export default function useSpotify(): ISpotifyContext & {
     showHamburguerMenu,
     setShowHamburguerMenu,
     recentlyPlayed,
+    setReconnectionError,
   } = useContext(SpotifyContext);
   const { user } = useAuth();
 
@@ -152,5 +153,6 @@ export default function useSpotify(): ISpotifyContext & {
     showHamburguerMenu,
     setShowHamburguerMenu,
     recentlyPlayed,
+    setReconnectionError,
   };
 }

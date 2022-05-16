@@ -24,7 +24,7 @@ export async function play(
   options: { context_uri?: string; uris?: string[]; offset?: number },
   setAccessToken: Dispatch<SetStateAction<string | undefined>>,
   ignore?: boolean
-): Promise<unknown> {
+): Promise<Response> {
   const { context_uri, offset, uris } = options;
   const body: {
     context_uri?: string;
@@ -36,46 +36,32 @@ export async function play(
   if (offset !== undefined) {
     body.offset = { position: offset };
   }
-  let data;
 
   if (context_uri) {
     body.context_uri = context_uri;
   } else if (Array.isArray(uris) && uris.length) {
     body.uris = [...new Set(uris)];
   }
-
-  try {
-    const res = await fetch(
-      `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(body),
-      }
-    );
-
-    if (res.status === 401 && !ignore) {
-      const { accessToken: newAccessToken } = (await getAccessToken()) || {};
-      if (newAccessToken) {
-        setAccessToken(newAccessToken);
-        data = await play(
-          newAccessToken,
-          deviceId,
-          options,
-          setAccessToken,
-          true
-        );
-      }
+  const res = await fetch(
+    `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(body),
     }
+  );
 
-    data = await res.json();
-    return data;
-  } catch (error) {
-    return error;
+  if (res.status === 401 && !ignore) {
+    const { accessToken: newAccessToken } = (await getAccessToken()) || {};
+    if (newAccessToken) {
+      setAccessToken(newAccessToken);
+      await play(newAccessToken, deviceId, options, setAccessToken, true);
+    }
   }
+  return res;
 }
 
 export function getMyCurrentPlaybackState(callback: CallableFunction): void {

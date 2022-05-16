@@ -488,6 +488,22 @@ export default function SpotifyPlayer(): ReactElement {
           background-color: #181818;
           border-top: 1px solid #282828;
         }
+        @media (max-width: 685px) {
+          div.container {
+            flex-direction: column;
+            gap: 16px;
+            height: 270px;
+            padding: 16px 0;
+          }
+          section {
+            padding: 0 16px 10px 16px;
+          }
+          section:nth-child(1) {
+            border-bottom: 1px solid #282828;
+            width: 100%;
+            align-self: baseline;
+          }
+        }
       `}</style>
     </footer>
   );
