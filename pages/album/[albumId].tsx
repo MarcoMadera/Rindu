@@ -5,7 +5,7 @@ import useAuth from "hooks/useAuth";
 import useAnalitycs from "hooks/useAnalytics";
 import { useEffect, useState } from "react";
 import List from "layouts/playlist/List";
-import { Heart, HeartShape } from "components/icons/Heart";
+import { Heart } from "components/icons/Heart";
 import Titles from "components/forPlaylistsPage/Titles";
 import useSpotify from "hooks/useSpotify";
 import { PlayButton } from "components/forPlaylistsPage/PlayButton";
@@ -22,7 +22,7 @@ import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHead
 import { SITE_URL } from "utils/constants";
 import useToast from "hooks/useToast";
 
-interface CurrentUserProps {
+interface AlbumPageProps {
   album: SpotifyApi.SingleAlbumResponse | null;
   accessToken?: string;
   user: SpotifyApi.UserObjectPrivate | null;
@@ -30,7 +30,7 @@ interface CurrentUserProps {
   tracksInLibrary: boolean[] | null;
 }
 
-const CurrentUser: NextPage<CurrentUserProps> = ({
+const AlbumPage: NextPage<AlbumPageProps> = ({
   album,
   user,
   accessToken,
@@ -151,38 +151,34 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
         <div className="options">
           <PlayButton uri={album?.uri} size={56} centerSize={28} />
           <div className="info">
-            <button
-              onClick={() => {
-                if (!album) return;
-                if (isFollowingThisAlbum) {
-                  unFollowAlbums([album.id]).then((res) => {
-                    if (res) {
-                      setIsFollowingThisAlbum(false);
-                    }
-                  });
+            <Heart
+              active={isFollowingThisAlbum}
+              handleDislike={async () => {
+                if (!album) return null;
+                const unfollowRes = await unFollowAlbums([album.id]);
+                if (unfollowRes) {
                   addToast({
                     message: "Album removed from your library",
                     variant: "success",
                   });
-                } else {
-                  followAlbums([album.id]).then((res) => {
-                    if (res) {
-                      setIsFollowingThisAlbum(true);
-                    }
-                  });
+                  return true;
+                }
+                return null;
+              }}
+              handleLike={async () => {
+                if (!album) return null;
+                const followRes = await followAlbums([album.id]);
+                if (followRes) {
                   addToast({
                     message: "Album added to your library",
                     variant: "success",
                   });
+                  return true;
                 }
+                return null;
               }}
-            >
-              {isFollowingThisAlbum ? (
-                <Heart width={36} height={36} />
-              ) : (
-                <HeartShape fill="#ffffffb3" width={36} height={36} />
-              )}
-            </button>
+              style={{ width: 80, height: 80 }}
+            />
           </div>
         </div>
         <div className="trc">
@@ -224,24 +220,13 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
           align-self: flex-end;
           width: calc(100% - 310px);
         }
-        .info button {
-          margin-left: 20px;
+        .info :global(button) {
+          margin-left: 12px;
           display: flex;
           justify-content: center;
           align-items: center;
-          width: 56px;
-          height: 56px;
-          min-width: 56px;
-          min-height: 56px;
           background-color: transparent;
           border: none;
-        }
-        .info button:focus,
-        .info button:hover {
-          transform: scale(1.06);
-        }
-        .info button:active {
-          transform: scale(1);
         }
         .options {
           display: flex;
@@ -264,7 +249,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
   );
 };
 
-export default CurrentUser;
+export default AlbumPage;
 
 export async function getServerSideProps({
   params: { albumId },
@@ -275,7 +260,7 @@ export async function getServerSideProps({
   req: NextApiRequest;
   res: NextApiResponse;
 }): Promise<{
-  props: CurrentUserProps | null;
+  props: AlbumPageProps | null;
 }> {
   const cookies = req ? req?.headers?.cookie : undefined;
   if (!cookies) {

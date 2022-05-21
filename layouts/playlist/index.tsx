@@ -14,13 +14,14 @@ import List from "layouts/playlist/List";
 import { Broom } from "components/icons/Broom";
 import RemoveTracksModal from "components/removeTrackModal";
 import { ExtraHeader } from "./ExtraHeader";
-import { Heart, HeartShape } from "components/icons/Heart";
+import { Heart } from "components/icons/Heart";
 import { takeCookie } from "utils/cookies";
 import { ACCESS_TOKEN_COOKIE, SITE_URL } from "utils/constants";
 import { PlaylistProps } from "pages/playlist/[playlist]";
 import { SearchInputElement } from "components/SearchInputElement";
 import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
 import { addItemsToPlaylist } from "utils/spotifyCalls/addItemsToPlaylist";
+import useToast from "hooks/useToast";
 
 async function followPlaylist(id?: string, accessToken?: string) {
   if (!id) {
@@ -109,6 +110,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
   const [isFollowingThisPlaylist, setIsFollowingThisPlaylist] = useState(false);
   const [searchedData, setSearchedData] =
     useState<SpotifyApi.SearchResponse | null>(null);
+  const { addToast } = useToast();
 
   const tracks = useMemo(() => playListTracks?.tracks ?? [], [playListTracks]);
 
@@ -225,35 +227,48 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
                 centerSize={28}
               />
               <div className="info">
-                <button
-                  onClick={() => {
-                    if (isMyPlaylist) {
+                {isMyPlaylist ? (
+                  <button
+                    onClick={() => {
                       setOpenModal(true);
-                      return;
-                    }
-                    if (isFollowingThisPlaylist) {
-                      unfollowPlaylist(playlistDetails?.id).then((res) => {
-                        if (res) {
-                          setIsFollowingThisPlaylist(false);
-                        }
-                      });
-                    } else {
-                      followPlaylist(playlistDetails?.id).then((res) => {
-                        if (res) {
-                          setIsFollowingThisPlaylist(true);
-                        }
-                      });
-                    }
-                  }}
-                >
-                  {isMyPlaylist ? (
+                    }}
+                  >
                     <Broom width={32} height={32} />
-                  ) : isFollowingThisPlaylist ? (
-                    <Heart width={36} height={36} />
-                  ) : (
-                    <HeartShape fill="#ffffffb3" width={36} height={36} />
-                  )}
-                </button>
+                  </button>
+                ) : (
+                  <Heart
+                    active={isFollowingThisPlaylist}
+                    handleLike={async () => {
+                      const followRes = await followPlaylist(
+                        playlistDetails?.id
+                      );
+                      if (followRes) {
+                        setIsFollowingThisPlaylist(true);
+                        addToast({
+                          variant: "success",
+                          message: "Playlist added to your library",
+                        });
+                        return true;
+                      }
+                      return null;
+                    }}
+                    handleDislike={async () => {
+                      const unfollowRes = await unfollowPlaylist(
+                        playlistDetails?.id
+                      );
+                      if (unfollowRes) {
+                        setIsFollowingThisPlaylist(false);
+                        addToast({
+                          variant: "success",
+                          message: "Playlist removed from your library",
+                        });
+                        return true;
+                      }
+                      return null;
+                    }}
+                    style={{ width: 80, height: 80 }}
+                  />
+                )}
               </div>
             </div>
             <div className="trc">
@@ -411,24 +426,13 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
           margin-top: 20px;
           font-size: 1.1rem;
         }
-        .info button {
-          margin-left: 20px;
+        .info :global(button) {
+          margin-left: 12px;
           display: flex;
           justify-content: center;
           align-items: center;
-          width: 56px;
-          height: 56px;
-          min-width: 56px;
-          min-height: 56px;
           background-color: transparent;
           border: none;
-        }
-        .info button:focus,
-        .info button:hover {
-          transform: scale(1.06);
-        }
-        .info button:active {
-          transform: scale(1);
         }
         .options {
           display: flex;

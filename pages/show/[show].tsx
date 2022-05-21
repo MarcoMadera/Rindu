@@ -14,7 +14,7 @@ import { AllTracksFromAPlayList, HeaderType } from "types/spotify";
 import { SITE_URL } from "utils/constants";
 import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
 import { PlayButton } from "components/forPlaylistsPage/PlayButton";
-import { Heart, HeartShape } from "components/icons/Heart";
+import { Heart } from "components/icons/Heart";
 import { removeShowsFromLibrary } from "utils/spotifyCalls/removeShowsFromLibrary";
 import { saveShowsToLibrary } from "utils/spotifyCalls/saveShowsToLibrary";
 import useAuth from "hooks/useAuth";
@@ -23,6 +23,7 @@ import useSpotify from "hooks/useSpotify";
 import { playCurrentTrack } from "utils/playCurrentTrack";
 import { ExtraHeader } from "layouts/playlist/ExtraHeader";
 import useHeader from "hooks/useHeader";
+import useToast from "hooks/useToast";
 
 interface PlaylistProps {
   show: SpotifyApi.SingleShowResponse | null;
@@ -354,6 +355,7 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
   const [isShowInLibrary, setIsShowInLibrary] = useState(false);
   const { setIsLogin, setAccessToken, setUser } = useAuth();
   const { setPlaylistDetails, setAllTracks } = useSpotify();
+  const { addToast } = useToast();
   const { setElement } = useHeader({
     showOnFixed: false,
   });
@@ -566,30 +568,34 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
         <div className="options">
           <PlayButton uri={show?.uri} size={56} centerSize={28} />
           <div className="info">
-            <button
-              onClick={() => {
-                if (!show) return;
-                if (isShowInLibrary) {
-                  removeShowsFromLibrary([show.id]).then((res) => {
-                    if (res) {
-                      setIsShowInLibrary(false);
-                    }
+            <Heart
+              active={isShowInLibrary}
+              style={{ width: 80, height: 80 }}
+              handleLike={async () => {
+                if (!show) return null;
+                const saveRes = await saveShowsToLibrary([show.id]);
+                if (saveRes) {
+                  addToast({
+                    message: "Podcast added to your library",
+                    variant: "success",
                   });
-                } else {
-                  saveShowsToLibrary([show.id]).then((res) => {
-                    if (res) {
-                      setIsShowInLibrary(true);
-                    }
-                  });
+                  return true;
                 }
+                return null;
               }}
-            >
-              {isShowInLibrary ? (
-                <Heart width={36} height={36} />
-              ) : (
-                <HeartShape fill="#ffffffb3" width={36} height={36} />
-              )}
-            </button>
+              handleDislike={async () => {
+                if (!show) return null;
+                const removeRes = await removeShowsFromLibrary([show.id]);
+                if (removeRes) {
+                  addToast({
+                    message: "Podcast removed from your library",
+                    variant: "success",
+                  });
+                  return true;
+                }
+                return null;
+              }}
+            />
           </div>
         </div>
         <div className="content">
@@ -636,24 +642,13 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
           align-self: flex-end;
           width: calc(100% - 310px);
         }
-        .info button {
-          margin-left: 20px;
+        .info :global(button) {
+          margin-left: 12px;
           display: flex;
           justify-content: center;
           align-items: center;
-          width: 56px;
-          height: 56px;
-          min-width: 56px;
-          min-height: 56px;
           background-color: transparent;
           border: none;
-        }
-        .info button:focus,
-        .info button:hover {
-          transform: scale(1.06);
-        }
-        .info button:active {
-          transform: scale(1);
         }
         .options {
           display: flex;

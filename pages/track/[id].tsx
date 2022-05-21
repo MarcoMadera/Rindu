@@ -12,7 +12,7 @@ import useSpotify from "hooks/useSpotify";
 import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
 import { PlayButton } from "components/forPlaylistsPage/PlayButton";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
-import { Heart, HeartShape } from "components/icons/Heart";
+import { Heart } from "components/icons/Heart";
 import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibrary";
 import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
 import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
@@ -206,8 +206,8 @@ export default function TrackPage({
   useEffect(() => {
     if (!track) return;
     checkTracksInLibrary([track.id]).then((res) => {
-      if (res && res[0]) {
-        setIsTrackInLibrary(true);
+      if (res) {
+        setIsTrackInLibrary(res[0]);
       }
     });
   }, [track]);
@@ -259,38 +259,34 @@ export default function TrackPage({
               track={track ?? undefined}
             />
             <div className="info">
-              <button
-                onClick={() => {
-                  if (!track) return;
-                  if (isTrackInLibrary) {
-                    removeTracksFromLibrary([track.id]).then((res) => {
-                      if (res) {
-                        setIsTrackInLibrary(false);
-                        addToast({
-                          variant: "success",
-                          message: "Song removed from library.",
-                        });
-                      }
+              <Heart
+                active={isTrackInLibrary}
+                style={{ width: 80, height: 80 }}
+                handleLike={async () => {
+                  if (!track) return null;
+                  const saveRes = await saveTracksToLibrary([track.id]);
+                  if (saveRes) {
+                    addToast({
+                      variant: "success",
+                      message: "Song added to library.",
                     });
-                  } else {
-                    saveTracksToLibrary([track.id]).then((res) => {
-                      if (res) {
-                        setIsTrackInLibrary(true);
-                        addToast({
-                          variant: "success",
-                          message: "Song added to library.",
-                        });
-                      }
-                    });
+                    return true;
                   }
+                  return null;
                 }}
-              >
-                {isTrackInLibrary ? (
-                  <Heart width={36} height={36} />
-                ) : (
-                  <HeartShape fill="#ffffffb3" width={36} height={36} />
-                )}
-              </button>
+                handleDislike={async () => {
+                  if (!track) return null;
+                  const removeRes = await removeTracksFromLibrary([track.id]);
+                  if (removeRes) {
+                    addToast({
+                      variant: "success",
+                      message: "Song removed from library.",
+                    });
+                    return true;
+                  }
+                  return null;
+                }}
+              />
             </div>
           </div>
           {lyrics ? (
@@ -400,23 +396,19 @@ export default function TrackPage({
           text-transform: none;
           margin: 0;
         }
-        .info button {
-          margin-left: 20px;
+        .info :global(button) {
+          margin-left: 12px;
           display: flex;
           justify-content: center;
           align-items: center;
-          width: 56px;
-          height: 56px;
-          min-width: 56px;
-          min-height: 56px;
           background-color: transparent;
           border: none;
         }
-        .info button:focus,
-        .info button:hover {
+        .info :global(button:focus),
+        .info :global(button:hover) {
           transform: scale(1.06);
         }
-        .info button:active {
+        .info :global(button:active) {
           transform: scale(1);
         }
         .options {

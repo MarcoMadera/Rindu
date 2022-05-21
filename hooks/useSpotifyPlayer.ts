@@ -219,7 +219,7 @@ export default function useSpotifyPlayer({
       spotifyPlayer.current?.on("player_state_changed", (trackWindow) => {
         setCurrentlyPlayingDuration(trackWindow?.duration);
         setCurrentlyPlayingPosition(trackWindow?.position);
-        setCurrentlyPlaying(trackWindow?.track_window.current_track);
+        setCurrentlyPlaying(trackWindow?.track_window?.current_track);
 
         if (trackWindow) {
           setIsPlaying(!trackWindow.paused);

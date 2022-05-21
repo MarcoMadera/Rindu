@@ -28,6 +28,7 @@ export default function ContextMenu(): ReactPortal | null {
     y: (contextMenuData?.position.y ?? 0) - 40,
   });
   const contextMenuRef = useRef<HTMLElement>(null);
+  const setShowAddPlaylistPopup = useState<boolean>(false)[1];
 
   useEffect(() => {
     setTargetNode(document.querySelector("#contextMenu"));
@@ -149,6 +150,18 @@ export default function ContextMenu(): ReactPortal | null {
             </button>
           </li>
         )}
+        <li>
+          <div
+            onMouseEnter={() => {
+              setShowAddPlaylistPopup(true);
+            }}
+            onMouseLeave={() => {
+              setShowAddPlaylistPopup(false);
+            }}
+          >
+            Add to playlist
+          </div>
+        </li>
         <li>
           <button
             onClick={() => {

@@ -1,5 +1,5 @@
 import { Pause, Play, Playing } from "components/icons";
-import { Heart, HeartShape } from "components/icons/Heart";
+import { Heart } from "components/icons/Heart";
 import ThreeDots from "components/icons/ThreeDots";
 import useSpotify from "hooks/useSpotify";
 import { getTimeAgo } from "utils/getTimeAgo";
@@ -88,7 +88,6 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
     setReconnectionError,
   } = useSpotify();
   const [mouseEnter, setMouseEnter] = useState(false);
-  const [isHoveringHeart, setIsHoveringHeart] = useState(false);
   const [isFocusing, setIsFocusing] = useState(false);
   const [isLikedTrack, setIsLikedTrack] = useState(isTrackInLibrary);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -342,63 +341,54 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         </>
       ) : null}
       <section>
-        <button
+        <Heart
+          className="trackHeart"
+          active={!!isTrackInLibrary}
           tabIndex={isVisible ? 0 : -1}
           aria-hidden={isVisible ? "false" : "true"}
-          onMouseEnter={() => {
-            setIsHoveringHeart(true);
+          handleLike={async () => {
+            const saveToLibrary =
+              track?.type === "episode"
+                ? saveEpisodesToLibrary
+                : saveTracksToLibrary;
+            const saveRes = await saveToLibrary([track.id ?? ""], accessToken);
+            if (saveRes) {
+              setIsLikedTrack(true);
+              addToast({
+                variant: "success",
+                message: `${
+                  track?.type === "episode" ? "Episode" : "Song"
+                } added to library`,
+              });
+              return true;
+            }
+            return null;
           }}
-          onMouseLeave={() => {
-            setIsHoveringHeart(false);
-          }}
-          onClick={() => {
+          handleDislike={async () => {
             const removeFromLibrary =
               track?.type === "episode"
                 ? removeEpisodesFromLibrary
                 : removeTracksFromLibrary;
-            if (isLikedTrack) {
-              removeFromLibrary([track?.id ?? ""], accessToken).then((res) => {
-                if (res) {
-                  setIsLikedTrack(false);
-                  addToast({
-                    variant: "success",
-                    message: `${
-                      track?.type === "episode" ? "Episode" : "Song"
-                    } removed from library.`,
-                  });
-                }
+            const removeRes = await removeFromLibrary(
+              [track?.id ?? ""],
+              accessToken
+            );
+            if (removeRes) {
+              setIsLikedTrack(false);
+              addToast({
+                variant: "success",
+                message: `${
+                  track?.type === "episode" ? "Episode" : "Song"
+                } removed from library.`,
               });
-            } else {
-              const saveToLibrary =
-                track?.type === "episode"
-                  ? saveEpisodesToLibrary
-                  : saveTracksToLibrary;
-              saveToLibrary([track.id ?? ""], accessToken).then((res) => {
-                if (res) {
-                  setIsLikedTrack(true);
-                  addToast({
-                    variant: "success",
-                    message: `${
-                      track?.type === "episode" ? "Episode" : "Song"
-                    } added to library`,
-                  });
-                }
-              });
+              return true;
             }
+            return null;
           }}
-        >
-          {isLikedTrack ? (
-            <Heart />
-          ) : (mouseEnter || isFocusing) && !track?.is_local ? (
-            <HeartShape fill={isHoveringHeart ? "#fff" : "#ffffffb3"} />
-          ) : (
-            <div style={{ width: "16px" }}></div>
-          )}
-        </button>
+        />
         <p className="trackArtists time">
           {track?.duration ? formatTime((track?.duration || 0) / 1000) : ""}
         </p>
-
         {onClickAdd && (
           <button
             className="add"
@@ -433,6 +423,17 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         </button>
       </section>
       <style jsx>{`
+        .playbutton {
+          background-image: ${type === "presentation"
+            ? `url(${track?.images?.[2]?.url ?? track?.images?.[1]?.url})`
+            : "unset"};
+          object-fit: cover;
+          object-position: center center;
+          background-size: 40px 40px;
+          background-repeat: no-repeat;
+        }
+      `}</style>
+      <style jsx>{`
         .add {
           background-color: transparent;
           border: 1px solid #535353;
@@ -461,21 +462,22 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         .add:active {
           transform: scale(0.96);
         }
-        .playbutton {
-          background-image: ${type === "presentation"
-            ? `url(${track?.images?.[2]?.url ?? track?.images?.[1]?.url})`
-            : "unset"};
-          object-fit: cover;
-          object-position: center center;
-          background-size: 40px 40px;
-          background-repeat: no-repeat;
+        .trackItem :global(.trackHeart) {
+          opacity: ${isLikedTrack || isFocusing || mouseEnter ? "1" : "0"};
         }
+
         .trackArtistsContainer {
           display: block;
           align-items: center;
         }
         .options {
           margin-right: 20px;
+          margin-left: 0;
+          color: #ffffffb3;
+        }
+        .options:hover,
+        .options:focus {
+          color: #ffffff;
         }
         .trackItem {
           opacity: ${isPlayable ? 1 : 0.4};
@@ -502,6 +504,10 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         }
         a:hover {
           text-decoration: underline;
+        }
+        :global(.trackHeart:focus),
+        :global(.trackHeart:hover) {
+          transform: scale(1.06);
         }
         button {
           display: flex;
@@ -538,6 +544,10 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         section:nth-of-type(4) {
           justify-content: flex-end;
         }
+        section:nth-of-type(2) {
+          justify-content: ${type === "playlist" ? "flex-start" : "flex-end"};
+          margin: ${type === "album" ? "16px" : "0"};
+        }
         .trackItem {
           width: 100%;
           height: 65px;
@@ -563,7 +573,8 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         .trackItem:hover {
           background-color: rgba(255, 255, 255, 0.1);
         }
-        .trackItem:focus {
+        .trackItem:active,
+        .trackItem:focus-within {
           background-color: #ffffff4d;
         }
         .img {

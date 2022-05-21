@@ -315,7 +315,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
             <Link href="/collection/tracks">
               <a className={playlistPlayingId === "tracks" ? "green" : ""}>
                 <div>
-                  <Heart fill="#fff" width={13} height={13} />
+                  <Heart active={true} style={{ width: 28, height: 28 }} />
                 </div>
                 Liked Songs
               </a>
@@ -404,14 +404,13 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
             display: ${isShowingSideBarImg ? "block" : "none"};
           }
           .animate {
-            animation: scale-in-ver-bottom 0.4s
-              cubic-bezier(0.785, 0.135, 0.15, 0.86) both;
+            animation: scale-in-ver-bottom 0.2s linear both;
           }
           @keyframes scale-in-ver-bottom {
             0% {
               transform: scaleY(0);
               transform-origin: 0% 100%;
-              opacity: 1;
+              opacity: 0.8;
             }
             100% {
               transform: scaleY(1);

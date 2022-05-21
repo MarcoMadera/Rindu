@@ -1,7 +1,7 @@
 import { Fragment, ReactElement, useEffect, useState } from "react";
 import Link from "next/link";
 import { normalTrackTypes } from "types/spotify";
-import { Heart, HeartShape } from "components/icons/Heart";
+import { Heart } from "components/icons/Heart";
 import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibrary";
 import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
 import useAuth from "hooks/useAuth";
@@ -22,7 +22,6 @@ export function NavbarLeft({
 }: {
   currrentlyPlaying: normalTrackTypes;
 }): ReactElement {
-  const [isHoveringHeart, setIsHoveringHeart] = useState(false);
   const [isLikedTrack, setIsLikedTrack] = useState(false);
   const { accessToken } = useAuth();
   const {
@@ -36,20 +35,6 @@ export function NavbarLeft({
   } = useSpotify();
   const { addToast } = useToast();
   const { addContextMenu } = useContextMenu();
-  const [hideImg, setHideImg] = useState(false);
-
-  useEffect(() => {
-    if (!isShowingSideBarImg) {
-      return setHideImg(false);
-    }
-    const timer = setTimeout(() => {
-      setHideImg(true);
-    }, 400);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [isShowingSideBarImg]);
 
   useEffect(() => {
     if (!currrentlyPlaying?.id) return;
@@ -66,7 +51,9 @@ export function NavbarLeft({
   const id = playedSource?.split(":")?.[2];
 
   return (
-    <div className="navBar-left">
+    <div
+      className={`${isShowingSideBarImg ? "navBar-left hide" : "navBar-left"}`}
+    >
       <div className="img-container">
         <button
           onClick={() => {
@@ -81,7 +68,6 @@ export function NavbarLeft({
             <a>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                className={`${isShowingSideBarImg ? "hide" : ""}`}
                 src={
                   currrentlyPlaying.album.images[2]?.url ??
                   currrentlyPlaying.album.images[1]?.url
@@ -96,7 +82,6 @@ export function NavbarLeft({
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              className={`${isShowingSideBarImg ? "hide" : ""}`}
               src={
                 currrentlyPlaying.album.images[2]?.url ??
                 currrentlyPlaying.album.images[1]?.url
@@ -151,60 +136,53 @@ export function NavbarLeft({
           })}
         </span>
       </section>
-      <button
-        className="navBar-Button"
-        onMouseEnter={() => {
-          setIsHoveringHeart(true);
-        }}
-        onMouseLeave={() => {
-          setIsHoveringHeart(false);
-        }}
-        onClick={() => {
-          const removeFromLibrary =
-            currrentlyPlaying?.type === "episode"
-              ? removeEpisodesFromLibrary
-              : removeTracksFromLibrary;
-          if (isLikedTrack) {
-            removeFromLibrary([currrentlyPlaying.id ?? ""], accessToken).then(
-              (res) => {
-                if (res) {
-                  setIsLikedTrack(false);
-                  addToast({
-                    variant: "success",
-                    message: `${
-                      currrentlyPlaying.type === "episode" ? "Episode" : "Song"
-                    } removed from library.`,
-                  });
-                }
-              }
+      {!currrentlyPlaying.is_local && (
+        <Heart
+          active={isLikedTrack}
+          className="navBar-Button"
+          handleDislike={async () => {
+            const removeFromLibrary =
+              currrentlyPlaying?.type === "episode"
+                ? removeEpisodesFromLibrary
+                : removeTracksFromLibrary;
+            const res = await removeFromLibrary(
+              [currrentlyPlaying.id ?? ""],
+              accessToken
             );
-          } else {
+
+            if (res) {
+              addToast({
+                variant: "success",
+                message: `${
+                  currrentlyPlaying.type === "episode" ? "Episode" : "Song"
+                } removed from library.`,
+              });
+              return true;
+            }
+            return null;
+          }}
+          handleLike={async () => {
             const saveToLibrary =
               currrentlyPlaying.type === "episode"
                 ? saveEpisodesToLibrary
                 : saveTracksToLibrary;
-            saveToLibrary([currrentlyPlaying.id ?? ""], accessToken).then(
-              (res) => {
-                if (res) {
-                  setIsLikedTrack(true);
-                  addToast({
-                    variant: "success",
-                    message: `${
-                      currrentlyPlaying.type === "episode" ? "Episode" : "Song"
-                    } added to library`,
-                  });
-                }
-              }
+            const saveRes = await saveToLibrary(
+              [currrentlyPlaying.id ?? ""],
+              accessToken
             );
-          }
-        }}
-      >
-        {isLikedTrack ? (
-          <Heart />
-        ) : !currrentlyPlaying.is_local ? (
-          <HeartShape fill={isHoveringHeart ? "#fff" : "#ffffffb3"} />
-        ) : null}
-      </button>
+            if (saveRes) {
+              addToast({
+                variant: "success",
+                message: `${
+                  currrentlyPlaying.type === "episode" ? "Episode" : "Song"
+                } added to library`,
+              });
+              return true;
+            }
+            return null;
+          }}
+        />
+      )}
       <button
         className="navBar-Button pictureInPicture"
         onClick={() => {
@@ -225,11 +203,14 @@ export function NavbarLeft({
         <PictureInPicture />
       </button>
       <style jsx>{`
+        section {
+          margin-right: 10px;
+        }
         .navBar-Button.pictureInPicture {
           color: ${isPip ? "#1db954" : "#ffffffb3"};
         }
         .img-container {
-          display: ${hideImg ? "none" : "block"};
+          display: block;
           position: relative;
           margin-right: 23px;
         }
@@ -307,21 +288,20 @@ export function NavbarLeft({
           padding: 0;
         }
         .hide {
-          animation: slide-out-top 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53)
-            both;
+          animation: slide-out-top 0.1s linear both;
         }
         @keyframes slide-out-top {
           0% {
-            transform: translateY(0);
+            transform: translateX(0);
             opacity: 1;
           }
           50% {
-            transform: translateY(-30px);
-            opacity: 0.2;
+            transform: translateX(-40px);
+            opacity: 1;
           }
           100% {
-            transform: translateY(-50px);
-            opacity: 0;
+            transform: translateX(-90px);
+            opacity: 1;
           }
         }
       `}</style>
