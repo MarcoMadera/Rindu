@@ -23,11 +23,12 @@ import { unFollow } from "utils/spotifyCalls/unFollow";
 import { checkIfUserFollowArtistUser } from "utils/spotifyCalls/checkIfUserFollowArtistUser";
 import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
 import { HeaderType } from "types/spotify";
-import { SITE_URL } from "utils/constants";
+import { MONTHS, SITE_URL } from "utils/constants";
 import Carousel from "components/Carousel";
 import SubTitle from "components/SubtTitle";
 import { getSetLists, SetLists } from "utils/getSetLists";
 import { ArtistsInfo, getArtistInfo } from "utils/getArtistInfo";
+import { conjuction } from "utils/conjuction";
 
 interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
@@ -264,25 +265,12 @@ export default function ArtistPage({
                   const year = date[2];
                   const month = date[1];
                   const day = date[0];
-                  const months = [
-                    "ENE",
-                    "FEB",
-                    "MAR",
-                    "ABR",
-                    "MAY",
-                    "JUN",
-                    "JUL",
-                    "AGO",
-                    "SEP",
-                    "OCT",
-                    "NOV",
-                    "DIC",
-                  ];
+
                   return (
                     <div key={set.id} className="set">
                       <div className="set-date">
                         <span className="month">
-                          {months[Number(month) - 1]}
+                          {MONTHS[Number(month) - 1]}
                         </span>
                         <span className="day">{day}</span>
                         <span className="year">{year}</span>
@@ -290,8 +278,11 @@ export default function ArtistPage({
                       <div className="set-info">
                         <h4>{set.venue?.name}</h4>
                         <span>
-                          {set.venue?.city.name}, {set.venue?.city.state},{" "}
-                          {set.venue?.city.country.code}
+                          {conjuction([
+                            set.venue?.city.name,
+                            set.venue?.city.state,
+                            set.venue?.city.country.code,
+                          ])}
                         </span>
                       </div>
                     </div>
@@ -403,6 +394,20 @@ export default function ArtistPage({
             </div>
           </section>
         )}
+        {setLists ? (
+          <div className="attribution">
+            <p>
+              Concert setlists on{" "}
+              <a
+                href="https://www.setlist.fm/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                setlist.fm
+              </a>
+            </p>
+          </div>
+        ) : null}
       </div>
       <style jsx>{`
         main {
@@ -410,6 +415,22 @@ export default function ArtistPage({
           margin: -60px auto 0 auto;
           height: calc(100vh - 90px);
           width: calc(100vw - 245px);
+        }
+        .attribution {
+          margin-top: 16px;
+          padding-bottom: 24px;
+        }
+        .attribution p {
+          font-size: 0.6875rem;
+          line-height: 1rem;
+          text-transform: none;
+          letter-spacing: normal;
+          font-weight: 400;
+          color: #b3b3b3;
+          margin: 0;
+        }
+        a {
+          color: #b3b3b3;
         }
         h3 {
           z-index: 999999;

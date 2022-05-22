@@ -1,3 +1,4 @@
+import { wait } from "utils/wait";
 import useCancellablePromises from "./useCancellablePromises";
 
 export const cancellablePromise = (
@@ -18,9 +19,6 @@ export const cancellablePromise = (
   };
 };
 
-export const delay = (n: number | undefined): Promise<unknown> =>
-  new Promise((resolve) => setTimeout(resolve, n));
-
 const useClickPreventionOnDoubleClick = (
   onClick: () => void,
   onDoubleClick: () => void
@@ -29,7 +27,7 @@ const useClickPreventionOnDoubleClick = (
 
   const handleClick = () => {
     api.clearPendingPromises();
-    const waitForClick = cancellablePromise(delay(300));
+    const waitForClick = cancellablePromise(wait(300));
     api.appendPendingPromise(waitForClick);
 
     return waitForClick.promise

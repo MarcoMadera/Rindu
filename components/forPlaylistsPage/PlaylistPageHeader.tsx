@@ -256,14 +256,13 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
           div h1,
           div h2,
           div p {
-            padding: ${banner ? "0px 0 15px 10px" : "0"};
+            padding: ${banner ? "0px 0 15px 10px" : "0.08em 0px"};
           }
           h1 {
             color: #fff;
             margin: 0;
             pointer-events: none;
             user-select: none;
-            padding: 0.08em 0px;
             font-size: ${title.length < 16
               ? "96px"
               : title.length < 21
@@ -306,7 +305,7 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
           div.playlistInfo {
             align-self: flex-end;
             width: calc(100% - 310px);
-            text-shadow: 0px 0px 14px #00000078;
+            text-shadow: ${banner ? "0px 0px 20px #00000078" : "none"};
           }
           p.description {
             margin-bottom: 4px;

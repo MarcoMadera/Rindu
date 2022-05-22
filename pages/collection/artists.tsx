@@ -4,20 +4,7 @@ import { useEffect, ReactElement, useState } from "react";
 import Link from "next/link";
 import PresentationCard from "components/forDashboardPage/PlaylistCard";
 import useAuth from "hooks/useAuth";
-
-async function getAllArtists(accessToken: string) {
-  const res = await fetch(
-    "https://api.spotify.com/v1/me/following?type=artist&limit=50",
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-  const data = await res.json();
-  return data.artists;
-}
+import { getMyArtists } from "utils/spotifyCalls/getMyArtists";
 
 export default function CollectionPlaylists(): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
@@ -73,9 +60,10 @@ export default function CollectionPlaylists(): ReactElement {
     if (!accessToken) return;
 
     async function getArtists() {
-      const allArtists: SpotifyApi.UsersFollowedArtistsResponse["artists"] =
-        await getAllArtists(accessToken as string);
-      setArtists(allArtists.items);
+      const artistsObjResponse = await getMyArtists(accessToken as string);
+      if (artistsObjResponse?.artists.items) {
+        setArtists(artistsObjResponse?.artists.items);
+      }
     }
     getArtists();
   }, [accessToken, setArtists]);

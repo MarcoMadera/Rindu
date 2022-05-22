@@ -6,3 +6,17 @@ export const EXPIRE_TOKEN_COOKIE = "ex";
 export const SITE_URL = __prod__
   ? process.env.NEXT_PUBLIC_SITE_URL
   : "http://localhost:3000";
+export const MONTHS = [
+  "ENE",
+  "FEB",
+  "MAR",
+  "ABR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AGO",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DIC",
+];

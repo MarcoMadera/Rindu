@@ -5,57 +5,9 @@ import { useEffect, ReactElement, useState } from "react";
 import Link from "next/link";
 import PresentationCard from "components/forDashboardPage/PlaylistCard";
 import { getYear } from "utils/getYear";
+import { getAllAlbums } from "utils/getAllAlbums";
 
-async function getAlbum(offset: number, accessToken: string) {
-  const res = await fetch(
-    `https://api.spotify.com/v1/me/albums?limit=50&offset=${offset}`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-  const data = await res.json();
-  return data;
-}
-
-async function getAllAlbums(accessToken: string) {
-  const limit = 50;
-  const albumsData: SpotifyApi.UsersSavedAlbumsResponse = await getAlbum(
-    0,
-    accessToken
-  );
-
-  let restAlbumsData: SpotifyApi.UsersSavedAlbumsResponse | undefined;
-  const max = Math.ceil(albumsData.total / limit);
-
-  if (max <= 1) {
-    return albumsData;
-  }
-
-  for (let i = 1; i < max; i++) {
-    const resAlbumsData = await getAlbum(limit * i, accessToken);
-    if (restAlbumsData) {
-      restAlbumsData = {
-        ...restAlbumsData,
-        items: [...restAlbumsData.items, ...resAlbumsData.items],
-      };
-    } else {
-      restAlbumsData = resAlbumsData;
-    }
-  }
-  if (!restAlbumsData) {
-    return albumsData;
-  }
-  const allPlaylists = {
-    ...albumsData,
-    items: [...albumsData.items, ...restAlbumsData.items],
-  };
-  return allPlaylists;
-}
-
-export default function CollectionPlaylists(): ReactElement {
+export default function CollectionAlbums(): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
   const { accessToken } = useAuth();
   const [albums, setAlbums] = useState<SpotifyApi.SavedAlbumObject[]>([]);
@@ -109,9 +61,8 @@ export default function CollectionPlaylists(): ReactElement {
     if (!accessToken) return;
 
     async function getAlbums() {
-      const allAlbums: SpotifyApi.UsersSavedAlbumsResponse = await getAllAlbums(
-        accessToken as string
-      );
+      const allAlbums = await getAllAlbums(accessToken as string);
+      if (!allAlbums) return;
       setAlbums(allAlbums.items);
     }
     getAlbums();

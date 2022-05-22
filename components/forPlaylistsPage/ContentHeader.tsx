@@ -1,7 +1,15 @@
 import useContextMenu from "hooks/useContextMenu";
 import useHeader from "hooks/useHeader";
-import React, { ReactElement, ReactNode } from "react";
+import { useRouter } from "next/router";
+import React, {
+  ReactElement,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { normalTrackTypes } from "types/spotify";
+import { getMainColorFromImage } from "utils/getMainColorFromImage";
 
 export function ContentHeader({
   children,
@@ -12,12 +20,35 @@ export function ContentHeader({
   data: normalTrackTypes | null;
   banner?: string;
 }): ReactElement {
-  const { headerColor } = useHeader();
+  const { headerColor, setHeaderColor } = useHeader();
   const { addContextMenu } = useContextMenu();
+  const [imageIsLoaded, setImageIsLoaded] = useState(false);
+  const image = useRef<HTMLImageElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!banner) return;
+    if (image.current?.complete || imageIsLoaded) {
+      setHeaderColor((prev) => getMainColorFromImage("banner") ?? prev);
+    }
+  }, [banner, imageIsLoaded, router.asPath, setHeaderColor]);
 
   return (
     <>
-      <div className="banner"></div>
+      {banner ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={banner}
+          ref={image}
+          alt=""
+          onLoad={() => {
+            setHeaderColor((prev) => getMainColorFromImage("banner") ?? prev);
+            setImageIsLoaded(true);
+          }}
+          className="banner"
+          id="banner"
+        />
+      ) : null}
       <header
         onContextMenu={(e) => {
           e.preventDefault();
@@ -51,12 +82,13 @@ export function ContentHeader({
           width: 100%;
           position: sticky;
           top: 0;
-          background-image: ${banner ? `url(${banner})` : "none"};
           background-size: cover;
           background-position-y: -50px;
           background-repeat: no-repeat;
           max-height: 500px;
           min-height: ${banner ? "340px" : "0"};
+          object-fit: cover;
+          display: block;
         }
         .bg-12 {
           background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0, #121212 100%),
@@ -79,6 +111,7 @@ export function ContentHeader({
           background: ${banner ? "transparent" : "#535353"};
           position: relative;
           margin-top: ${banner ? "-340px" : "0"};
+          box-shadow: inset 0px -20px 300px 30px #000000bd;
         }
         div.b-1 {
           background-color: ${banner

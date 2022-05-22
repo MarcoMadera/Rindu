@@ -4,55 +4,7 @@ import { useEffect, ReactElement, useState } from "react";
 import Link from "next/link";
 import PresentationCard from "components/forDashboardPage/PlaylistCard";
 import useAuth from "hooks/useAuth";
-
-async function getShow(offset: number, accessToken: string) {
-  const res = await fetch(
-    `https://api.spotify.com/v1/me/shows?limit=50&offset=${offset}`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-  const data = await res.json();
-  return data;
-}
-
-async function getAllAlbums(accessToken: string) {
-  const limit = 50;
-  const albumsData: SpotifyApi.UsersSavedShowsResponse = await getShow(
-    0,
-    accessToken
-  );
-
-  let restAlbumsData: SpotifyApi.UsersSavedShowsResponse | undefined;
-  const max = Math.ceil(albumsData.total / limit);
-
-  if (max <= 1) {
-    return albumsData;
-  }
-
-  for (let i = 1; i < max; i++) {
-    const resAlbumsData = await getShow(limit * i, accessToken);
-    if (restAlbumsData) {
-      restAlbumsData = {
-        ...restAlbumsData,
-        items: [...restAlbumsData.items, ...resAlbumsData.items],
-      };
-    } else {
-      restAlbumsData = resAlbumsData;
-    }
-  }
-  if (!restAlbumsData) {
-    return albumsData;
-  }
-  const allPlaylists = {
-    ...albumsData,
-    items: [...albumsData.items, ...restAlbumsData.items],
-  };
-  return allPlaylists;
-}
+import { getAllMyShows } from "utils/getAllMyShows";
 
 export default function CollectionPlaylists(): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
@@ -107,13 +59,12 @@ export default function CollectionPlaylists(): ReactElement {
   useEffect(() => {
     if (!accessToken) return;
 
-    async function getAlbums() {
-      const allAlbums: SpotifyApi.UsersSavedShowsResponse = await getAllAlbums(
-        accessToken as string
-      );
-      setShows(allAlbums.items);
+    async function getShows() {
+      const allShows = await getAllMyShows(accessToken as string);
+      if (!allShows) return;
+      setShows(allShows.items);
     }
-    getAlbums();
+    getShows();
   }, [accessToken, setShows]);
 
   return (
