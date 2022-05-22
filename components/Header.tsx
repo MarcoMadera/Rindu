@@ -214,7 +214,7 @@ export default function Header({
           z-index: 1;
           position: sticky;
           top: 0px;
-          z-index: 4;
+          z-index: 9999999999;
         }
       `}</style>
     </div>

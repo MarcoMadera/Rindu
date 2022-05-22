@@ -26,6 +26,8 @@ import { HeaderType } from "types/spotify";
 import { SITE_URL } from "utils/constants";
 import Carousel from "components/Carousel";
 import SubTitle from "components/SubtTitle";
+import { getSetLists, SetLists } from "utils/getSetLists";
+import { ArtistsInfo, getArtistInfo } from "utils/getArtistInfo";
 
 interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
@@ -35,6 +37,8 @@ interface ArtistPageProps {
   relatedArtists: SpotifyApi.ArtistsRelatedArtistsResponse | null;
   accessToken?: string;
   user: SpotifyApi.UserObjectPrivate | null;
+  setLists: SetLists | null;
+  artistInfo: ArtistsInfo | null;
 }
 
 export default function ArtistPage({
@@ -45,6 +49,8 @@ export default function ArtistPage({
   relatedArtists,
   user,
   accessToken,
+  setLists,
+  artistInfo,
 }: ArtistPageProps): ReactElement {
   const { setIsLogin, setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalitycs } = useAnalitycs();
@@ -53,6 +59,12 @@ export default function ArtistPage({
   const { setPlaylistDetails, setAllTracks } = useSpotify();
   const [showMoreTopTracks, setShowMoreTopTracks] = useState(false);
   const [isFollowingThisArtist, setIsFollowingThisArtist] = useState(false);
+  const [showMoreAbout, setShowMoreAbout] = useState(false);
+  const banner =
+    artistInfo?.artists?.[0]?.strArtistFanart ||
+    artistInfo?.artists?.[0]?.strArtistFanart2 ||
+    artistInfo?.artists?.[0]?.strArtistFanart3 ||
+    artistInfo?.artists?.[0]?.strArtistFanart4;
   useEffect(() => {
     if (!currentArtist) {
       router.push("/");
@@ -165,6 +177,7 @@ export default function ArtistPage({
         }
         totalFollowers={currentArtist?.followers?.total ?? 0}
         popularity={currentArtist?.popularity ?? 0}
+        banner={banner ?? ""}
       />
       <div className="options">
         <PlayButton uri={currentArtist?.uri} size={56} centerSize={28} />
@@ -198,43 +211,97 @@ export default function ArtistPage({
         </div>
       </div>
       <div className="content">
-        <h3>Popular</h3>
-        <div className="topTracks">
-          {topTracks?.tracks &&
-            topTracks?.tracks?.map((track, i) => {
-              const maxToShow = showMoreTopTracks ? 10 : 5;
-              if (i >= maxToShow) {
-                return null;
-              }
-              return (
-                <ModalCardTrack
-                  accessToken={accessToken ?? ""}
-                  isTrackInLibrary={false}
-                  playlistUri=""
-                  track={{
-                    ...track,
-                    media_type: "audio",
-                    audio: track.preview_url,
-                    images: track.album.images,
-                    duration: track.duration_ms,
-                    position: i,
-                  }}
-                  key={track.id}
-                  isSingleTrack
-                  position={i}
-                  type="playlist"
-                />
-              );
-            })}
+        {topTracks?.tracks && topTracks?.tracks?.length > 0 ? (
+          <h3>Popular</h3>
+        ) : null}
+        <div className="popular-content">
+          <div className="topTracks">
+            <div>
+              {topTracks?.tracks &&
+                topTracks?.tracks?.map((track, i) => {
+                  const maxToShow = showMoreTopTracks ? 10 : 5;
+                  if (i >= maxToShow) {
+                    return null;
+                  }
+                  return (
+                    <ModalCardTrack
+                      accessToken={accessToken ?? ""}
+                      isTrackInLibrary={false}
+                      playlistUri=""
+                      track={{
+                        ...track,
+                        media_type: "audio",
+                        audio: track.preview_url,
+                        images: track.album.images,
+                        duration: track.duration_ms,
+                        position: i,
+                      }}
+                      key={track.id}
+                      isSingleTrack
+                      position={i}
+                      type="playlist"
+                    />
+                  );
+                })}
+            </div>
+            <button
+              className="show-more"
+              onClick={() => {
+                setShowMoreTopTracks((prev) => !prev);
+              }}
+            >
+              {showMoreTopTracks ? "MOSTRAR MENOS" : "MOSTRAR MÁS"}
+            </button>
+          </div>
+          {setLists?.setlist && setLists?.setlist?.length > 0 ? (
+            <div className="set-list">
+              <div className="set-list-content">
+                <h3>Concerts</h3>
+                {setLists?.setlist?.map((set, i) => {
+                  if (i > 4) return null;
+                  const date = set.eventDate.split("-");
+
+                  const year = date[2];
+                  const month = date[1];
+                  const day = date[0];
+                  const months = [
+                    "ENE",
+                    "FEB",
+                    "MAR",
+                    "ABR",
+                    "MAY",
+                    "JUN",
+                    "JUL",
+                    "AGO",
+                    "SEP",
+                    "OCT",
+                    "NOV",
+                    "DIC",
+                  ];
+                  return (
+                    <div key={set.id} className="set">
+                      <div className="set-date">
+                        <span className="month">
+                          {months[Number(month) - 1]}
+                        </span>
+                        <span className="day">{day}</span>
+                        <span className="year">{year}</span>
+                      </div>
+                      <div className="set-info">
+                        <h4>{set.venue?.name}</h4>
+                        <span>
+                          {set.venue?.city.name}, {set.venue?.city.state},{" "}
+                          {set.venue?.city.country.code}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
         </div>
-        <button
-          className="show-more"
-          onClick={() => {
-            setShowMoreTopTracks((prev) => !prev);
-          }}
-        >
-          {showMoreTopTracks ? "MOSTRAR MENOS" : "MOSTRAR MÁS"}
-        </button>
+
         {singleAlbums && singleAlbums?.items?.length > 0 ? (
           <Carousel title={"Albums"} gap={24}>
             {singleAlbums?.items?.map(
@@ -299,6 +366,43 @@ export default function ArtistPage({
             })}
           </Carousel>
         ) : null}
+        {artistInfo?.artists?.[0]?.strBiographyEN && (
+          <section className="about">
+            <div>
+              <h2>About</h2>
+              {showMoreAbout ? (
+                <p>{artistInfo?.artists?.[0]?.strBiographyEN}</p>
+              ) : (
+                <p>
+                  {artistInfo?.artists?.[0]?.strBiographyEN.slice(0, 2000)}
+                  {artistInfo?.artists?.[0]?.strBiographyEN.length > 2000
+                    ? "..."
+                    : ""}
+                </p>
+              )}
+              {artistInfo?.artists?.[0]?.strBiographyEN.length > 2000 ? (
+                <button
+                  className="read-more"
+                  onClick={() => {
+                    setShowMoreAbout((prev) => !prev);
+                  }}
+                >
+                  {showMoreAbout ? "Leer menos" : "Leer más"}
+                </button>
+              ) : null}
+            </div>
+            <div className="artist-about-img-container">
+              {artistInfo?.artists?.[0]?.strArtistThumb && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  className="artist-about-img"
+                  src={artistInfo?.artists?.[0]?.strArtistThumb}
+                  alt={currentArtist?.name}
+                />
+              )}
+            </div>
+          </section>
+        )}
       </div>
       <style jsx>{`
         main {
@@ -307,10 +411,111 @@ export default function ArtistPage({
           height: calc(100vh - 90px);
           width: calc(100vw - 245px);
         }
-        @media (max-width: 1000px) {
-          main {
-            width: 100vw;
-          }
+        h3 {
+          z-index: 999999;
+          position: relative;
+        }
+        .set {
+          display: flex;
+          margin: 10px 0;
+        }
+        .set-info {
+          margin-left: 18px;
+        }
+        .set-info h4 {
+          margin: 0;
+          font-size: 16px;
+        }
+        .set-info span {
+          margin: 0;
+          font-size: 14px;
+        }
+        .set-list {
+          margin-left: 20px;
+          flex: 40%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .month {
+          text-align: left;
+          text-transform: uppercase;
+          font-weight: bold;
+          font-size: 12px;
+        }
+        .day {
+          font-weight: normal;
+          color: inherit;
+          text-transform: none;
+          text-align: left;
+          font-size: 24px;
+        }
+        .year {
+          font-weight: normal;
+          color: inherit;
+          text-transform: none;
+          text-align: left;
+          font-size: 12px;
+        }
+        .set-date {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          line-height: 1;
+          font-size: 16px;
+          width: fit-content;
+        }
+        .content .read-more {
+          margin-top: 16px;
+          padding: 0;
+        }
+        .popular-content {
+          display: ${setLists ? "flex" : "block"};
+        }
+        .about {
+          display: grid;
+          grid-template-columns: minmax(180px, 700px) minmax(180px, 1fr);
+        }
+        .artist-about-img-container {
+          display: flex;
+          justify-content: center;
+        }
+        .artist-about-img {
+          width: 100%;
+          margin-top: 50px;
+          max-width: 400px;
+          height: fit-content;
+          border-radius: 10px;
+          max-height: 400px;
+          aspect-ratio: 1;
+        }
+        h2 {
+          color: #fff;
+          display: inline-block;
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          font-size: 24px;
+          font-weight: 700;
+          letter-spacing: -0.04em;
+          line-height: 28px;
+          text-transform: none;
+          margin: 0;
+        }
+        p {
+          font-size: 1rem;
+          line-height: 1.5rem;
+          text-transform: none;
+          letter-spacing: normal;
+          box-sizing: border-box;
+          font-family: "Lato", sans-serif;
+          margin: 0px;
+          font-weight: 400;
+          color: #9e9e9e;
+          max-width: 672px;
+          padding-top: 16px;
+          padding-right: 20px;
         }
         .content button {
           background: none;
@@ -362,6 +567,8 @@ export default function ArtistPage({
           align-items: center;
           margin: 16px 0;
           flex-direction: row;
+          z-index: 999999;
+          position: relative;
         }
         .options,
         .trc {
@@ -385,15 +592,30 @@ export default function ArtistPage({
           margin-right: 24px;
         }
         .content {
-          margin: 32px;
+          padding: 32px;
           padding-bottom: 30px;
           position: relative;
+          background-color: ${banner ? "#121212" : "transparent"};
         }
         .topTracks {
           display: flex;
           flex-wrap: wrap;
-          justify-content: center;
           margin-top: 32px;
+          z-index: ${banner ? "999999" : "0"};
+          position: relative;
+          flex: 60%;
+          height: fit-content;
+        }
+        @media (max-width: 1000px) {
+          main {
+            width: 100vw;
+          }
+        }
+        @media (max-width: 500px) {
+          .popular-content,
+          .about {
+            display: block;
+          }
         }
       `}</style>
     </main>
@@ -419,20 +641,24 @@ export async function getServerSideProps({
   const { accessToken, user } = (await getAuth(res, cookies)) || {};
 
   const currentArtist = await getArtistById(artistId, accessToken, cookies);
-  const topTracks = await getArtistTopTracks(
+  const setListAPIKey = process.env.SETLIST_FM_API_KEY;
+  const setListsProm = await getSetLists(currentArtist?.name, setListAPIKey);
+  const artistInfoProm = await getArtistInfo(currentArtist?.name);
+
+  const topTracksProm = await getArtistTopTracks(
     artistId,
     user?.country ?? "US",
     accessToken,
     cookies
   );
-  const singleAlbums = await getArtistAlbums(
+  const singleAlbumsProm = await getArtistAlbums(
     artistId,
     user?.country ?? "US",
     Include_groups.single,
     accessToken,
     cookies
   );
-  const appearAlbums = await getArtistAlbums(
+  const appearAlbumsProm = await getArtistAlbums(
     artistId,
     user?.country ?? "US",
     Include_groups.appears_on,
@@ -440,21 +666,42 @@ export async function getServerSideProps({
     cookies
   );
 
-  const relatedArtists = await getRelatedArtists(
+  const relatedArtistsProm = await getRelatedArtists(
     artistId,
     accessToken,
     cookies
   );
 
+  const [
+    setLists,
+    artistInfo,
+    topTracks,
+    singleAlbums,
+    appearAlbums,
+    relatedArtists,
+  ] = await Promise.allSettled([
+    setListsProm,
+    artistInfoProm,
+    topTracksProm,
+    singleAlbumsProm,
+    appearAlbumsProm,
+    relatedArtistsProm,
+  ]);
+
   return {
     props: {
       currentArtist,
-      singleAlbums,
-      appearAlbums,
-      topTracks,
-      relatedArtists,
+      singleAlbums:
+        singleAlbums.status === "fulfilled" ? singleAlbums.value : null,
+      appearAlbums:
+        appearAlbums.status === "fulfilled" ? appearAlbums.value : null,
+      topTracks: topTracks.status === "fulfilled" ? topTracks.value : null,
+      relatedArtists:
+        relatedArtists.status === "fulfilled" ? relatedArtists.value : null,
       accessToken,
       user: user ?? null,
+      setLists: setLists.status === "fulfilled" ? setLists.value : null,
+      artistInfo: artistInfo.status === "fulfilled" ? artistInfo.value : null,
     },
   };
 }

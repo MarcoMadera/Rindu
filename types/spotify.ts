@@ -74,6 +74,7 @@ export type normalTrackTypes = {
   audio?: string | null;
   explicit?: boolean;
   duration?: number;
+  duration_ms?: number;
   album: Album;
   added_at?: string | number;
   type: "track" | "episode" | "ad";

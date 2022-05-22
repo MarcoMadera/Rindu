@@ -177,33 +177,46 @@ export function SpotifyContextProvider({
   }, [currrentlyPlaying, isPlaying]);
 
   useEffect(() => {
-    if (
-      "setPositionState" in navigator.mediaSession &&
-      currrentlyPlaying?.duration
-    ) {
+    const duration =
+      currrentlyPlaying?.duration_ms ||
+      currrentlyPlaying?.duration ||
+      currentlyPlayingDuration;
+    if ("setPositionState" in navigator.mediaSession) {
       navigator.mediaSession.setPositionState({
-        duration: currrentlyPlaying.duration,
+        duration: duration ?? 0,
         playbackRate: 1,
         position:
           currentlyPlayingPosition &&
-          currentlyPlayingPosition <= currrentlyPlaying.duration
+          currentlyPlayingPosition <= (duration ?? 0)
             ? currentlyPlayingPosition
             : 0,
       });
     }
-  }, [currentlyPlayingPosition, currrentlyPlaying?.duration]);
+  }, [
+    currentlyPlayingDuration,
+    currentlyPlayingPosition,
+    currrentlyPlaying,
+    currrentlyPlaying?.duration_ms,
+  ]);
 
   useEffect(() => {
     if (player && "mediaSession" in navigator) {
       try {
         navigator.mediaSession.setActionHandler("play", function () {
-          player.togglePlay();
+          if (!isPremium) {
+            player?.togglePlay();
+            return;
+          }
+          (player as Spotify.Player)?.resume();
+          setIsPlaying(true);
         });
         navigator.mediaSession.setActionHandler("pause", function () {
-          player.togglePlay();
+          player?.pause();
+          setIsPlaying(false);
         });
         navigator.mediaSession.setActionHandler("stop", function () {
           player.pause();
+          setIsPlaying(false);
         });
         navigator.mediaSession.setActionHandler("seekbackward", function () {
           player.seek(
@@ -230,7 +243,7 @@ export function SpotifyContextProvider({
         console.log(error);
       }
     }
-  }, [currentlyPlayingPosition, player, user]);
+  }, [currentlyPlayingPosition, isPremium, player, user]);
 
   useEffect(() => {
     if ("mediaSession" in navigator) {

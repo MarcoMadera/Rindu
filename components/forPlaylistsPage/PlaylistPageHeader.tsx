@@ -33,6 +33,7 @@ type HeaderProps =
       popularity?: never;
       totalPublicPlaylists?: never;
       data?: never;
+      banner?: never;
     })
   | (PageHeaderDefault & {
       type: HeaderType.profile | never;
@@ -46,11 +47,13 @@ type HeaderProps =
       ownerDisplayName?: never;
       popularity?: never;
       data?: never;
+      banner?: never;
     })
   | (PageHeaderDefault & {
       type: HeaderType.artist | never;
       popularity: number;
       totalFollowers: number;
+      banner?: string;
       totalTracks?: never;
       artists?: never;
       release_date?: never;
@@ -72,6 +75,7 @@ type HeaderProps =
       popularity?: never;
       totalPublicPlaylists?: never;
       data: normalTrackTypes | null;
+      banner?: never;
     })
   | (PageHeaderDefault & {
       type: HeaderType.episode | never;
@@ -85,6 +89,7 @@ type HeaderProps =
       popularity?: never;
       totalPublicPlaylists?: never;
       data?: never;
+      banner?: never;
     })
   | (PageHeaderDefault & {
       type: HeaderType.playlist | never;
@@ -98,6 +103,7 @@ type HeaderProps =
       popularity?: never;
       totalPublicPlaylists?: never;
       data?: never;
+      banner?: never;
     })
   | (PageHeaderDefault & {
       type: HeaderType;
@@ -111,6 +117,7 @@ type HeaderProps =
       popularity?: never;
       totalPublicPlaylists?: never;
       data?: never;
+      banner?: never;
     });
 
 export const PlaylistPageHeader: React.FC<HeaderProps> = ({
@@ -128,6 +135,7 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
   popularity,
   totalPublicPlaylists,
   data,
+  banner,
 }) => {
   const { setHeaderColor } = useHeader();
   const image = useRef<HTMLImageElement>(null);
@@ -140,14 +148,15 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
     type === HeaderType.compilation;
 
   useEffect(() => {
+    if (banner) return;
     if (image.current?.complete || imageIsLoaded) {
       setHeaderColor((prev) => getMainColorFromImage("cover-image") ?? prev);
     }
-  }, [imageIsLoaded, router.asPath, setHeaderColor]);
+  }, [banner, imageIsLoaded, router.asPath, setHeaderColor]);
 
   return (
-    <ContentHeader data={data ?? null}>
-      {coverImg ? (
+    <ContentHeader banner={banner} data={data ?? null}>
+      {coverImg && !banner ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={coverImg}
@@ -155,6 +164,7 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
           alt=""
           id="cover-image"
           onLoad={() => {
+            if (banner) return;
             setHeaderColor(
               (prev) => getMainColorFromImage("cover-image") ?? prev
             );
@@ -162,12 +172,14 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
           }}
         />
       ) : (
-        <div id="cover-image"></div>
+        !banner && <div id="cover-image"></div>
       )}
       <div className="playlistInfo">
         <h2>{type}</h2>
         <h1>{title}</h1>
-        <p className="description">{decode(description)}</p>
+        {description ? (
+          <p className="description">{decode(description)}</p>
+        ) : null}
         <div>
           <p>
             {type === HeaderType.song || isAlbumVariant ? (
@@ -241,6 +253,11 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
       </div>
       <style jsx>
         {`
+          div h1,
+          div h2,
+          div p {
+            padding: ${banner ? "0px 0 15px 10px" : "0"};
+          }
           h1 {
             color: #fff;
             margin: 0;
@@ -272,6 +289,7 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
             display: -webkit-box;
             line-break: anywhere;
             -webkit-line-clamp: 3;
+            z-index: 13232;
           }
           h2 {
             font-size: 12px;
@@ -288,6 +306,7 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
           div.playlistInfo {
             align-self: flex-end;
             width: calc(100% - 310px);
+            text-shadow: 0px 0px 14px #00000078;
           }
           p.description {
             margin-bottom: 4px;

@@ -6,15 +6,18 @@ import { normalTrackTypes } from "types/spotify";
 export function ContentHeader({
   children,
   data,
+  banner,
 }: {
   children: ReactNode;
   data: normalTrackTypes | null;
+  banner?: string;
 }): ReactElement {
   const { headerColor } = useHeader();
   const { addContextMenu } = useContextMenu();
 
   return (
     <>
+      <div className="banner"></div>
       <header
         onContextMenu={(e) => {
           e.preventDefault();
@@ -43,6 +46,18 @@ export function ContentHeader({
           margin-top: 60px;
           position: absolute;
         }
+        .banner {
+          height: ${banner ? "340px" : "0"};
+          width: 100%;
+          position: sticky;
+          top: 0;
+          background-image: ${banner ? `url(${banner})` : "none"};
+          background-size: cover;
+          background-position-y: -50px;
+          background-repeat: no-repeat;
+          max-height: 500px;
+          min-height: ${banner ? "340px" : "0"};
+        }
         .bg-12 {
           background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0, #121212 100%),
             url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
@@ -51,6 +66,7 @@ export function ContentHeader({
           width: 100%;
           background-color: ${headerColor ?? "transparent"};
           transition: background-color 0.3s ease;
+          z-index: ${banner ? "999999" : "0"};
         }
         header {
           display: flex;
@@ -60,16 +76,20 @@ export function ContentHeader({
           max-height: 500px;
           min-height: 340px;
           width: 100%;
-          background: #535353;
+          background: ${banner ? "transparent" : "#535353"};
           position: relative;
+          margin-top: ${banner ? "-340px" : "0"};
         }
         div.b-1 {
-          background-color: ${headerColor ?? "transparent"};
+          background-color: ${banner
+            ? "transparent"
+            : headerColor ?? "transparent"};
           transition: background-color 0.3s ease;
         }
         div.b-2 {
-          background: linear-gradient(transparent 0, rgba(0, 0, 0, 0.5) 100%),
-            url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
+          background-image: ${banner
+            ? "transparent"
+            : "linear-gradient(transparent 0, rgba(0, 0, 0, 0.5) 100%),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=')"};
         }
         .b-1,
         .b-2 {
