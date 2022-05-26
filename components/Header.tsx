@@ -18,27 +18,41 @@ export default function Header({
 }: {
   children: ReactNode;
 }): ReactElement {
-  const [showFixed, setShowFixed] = useState(false);
   const router = useRouter();
   const appRef = useRef<HTMLDivElement>();
   const { user } = useAuth();
-  const { headerColor, element, displayOnFixed, alwaysDisplayColor } =
-    useHeader();
+  const {
+    headerColor,
+    element,
+    displayOnFixed,
+    alwaysDisplayColor,
+    headerOpacity,
+    setHeaderOpacity,
+    disableOpacityChange,
+  } = useHeader();
   const isPremium = user?.product === "premium";
   const { setShowHamburguerMenu } = useSpotify();
+  const [showFixed, setShowFixed] = useState(false);
 
   useEffect(() => {
     const app = appRef.current;
     function onScroll() {
-      const newShowFixed = (app?.scrollTop || 0) > 223;
-      if (showFixed !== newShowFixed) {
-        setShowFixed(newShowFixed);
+      const headerOpacityPercentage = ((app?.scrollTop || 0) + -55) / 223;
+      const headerOpacity =
+        headerOpacityPercentage > 1 ? 1 : headerOpacityPercentage;
+      setHeaderOpacity(headerOpacity);
+
+      if ((app?.scrollTop || 0) > 223) {
+        setShowFixed(true);
+      } else {
+        setShowFixed(false);
       }
     }
+
     router.events.on("routeChangeComplete", () => {
       document.getElementsByClassName("app")?.[0]?.scrollTo(0, 0);
       if (!alwaysDisplayColor) {
-        setShowFixed(false);
+        setHeaderOpacity(0);
       }
     });
 
@@ -47,11 +61,11 @@ export default function Header({
     return () => {
       router.events.off("routeChangeComplete", () => {
         document.getElementsByClassName("app")?.[0]?.scrollTo(0, 0);
-        setShowFixed(false);
+        setHeaderOpacity(0);
       });
       app?.removeEventListener("scroll", onScroll);
     };
-  }, [showFixed, router, alwaysDisplayColor]);
+  }, [router, alwaysDisplayColor, setHeaderOpacity]);
 
   return (
     <div
@@ -61,7 +75,16 @@ export default function Header({
     >
       <div className="container">
         <header>
-          <div className="background">
+          <div
+            className="background"
+            style={{
+              opacity: alwaysDisplayColor
+                ? 1
+                : disableOpacityChange && !showFixed
+                ? 0
+                : headerOpacity,
+            }}
+          >
             <div className="noise"></div>
           </div>
           <button
@@ -76,7 +99,9 @@ export default function Header({
           </button>
           <RouterButtons />
           <div className="extraElement">
-            {displayOnFixed || (element && showFixed) ? <>{element}</> : null}
+            {displayOnFixed || (element && headerOpacity === 1) ? (
+              <>{element}</>
+            ) : null}
           </div>
           {!isPremium ? (
             <a
@@ -198,7 +223,6 @@ export default function Header({
         }
         div.background {
           background-color: ${headerColor ?? "#797979"};
-          opacity: ${showFixed || alwaysDisplayColor ? 1 : 0};
           bottom: 0;
           left: 0;
           overflow: hidden;
@@ -211,7 +235,6 @@ export default function Header({
         }
         .container {
           height: 60px;
-          z-index: 1;
           position: sticky;
           top: 0px;
           z-index: 9999999999;

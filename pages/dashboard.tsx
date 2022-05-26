@@ -63,10 +63,7 @@ const Dashboard: NextPage<DashboardProps> = ({
   topArtists,
 }) => {
   const { setIsLogin, setUser } = useAuth();
-  const { setHeaderColor } = useHeader({
-    showOnFixed: false,
-    alwaysDisplayColor: true,
-  });
+  const { setHeaderColor } = useHeader({ alwaysDisplayColor: true });
   const router = useRouter();
   const { setAllTracks, recentlyPlayed } = useSpotify();
   const [recentListeningRecommendations, setRecentListeningRecommendations] =

@@ -57,17 +57,21 @@ export default function Layout({
   return (
     <>
       {isLoginPage ? (
-        <div>
-          <Navbar />
-          {children}
-        </div>
+        <>
+          <div>
+            <Navbar />
+            {children}
+          </div>
+          <Footer />
+        </>
       ) : (
-        <SideBar>
-          <Header>{children}</Header>
-        </SideBar>
+        <>
+          <SideBar>
+            <Header>{children}</Header>
+          </SideBar>
+          <SpotifyPlayer />
+        </>
       )}
-
-      {router.asPath === "/" ? <Footer /> : <SpotifyPlayer />}
     </>
   );
 }

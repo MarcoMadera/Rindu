@@ -16,6 +16,10 @@ export interface Context {
   setElement: Dispatch<SetStateAction<ReactElement | null>>;
   headerColor: string;
   setHeaderColor: Dispatch<SetStateAction<string>>;
+  headerOpacity: number;
+  setHeaderOpacity: Dispatch<SetStateAction<number>>;
+  disableOpacityChange: boolean;
+  setDisableOpacityChange: Dispatch<SetStateAction<boolean>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -29,8 +33,11 @@ export function HeaderContextProvider({
 }): ReactElement {
   const [displayOnFixed, setDisplayOnFixed] = useState<boolean>(false);
   const [alwaysDisplayColor, setAlwaysDisplayColor] = useState<boolean>(false);
+  const [disableOpacityChange, setDisableOpacityChange] =
+    useState<boolean>(false);
   const [element, setElement] = useState<ReactElement | null>(null);
   const [headerColor, setHeaderColor] = useState<string>("#7a7a7a");
+  const [headerOpacity, setHeaderOpacity] = useState<number>(0);
   return (
     <HeaderContext.Provider
       value={{
@@ -42,6 +49,10 @@ export function HeaderContextProvider({
         setHeaderColor,
         alwaysDisplayColor,
         setAlwaysDisplayColor,
+        headerOpacity,
+        setHeaderOpacity,
+        disableOpacityChange,
+        setDisableOpacityChange,
       }}
     >
       {children}

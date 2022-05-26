@@ -34,6 +34,7 @@ type HeaderProps =
       totalPublicPlaylists?: never;
       data?: never;
       banner?: never;
+      disableOpacityChange?: never;
     })
   | (PageHeaderDefault & {
       type: HeaderType.profile | never;
@@ -48,6 +49,7 @@ type HeaderProps =
       popularity?: never;
       data?: never;
       banner?: never;
+      disableOpacityChange?: never;
     })
   | (PageHeaderDefault & {
       type: HeaderType.artist | never;
@@ -62,6 +64,7 @@ type HeaderProps =
       ownerDisplayName?: never;
       totalPublicPlaylists?: never;
       data?: never;
+      disableOpacityChange?: boolean;
     })
   | (PageHeaderDefault & {
       type: HeaderType.song | never;
@@ -76,6 +79,7 @@ type HeaderProps =
       totalPublicPlaylists?: never;
       data: normalTrackTypes | null;
       banner?: never;
+      disableOpacityChange?: never;
     })
   | (PageHeaderDefault & {
       type: HeaderType.episode | never;
@@ -90,6 +94,7 @@ type HeaderProps =
       totalPublicPlaylists?: never;
       data?: never;
       banner?: never;
+      disableOpacityChange?: never;
     })
   | (PageHeaderDefault & {
       type: HeaderType.playlist | never;
@@ -104,6 +109,7 @@ type HeaderProps =
       totalPublicPlaylists?: never;
       data?: never;
       banner?: never;
+      disableOpacityChange?: never;
     })
   | (PageHeaderDefault & {
       type: HeaderType;
@@ -118,6 +124,7 @@ type HeaderProps =
       totalPublicPlaylists?: never;
       data?: never;
       banner?: never;
+      disableOpacityChange?: never;
     });
 
 export const PlaylistPageHeader: React.FC<HeaderProps> = ({
@@ -136,8 +143,9 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
   totalPublicPlaylists,
   data,
   banner,
+  disableOpacityChange,
 }) => {
-  const { setHeaderColor } = useHeader();
+  const { setHeaderColor } = useHeader({ disableOpacityChange });
   const image = useRef<HTMLImageElement>(null);
   const [imageIsLoaded, setImageIsLoaded] = useState(false);
   const router = useRouter();
@@ -155,7 +163,11 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
   }, [banner, imageIsLoaded, router.asPath, setHeaderColor]);
 
   return (
-    <ContentHeader banner={banner} data={data ?? null}>
+    <ContentHeader
+      banner={banner}
+      data={data ?? null}
+      disableOpacityChange={disableOpacityChange}
+    >
       {coverImg && !banner ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img

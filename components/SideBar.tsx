@@ -213,7 +213,7 @@ async function getAllPlaylists(accessToken: string) {
 
   for (let i = 1; i < max; i++) {
     const resPlaylistsData = await getPlaylist(limit * i, accessToken);
-    if (restPlaylistsData) {
+    if (restPlaylistsData && resPlaylistsData) {
       restPlaylistsData = {
         ...restPlaylistsData,
         items: [...restPlaylistsData.items, ...resPlaylistsData.items],

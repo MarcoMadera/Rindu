@@ -55,17 +55,22 @@ export default function ArtistPage({
 }: ArtistPageProps): ReactElement {
   const { setIsLogin, setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalitycs } = useAnalitycs();
-  const { setElement } = useHeader();
-  const router = useRouter();
-  const { setPlaylistDetails, setAllTracks } = useSpotify();
-  const [showMoreTopTracks, setShowMoreTopTracks] = useState(false);
-  const [isFollowingThisArtist, setIsFollowingThisArtist] = useState(false);
-  const [showMoreAbout, setShowMoreAbout] = useState(false);
   const banner =
     artistInfo?.artists?.[0]?.strArtistFanart ||
     artistInfo?.artists?.[0]?.strArtistFanart2 ||
     artistInfo?.artists?.[0]?.strArtistFanart3 ||
     artistInfo?.artists?.[0]?.strArtistFanart4;
+  const { setElement } = useHeader({
+    alwaysDisplayColor: false,
+    disableOpacityChange: !!banner,
+    showOnFixed: false,
+  });
+  const router = useRouter();
+  const { setPlaylistDetails, setAllTracks } = useSpotify();
+  const [showMoreTopTracks, setShowMoreTopTracks] = useState(false);
+  const [isFollowingThisArtist, setIsFollowingThisArtist] = useState(false);
+  const [showMoreAbout, setShowMoreAbout] = useState(false);
+
   useEffect(() => {
     if (!currentArtist) {
       router.push("/");
@@ -179,6 +184,7 @@ export default function ArtistPage({
         totalFollowers={currentArtist?.followers?.total ?? 0}
         popularity={currentArtist?.popularity ?? 0}
         banner={banner ?? ""}
+        disableOpacityChange={!!banner}
       />
       <div className="options">
         <PlayButton uri={currentArtist?.uri} size={56} centerSize={28} />

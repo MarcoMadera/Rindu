@@ -13,10 +13,7 @@ interface ISingleTrackCard {
 export default function SingleTrackCard({
   track,
 }: ISingleTrackCard): ReactElement {
-  const { setHeaderColor } = useHeader({
-    showOnFixed: false,
-    alwaysDisplayColor: true,
-  });
+  const { setHeaderColor } = useHeader();
   const [mainTrackColor, setMainTrackColor] = useState<string>();
   const [imageIsLoaded, setImageIsLoaded] = useState(false);
   const { addContextMenu } = useContextMenu();

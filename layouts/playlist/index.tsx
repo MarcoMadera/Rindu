@@ -103,7 +103,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
     setAllTracks,
     allTracks,
   } = useSpotify();
-  const { setElement } = useHeader({ showOnFixed: false });
+  const { setElement } = useHeader();
   const [isPin, setIsPin] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const isMyPlaylist = playlistDetails?.owner.id === user?.id;
@@ -229,6 +229,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
               <div className="info">
                 {isMyPlaylist ? (
                   <button
+                    className="broom"
                     onClick={() => {
                       setOpenModal(true);
                     }}
@@ -433,6 +434,16 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
           align-items: center;
           background-color: transparent;
           border: none;
+        }
+        .info button.broom {
+          margin-left: 28px;
+        }
+        .info button.broom:hover,
+        .info button.broom:focus {
+          transform: scale(1.1);
+        }
+        .info button.broom:active {
+          transform: scale(1);
         }
         .options {
           display: flex;

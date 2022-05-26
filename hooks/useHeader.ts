@@ -8,7 +8,11 @@ import {
 } from "react";
 
 export default function useHeader(
-  options?: Partial<{ showOnFixed: boolean; alwaysDisplayColor: boolean }>
+  options?: Partial<{
+    showOnFixed: boolean;
+    alwaysDisplayColor: boolean;
+    disableOpacityChange: boolean;
+  }>
 ): {
   element: ReactElement | null;
   setDisplayOnFixed: Dispatch<SetStateAction<boolean>>;
@@ -17,6 +21,10 @@ export default function useHeader(
   alwaysDisplayColor: boolean;
   displayOnFixed: boolean;
   setElement: Dispatch<SetStateAction<ReactElement | null>>;
+  headerOpacity: number;
+  setHeaderOpacity: Dispatch<SetStateAction<number>>;
+  disableOpacityChange: boolean;
+  setDisableOpacityChange: Dispatch<SetStateAction<boolean>>;
 } {
   const {
     element,
@@ -27,6 +35,10 @@ export default function useHeader(
     setHeaderColor,
     setAlwaysDisplayColor,
     alwaysDisplayColor,
+    headerOpacity,
+    setHeaderOpacity,
+    disableOpacityChange,
+    setDisableOpacityChange,
   } = useContext(HeaderContext);
 
   useEffect(() => {
@@ -36,16 +48,21 @@ export default function useHeader(
     if (options?.alwaysDisplayColor) {
       setAlwaysDisplayColor(options.alwaysDisplayColor);
     }
-
+    if (options?.disableOpacityChange) {
+      setDisableOpacityChange(options?.disableOpacityChange);
+    }
     return () => {
       setDisplayOnFixed(false);
       setAlwaysDisplayColor(false);
+      setDisableOpacityChange(false);
       setElement(null);
     };
   }, [
     options?.alwaysDisplayColor,
+    options?.disableOpacityChange,
     options?.showOnFixed,
     setAlwaysDisplayColor,
+    setDisableOpacityChange,
     setDisplayOnFixed,
     setElement,
   ]);
@@ -58,5 +75,9 @@ export default function useHeader(
     headerColor,
     setHeaderColor,
     alwaysDisplayColor,
+    headerOpacity,
+    setHeaderOpacity,
+    disableOpacityChange,
+    setDisableOpacityChange,
   };
 }
