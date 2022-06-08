@@ -1,7 +1,11 @@
+import useOnScreen from "hooks/useOnScreen";
 import { decode } from "html-entities";
+import { useRouter } from "next/router";
+import { useRef } from "react";
 import { SITE_URL } from "utils/constants";
 
 interface CardContentProps {
+  id: string;
   images?: SpotifyApi.ImageObject[];
   title: string;
   subTitle: string | JSX.Element;
@@ -16,13 +20,31 @@ interface CardContentProps {
     | "episode";
 }
 export const CardContent: React.FC<CardContentProps> = ({
+  id,
   type,
   images,
   title,
   subTitle,
 }) => {
+  const router = useRouter();
+  const handlerRef = useRef<HTMLDivElement>(null);
+  const isVisible = useOnScreen(handlerRef, "-150px");
   return (
     <article>
+      <div
+        ref={handlerRef}
+        className="handler"
+        onClick={() => {
+          router.push(`/${type}/${encodeURIComponent(id)}`);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            router.push(`/${type}/${encodeURIComponent(id)}`);
+          }
+        }}
+        role="button"
+        tabIndex={isVisible ? 0 : -1}
+      ></div>
       {images && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -45,6 +67,16 @@ export const CardContent: React.FC<CardContentProps> = ({
       <style jsx>{`
         div {
           min-height: 62px;
+        }
+        .handler {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 4px;
+          z-index: 1;
+          background-color: transparent;
+          top: 0;
+          left: 0;
         }
         strong {
           display: block;

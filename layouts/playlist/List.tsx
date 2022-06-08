@@ -120,9 +120,10 @@ export default function Playlist({
             startIndex,
             accessToken
           );
-      const items = data.items;
+      const items = data?.items;
       const tracks = mapPlaylistItems(items, startIndex);
-      const trackIds = tracks.map((track) => track.id ?? "");
+      if (!tracks) return;
+      const trackIds = tracks?.map((track) => track.id ?? "");
       const tracksInLibrary = await checkTracksInLibrary(
         trackIds,
         accessToken || ""

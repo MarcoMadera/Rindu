@@ -1,6 +1,5 @@
 import { CardContent } from "./CardContentProps";
-import Link from "next/link";
-import { HTMLAttributes, MutableRefObject, useRef } from "react";
+import { HTMLAttributes } from "react";
 import { PlayButton } from "components/forPlaylistsPage/PlayButton";
 import useAuth from "hooks/useAuth";
 
@@ -25,7 +24,6 @@ interface PresentationCardProps {
 const PresentationCard: React.FC<
   PresentationCardProps & HTMLAttributes<HTMLAnchorElement>
 > = ({ images, title, subTitle, id, type, isSingle, track, ...props }) => {
-  const cardRef = useRef<HTMLAnchorElement>();
   const unsupportedUris = ["genre", "user"];
   const uri = unsupportedUris.includes(type)
     ? undefined
@@ -33,17 +31,14 @@ const PresentationCard: React.FC<
   const { user } = useAuth();
   const isPremium = user?.product === "premium";
   return (
-    <div>
-      <Link href={`/${type}/${encodeURIComponent(id)}`}>
-        <a ref={cardRef as MutableRefObject<HTMLAnchorElement>} {...props}>
-          <CardContent
-            type={type}
-            images={images}
-            title={title}
-            subTitle={subTitle}
-          />
-        </a>
-      </Link>
+    <div className="container">
+      <CardContent
+        id={id}
+        type={type}
+        images={images}
+        title={title}
+        subTitle={subTitle}
+      />
       <span>
         <PlayButton
           uri={uri}
@@ -56,7 +51,7 @@ const PresentationCard: React.FC<
         />
       </span>
       <style jsx>{`
-        a {
+        .container {
           color: inherit;
           cursor: pointer;
           border: none;
@@ -64,8 +59,6 @@ const PresentationCard: React.FC<
           margin: 0;
           padding: 0;
           text-decoration: none;
-        }
-        div {
           position: relative;
           background-color: #181818;
           transition: background-color 0.3s ease;
@@ -78,13 +71,14 @@ const PresentationCard: React.FC<
           transition: all 0.3s ease;
           opacity: 0;
           display: ${!isPremium || !uri ? "none" : "flex"};
+          z-index: 2;
         }
-        div:hover,
-        div:focus-within {
+        .container:hover,
+        .container:focus-within {
           background-color: #282828;
         }
-        div:focus-within span,
-        div:hover span {
+        .container:focus-within span,
+        .container:hover span {
           transform: translateY(-8px);
           opacity: 1;
         }

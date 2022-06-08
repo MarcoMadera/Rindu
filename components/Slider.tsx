@@ -7,6 +7,7 @@ import {
   useEffect,
   useRef,
   useState,
+  MouseEvent,
 } from "react";
 
 interface SliderProps {
@@ -81,7 +82,7 @@ export default function Slider({
     onDragging,
   ]);
 
-  const getMyCurrentPositionPercent = useCallback((e) => {
+  const getMyCurrentPositionPercent = useCallback((e: MouseEvent) => {
     const myposition = e.pageX;
     const sliderPositionX = sliderRef.current?.parentElement?.offsetLeft ?? 0;
     const sliderWidth = sliderRef.current?.clientWidth ?? 0;
@@ -117,17 +118,29 @@ export default function Slider({
     }
 
     if (!isDragging) {
-      document.removeEventListener("mousemove", handleDrag);
-      document.removeEventListener("mouseup", handleDragEnd);
+      document.removeEventListener("mousemove", (e) =>
+        handleDrag(e as unknown as MouseEvent)
+      );
+      document.removeEventListener("mouseup", (e) =>
+        handleDragEnd(e as unknown as MouseEvent)
+      );
       return;
     }
 
-    document.addEventListener("mousemove", handleDrag);
-    document.addEventListener("mouseup", handleDragEnd);
+    document.addEventListener("mousemove", (e) =>
+      handleDrag(e as unknown as MouseEvent)
+    );
+    document.addEventListener("mouseup", (e) =>
+      handleDragEnd(e as unknown as MouseEvent)
+    );
 
     return () => {
-      document.removeEventListener("mousemove", handleDrag);
-      document.removeEventListener("mouseup", handleDragEnd);
+      document.removeEventListener("mousemove", (e) =>
+        handleDrag(e as unknown as MouseEvent)
+      );
+      document.removeEventListener("mouseup", (e) =>
+        handleDragEnd(e as unknown as MouseEvent)
+      );
     };
   }, [
     isPressingMouse,

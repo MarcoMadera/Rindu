@@ -136,7 +136,7 @@ export default function RemoveTracksModal({
   }, []);
 
   const onPressKey = useCallback(
-    (event) => {
+    (event: KeyboardEvent) => {
       const firstElement = firstButtonRef.current;
       const lastElement = secondButtonRef.current;
       if (event.key === "Escape") {
@@ -153,8 +153,7 @@ export default function RemoveTracksModal({
       if (
         event.shiftKey &&
         event.key === "Tab" &&
-        document.activeElement !== lastElement &&
-        event.key !== "Enter"
+        document.activeElement !== lastElement
       ) {
         lastElement?.focus();
         event.preventDefault();
@@ -166,7 +165,7 @@ export default function RemoveTracksModal({
 
   useEffect(() => {
     setTargetNode(document.querySelector("#tracksModal") as Element);
-    document.addEventListener("keydown", onPressKey, false);
+    document.addEventListener("keydown", (e) => onPressKey(e), false);
 
     return () => {
       document.removeEventListener("keydown", onPressKey, false);

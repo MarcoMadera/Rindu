@@ -18,7 +18,7 @@ interface CurrentUserProps {
   currentUserPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse | null;
 }
 
-const CurrentUser: NextPage<CurrentUserProps | null> = ({
+const CurrentUser: NextPage<CurrentUserProps> = ({
   currentUser,
   user,
   accessToken,

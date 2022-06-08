@@ -14,11 +14,12 @@ import useAuth from "hooks/useAuth";
 import Link from "next/link";
 import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
 import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
+import { addItemsToPlaylist } from "utils/spotifyCalls/addItemsToPlaylist";
 
 export default function ContextMenu(): ReactPortal | null {
   const [targetNode, setTargetNode] = useState<Element | null>();
   const { addToast } = useToast();
-  const { deviceId } = useSpotify();
+  const { deviceId, playlists } = useSpotify();
   const { accessToken } = useAuth();
   const { contextMenuData, removeContextMenu } = useContextMenu();
   const [isDifferentPosX, setIsDifferentPosX] = useState<boolean>(false);
@@ -28,7 +29,29 @@ export default function ContextMenu(): ReactPortal | null {
     y: (contextMenuData?.position.y ?? 0) - 40,
   });
   const contextMenuRef = useRef<HTMLElement>(null);
-  const setShowAddPlaylistPopup = useState<boolean>(false)[1];
+  const playlistsRef = useRef<HTMLDivElement>(null);
+  const [showAddPlaylistPopup, setShowAddPlaylistPopup] =
+    useState<boolean>(false);
+  const { user } = useAuth();
+  const userPlaylists = playlists.filter(
+    (playlist) => playlist.owner.id === user?.id
+  );
+
+  useLayoutEffect(() => {
+    if (!showAddPlaylistPopup) return;
+    const playlistsCount = userPlaylists.length ?? 0;
+    const playlistsContainerHeight = playlistsCount * 44;
+    const playlistsContainer = playlistsRef.current;
+    const screenHeight = window.innerHeight;
+
+    if (playlistsContainer) {
+      const playlistsRefPosition = playlistsContainer.getBoundingClientRect();
+      if (playlistsContainerHeight > screenHeight) {
+        playlistsContainer.style.height = `${screenHeight - 100}px`;
+        playlistsContainer.style.top = `${-playlistsRefPosition.top + 50}px`;
+      }
+    }
+  }, [userPlaylists, showAddPlaylistPopup, contextMenuData]);
 
   useEffect(() => {
     setTargetNode(document.querySelector("#contextMenu"));
@@ -120,7 +143,7 @@ export default function ContextMenu(): ReactPortal | null {
       }}
     >
       <ul>
-        {contextMenuData.data.uri && deviceId && (
+        {contextMenuData.data?.uri && deviceId && (
           <li>
             <button
               onClick={() => {
@@ -161,6 +184,61 @@ export default function ContextMenu(): ReactPortal | null {
           >
             Add to playlist
           </div>
+          {showAddPlaylistPopup && (
+            <div
+              ref={playlistsRef}
+              style={{
+                position: "absolute",
+                top: "0",
+                left: "98%",
+                padding: "6px 2px",
+                borderRadius: "5px",
+                backgroundColor: "#282828",
+                maxWidth: "200px",
+                overflow: "auto",
+              }}
+              onMouseEnter={() => {
+                setShowAddPlaylistPopup(true);
+              }}
+              onMouseLeave={() => {
+                setShowAddPlaylistPopup(false);
+              }}
+            >
+              <ul>
+                {userPlaylists?.map((playlist) => {
+                  return (
+                    <li key={playlist.id}>
+                      <button
+                        onClick={() => {
+                          if (contextMenuData.data.uri && deviceId) {
+                            addItemsToPlaylist(playlist.id, [
+                              contextMenuData.data.uri,
+                            ]).then((res) => {
+                              if (res) {
+                                addToast({
+                                  variant: "success",
+                                  message: "Added to playlist",
+                                });
+                              } else {
+                                addToast({
+                                  variant: "error",
+                                  message: "Could not add to playlist",
+                                });
+                              }
+                              setShowAddPlaylistPopup(false);
+                              removeContextMenu();
+                            });
+                          }
+                        }}
+                      >
+                        {playlist.name}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
         </li>
         <li>
           <button
@@ -178,7 +256,7 @@ export default function ContextMenu(): ReactPortal | null {
             Go to song Radio
           </button>
         </li>
-        {contextMenuData.data.artists &&
+        {contextMenuData.data?.artists &&
           contextMenuData.data.artists?.length > 0 && (
             <li>
               <Link href={`/artist/${contextMenuData.data.artists?.[0].id}`}>
@@ -218,7 +296,7 @@ export default function ContextMenu(): ReactPortal | null {
                   removeContextMenu();
                 }}
               >
-                Go to {contextMenuData.data.album?.type ?? "album"}
+                Go to {contextMenuData.data?.album?.type ?? "album"}
               </a>
             </Link>
           </li>
@@ -261,7 +339,7 @@ export default function ContextMenu(): ReactPortal | null {
             </button>
           </li>
         )}
-        {contextMenuData.data.uri && (
+        {contextMenuData.data?.uri && (
           <li>
             <a
               href={contextMenuData.data.uri}
@@ -313,16 +391,23 @@ export default function ContextMenu(): ReactPortal | null {
           cursor: default;
           border-radius: 3px;
           align-items: center;
+          width: 100%;
         }
-        li :first-child {
+        li > :first-child {
           background: none;
           border: none;
           padding: 8px 10px;
           width: 100%;
-          height: 100%;
           text-align: start;
           display: flex;
-          align-items: center;
+          -webkit-line-clamp: 1;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          display: -webkit-box;
+          width: 100%;
+          -webkit-box-orient: vertical;
+          height: fit-content;
         }
         li:hover,
         li:focus {

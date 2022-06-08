@@ -44,6 +44,8 @@ export default function SubTitle({
           .link {
             text-decoration: none;
             color: #b3b3b3;
+            z-index: 3;
+            position: relative;
           }
           .link:hover,
           .link:focus {
