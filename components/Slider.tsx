@@ -82,27 +82,30 @@ export default function Slider({
     onDragging,
   ]);
 
-  const getMyCurrentPositionPercent = useCallback((e: MouseEvent) => {
-    const myposition = e.pageX;
-    const sliderPositionX = sliderRef.current?.parentElement?.offsetLeft ?? 0;
-    const sliderWidth = sliderRef.current?.clientWidth ?? 0;
-    const sliderXEnd = sliderPositionX + sliderWidth;
-    const myPositionInSlider =
-      myposition > sliderXEnd
-        ? sliderWidth
-        : myposition < sliderPositionX
-        ? 0
-        : myposition - sliderPositionX;
-    const currentPositionPercent = (myPositionInSlider * 100) / sliderWidth;
-    return currentPositionPercent;
-  }, []);
+  const getMyCurrentPositionPercent = useCallback(
+    (e: MouseEvent | globalThis.MouseEvent) => {
+      const myposition = e.pageX;
+      const sliderPositionX = sliderRef.current?.parentElement?.offsetLeft ?? 0;
+      const sliderWidth = sliderRef.current?.clientWidth ?? 0;
+      const sliderXEnd = sliderPositionX + sliderWidth;
+      const myPositionInSlider =
+        myposition > sliderXEnd
+          ? sliderWidth
+          : myposition < sliderPositionX
+          ? 0
+          : myposition - sliderPositionX;
+      const currentPositionPercent = (myPositionInSlider * 100) / sliderWidth;
+      return currentPositionPercent;
+    },
+    []
+  );
 
   useEffect(() => {
     if (!isPressingMouse) {
       return;
     }
 
-    function handleDrag(e: MouseEvent) {
+    function handleDrag(e: globalThis.MouseEvent) {
       e.preventDefault();
       const currentPositionPercent = getMyCurrentPositionPercent(e);
       setIsDragging(true);
@@ -110,37 +113,24 @@ export default function Slider({
       setProgressPercent(currentPositionPercent);
     }
 
-    function handleDragEnd(e: MouseEvent) {
-      e.preventDefault();
+    function handleDragEnd() {
       action(progressPercent);
       setIsPressingMouse(false);
       setIsDragging(false);
     }
 
     if (!isDragging) {
-      document.removeEventListener("mousemove", (e) =>
-        handleDrag(e as unknown as MouseEvent)
-      );
-      document.removeEventListener("mouseup", (e) =>
-        handleDragEnd(e as unknown as MouseEvent)
-      );
+      document.removeEventListener("mousemove", handleDrag);
+      document.removeEventListener("mouseup", handleDragEnd);
       return;
     }
 
-    document.addEventListener("mousemove", (e) =>
-      handleDrag(e as unknown as MouseEvent)
-    );
-    document.addEventListener("mouseup", (e) =>
-      handleDragEnd(e as unknown as MouseEvent)
-    );
+    document.addEventListener("mousemove", handleDrag);
+    document.addEventListener("mouseup", handleDragEnd);
 
     return () => {
-      document.removeEventListener("mousemove", (e) =>
-        handleDrag(e as unknown as MouseEvent)
-      );
-      document.removeEventListener("mouseup", (e) =>
-        handleDragEnd(e as unknown as MouseEvent)
-      );
+      document.removeEventListener("mousemove", handleDrag);
+      document.removeEventListener("mouseup", handleDragEnd);
     };
   }, [
     isPressingMouse,
