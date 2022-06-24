@@ -7,6 +7,7 @@ import {
   useState,
   isValidElement,
   cloneElement,
+  useId,
 } from "react";
 import { Chevron } from "./icons/Chevron";
 
@@ -24,6 +25,7 @@ export default function Carousel({
   const containerRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLElement>(null);
   const [maxMoves, setMaxMoves] = useState(0);
+  const id = useId();
 
   useEffect(() => {
     function updateSize() {
@@ -63,11 +65,12 @@ export default function Carousel({
   return (
     <div className="carousel-container" ref={containerRef}>
       <div className="header">
-        <h2>{title}</h2>
+        <h2 id={`title-${id}`}>{title}</h2>
         <div className="button-container">
           {maxMoves > 0 ? (
             <>
               <button
+                aria-label="Previous"
                 disabled={timesMoveCarousel <= 0}
                 onClick={() => {
                   if (timesMoveCarousel <= 0) return;
@@ -77,6 +80,7 @@ export default function Carousel({
                 <Chevron rotation={"0deg"} />
               </button>
               <button
+                aria-label="Next"
                 disabled={timesMoveCarousel >= maxMoves}
                 onClick={() => {
                   if (timesMoveCarousel >= maxMoves) return;
@@ -89,7 +93,11 @@ export default function Carousel({
           ) : null}
         </div>
       </div>
-      <section ref={carouselRef} className="carousel-content">
+      <section
+        ref={carouselRef}
+        className="carousel-content"
+        aria-describedby={`title-${id}`}
+      >
         {Children.map(children, (child, number) => {
           if (isValidElement(child) && carouselRef.current) {
             const itemWidth = carouselRef.current.children[0].clientWidth + gap;

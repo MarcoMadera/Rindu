@@ -262,6 +262,8 @@ export function PlayButton({
   return (
     <>
       <button
+        type="button"
+        aria-label="Play/Pause"
         className="play-Button"
         onClick={(e) => {
           handleClick(e);

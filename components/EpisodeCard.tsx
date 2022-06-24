@@ -1,5 +1,6 @@
 import useAuth from "hooks/useAuth";
 import useSpotify from "hooks/useSpotify";
+import useToast from "hooks/useToast";
 import Link from "next/link";
 import { ReactElement } from "react";
 import { formatTime } from "utils/formatTime";
@@ -30,6 +31,7 @@ export default function EpisodeCard({
     setPlaylistPlayingId,
   } = useSpotify();
   const { user, accessToken, setAccessToken } = useAuth();
+  const { addToast } = useToast();
   const isThisEpisodePlaying = currrentlyPlaying?.uri === item.uri;
 
   return (
@@ -62,20 +64,48 @@ export default function EpisodeCard({
         </div>
       </div>
       <div className="topActions">
-        <button>
+        <button
+          type="button"
+          aria-label="More options"
+          onClick={() => {
+            addToast({
+              message: "Coming soon",
+              variant: "info",
+            });
+          }}
+        >
           <ThreeDots fill="#b3b3b3" width={24} height={24} />
         </button>
       </div>
       <div className="actions">
-        <button>
+        <button
+          type="button"
+          aria-label="Add"
+          onClick={() => {
+            addToast({
+              message: "Coming soon",
+              variant: "info",
+            });
+          }}
+        >
           <Add fill="#b3b3b3" />
         </button>
-        <button>
+        <button
+          type="button"
+          aria-label="Add"
+          onClick={() => {
+            addToast({
+              message: "Coming soon",
+              variant: "info",
+            });
+          }}
+        >
           <Add fill="#b3b3b3" />
         </button>
       </div>
       <div className="play">
         <button
+          type="button"
           onClick={() => {
             if (isThisEpisodePlaying) {
               player?.togglePlay();

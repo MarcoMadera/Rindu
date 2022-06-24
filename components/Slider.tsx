@@ -11,9 +11,8 @@ import {
 } from "react";
 
 interface SliderProps {
-  value: number;
+  title: string;
   valueText: string;
-  maxValue: number;
   initialValuePercent: number;
   setLabelValue?: Dispatch<SetStateAction<number>>;
   action: (progressPercent: number) => void;
@@ -30,12 +29,11 @@ interface SliderProps {
 }
 
 export default function Slider({
+  title,
   action,
   updateProgress,
   intervalUpdateAction,
-  value,
   valueText,
-  maxValue,
   onProgressChange,
   onDragging,
   setLabelValue,
@@ -143,21 +141,14 @@ export default function Slider({
 
   return (
     <div className="barContainer">
-      <label>
-        <input
-          type="range"
-          min="0"
-          max={maxValue}
-          step="5"
-          aria-valuetext={valueText}
-          value={value}
-          readOnly
-        />
-      </label>
       <div
         className="transformation"
         role="slider"
+        aria-valuetext={valueText}
         aria-valuenow={progressPercent}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={title}
         tabIndex={0}
         ref={sliderRef as MutableRefObject<HTMLDivElement>}
         onMouseMove={(e) => {

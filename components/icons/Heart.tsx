@@ -65,6 +65,7 @@ export function Heart({
   if (props && handleLike && handleDislike) {
     return (
       <button
+        aria-label={defaultActiveValue ? "Dislike" : "Like"}
         disabled={isPlaying || !animationLoaded}
         onClick={(e) => {
           e.preventDefault();

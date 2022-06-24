@@ -56,6 +56,7 @@ export function ProgressBar(): ReactElement {
         )}
       </div>
       <Slider
+        title="Control the progress of the playback"
         updateProgress={progressFromSpotify}
         intervalUpdateAction={{
           steps: 100 / durationInSeconds,
@@ -76,12 +77,10 @@ export function ProgressBar(): ReactElement {
               (isPremium ? 1000 : 1)
           );
         }}
-        valueText={`${formatTime(progressSeconds)}:${formatTime(
+        valueText={`${formatTime(progressSeconds)}/${formatTime(
           durationInSeconds
         )}`}
         initialValuePercent={0}
-        value={progressSeconds}
-        maxValue={durationInSeconds}
         action={(progressPercent) => {
           if (!currrentlyPlaying) {
             addToast({

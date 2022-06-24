@@ -200,9 +200,11 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
 
   return (
     <main>
-      <Head>
-        <title>{`Rindu: ${playlistDetails?.name}`}</title>
-      </Head>
+      {!isPlaying && (
+        <Head>
+          <title>{`Rindu: ${playlistDetails?.name}`}</title>
+        </Head>
+      )}
       <PlaylistPageHeader
         type={HeaderType.playlist}
         title={playlistDetails?.name ?? ""}
@@ -229,6 +231,8 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
               <div className="info">
                 {isMyPlaylist ? (
                   <button
+                    type="button"
+                    aria-label="Clean playlist"
                     className="broom"
                     onClick={() => {
                       setOpenModal(true);

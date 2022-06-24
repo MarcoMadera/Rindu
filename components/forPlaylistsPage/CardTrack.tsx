@@ -235,7 +235,9 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       }}
     >
       <button
+        type="button"
         className="playbutton"
+        aria-label={isPlaying && isTheSameAsCurrentlyPlaying ? "Pause" : "Play"}
         onClick={() => {
           if (isPlaying && isTheSameAsCurrentlyPlaying && isPlayable) {
             player?.pause();
@@ -391,6 +393,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         </p>
         {onClickAdd && (
           <button
+            type="button"
             className="add"
             onClick={onClickAdd}
             tabIndex={isVisible ? 0 : -1}
@@ -400,7 +403,9 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           </button>
         )}
         <button
+          type="button"
           className="options"
+          aria-label="Show more options"
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
@@ -418,7 +423,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           {mouseEnter || isFocusing ? (
             <ThreeDots />
           ) : (
-            <div style={{ width: "16px" }}></div>
+            <div className="threeDots"></div>
           )}
         </button>
       </section>
@@ -427,13 +432,52 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           background-image: ${type === "presentation"
             ? `url(${track?.images?.[2]?.url ?? track?.images?.[1]?.url})`
             : "unset"};
+        }
+        .trackItem :global(.trackHeart) {
+          opacity: ${isLikedTrack || isFocusing || mouseEnter ? "1" : "0"};
+        }
+        a {
+          color: ${mouseEnter || isFocusing ? "#fff" : "inherit"};
+        }
+        .trackItem {
+          opacity: ${isPlayable ? 1 : 0.4};
+        }
+        button {
+          width: ${type !== "presentation" ? "32" : "40"}px;
+          height: ${type !== "presentation" ? "32" : "40"}px;
+        }
+        p.trackName {
+          color: ${isTheSameAsCurrentlyPlaying ? "#1db954" : "#fff"};
+        }
+        section:nth-of-type(2) {
+          justify-content: ${type === "playlist" ? "flex-start" : "flex-end"};
+          margin: ${type === "album" ? "16px" : "0"};
+        }
+        .trackItem {
+          background-color: ${isTheSameAsCurrentlyPlaying
+            ? "#2020204d"
+            : "transparent"};
+          grid-template-columns: ${type === "playlist"
+            ? "[index] 48px [first] 6fr [var1] 4fr [var2] 3fr [last] minmax(160px,1fr)"
+            : type === "album"
+            ? "[index] 48px [first] 6fr [last] minmax(180px,1fr)"
+            : "[index] 55px [first] 4fr [last] minmax(180px,1fr)"};
+        }
+      `}</style>
+      <style jsx>{`
+        :global(.trackHeart:focus),
+        :global(.trackHeart:hover) {
+          transform: scale(1.06);
+        }
+        .threeDots {
+          width: 16px;
+        }
+        .playbutton {
           object-fit: cover;
           object-position: center center;
           background-size: 40px 40px;
           background-repeat: no-repeat;
         }
-      `}</style>
-      <style jsx>{`
         .add {
           background-color: transparent;
           border: 1px solid #535353;
@@ -462,9 +506,6 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         .add:active {
           transform: scale(0.96);
         }
-        .trackItem :global(.trackHeart) {
-          opacity: ${isLikedTrack || isFocusing || mouseEnter ? "1" : "0"};
-        }
 
         .trackArtistsContainer {
           display: block;
@@ -478,9 +519,6 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         .options:hover,
         .options:focus {
           color: #ffffff;
-        }
-        .trackItem {
-          opacity: ${isPlayable ? 1 : 0.4};
         }
         p,
         span {
@@ -500,27 +538,20 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         }
         a {
           text-decoration: none;
-          color: ${mouseEnter || isFocusing ? "#fff" : "inherit"};
         }
         a:hover {
           text-decoration: underline;
         }
-        :global(.trackHeart:focus),
-        :global(.trackHeart:hover) {
-          transform: scale(1.06);
-        }
+
         button {
           display: flex;
           justify-content: center;
           align-items: center;
           background: transparent;
           border: none;
-          width: ${type !== "presentation" ? "32" : "40"}px;
-          height: ${type !== "presentation" ? "32" : "40"}px;
           margin: 0 15px 0 15px;
         }
         p.trackName {
-          color: ${isTheSameAsCurrentlyPlaying ? "#1db954" : "#fff"};
           margin: 0;
           padding: 0;
         }
@@ -544,16 +575,9 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
         section:nth-of-type(4) {
           justify-content: flex-end;
         }
-        section:nth-of-type(2) {
-          justify-content: ${type === "playlist" ? "flex-start" : "flex-end"};
-          margin: ${type === "album" ? "16px" : "0"};
-        }
         .trackItem {
           width: 100%;
           height: 65px;
-          background-color: ${isTheSameAsCurrentlyPlaying
-            ? "#2020204d"
-            : "transparent"};
           margin: 0;
           padding: 0;
           border-radius: 2px;
@@ -564,11 +588,6 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
           user-select: none;
           display: grid;
           grid-gap: 16px;
-          grid-template-columns: ${type === "playlist"
-            ? "[index] 48px [first] 6fr [var1] 4fr [var2] 3fr [last] minmax(160px,1fr)"
-            : type === "album"
-            ? "[index] 48px [first] 6fr [last] minmax(180px,1fr)"
-            : "[index] 55px [first] 4fr [last] minmax(180px,1fr)"};
         }
         .trackItem:hover {
           background-color: rgba(255, 255, 255, 0.1);

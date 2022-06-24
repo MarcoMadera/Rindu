@@ -213,13 +213,15 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
             ) : type === HeaderType.podcast ? (
               <h2 className="singleDisplayName">{decode(ownerDisplayName)}</h2>
             ) : (
-              <Link
-                href={`/${
-                  type === HeaderType.episode ? "show" : "user"
-                }/${ownerId}`}
-              >
-                <a className="userLink">{decode(ownerDisplayName)}</a>
-              </Link>
+              ownerDisplayName && (
+                <Link
+                  href={`/${
+                    type === HeaderType.episode ? "show" : "user"
+                  }/${ownerId}`}
+                >
+                  <a className="userLink">{decode(ownerDisplayName)}</a>
+                </Link>
+              )
             )}
             {(totalFollowers ?? 0) > 0 ? (
               <span>

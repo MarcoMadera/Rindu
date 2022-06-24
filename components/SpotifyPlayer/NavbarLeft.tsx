@@ -56,6 +56,8 @@ export function NavbarLeft({
     >
       <div className="img-container">
         <button
+          type="button"
+          aria-label="Maximize cover image"
           onClick={() => {
             setIsShowingSideBarImg(true);
           }}
@@ -184,6 +186,8 @@ export function NavbarLeft({
         />
       )}
       <button
+        type="button"
+        aria-label="Picture in Picture"
         className="navBar-Button pictureInPicture"
         onClick={() => {
           if (pictureInPictureCanvas.current && videoRef.current) {

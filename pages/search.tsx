@@ -14,6 +14,7 @@ import FirstTrackContainer from "components/FirstTrackContainer";
 import { getYear } from "utils/getYear";
 import Carousel from "components/Carousel";
 import { SearchInputElement } from "components/SearchInputElement";
+import useSpotify from "hooks/useSpotify";
 
 interface SearchPageProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
@@ -97,6 +98,7 @@ export default function SearchPage({
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
   const { setUser, setAccessToken } = useAuth();
   const [data, setData] = useState<SpotifyApi.SearchResponse | null>(null);
+  const { isPlaying } = useSpotify();
 
   useEffect(() => {
     setElement(() => <SearchInputElement source="search" setData={setData} />);
@@ -117,9 +119,11 @@ export default function SearchPage({
 
   return (
     <main>
-      <Head>
-        <title>Rindu - Search</title>
-      </Head>
+      {!isPlaying && (
+        <Head>
+          <title>Rindu - Search</title>
+        </Head>
+      )}
       {data ? (
         <div>
           {data?.tracks?.items && data.tracks?.items?.length > 0 ? (

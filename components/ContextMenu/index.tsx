@@ -6,12 +6,12 @@ import {
   useRef,
   useState,
 } from "react";
+import Link from "next/link";
 import useContextMenu from "hooks/useContextMenu";
 import useToast from "hooks/useToast";
 import { addToQueue } from "utils/spotifyCalls/addToQueue";
 import useSpotify from "hooks/useSpotify";
 import useAuth from "hooks/useAuth";
-import Link from "next/link";
 import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
 import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
 import { addItemsToPlaylist } from "utils/spotifyCalls/addItemsToPlaylist";
@@ -134,9 +134,7 @@ export default function ContextMenu(): ReactPortal | null {
 
   return createPortal(
     <section
-      role="menu"
       ref={contextMenuRef}
-      tabIndex={0}
       style={{
         left: `${left}px`,
         top: `${top}px`,
@@ -146,6 +144,7 @@ export default function ContextMenu(): ReactPortal | null {
         {contextMenuData.data?.uri && deviceId && (
           <li>
             <button
+              type="button"
               onClick={() => {
                 if (contextMenuData.data.uri && deviceId) {
                   addToQueue(
@@ -181,22 +180,15 @@ export default function ContextMenu(): ReactPortal | null {
             onMouseLeave={() => {
               setShowAddPlaylistPopup(false);
             }}
+            role="button"
+            tabIndex={0}
           >
             Add to playlist
           </div>
           {showAddPlaylistPopup && (
             <div
               ref={playlistsRef}
-              style={{
-                position: "absolute",
-                top: "0",
-                left: "98%",
-                padding: "6px 2px",
-                borderRadius: "5px",
-                backgroundColor: "#282828",
-                maxWidth: "200px",
-                overflow: "auto",
-              }}
+              className="playlists-container"
               onMouseEnter={() => {
                 setShowAddPlaylistPopup(true);
               }}
@@ -242,6 +234,7 @@ export default function ContextMenu(): ReactPortal | null {
         </li>
         <li>
           <button
+            type="button"
             onClick={() => {
               // TODO: create path station/${type}/${id} where type can be (playlist, show, track, album,episde)
               // It should use the recommendations API
@@ -304,6 +297,7 @@ export default function ContextMenu(): ReactPortal | null {
         {contextMenuData.data && deviceId && (
           <li>
             <button
+              type="button"
               onClick={() => {
                 const saveToLibrary =
                   contextMenuData.data.type === "episode"
@@ -363,6 +357,16 @@ export default function ContextMenu(): ReactPortal | null {
           padding: 3px;
           max-height: 95vh;
           z-index: 999999999999;
+        }
+        .playlists-container {
+          position: absolute;
+          top: 0;
+          left: 98%;
+          padding: 6px 2px;
+          border-radius: 5px;
+          background-color: #282828;
+          max-width: 200px;
+          overflow: auto;
         }
         li :global(svg) {
           margin-left: 16px;

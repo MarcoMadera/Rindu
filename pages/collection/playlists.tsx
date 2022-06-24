@@ -7,7 +7,7 @@ import PresentationCard from "components/forDashboardPage/PlaylistCard";
 import { decode } from "html-entities";
 export default function CollectionPlaylists(): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
-  const { playlists } = useSpotify();
+  const { playlists, isPlaying } = useSpotify();
 
   useEffect(() => {
     setElement(() => {
@@ -56,9 +56,11 @@ export default function CollectionPlaylists(): ReactElement {
 
   return (
     <main>
-      <Head>
-        <title>Rindu - Library</title>
-      </Head>
+      {!isPlaying && (
+        <Head>
+          <title>Rindu - Library</title>
+        </Head>
+      )}
       <h2>Playlists</h2>
       <section>
         {playlists?.length > 0

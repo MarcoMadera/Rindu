@@ -1,9 +1,12 @@
 import useAuth from "hooks/useAuth";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
+import { removeTracksRequest } from "lib/requests";
+import Head from "next/head";
 import {
   createContext,
   ReactElement,
   ReactNode,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -259,6 +262,27 @@ export function SpotifyContextProvider({
     }
   }, [currrentlyPlaying, isPlaying]);
 
+  const removeTracks = useCallback(
+    async (
+      playlist: string | undefined,
+      tracks: number[],
+      snapshotID: string | undefined
+    ) => {
+      try {
+        const res = await removeTracksRequest(playlist, tracks, snapshotID);
+        if (!res.ok) {
+          throw Error(res.statusText);
+        }
+        const { snapshot_id }: { snapshot_id: string } = await res.json();
+        return snapshot_id;
+      } catch (err) {
+        console.log(err);
+        return;
+      }
+    },
+    []
+  );
+
   return (
     <SpotifyContext.Provider
       value={{
@@ -300,8 +324,14 @@ export function SpotifyContextProvider({
         setShowHamburguerMenu,
         recentlyPlayed,
         setReconnectionError,
+        removeTracks,
       }}
     >
+      {currrentlyPlaying?.name && (
+        <Head>
+          <title>{`${currrentlyPlaying?.name} - ${currrentlyPlaying?.artists?.[0].name}`}</title>
+        </Head>
+      )}
       {children}
     </SpotifyContext.Provider>
   );

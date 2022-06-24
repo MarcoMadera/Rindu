@@ -257,6 +257,7 @@ export default function RemoveTracksModal({
         </div>
         <div className="popupContainer_buttons">
           <button
+            type="button"
             ref={firstButtonRef}
             tabIndex={0}
             onClick={(e) => {
@@ -267,6 +268,7 @@ export default function RemoveTracksModal({
             Cancelar
           </button>
           <button
+            type="button"
             ref={secondButtonRef}
             onClick={async (e) => {
               e.preventDefault();

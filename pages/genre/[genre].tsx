@@ -8,6 +8,7 @@ import { getAuth } from "utils/getAuth";
 import { getCategoryPlaylists } from "utils/spotifyCalls/getCategoryPlaylists";
 import useHeader from "hooks/useHeader";
 import { getSingleCategoryInfo } from "utils/spotifyCalls/getSingleCategoryInfo";
+import useSpotify from "hooks/useSpotify";
 
 interface CategoryProps {
   categoryInfo: SpotifyApi.SingleCategoryResponse | null;
@@ -24,6 +25,7 @@ export default function Category({
 }: CategoryProps): ReactElement {
   const { setAccessToken, setUser } = useAuth();
   const { setHeaderColor } = useHeader();
+  const { isPlaying } = useSpotify();
   useEffect(() => {
     setHeaderColor("#242424");
   }, [setHeaderColor]);
@@ -37,9 +39,11 @@ export default function Category({
 
   return (
     <main>
-      <Head>
-        <title>Rindu - Search</title>
-      </Head>
+      {!isPlaying && (
+        <Head>
+          <title>Rindu - {categoryInfo?.name || "Generos"}</title>
+        </Head>
+      )}
       {categoryInfo && <h1>{categoryInfo?.name}</h1>}
       {playlists && playlists?.items?.length > 0 ? (
         <section>

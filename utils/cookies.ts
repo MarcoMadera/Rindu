@@ -3,7 +3,7 @@ import { __isServer__ } from "./constants";
 /**
  * Get the value of the cookie
  * @param cookieName The name of the cookie to get
- * @param cookieJar must provide if the cookie is from server
+ * @param cookiesJar must provide if the cookie is from server
  * @returns value of the cookie string
  */
 export function takeCookie(
@@ -20,9 +20,10 @@ export function takeCookie(
 
 /**
  * Create a cookie
- * @param name the name of the cookie to set
- * @param value string value
- * @param age the expire time in miliseconds string
+ * @param {Object} params - The params to create a cookie
+ * @param {string} params.name - the name of the cookie to set
+ * @param {string} params.value - value
+ * @param {number} params.age - the expire time in miliseconds string
  */
 export function makeCookie({
   name,

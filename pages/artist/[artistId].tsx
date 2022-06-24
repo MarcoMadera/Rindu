@@ -190,6 +190,7 @@ export default function ArtistPage({
         <PlayButton uri={currentArtist?.uri} size={56} centerSize={28} />
         <div className="info button-inof">
           <button
+            type="button"
             className="follow-button"
             onClick={() => {
               if (isFollowingThisArtist) {
@@ -252,6 +253,7 @@ export default function ArtistPage({
                 })}
             </div>
             <button
+              type="button"
               className="show-more"
               onClick={() => {
                 setShowMoreTopTracks((prev) => !prev);
@@ -379,6 +381,7 @@ export default function ArtistPage({
               )}
               {artistInfo?.artists?.[0]?.strBiographyEN.length > 2000 ? (
                 <button
+                  type="button"
                   className="read-more"
                   onClick={() => {
                     setShowMoreAbout((prev) => !prev);
@@ -407,7 +410,7 @@ export default function ArtistPage({
               <a
                 href="https://www.setlist.fm/"
                 target="_blank"
-                rel="noreferrer"
+                rel="noreferrer noopener"
               >
                 setlist.fm
               </a>

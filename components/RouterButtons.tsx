@@ -24,6 +24,7 @@ export default function RouterButtons(): ReactElement {
         }}
         disabled={__isServer__ || history.state.idx === 0}
         className="back"
+        aria-label="Go back"
       >
         <AngleBrackect angle="less" />
       </button>
@@ -35,6 +36,7 @@ export default function RouterButtons(): ReactElement {
         }}
         disabled={lastIndexHistory === biggestLastIdxHistory}
         className="forward"
+        aria-label="Go forward"
       >
         <AngleBrackect angle="greater" />
       </button>

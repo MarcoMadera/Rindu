@@ -45,7 +45,7 @@ export default function TrackPage({
   const [artistTopTracks, setArtistTopTracks] = useState<
     SpotifyApi.TrackObjectFull[]
   >([]);
-  const { setPlaylistDetails, setAllTracks } = useSpotify();
+  const { setPlaylistDetails, setAllTracks, isPlaying } = useSpotify();
   const [artistInfo, setArtistInfo] =
     useState<SpotifyApi.SingleArtistResponse | null>(null);
   const [sameTrackIndex, setSameTrackIndex] = useState(-1);
@@ -159,9 +159,11 @@ export default function TrackPage({
 
   return (
     <main>
-      <Head>
-        <title>Rindu - {track?.name ?? "Canciones"}</title>
-      </Head>
+      {!isPlaying && (
+        <Head>
+          <title>Rindu - {track?.name ?? "Canciones"}</title>
+        </Head>
+      )}
       <PlaylistPageHeader
         type={HeaderType.song}
         title={track?.name ?? ""}
@@ -276,6 +278,7 @@ export default function TrackPage({
                 );
               })}
               <button
+                type="button"
                 className="show-more"
                 onClick={() => {
                   setShowMoreTopTracks((prev) => !prev);

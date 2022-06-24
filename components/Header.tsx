@@ -88,10 +88,12 @@ export default function Header({
             <div className="noise"></div>
           </div>
           <button
+            type="button"
             onClick={() => {
               setShowHamburguerMenu((prev) => !prev);
             }}
             className="hamburguerMenu"
+            aria-label="Hamburguer menu"
           >
             <div className="hamburguerMenu-line"></div>
             <div className="hamburguerMenu-line"></div>

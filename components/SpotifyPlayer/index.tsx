@@ -98,6 +98,8 @@ export default function SpotifyPlayer(): ReactElement {
         <section>
           <div className="player">
             <button
+              type="button"
+              aria-label="Suffle"
               onClick={() => {
                 if (!isPremium) {
                   addToast({
@@ -124,6 +126,8 @@ export default function SpotifyPlayer(): ReactElement {
               <Suffle fill={suffleState ? "#1db954" : "#b3b3b3"} />
             </button>
             <button
+              type="button"
+              aria-label="Previous track"
               onClick={() => {
                 player?.previousTrack();
               }}
@@ -132,7 +136,9 @@ export default function SpotifyPlayer(): ReactElement {
               <PreviousTrack fill="#b3b3b3" />
             </button>
             <button
+              type="button"
               className="button toggle"
+              aria-label="Play/pause"
               onClick={() => {
                 if (!currrentlyPlaying) {
                   addToast({
@@ -147,6 +153,8 @@ export default function SpotifyPlayer(): ReactElement {
               {currrentlyPlaying && isPlaying ? <Pause /> : <Play />}
             </button>
             <button
+              type="button"
+              aria-label="Next track"
               onClick={() => {
                 player?.nextTrack();
               }}
@@ -155,6 +163,8 @@ export default function SpotifyPlayer(): ReactElement {
               <NextTrack fill="#b3b3b3" />
             </button>
             <button
+              type="button"
+              aria-label="Repeat"
               onClick={() => {
                 if (!isPremium) {
                   addToast({
@@ -213,22 +223,28 @@ export default function SpotifyPlayer(): ReactElement {
                   </header>
                   <ul>
                     {devices.map((device) => (
-                      <button
-                        onClick={() => {
-                          if (device.id) {
-                            transferPlayback([device.id], accessToken);
-                          }
-                        }}
-                        key={device.id}
-                        className={`device ${device.is_active ? "active" : ""}`}
-                      >
-                        {device.name}
-                      </button>
+                      <li key={device.id}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (device.id) {
+                              transferPlayback([device.id], accessToken);
+                            }
+                          }}
+                          className={`device ${
+                            device.is_active ? "active" : ""
+                          }`}
+                        >
+                          {device.name}
+                        </button>
+                      </li>
                     ))}
                   </ul>
                 </div>
               )}
               <button
+                type="button"
+                aria-label="open device selector"
                 onClick={() => {
                   if (!isPremium) {
                     addToast({
@@ -256,6 +272,7 @@ export default function SpotifyPlayer(): ReactElement {
               </button>
             </div>
             <button
+              type="button"
               className="button volume"
               onMouseEnter={() => {
                 setIsHoveringVolume(true);
@@ -275,7 +292,6 @@ export default function SpotifyPlayer(): ReactElement {
               <Volume volume={volume} />
             </button>
             <Slider
-              value={100}
               updateProgress={volume * 100}
               onProgressChange={(currentPositionPercent) => {
                 setVolume(currentPositionPercent / 100);
@@ -289,8 +305,8 @@ export default function SpotifyPlayer(): ReactElement {
                 );
               }}
               valueText={`${volume}`}
+              title={"Control the volume"}
               initialValuePercent={100}
-              maxValue={1}
               showDot={isHoveringVolume}
             />
           </div>

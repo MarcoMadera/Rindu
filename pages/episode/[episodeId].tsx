@@ -33,7 +33,7 @@ export default function EpisodePage({
   });
   const { setUser, setAccessToken } = useAuth();
   const [isEpisodeInLibrary, setIsEpisodeInLibrary] = useState(false);
-  const { setPlaylistDetails } = useSpotify();
+  const { setPlaylistDetails, isPlaying } = useSpotify();
   const episodeTrack: SpotifyApi.TrackObjectFull = useMemo(
     () => ({
       album: {
@@ -154,9 +154,11 @@ export default function EpisodePage({
 
   return (
     <main>
-      <Head>
-        <title>Rindu - {episode?.name ?? "Canciones"}</title>
-      </Head>
+      {!isPlaying && (
+        <Head>
+          <title>Rindu - {episode?.name ?? "Canciones"}</title>
+        </Head>
+      )}
       <PlaylistPageHeader
         type={HeaderType.episode}
         title={episode?.name ?? "PodCast"}
@@ -178,6 +180,7 @@ export default function EpisodePage({
           />
           <div className="info">
             <button
+              type="button"
               className="follow-button"
               onClick={() => {
                 if (!episode) return;

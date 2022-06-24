@@ -7,5 +7,9 @@ export default function Collection(): ReactElement {
   useEffect(() => {
     router.push("/collection/playlists");
   }, [router]);
-  return <Head>Rindu - Library</Head>;
+  return (
+    <Head>
+      <title>Rindu - Library</title>
+    </Head>
+  );
 }

@@ -33,6 +33,7 @@ export const CardContent: React.FC<CardContentProps> = ({
     <article>
       <div
         ref={handlerRef}
+        aria-hidden="true"
         className="handler"
         onClick={() => {
           router.push(`/${type}/${encodeURIComponent(id)}`);
@@ -79,7 +80,6 @@ export const CardContent: React.FC<CardContentProps> = ({
           left: 0;
         }
         strong {
-          display: block;
           -webkit-line-clamp: 1;
           -webkit-box-orient: vertical;
           display: -webkit-box;

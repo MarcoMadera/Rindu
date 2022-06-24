@@ -148,4 +148,9 @@ export interface ISpotifyContext {
   setShowHamburguerMenu: Dispatch<SetStateAction<boolean>>;
   setReconnectionError: Dispatch<SetStateAction<boolean>>;
   recentlyPlayed: normalTrackTypes[];
+  removeTracks: (
+    playlist: string | undefined,
+    tracks: number[],
+    snapshotID: string | undefined
+  ) => Promise<string | undefined>;
 }

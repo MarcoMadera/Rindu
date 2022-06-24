@@ -6,11 +6,13 @@ import Link from "next/link";
 import PresentationCard from "components/forDashboardPage/PlaylistCard";
 import { getYear } from "utils/getYear";
 import { getAllAlbums } from "utils/getAllAlbums";
+import useSpotify from "hooks/useSpotify";
 
 export default function CollectionAlbums(): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
   const { accessToken } = useAuth();
   const [albums, setAlbums] = useState<SpotifyApi.SavedAlbumObject[]>([]);
+  const { isPlaying } = useSpotify();
 
   useEffect(() => {
     setElement(() => {
@@ -70,9 +72,11 @@ export default function CollectionAlbums(): ReactElement {
 
   return (
     <main>
-      <Head>
-        <title>Rindu - Library</title>
-      </Head>
+      {!isPlaying && (
+        <Head>
+          <title>Rindu - Library</title>
+        </Head>
+      )}
       <h2>Albums</h2>
       <section>
         {albums?.length > 0

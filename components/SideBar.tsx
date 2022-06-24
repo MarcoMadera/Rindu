@@ -343,6 +343,7 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
             {currrentlyPlaying && (
               <>
                 <button
+                  aria-label="Minimize cover image"
                   onClick={() => {
                     setIsShowingSideBarImg(false);
                   }}
