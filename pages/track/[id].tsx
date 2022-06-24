@@ -22,6 +22,7 @@ import { HeaderType } from "types/spotify";
 import { SITE_URL } from "utils/constants";
 import useToast from "hooks/useToast";
 import BigPill from "components/BigPill";
+import { within } from "utils/whitin";
 
 interface TrackPageProps {
   track: SpotifyApi.TrackObjectFull | null;
@@ -411,7 +412,7 @@ export async function getServerSideProps({
   let lyrics: string | null = null;
 
   if (track?.name && track.artists[0].name) {
-    lyrics = await getLyrics(track.artists[0].name, track.name);
+    lyrics = await within(getLyrics(track.artists[0].name, track.name), 6000);
   }
 
   return {
