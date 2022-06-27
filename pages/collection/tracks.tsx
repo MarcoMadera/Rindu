@@ -50,7 +50,14 @@ export async function getServerSideProps({
     accessToken,
     cookies
   );
-  const trackIds = playListTracks?.items?.map(({ track }) => track.id);
+  const trackIds = playListTracks?.items
+    ?.filter(({ track }) => {
+      if (track?.id) {
+        return true;
+      }
+      return false;
+    })
+    .map(({ track }) => track?.id) as string[] | undefined;
   const tracksInLibrary = await checkTracksInLibrary(
     trackIds ?? [],
     accessToken || ""
@@ -112,18 +119,18 @@ export async function getServerSideProps({
             images: track?.album.images,
             uri: track?.uri,
             href: track?.external_urls.spotify,
-            artists: track.artists,
+            artists: track?.artists,
             id: track?.id,
             explicit: track?.explicit,
             duration: track?.duration_ms,
             audio: track?.preview_url,
             corruptedTrack: isCorrupted,
             position: i,
-            album: track.album,
+            album: track?.album,
             added_at,
             type: track?.type,
             media_type: "audio",
-            is_local: track.is_local,
+            is_local: track?.is_local,
           };
         }),
       },

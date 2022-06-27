@@ -12,6 +12,7 @@ module.exports = {
     "next",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
+    "plugin:storybook/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -24,7 +25,12 @@ module.exports = {
   plugins: ["react", "jsx-a11y", "prettier", "@typescript-eslint"],
   rules: {
     "react/prop-types": 0,
-    "prettier/prettier": ["error", { endOfLine: "auto" }],
+    "prettier/prettier": [
+      "error",
+      {
+        endOfLine: "auto",
+      },
+    ],
     "jsx-a11y/anchor-is-valid": [
       0,
       {

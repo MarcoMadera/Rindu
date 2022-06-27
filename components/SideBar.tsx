@@ -357,10 +357,10 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={
-                          currrentlyPlaying.album.images[0]?.url ??
-                          currrentlyPlaying.album.images[1]?.url
+                          currrentlyPlaying.album?.images[0]?.url ??
+                          currrentlyPlaying.album?.images[1]?.url
                         }
-                        alt={currrentlyPlaying.album.name}
+                        alt={currrentlyPlaying.album?.name}
                       />
                     </a>
                   </Link>
@@ -369,10 +369,10 @@ export default function SideBar({ children }: SideBarProps): ReactElement {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={
-                        currrentlyPlaying.album.images[0]?.url ??
-                        currrentlyPlaying.album.images[1]?.url
+                        currrentlyPlaying.album?.images[0]?.url ??
+                        currrentlyPlaying.album?.images[1]?.url
                       }
-                      alt={currrentlyPlaying.album.name}
+                      alt={currrentlyPlaying.album?.name}
                     />
                   </>
                 )}

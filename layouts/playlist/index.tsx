@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 import { HeaderType, normalTrackTypes } from "types/spotify";
-import { PlaylistPageHeader } from "../../components/forPlaylistsPage/PlaylistPageHeader";
+import { PlaylistPageHeader } from "../../components/PlaylistPageHeader";
 import useAnalitycs from "../../hooks/useAnalytics";
 import useAuth from "hooks/useAuth";
 import Head from "next/head";

@@ -18,7 +18,7 @@ import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import { checkIfUserFollowAlbums } from "utils/spotifyCalls/checkIfUserFollowAlbums";
 import { unFollowAlbums } from "utils/spotifyCalls/unFollowAlbums";
 import { followAlbums } from "utils/spotifyCalls/followAlbums";
-import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
+import { PlaylistPageHeader } from "components/PlaylistPageHeader";
 import { SITE_URL } from "utils/constants";
 import useToast from "hooks/useToast";
 

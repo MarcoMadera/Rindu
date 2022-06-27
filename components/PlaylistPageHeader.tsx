@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { decode } from "html-entities";
 import Link from "next/link";
 import formatNumber from "utils/formatNumber";
-import { ContentHeader } from "./ContentHeader";
+import { ContentHeader } from "./forPlaylistsPage/ContentHeader";
 import useHeader from "hooks/useHeader";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
 import { formatTime } from "utils/formatTime";

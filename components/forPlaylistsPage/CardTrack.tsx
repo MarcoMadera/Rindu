@@ -104,7 +104,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
 
   const isTheSameAsCurrentlyPlaying =
     currrentlyPlaying?.name === track?.name &&
-    currrentlyPlaying?.album.name === track?.album.name;
+    currrentlyPlaying?.album?.name === track?.album?.name;
 
   function playThisTrack() {
     playCurrentTrack(track, {

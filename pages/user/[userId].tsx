@@ -7,7 +7,7 @@ import { serverRedirect } from "utils/serverRedirect";
 import { getAuth } from "utils/getAuth";
 import { getUserById } from "utils/spotifyCalls/getUserById";
 import { getPlaylistsFromUser } from "utils/spotifyCalls/getPlaylistsFromUser";
-import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
+import { PlaylistPageHeader } from "components/PlaylistPageHeader";
 import { HeaderType } from "types/spotify";
 import { SITE_URL } from "utils/constants";
 

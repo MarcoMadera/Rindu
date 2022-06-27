@@ -4,7 +4,7 @@ import { useEffect, ReactElement, useState } from "react";
 import { NextApiRequest, NextApiResponse } from "next";
 import Link from "next/link";
 import useAuth from "hooks/useAuth";
-import PresentationCard from "components/forDashboardPage/PlaylistCard";
+import PresentationCard from "components/PlaylistCard";
 import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
 import { decode } from "html-entities";
 import { getAuth } from "utils/getAuth";

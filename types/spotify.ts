@@ -59,6 +59,7 @@ interface Album extends Spotify.Album {
   external_urls?: SpotifyApi.ExternalUrlObject;
   available_markets?: string[];
   type?: "track" | "album" | "episode" | "ad";
+  total_tracks?: number;
 }
 
 //Tracks
@@ -75,9 +76,9 @@ export type normalTrackTypes = {
   explicit?: boolean;
   duration?: number;
   duration_ms?: number;
-  album: Album;
+  album?: Album | SpotifyApi.AlbumObjectSimplified;
   added_at?: string | number;
-  type: "track" | "episode" | "ad";
+  type?: "track" | "episode" | "ad";
   media_type?: "audio" | "video";
   is_playable?: boolean | undefined;
   is_local?: boolean;

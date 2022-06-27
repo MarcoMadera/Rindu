@@ -15,13 +15,13 @@ import {
   getArtistAlbums,
   Include_groups,
 } from "utils/spotifyCalls/getArtistAlbums";
-import PresentationCard from "components/forDashboardPage/PlaylistCard";
+import PresentationCard from "components/PlaylistCard";
 import { getRelatedArtists } from "utils/spotifyCalls/getRelatedArtists";
 import { PlayButton } from "components/forPlaylistsPage/PlayButton";
 import { follow, Follow_type } from "utils/spotifyCalls/follow";
 import { unFollow } from "utils/spotifyCalls/unFollow";
 import { checkIfUserFollowArtistUser } from "utils/spotifyCalls/checkIfUserFollowArtistUser";
-import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
+import { PlaylistPageHeader } from "components/PlaylistPageHeader";
 import { HeaderType } from "types/spotify";
 import { MONTHS, SITE_URL } from "utils/constants";
 import Carousel from "components/Carousel";

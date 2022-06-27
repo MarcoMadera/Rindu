@@ -71,10 +71,10 @@ export function NavbarLeft({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={
-                  currrentlyPlaying.album.images[2]?.url ??
-                  currrentlyPlaying.album.images[1]?.url
+                  currrentlyPlaying.album?.images[2]?.url ??
+                  currrentlyPlaying.album?.images[1]?.url
                 }
-                alt={currrentlyPlaying.album.name}
+                alt={currrentlyPlaying.album?.name}
                 width={64}
                 height={64}
               />
@@ -85,10 +85,10 @@ export function NavbarLeft({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={
-                currrentlyPlaying.album.images[2]?.url ??
-                currrentlyPlaying.album.images[1]?.url
+                currrentlyPlaying.album?.images[2]?.url ??
+                currrentlyPlaying.album?.images[1]?.url
               }
-              alt={currrentlyPlaying.album.name}
+              alt={currrentlyPlaying.album?.name}
               width={64}
               height={64}
             />

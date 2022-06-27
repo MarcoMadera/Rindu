@@ -125,8 +125,8 @@ export function SpotifyContextProvider({
       navigator.mediaSession.metadata = new MediaMetadata({
         title: currrentlyPlaying.name,
         artist: currrentlyPlaying.artists?.[0]?.name,
-        album: currrentlyPlaying.album.name,
-        artwork: currrentlyPlaying.album.images?.map(
+        album: currrentlyPlaying.album?.name,
+        artwork: currrentlyPlaying.album?.images?.map(
           ({ url, width, height }) => {
             return {
               src: url,
