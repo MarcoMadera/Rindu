@@ -9,7 +9,7 @@ import { getTrack } from "utils/spotifyCalls/getTrack";
 import { getLyrics } from "utils/getLyrics";
 import { ExtraHeader } from "layouts/playlist/ExtraHeader";
 import useSpotify from "hooks/useSpotify";
-import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
+import { PlaylistPageHeader } from "components/PlaylistPageHeader";
 import { PlayButton } from "components/forPlaylistsPage/PlayButton";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import { Heart } from "components/icons/Heart";

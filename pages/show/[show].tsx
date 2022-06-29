@@ -5,7 +5,7 @@ import { serverRedirect } from "utils/serverRedirect";
 import { getShow } from "utils/spotifyCalls/getShow";
 import { AllTracksFromAPlayList, HeaderType } from "types/spotify";
 import { SITE_URL } from "utils/constants";
-import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
+import { PlaylistPageHeader } from "components/PlaylistPageHeader";
 import { PlayButton } from "components/forPlaylistsPage/PlayButton";
 import { Heart } from "components/icons/Heart";
 import { removeShowsFromLibrary } from "utils/spotifyCalls/removeShowsFromLibrary";
@@ -173,6 +173,7 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
                 release_date_precision: "year",
                 type: "album",
                 uri: show?.uri ?? "",
+                total_tracks: 1,
               },
               artists: [
                 {

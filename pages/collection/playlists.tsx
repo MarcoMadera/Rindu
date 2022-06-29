@@ -3,7 +3,7 @@ import useHeader from "hooks/useHeader";
 import { useEffect, ReactElement } from "react";
 import Link from "next/link";
 import useSpotify from "hooks/useSpotify";
-import PresentationCard from "components/forDashboardPage/PlaylistCard";
+import PresentationCard from "components/PlaylistCard";
 import { decode } from "html-entities";
 export default function CollectionPlaylists(): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });

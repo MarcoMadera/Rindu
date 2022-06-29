@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { ReactElement, useEffect } from "react";
 import { NextApiRequest, NextApiResponse } from "next";
-import PresentationCard from "components/forDashboardPage/PlaylistCard";
+import PresentationCard from "components/PlaylistCard";
 import useAuth from "hooks/useAuth";
 import { serverRedirect } from "utils/serverRedirect";
 import { getAuth } from "utils/getAuth";

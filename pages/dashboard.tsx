@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
 import React, { useEffect, useState } from "react";
-import PresentationCard from "components/forDashboardPage/PlaylistCard";
+import PresentationCard from "components/PlaylistCard";
 import useAuth from "hooks/useAuth";
 import {
   ACCESS_TOKEN_COOKIE,
@@ -172,7 +172,7 @@ const Dashboard: NextPage<DashboardProps> = ({
                 <PresentationCard
                   type="track"
                   key={track.id}
-                  images={track.album.images as SpotifyApi.ImageObject[]}
+                  images={track.album?.images as SpotifyApi.ImageObject[]}
                   title={track.name ?? ""}
                   subTitle={
                     track.artists ? (
@@ -191,14 +191,18 @@ const Dashboard: NextPage<DashboardProps> = ({
                     ...track,
                     album: {
                       ...track.album,
-                      images: track.album.images as SpotifyApi.ImageObject[],
+                      name: track.album?.name ?? "",
+                      total_tracks: track.album?.total_tracks ?? 0,
+                      uri:
+                        track.album?.uri ?? `spotify:album:${track.album?.id}`,
+                      images: track.album?.images as SpotifyApi.ImageObject[],
                       release_date_precision: "day",
                       href: "",
                       album_type: "album",
                       artists:
                         track.artists as SpotifyApi.ArtistObjectSimplified[],
-                      id: track.album.id ?? "",
-                      release_date: track.album.release_date ?? "",
+                      id: track.album?.id ?? "",
+                      release_date: track.album?.release_date ?? "",
                       type: "album",
                       external_urls: { spotify: "" },
                     },

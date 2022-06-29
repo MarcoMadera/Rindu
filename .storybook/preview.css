@@ -1,0 +1,7 @@
+html,
+body {
+  overflow-x: auto;
+  overflow-y: auto;
+  background-color: unset;
+  color-scheme: unset;
+}

@@ -3,7 +3,7 @@ import { HTMLAttributes } from "react";
 import { PlayButton } from "components/forPlaylistsPage/PlayButton";
 import useAuth from "hooks/useAuth";
 
-interface PresentationCardProps {
+export interface PresentationCardProps {
   type:
     | "playlist"
     | "album"

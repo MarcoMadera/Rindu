@@ -6,7 +6,7 @@ import useAuth from "hooks/useAuth";
 import { getAuth } from "utils/getAuth";
 import { serverRedirect } from "utils/serverRedirect";
 import { ExtraHeader } from "layouts/playlist/ExtraHeader";
-import { PlaylistPageHeader } from "components/forPlaylistsPage/PlaylistPageHeader";
+import { PlaylistPageHeader } from "components/PlaylistPageHeader";
 import { PlayButton } from "components/forPlaylistsPage/PlayButton";
 import { getEpisodeById } from "utils/spotifyCalls/getEpisodeById";
 import { SITE_URL } from "utils/constants";
@@ -59,6 +59,7 @@ export default function EpisodePage({
         release_date_precision: "year",
         type: "album",
         uri: episode?.show.uri ?? "",
+        total_tracks: 1,
       },
       artists: [
         {
