@@ -26,6 +26,7 @@ interface SliderProps {
   onProgressChange: (currentPositionPercent: number) => void;
   onDragging?: (isDragging: boolean) => void;
   showDot?: boolean;
+  className?: string;
 }
 
 export default function Slider({
@@ -39,6 +40,7 @@ export default function Slider({
   setLabelValue,
   initialValuePercent,
   showDot,
+  className,
 }: SliderProps): ReactElement {
   const [progressPercent, setProgressPercent] = useState(initialValuePercent);
   const [isPressingMouse, setIsPressingMouse] = useState(false);
@@ -140,7 +142,7 @@ export default function Slider({
   ]);
 
   return (
-    <div className="barContainer">
+    <div className={`barContainer ${className ?? null}`}>
       <div
         className="transformation"
         role="slider"

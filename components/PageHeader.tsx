@@ -1,8 +1,14 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, {
+  Fragment,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { decode } from "html-entities";
 import Link from "next/link";
 import formatNumber from "utils/formatNumber";
-import { ContentHeader } from "./forPlaylistsPage/ContentHeader";
+import PageDetails from "./PageDetails";
 import useHeader from "hooks/useHeader";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
 import { formatTime } from "utils/formatTime";
@@ -127,7 +133,7 @@ type HeaderProps =
       disableOpacityChange?: never;
     });
 
-export const PlaylistPageHeader: React.FC<HeaderProps> = ({
+export default function PageHeader({
   type,
   coverImg,
   title,
@@ -144,7 +150,7 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
   data,
   banner,
   disableOpacityChange,
-}) => {
+}: HeaderProps): ReactElement {
   const { setHeaderColor } = useHeader({ disableOpacityChange });
   const image = useRef<HTMLImageElement>(null);
   const [imageIsLoaded, setImageIsLoaded] = useState(false);
@@ -163,7 +169,7 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
   }, [banner, imageIsLoaded, router.asPath, setHeaderColor]);
 
   return (
-    <ContentHeader
+    <PageDetails
       banner={banner}
       data={data ?? null}
       disableOpacityChange={disableOpacityChange}
@@ -377,6 +383,6 @@ export const PlaylistPageHeader: React.FC<HeaderProps> = ({
           }
         `}
       </style>
-    </ContentHeader>
+    </PageDetails>
   );
-};
+}

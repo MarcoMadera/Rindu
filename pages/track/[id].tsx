@@ -7,15 +7,15 @@ import { getAuth } from "utils/getAuth";
 import { serverRedirect } from "utils/serverRedirect";
 import { getTrack } from "utils/spotifyCalls/getTrack";
 import { getLyrics } from "utils/getLyrics";
-import { ExtraHeader } from "layouts/playlist/ExtraHeader";
+import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
 import useSpotify from "hooks/useSpotify";
-import { PlaylistPageHeader } from "components/PlaylistPageHeader";
-import { PlayButton } from "components/forPlaylistsPage/PlayButton";
+import PageHeader from "components/PageHeader";
+import { PlayButton } from "components/PlayButton";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import { Heart } from "components/icons/Heart";
 import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibrary";
 import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
-import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
+import CardTrack from "components/CardTrack";
 import { getArtistTopTracks } from "utils/spotifyCalls/getArtistTopTracks";
 import { getArtistById } from "utils/spotifyCalls/getArtistById";
 import { HeaderType } from "types/spotify";
@@ -109,7 +109,9 @@ export default function TrackPage({
         ...artistTopTracksFor,
       ]);
     }
-    setElement(() => <ExtraHeader isSingle track={track ?? undefined} />);
+    setElement(() => (
+      <PlaylistTopBarExtraField isSingle track={track ?? undefined} />
+    ));
 
     return () => {
       setElement(null);
@@ -165,7 +167,7 @@ export default function TrackPage({
           <title>Rindu - {track?.name ?? "Canciones"}</title>
         </Head>
       )}
-      <PlaylistPageHeader
+      <PageHeader
         type={HeaderType.song}
         title={track?.name ?? ""}
         coverImg={
@@ -259,7 +261,7 @@ export default function TrackPage({
                     : i + 1;
 
                 return (
-                  <ModalCardTrack
+                  <CardTrack
                     accessToken={accessToken ?? ""}
                     isTrackInLibrary={false}
                     playlistUri=""

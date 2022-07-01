@@ -152,7 +152,7 @@ const Home: NextPage<HomeProps> = () => {
       </section>
       <section
         className="sec-full sec-desc"
-        style={{ backgroundColor: "rgb(253, 186, 239)", marginLeft: "0" }}
+        style={{ backgroundColor: "rgb(253, 186, 239)" }}
       >
         <h2 style={{ color: "rgb(210, 64, 230)" }}>
           ¿Qué esperas para descubrir Rindu?
@@ -258,9 +258,6 @@ const Home: NextPage<HomeProps> = () => {
             font-size: 16px;
             font-weight: 500;
             display: block;
-          }
-          .sec-desc {
-            margin-left: 48px;
           }
           .sec-desc h2 {
             font-size: 48px;

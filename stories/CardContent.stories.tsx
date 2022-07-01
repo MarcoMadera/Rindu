@@ -1,6 +1,6 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import PresentationCard from "../components/PlaylistCard";
+import PresentationCard from "../components/PresentationCard";
 import { UserContextProvider } from "context/UserContext";
 import { ToastContextProvider } from "context/ToastContext";
 import { HeaderContextProvider } from "context/HeaderContext";

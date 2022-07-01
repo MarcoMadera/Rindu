@@ -201,6 +201,7 @@ export default function ContextMenu(): ReactPortal | null {
                   return (
                     <li key={playlist.id}>
                       <button
+                        type="button"
                         onClick={() => {
                           if (contextMenuData.data.uri && deviceId) {
                             addItemsToPlaylist(playlist.id, [

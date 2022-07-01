@@ -5,15 +5,15 @@ import { serverRedirect } from "utils/serverRedirect";
 import { getShow } from "utils/spotifyCalls/getShow";
 import { AllTracksFromAPlayList, HeaderType } from "types/spotify";
 import { SITE_URL } from "utils/constants";
-import { PlaylistPageHeader } from "components/PlaylistPageHeader";
-import { PlayButton } from "components/forPlaylistsPage/PlayButton";
+import PageHeader from "components/PageHeader";
+import { PlayButton } from "components/PlayButton";
 import { Heart } from "components/icons/Heart";
 import { removeShowsFromLibrary } from "utils/spotifyCalls/removeShowsFromLibrary";
 import { saveShowsToLibrary } from "utils/spotifyCalls/saveShowsToLibrary";
 import useAuth from "hooks/useAuth";
 import { checkIfUserFollowShows } from "utils/spotifyCalls/checkIfUserFollowShows";
 import useSpotify from "hooks/useSpotify";
-import { ExtraHeader } from "layouts/playlist/ExtraHeader";
+import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
 import useHeader from "hooks/useHeader";
 import useToast from "hooks/useToast";
 import EpisodeCard from "components/EpisodeCard";
@@ -35,7 +35,7 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
   useEffect(() => {
     setIsLogin(true);
 
-    setElement(() => <ExtraHeader uri={show?.uri} />);
+    setElement(() => <PlaylistTopBarExtraField uri={show?.uri} />);
 
     setAccessToken(accessToken);
 
@@ -227,7 +227,7 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
 
   return (
     <main>
-      <PlaylistPageHeader
+      <PageHeader
         type={HeaderType.podcast}
         title={show?.name ?? ""}
         coverImg={

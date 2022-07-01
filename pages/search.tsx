@@ -4,8 +4,7 @@ import { useEffect, ReactElement, useState } from "react";
 import { NextApiRequest, NextApiResponse } from "next";
 import Link from "next/link";
 import useAuth from "hooks/useAuth";
-import PresentationCard from "components/PlaylistCard";
-import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
+import PresentationCard from "components/PresentationCard";
 import { decode } from "html-entities";
 import { getAuth } from "utils/getAuth";
 import { getCategories } from "utils/spotifyCalls/getCategories";
@@ -15,6 +14,7 @@ import { getYear } from "utils/getYear";
 import Carousel from "components/Carousel";
 import { SearchInputElement } from "components/SearchInputElement";
 import useSpotify from "hooks/useSpotify";
+import CardTrack from "components/CardTrack";
 
 interface SearchPageProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
@@ -142,7 +142,7 @@ export default function SearchPage({
                       return null;
                     }
                     return (
-                      <ModalCardTrack
+                      <CardTrack
                         accessToken={accessToken ?? ""}
                         isTrackInLibrary={false}
                         playlistUri=""

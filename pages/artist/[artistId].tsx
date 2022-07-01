@@ -8,20 +8,20 @@ import { getAuth } from "utils/getAuth";
 import { getArtistById } from "utils/spotifyCalls/getArtistById";
 import useHeader from "hooks/useHeader";
 import { getArtistTopTracks } from "utils/spotifyCalls/getArtistTopTracks";
-import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
+import ModalCardTrack from "components/CardTrack";
 import useSpotify from "hooks/useSpotify";
-import { ExtraHeader } from "layouts/playlist/ExtraHeader";
+import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
 import {
   getArtistAlbums,
   Include_groups,
 } from "utils/spotifyCalls/getArtistAlbums";
-import PresentationCard from "components/PlaylistCard";
+import PresentationCard from "components/PresentationCard";
 import { getRelatedArtists } from "utils/spotifyCalls/getRelatedArtists";
-import { PlayButton } from "components/forPlaylistsPage/PlayButton";
+import { PlayButton } from "components/PlayButton";
 import { follow, Follow_type } from "utils/spotifyCalls/follow";
 import { unFollow } from "utils/spotifyCalls/unFollow";
 import { checkIfUserFollowArtistUser } from "utils/spotifyCalls/checkIfUserFollowArtistUser";
-import { PlaylistPageHeader } from "components/PlaylistPageHeader";
+import PageHeader from "../../components/PageHeader";
 import { HeaderType } from "types/spotify";
 import { MONTHS, SITE_URL } from "utils/constants";
 import Carousel from "components/Carousel";
@@ -104,7 +104,7 @@ export default function ArtistPage({
   }, [accessToken, currentArtist?.id, router]);
 
   useEffect(() => {
-    setElement(() => <ExtraHeader uri={currentArtist?.uri} />);
+    setElement(() => <PlaylistTopBarExtraField uri={currentArtist?.uri} />);
     const user: SpotifyApi.UserObjectPublic = {
       display_name: currentArtist?.name,
       id: currentArtist?.id ?? "",
@@ -173,7 +173,7 @@ export default function ArtistPage({
 
   return (
     <main>
-      <PlaylistPageHeader
+      <PageHeader
         type={HeaderType.artist}
         title={currentArtist?.name ?? ""}
         coverImg={

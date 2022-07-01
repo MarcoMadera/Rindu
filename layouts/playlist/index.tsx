@@ -2,87 +2,28 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 import { HeaderType, normalTrackTypes } from "types/spotify";
-import { PlaylistPageHeader } from "../../components/PlaylistPageHeader";
+import PageHeader from "../../components/PageHeader";
 import useAnalitycs from "../../hooks/useAnalytics";
 import useAuth from "hooks/useAuth";
 import Head from "next/head";
 import useSpotify from "hooks/useSpotify";
 import useHeader from "hooks/useHeader";
-import { PlayButton } from "../../components/forPlaylistsPage/PlayButton";
-import Titles from "components/forPlaylistsPage/Titles";
-import List from "layouts/playlist/List";
+import { PlayButton } from "../../components/PlayButton";
+import TrackListHeader from "components/TrackListHeader";
+import VirtualizedList from "components/VirtualizedList";
 import { Broom } from "components/icons/Broom";
-import RemoveTracksModal from "components/removeTrackModal";
-import { ExtraHeader } from "./ExtraHeader";
+import RemoveTracksModal from "components/RemoveTracksModal";
+import PlaylistTopBarExtraField from "../../components/PlaylistTopBarExtraField";
 import { Heart } from "components/icons/Heart";
-import { takeCookie } from "utils/cookies";
-import { ACCESS_TOKEN_COOKIE, SITE_URL } from "utils/constants";
+import { SITE_URL } from "utils/constants";
 import { PlaylistProps } from "pages/playlist/[playlist]";
 import { SearchInputElement } from "components/SearchInputElement";
-import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
 import { addItemsToPlaylist } from "utils/spotifyCalls/addItemsToPlaylist";
 import useToast from "hooks/useToast";
-
-async function followPlaylist(id?: string, accessToken?: string) {
-  if (!id) {
-    return;
-  }
-  const res = await fetch(
-    `https://api.spotify.com/v1/playlists/${id}/followers`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
-        }`,
-      },
-    }
-  );
-  return res.ok;
-}
-async function unfollowPlaylist(id?: string, accessToken?: string) {
-  if (!id) {
-    return;
-  }
-  const res = await fetch(
-    `https://api.spotify.com/v1/playlists/${id}/followers`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
-        }`,
-      },
-    }
-  );
-  return res.ok;
-}
-async function checkUsersFollowAPlaylist(
-  userIds?: string[],
-  playlistId?: string,
-  accessToken?: string
-) {
-  if (!playlistId || !userIds) {
-    return;
-  }
-  const ids = userIds.join();
-  const res = await fetch(
-    `https://api.spotify.com/v1/playlists/${playlistId}/followers/contains?ids=${ids}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
-        }`,
-      },
-    }
-  );
-  const data = res.json();
-  return data;
-}
+import CardTrack from "components/CardTrack";
+import { checkUsersFollowAPlaylist } from "utils/spotifyCalls/checkUsersFollowAPlaylist";
+import { followPlaylist } from "utils/spotifyCalls/followPlaylist";
+import { unfollowPlaylist } from "utils/spotifyCalls/unfollowPlaylist";
 
 const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
   playlistDetails,
@@ -134,7 +75,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
       router.push("/");
     }
 
-    setElement(() => <ExtraHeader uri={playlistDetails?.uri} />);
+    setElement(() => <PlaylistTopBarExtraField uri={playlistDetails?.uri} />);
 
     setPlaylistDetails(playlistDetails);
     trackWithGoogleAnalitycs();
@@ -205,7 +146,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
           <title>{`Rindu: ${playlistDetails?.name}`}</title>
         </Head>
       )}
-      <PlaylistPageHeader
+      <PageHeader
         type={HeaderType.playlist}
         title={playlistDetails?.name ?? ""}
         description={playlistDetails?.description ?? ""}
@@ -277,8 +218,12 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
               </div>
             </div>
             <div className="trc">
-              <Titles isPin={isPin} type="playlist" setIsPin={setIsPin} />
-              <List
+              <TrackListHeader
+                isPin={isPin}
+                type="playlist"
+                setIsPin={setIsPin}
+              />
+              <VirtualizedList
                 type="playlist"
                 isLibrary={isLibrary}
                 initialTracksInLibrary={tracksInLibrary}
@@ -295,7 +240,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
                 <h5>Songs</h5>
                 {searchedData.tracks?.items?.map((track, i) => {
                   return (
-                    <ModalCardTrack
+                    <CardTrack
                       accessToken={accessToken ?? ""}
                       isTrackInLibrary={tracksInLibrary?.[i] ?? false}
                       playlistUri=""
@@ -342,7 +287,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
                 <h5>Episodes</h5>
                 {searchedData.episodes?.items?.map((track, i) => {
                   return (
-                    <ModalCardTrack
+                    <CardTrack
                       accessToken={accessToken ?? ""}
                       isTrackInLibrary={tracksInLibrary?.[i] ?? false}
                       playlistUri=""

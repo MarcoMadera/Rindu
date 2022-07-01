@@ -1,6 +1,5 @@
 import { Fragment, ReactElement, useEffect, useState } from "react";
 import Link from "next/link";
-import { normalTrackTypes } from "types/spotify";
 import { Heart } from "components/icons/Heart";
 import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibrary";
 import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
@@ -17,11 +16,7 @@ import { callPictureInPicture } from "utils/callPictureInPicture";
 import { PictureInPicture } from "components/icons/PictureInPicture";
 import useContextMenu from "hooks/useContextMenu";
 
-export function NavbarLeft({
-  currrentlyPlaying,
-}: {
-  currrentlyPlaying: normalTrackTypes;
-}): ReactElement {
+export default function NowPlaying(): ReactElement | null {
   const [isLikedTrack, setIsLikedTrack] = useState(false);
   const { accessToken } = useAuth();
   const {
@@ -32,9 +27,12 @@ export function NavbarLeft({
     videoRef,
     setIsPip,
     isPip,
+    currrentlyPlaying,
   } = useSpotify();
   const { addToast } = useToast();
   const { addContextMenu } = useContextMenu();
+  const type = playedSource?.split(":")?.[1];
+  const id = playedSource?.split(":")?.[2];
 
   useEffect(() => {
     if (!currrentlyPlaying?.id) return;
@@ -47,8 +45,7 @@ export function NavbarLeft({
     });
   }, [accessToken, currrentlyPlaying]);
 
-  const type = playedSource?.split(":")?.[1];
-  const id = playedSource?.split(":")?.[2];
+  if (!currrentlyPlaying) return null;
 
   return (
     <div

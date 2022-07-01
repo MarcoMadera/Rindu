@@ -1,6 +1,6 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { PlaylistPageHeader } from "../components/PlaylistPageHeader";
+import PageHeader from "../components/PageHeader";
 import { UserContextProvider } from "context/UserContext";
 import { ToastContextProvider } from "context/ToastContext";
 import { HeaderContextProvider } from "context/HeaderContext";
@@ -9,8 +9,8 @@ import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import { HeaderType } from "types/spotify";
 
 export default {
-  title: "Components/PlaylistPageHeader",
-  component: PlaylistPageHeader,
+  title: "Components/PageHeader",
+  component: PageHeader,
   parameters: {
     layout: "fullscreen",
   },
@@ -24,15 +24,15 @@ export default {
       control: { type: "select" },
     },
   },
-} as ComponentMeta<typeof PlaylistPageHeader>;
+} as ComponentMeta<typeof PageHeader>;
 
-const Template: ComponentStory<typeof PlaylistPageHeader> = (args) => (
+const Template: ComponentStory<typeof PageHeader> = (args) => (
   <ToastContextProvider>
     <UserContextProvider>
       <HeaderContextProvider>
         <SpotifyContextProvider>
           <ContextMenuContextProvider>
-            <PlaylistPageHeader {...args} />
+            <PageHeader {...args} />
           </ContextMenuContextProvider>
         </SpotifyContextProvider>
       </HeaderContextProvider>

@@ -1,25 +1,19 @@
 import useAuth from "hooks/useAuth";
-import {
-  MutableRefObject,
-  ReactElement,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import UserConfig from "./navbar/UserConfig";
+import { MutableRefObject, ReactElement, useState } from "react";
+import UserWidget from "./UserWidget";
 import RouterButtons from "./RouterButtons";
-import { useRouter } from "next/router";
 import useHeader from "hooks/useHeader";
 import useSpotify from "hooks/useSpotify";
+import useRouterEvents from "hooks/useRouterEvents";
+import Logo from "./Logo";
+import LoginButton from "./LoginButton";
+import { useRouter } from "next/router";
 
-export default function Header({
-  children,
-}: {
-  children: ReactNode;
-}): ReactElement {
-  const router = useRouter();
-  const appRef = useRef<HTMLDivElement>();
+interface TopBarProps {
+  appRef?: MutableRefObject<HTMLDivElement | undefined>;
+}
+
+export default function TopBar({ appRef }: TopBarProps): ReactElement {
   const { user } = useAuth();
   const {
     headerColor,
@@ -33,46 +27,70 @@ export default function Header({
   const isPremium = user?.product === "premium";
   const { setShowHamburguerMenu } = useSpotify();
   const [showFixed, setShowFixed] = useState(false);
+  const router = useRouter();
+  const isLoginPage = router.asPath === "/";
 
-  useEffect(() => {
-    const app = appRef.current;
-    function onScroll() {
-      const headerOpacityPercentage = ((app?.scrollTop || 0) + -55) / 223;
-      const headerOpacity =
-        headerOpacityPercentage > 1 ? 1 : headerOpacityPercentage;
-      setHeaderOpacity(headerOpacity);
+  useRouterEvents(() => {
+    const app = appRef?.current;
+    const headerOpacityPercentage = ((app?.scrollTop || 0) + -55) / 223;
+    const headerOpacity =
+      headerOpacityPercentage > 1 ? 1 : headerOpacityPercentage;
+    setHeaderOpacity(headerOpacity);
 
-      if ((app?.scrollTop || 0) > 223) {
-        setShowFixed(true);
-      } else {
-        setShowFixed(false);
-      }
+    if ((app?.scrollTop || 0) > 223) {
+      setShowFixed(true);
+    } else {
+      setShowFixed(false);
     }
+  }, appRef);
 
-    router.events.on("routeChangeComplete", () => {
-      document.getElementsByClassName("app")?.[0]?.scrollTo(0, 0);
-      if (!alwaysDisplayColor) {
-        setHeaderOpacity(0);
-      }
-    });
-
-    app?.addEventListener("scroll", onScroll);
-
-    return () => {
-      router.events.off("routeChangeComplete", () => {
-        document.getElementsByClassName("app")?.[0]?.scrollTo(0, 0);
-        setHeaderOpacity(0);
-      });
-      app?.removeEventListener("scroll", onScroll);
-    };
-  }, [router, alwaysDisplayColor, setHeaderOpacity]);
+  if (isLoginPage) {
+    return (
+      <header>
+        <div>
+          <Logo color="#000" />
+          <LoginButton />
+        </div>
+        <style jsx>{`
+          header {
+            height: 64px;
+            background-color: #ffffff;
+            padding: 0 20px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+            margin: 0 auto;
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            z-index: 9129192;
+          }
+          div {
+            max-width: 1568px;
+            width: 100%;
+            padding-left: 64px;
+            padding-right: 64px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 auto;
+          }
+          @media screen and (min-width: 0px) and (max-width: 780px) {
+            header {
+              padding: 0;
+            }
+            div {
+              padding: 15px;
+            }
+          }
+        `}</style>
+      </header>
+    );
+  }
 
   return (
-    <div
-      className="app"
-      id="app"
-      ref={appRef as MutableRefObject<HTMLDivElement>}
-    >
+    <>
       <div className="container">
         <header>
           <div
@@ -117,17 +135,16 @@ export default function Header({
             </a>
           ) : null}
           {user ? (
-            <UserConfig
+            <UserWidget
               name={user?.display_name}
               img={user?.images?.[0]?.url}
             />
           ) : (
-            <div className="userConfig"></div>
+            <div className="userWidget"></div>
           )}
         </header>
       </div>
       {alwaysDisplayColor && <div className="bg-12"></div>}
-      {children}
       <style jsx>{`
         .bg-12 {
           background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0, #121212 100%),
@@ -160,23 +177,7 @@ export default function Header({
           width: 30px;
           margin: 4px 5px;
         }
-        .app {
-          overflow-y: overlay;
-          height: calc(100vh - 90px);
-          overflow-x: hidden;
-          width: calc(100vw - 245px);
-          position: relative;
-        }
-        @media (max-width: 685px) {
-          .app {
-            height: calc(100vh - 270px);
-          }
-        }
-        @media (max-width: 1000px) {
-          .app {
-            width: 100%;
-          }
-        }
+
         .extraElement {
           white-space: nowrap;
           width: 100%;
@@ -242,6 +243,6 @@ export default function Header({
           z-index: 9999999999;
         }
       `}</style>
-    </div>
+    </>
   );
 }

@@ -9,6 +9,7 @@ import {
   useState,
   Fragment,
   CSSProperties,
+  ReactElement,
 } from "react";
 import { normalTrackTypes } from "types/spotify";
 import { formatTime } from "utils/formatTime";
@@ -22,6 +23,7 @@ import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFrom
 import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
 import useContextMenu from "hooks/useContextMenu";
 import useOnScreen from "hooks/useOnScreen";
+import ExplicitSign from "./ExplicitSign";
 
 interface ModalCardTrackProps {
   track: normalTrackTypes;
@@ -36,33 +38,7 @@ interface ModalCardTrackProps {
   uri?: string;
 }
 
-export const ExplicitSign: React.FC = () => {
-  return (
-    <div>
-      <small>E</small>
-      <style jsx>{`
-        small {
-          font-size: 10px;
-          font-weight: bold;
-          color: #463f3f;
-          font-family: "Lato", sans-serif;
-        }
-        div {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 2px;
-          background-color: #d2d2d2;
-          width: 17px;
-          height: 17px;
-          margin-right: 4px;
-        }
-      `}</style>
-    </div>
-  );
-};
-
-const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
+export default function CardTrack({
   accessToken,
   track,
   playlistUri,
@@ -73,7 +49,7 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
   position,
   onClickAdd,
   uri,
-}) => {
+}: ModalCardTrackProps): ReactElement {
   const {
     deviceId,
     currrentlyPlaying,
@@ -606,6 +582,4 @@ const ModalCardTrack: React.FC<ModalCardTrackProps> = ({
       `}</style>
     </div>
   );
-};
-
-export default ModalCardTrack;
+}

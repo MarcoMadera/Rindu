@@ -2,7 +2,7 @@ import Head from "next/head";
 import useHeader from "hooks/useHeader";
 import { useEffect, ReactElement, useState } from "react";
 import Link from "next/link";
-import PresentationCard from "components/PlaylistCard";
+import PresentationCard from "components/PresentationCard";
 import useAuth from "hooks/useAuth";
 import { getMyArtists } from "utils/spotifyCalls/getMyArtists";
 import useSpotify from "hooks/useSpotify";
