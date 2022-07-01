@@ -4,13 +4,13 @@ import { useRouter } from "next/router";
 import useAuth from "hooks/useAuth";
 import useAnalitycs from "hooks/useAnalytics";
 import { useEffect, useState } from "react";
-import List from "layouts/playlist/List";
+import VirtualizedList from "components/VirtualizedList";
 import { Heart } from "components/icons/Heart";
-import Titles from "components/forPlaylistsPage/Titles";
+import TrackListHeader from "components/TrackListHeader";
 import useSpotify from "hooks/useSpotify";
-import { PlayButton } from "components/forPlaylistsPage/PlayButton";
+import { PlayButton } from "components/PlayButton";
 import useHeader from "hooks/useHeader";
-import { ExtraHeader } from "layouts/playlist/ExtraHeader";
+import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
 import { serverRedirect } from "utils/serverRedirect";
 import { getAuth } from "utils/getAuth";
 import { getAlbumById } from "utils/spotifyCalls/getAlbumById";
@@ -18,7 +18,7 @@ import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import { checkIfUserFollowAlbums } from "utils/spotifyCalls/checkIfUserFollowAlbums";
 import { unFollowAlbums } from "utils/spotifyCalls/unFollowAlbums";
 import { followAlbums } from "utils/spotifyCalls/followAlbums";
-import { PlaylistPageHeader } from "components/PlaylistPageHeader";
+import PageHeader from "components/PageHeader";
 import { SITE_URL } from "utils/constants";
 import useToast from "hooks/useToast";
 
@@ -64,7 +64,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
       router.push("/");
     }
 
-    setElement(() => <ExtraHeader uri={album?.uri} />);
+    setElement(() => <PlaylistTopBarExtraField uri={album?.uri} />);
     trackWithGoogleAnalitycs();
 
     setIsLogin(true);
@@ -129,7 +129,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
 
   return (
     <main>
-      <PlaylistPageHeader
+      <PageHeader
         type={
           album?.album_type === "single"
             ? HeaderType.single
@@ -182,8 +182,11 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
           </div>
         </div>
         <div className="trc">
-          <Titles type="album" setIsPin={setIsPin} isPin={isPin} />
-          <List type="album" initialTracksInLibrary={tracksInLibrary} />
+          <TrackListHeader type="album" setIsPin={setIsPin} isPin={isPin} />
+          <VirtualizedList
+            type="album"
+            initialTracksInLibrary={tracksInLibrary}
+          />
           <div className="copy">
             {album?.copyrights?.map(({ text }, i) => {
               return <p key={i}>{text}</p>;

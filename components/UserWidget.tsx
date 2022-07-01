@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import useAuth from "../../hooks/useAuth";
+import { ReactElement, useEffect, useState } from "react";
+import useAuth from "../hooks/useAuth";
 import {
   ACCESS_TOKEN_COOKIE,
   EXPIRE_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
-} from "../../utils/constants";
-import { eatCookie } from "../../utils/cookies";
+} from "../utils/constants";
+import { eatCookie } from "../utils/cookies";
 import Link from "next/link";
 import { ExternalLink } from "components/icons/ExternalLink";
 
@@ -15,7 +15,10 @@ interface UserConfigProps {
   img: string | undefined;
 }
 
-const UserConfig: React.FC<UserConfigProps> = ({ name, img }) => {
+export default function UserWidget({
+  name,
+  img,
+}: UserConfigProps): ReactElement {
   const [openSettings, setOpenSettings] = useState(false);
   const router = useRouter();
   const { user, setUser, setIsLogin } = useAuth();
@@ -42,6 +45,7 @@ const UserConfig: React.FC<UserConfigProps> = ({ name, img }) => {
   return (
     <div className="container">
       <button
+        type="button"
         className="pill"
         onClick={(e) => {
           setOpenSettings(!openSettings);
@@ -97,6 +101,7 @@ const UserConfig: React.FC<UserConfigProps> = ({ name, img }) => {
         ) : null}
         <div role="presentation">
           <button
+            type="button"
             role="menuitem"
             tabIndex={-1}
             className="option"
@@ -208,6 +213,4 @@ const UserConfig: React.FC<UserConfigProps> = ({ name, img }) => {
       `}</style>
     </div>
   );
-};
-
-export default UserConfig;
+}

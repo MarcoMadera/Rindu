@@ -26,7 +26,7 @@ export async function getTracksFromPlaylist(
   playlistId: string,
   offset = 0,
   accessToken?: string | undefined
-): Promise<Response> {
+): Promise<SpotifyApi.PlaylistTrackResponse | null> {
   const res = await fetch(
     `https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=${offset}&limit=50`,
     {
@@ -39,8 +39,11 @@ export async function getTracksFromPlaylist(
       },
     }
   );
-  const data = await res.json();
-  return data;
+  if (res.ok) {
+    const data: SpotifyApi.PlaylistTrackResponse = await res.json();
+    return data;
+  }
+  return null;
 }
 
 export async function removeTracksRequest(

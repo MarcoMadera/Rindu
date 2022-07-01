@@ -1,24 +1,15 @@
 import { useRouter } from "next/router";
-import Footer from "./Footer";
-import Navbar from "./navbar";
-import SpotifyPlayer from "./SpotifyPlayer";
-import SideBar from "./SideBar";
-import Header from "./Header";
-import { makeCookie, takeCookie } from "utils/cookies";
+import { useEffect } from "react";
 import {
   ACCESS_TOKEN_COOKIE,
   EXPIRE_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
 } from "utils/constants";
-import useAuth from "hooks/useAuth";
-import { ReactElement, ReactNode, useEffect } from "react";
+import { makeCookie, takeCookie } from "utils/cookies";
 import { refreshAccessToken } from "utils/spotifyCalls/refreshAccessToken";
+import useAuth from "./useAuth";
 
-export default function Layout({
-  children,
-}: {
-  children: ReactNode;
-}): ReactElement {
+export default function useRefreshAccessToken(): void {
   const router = useRouter();
   const { user, setAccessToken } = useAuth();
 
@@ -51,27 +42,4 @@ export default function Layout({
     return () => clearTimeout(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.uri]);
-
-  const isLoginPage = router.asPath === "/";
-
-  return (
-    <>
-      {isLoginPage ? (
-        <>
-          <div>
-            <Navbar />
-            {children}
-          </div>
-          <Footer />
-        </>
-      ) : (
-        <>
-          <SideBar>
-            <Header>{children}</Header>
-          </SideBar>
-          <SpotifyPlayer />
-        </>
-      )}
-    </>
-  );
 }

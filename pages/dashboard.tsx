@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
 import React, { useEffect, useState } from "react";
-import PresentationCard from "components/PlaylistCard";
+import PresentationCard from "components/PresentationCard";
 import useAuth from "hooks/useAuth";
 import {
   ACCESS_TOKEN_COOKIE,
@@ -15,7 +15,7 @@ import useHeader from "hooks/useHeader";
 import { useRouter } from "next/router";
 import { getRecommendations } from "utils/spotifyCalls/getRecommendations";
 import { getMyTop, TopType } from "utils/spotifyCalls/getMyTop";
-import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
+import CardTrack from "components/CardTrack";
 import { getFeaturedPlaylists } from "utils/spotifyCalls/getFeaturedPlaylists";
 import { getNewReleases } from "utils/spotifyCalls/getNewReleases";
 import { getCategories } from "utils/spotifyCalls/getCategories";
@@ -266,7 +266,7 @@ const Dashboard: NextPage<DashboardProps> = ({
                         const index = i * 5 + chunkIndex;
 
                         return (
-                          <ModalCardTrack
+                          <CardTrack
                             accessToken={accessToken ?? ""}
                             isTrackInLibrary={tracksInLibrary?.[index] ?? false}
                             playlistUri=""

@@ -11,7 +11,7 @@ import React, {
 import { normalTrackTypes } from "types/spotify";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
 
-export function ContentHeader({
+export default function PageDetails({
   children,
   data,
   banner,

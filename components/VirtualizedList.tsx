@@ -1,4 +1,4 @@
-import ModalCardTrack from "components/forPlaylistsPage/CardTrack";
+import CardTrack from "components/CardTrack";
 import useAuth from "hooks/useAuth";
 import useSpotify from "hooks/useSpotify";
 import { getTracksFromPlaylist } from "lib/requests";
@@ -10,60 +10,11 @@ import {
   List,
   WindowScroller,
 } from "react-virtualized";
-import { AllTracksFromAPlayList, normalTrackTypes } from "types/spotify";
-import { ACCESS_TOKEN_COOKIE, __isServer__ } from "utils/constants";
-import { takeCookie } from "utils/cookies";
+import { AllTracksFromAPlayList } from "types/spotify";
+import { __isServer__ } from "utils/constants";
+import { getTracksFromLibrary } from "utils/getTracksFromLibrary";
+import { mapPlaylistItems } from "utils/mapPlaylistItems";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
-
-export function mapPlaylistItems(
-  items: {
-    track: SpotifyApi.TrackObjectFull;
-    added_at: string;
-    is_local: boolean;
-  }[],
-  startIndex: number
-): normalTrackTypes[] {
-  return items?.map(({ track, added_at, is_local }, i) => {
-    const isCorrupted =
-      !track?.name && !track?.artists?.[0]?.name && track?.duration_ms === 0;
-    return {
-      name: track?.name,
-      images: track?.album.images,
-      uri: track?.uri,
-      href: track?.external_urls.spotify,
-      artists: track?.artists,
-      id: track?.id,
-      explicit: track?.explicit,
-      duration: track?.duration_ms,
-      audio: track?.preview_url,
-      corruptedTrack: isCorrupted,
-      position: startIndex + i,
-      album: track?.album,
-      added_at,
-      type: track?.type,
-      media_type: "audio",
-      is_playable: track?.is_playable,
-      is_local,
-    };
-  });
-}
-
-async function getTracksFromLibrary(offSet: number, accessToken?: string) {
-  const res = await fetch(
-    `https://api.spotify.com/v1/me/tracks?offset=${offSet}&limit=50`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
-        }`,
-      },
-    }
-  );
-  const data = await res.json();
-  return data;
-}
 
 interface Props {
   type: "playlist" | "album" | "presentation";
@@ -71,7 +22,7 @@ interface Props {
   isLibrary?: boolean;
 }
 
-export default function Playlist({
+export default function VirtualizedList({
   type,
   initialTracksInLibrary,
   isLibrary,
@@ -170,7 +121,7 @@ export default function Playlist({
                       width={width}
                       rowRenderer={({ index, style, key }) => {
                         return (
-                          <ModalCardTrack
+                          <CardTrack
                             accessToken={accessToken}
                             key={key}
                             style={style}

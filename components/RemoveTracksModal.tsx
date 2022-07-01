@@ -11,14 +11,14 @@ import {
 } from "react";
 import useSpotify from "hooks/useSpotify";
 import useAuth from "hooks/useAuth";
-import { AllTracksFromAPlayList, normalTrackTypes } from "types/spotify";
-import { findDuplicateSongs } from "utils/findDuplicateSongs";
-import ModalCardTrack from "./forPlaylistsPage/CardTrack";
+import { normalTrackTypes } from "types/spotify";
+import CardTrack from "./CardTrack";
 import { takeCookie } from "utils/cookies";
 import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 import { List } from "react-virtualized";
 import { LoadingSpinner } from "./LoadingSpinner";
 import useToast from "hooks/useToast";
+import { analyzePlaylist } from "utils/analyzePlaylist";
 
 interface RemoveTracksModalProps {
   openModal: boolean;
@@ -43,97 +43,24 @@ export default function RemoveTracksModal({
   const [tracksToRemove, setTracksToRemove] = useState<normalTrackTypes[]>([]);
 
   useEffect(() => {
-    async function getPlaylist(id: string | undefined) {
-      if (!playlistDetails) {
-        return;
-      }
-      let tracks: AllTracksFromAPlayList = [];
-      const limit = isLibrary ? 50 : 100;
-      const max = Math.ceil(playlistDetails.tracks.total / limit);
+    if (!playlistDetails || !accessToken) return;
+    setIsLoadingComplete(false);
 
-      setIsLoadingComplete(false);
+    analyzePlaylist(
+      playlistDetails?.id,
+      playlistDetails?.tracks.total,
+      isLibrary,
+      accessToken
+    ).then((res) => {
+      if (!res) return;
 
-      for (let i = 0; i < max; i++) {
-        const res = await fetch(
-          `https://api.spotify.com/v1/${
-            !isLibrary ? `playlists/${id}` : "me"
-          }/tracks?limit=${limit}&offset=${limit * i}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-
-        const data: SpotifyApi.PlaylistTrackResponse | undefined =
-          await res.json();
-        const newTracks: AllTracksFromAPlayList | undefined = data?.items?.map(
-          ({ track, added_at, is_local }, index) => {
-            const isCorrupted =
-              !track?.name &&
-              !track?.artists?.[0]?.name &&
-              track?.duration_ms === 0;
-            return {
-              name: track?.name,
-              images: track?.album.images,
-              uri: track?.uri,
-              href: track?.external_urls.spotify,
-              artists: track?.artists,
-              id: track?.id,
-              explicit: track?.explicit,
-              duration: track?.duration_ms,
-              audio: track?.preview_url,
-              corruptedTrack: isCorrupted,
-              position: limit * i + index,
-              album: track?.album,
-              added_at,
-              type: track?.type,
-              media_type: "audio",
-              is_playable: track?.is_playable,
-              is_local,
-            };
-          }
-        );
-        if (newTracks) {
-          tracks = [...tracks, ...newTracks];
-        }
-      }
-
-      setAllTracks(tracks);
-      const duplicatesTracksIdxId = findDuplicateSongs(tracks);
-      const duplicateTracksIndexes = duplicatesTracksIdxId.map(({ index }) => {
-        return index;
-      });
-      const corruptedSongsIndexes = tracks
-        .filter((track) => {
-          return track.corruptedTrack;
-        })
-        .map((track) => {
-          return track.position ?? 0;
-        });
-      const tracksToRemoveIdx = [
-        ...new Set([...corruptedSongsIndexes, ...duplicateTracksIndexes]),
-      ];
-      const tracksToRemove = tracksToRemoveIdx
-        .map((index) => {
-          return tracks[index];
-        })
-        .sort((a, b) => {
-          if (a.position && b.position) {
-            return a.position - b.position;
-          }
-          return 0;
-        });
-      setDuplicateTracksIdx(duplicateTracksIndexes);
-      setCorruptedSongsIdx(corruptedSongsIndexes);
-      setTracksToRemove(tracksToRemove);
+      setAllTracks(res.tracks);
+      setDuplicateTracksIdx(res.duplicateTracksIndexes);
+      setCorruptedSongsIdx(res.corruptedSongsIndexes);
+      setTracksToRemove(res.tracksToRemove);
       setIsLoadingComplete(true);
-      return tracks;
-    }
-    getPlaylist(playlistDetails?.id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    });
+  }, [accessToken, isLibrary, playlistDetails, setAllTracks]);
 
   const onPressKey = useCallback(
     (event: KeyboardEvent) => {
@@ -242,7 +169,7 @@ export default function RemoveTracksModal({
               rowRenderer={({ index, style, key }) => {
                 return (
                   <div style={{ ...style, width: "100%" }} key={key}>
-                    <ModalCardTrack
+                    <CardTrack
                       accessToken={accessToken}
                       isTrackInLibrary={false}
                       track={tracksToRemove[index]}

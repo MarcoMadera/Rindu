@@ -1,8 +1,8 @@
 import { ReactElement } from "react";
 import useSpotify from "hooks/useSpotify";
-import { PlayButton } from "../../components/forPlaylistsPage/PlayButton";
+import { PlayButton } from "./PlayButton";
 
-export function ExtraHeader({
+export default function PlaylistTopBarExtraField({
   isSingle,
   track,
   uri,

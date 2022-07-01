@@ -6,7 +6,7 @@ import { ReactElement } from "react";
 import { formatTime } from "utils/formatTime";
 import { getTimeAgo } from "utils/getTimeAgo";
 import { playCurrentTrack } from "utils/playCurrentTrack";
-import { ExplicitSign } from "./forPlaylistsPage/CardTrack";
+import ExplicitSign from "./ExplicitSign";
 import { Pause, Play } from "./icons";
 import Add from "./icons/Add";
 import ThreeDots from "./icons/ThreeDots";

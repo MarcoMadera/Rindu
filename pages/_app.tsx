@@ -6,7 +6,7 @@ import { ToastContextProvider } from "context/ToastContext";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import type { AppProps } from "next/app";
 import { ReactElement } from "react";
-import Layout from "../components/Layout";
+import MainLayout from "../layouts/MainLayout";
 import Seo from "../components/Seo";
 
 const MyApp = ({ Component, pageProps }: AppProps): ReactElement => {
@@ -17,9 +17,9 @@ const MyApp = ({ Component, pageProps }: AppProps): ReactElement => {
           <SpotifyContextProvider>
             <ContextMenuContextProvider>
               <Seo />
-              <Layout>
+              <MainLayout>
                 <Component {...pageProps} />
-              </Layout>
+              </MainLayout>
             </ContextMenuContextProvider>
           </SpotifyContextProvider>
         </HeaderContextProvider>

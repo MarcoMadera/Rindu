@@ -19,6 +19,7 @@ interface CardContentProps {
     | "track"
     | "episode";
 }
+
 export const CardContent: React.FC<CardContentProps> = ({
   id,
   type,

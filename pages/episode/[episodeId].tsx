@@ -5,9 +5,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import useAuth from "hooks/useAuth";
 import { getAuth } from "utils/getAuth";
 import { serverRedirect } from "utils/serverRedirect";
-import { ExtraHeader } from "layouts/playlist/ExtraHeader";
-import { PlaylistPageHeader } from "components/PlaylistPageHeader";
-import { PlayButton } from "components/forPlaylistsPage/PlayButton";
+import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
+import PageHeader from "../../components/PageHeader";
+import { PlayButton } from "components/PlayButton";
 import { getEpisodeById } from "utils/spotifyCalls/getEpisodeById";
 import { SITE_URL } from "utils/constants";
 import { HeaderType } from "types/spotify";
@@ -93,7 +93,7 @@ export default function EpisodePage({
 
   useEffect(() => {
     setElement(() => (
-      <ExtraHeader isSingle track={episodeTrack ?? undefined} />
+      <PlaylistTopBarExtraField isSingle track={episodeTrack ?? undefined} />
     ));
 
     return () => {
@@ -160,7 +160,7 @@ export default function EpisodePage({
           <title>Rindu - {episode?.name ?? "Canciones"}</title>
         </Head>
       )}
-      <PlaylistPageHeader
+      <PageHeader
         type={HeaderType.episode}
         title={episode?.name ?? "PodCast"}
         coverImg={

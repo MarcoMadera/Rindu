@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
-import { PlayButton } from "./forPlaylistsPage/PlayButton";
+import { PlayButton } from "./PlayButton";
 
 interface ISingleTrackCard {
   track: SpotifyApi.TrackObjectFull;

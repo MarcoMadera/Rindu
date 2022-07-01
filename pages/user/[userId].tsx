@@ -7,7 +7,7 @@ import { serverRedirect } from "utils/serverRedirect";
 import { getAuth } from "utils/getAuth";
 import { getUserById } from "utils/spotifyCalls/getUserById";
 import { getPlaylistsFromUser } from "utils/spotifyCalls/getPlaylistsFromUser";
-import { PlaylistPageHeader } from "components/PlaylistPageHeader";
+import PageHeader from "components/PageHeader";
 import { HeaderType } from "types/spotify";
 import { SITE_URL } from "utils/constants";
 
@@ -52,7 +52,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
 
   return (
     <main>
-      <PlaylistPageHeader
+      <PageHeader
         type={HeaderType.profile}
         title={currentUser?.display_name ?? ""}
         coverImg={

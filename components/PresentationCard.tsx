@@ -1,6 +1,6 @@
 import { CardContent } from "./CardContentProps";
 import { HTMLAttributes } from "react";
-import { PlayButton } from "components/forPlaylistsPage/PlayButton";
+import { PlayButton } from "components/PlayButton";
 import useAuth from "hooks/useAuth";
 
 export interface PresentationCardProps {

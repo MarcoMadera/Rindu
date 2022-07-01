@@ -8,7 +8,7 @@ import {
   useRef,
 } from "react";
 
-export default function Titles({
+export default function TrackListHeader({
   isPin,
   setIsPin,
   type,
@@ -43,8 +43,7 @@ export default function Titles({
 
   return (
     <div
-      id="titlesObserver"
-      className="titles"
+      className="trackListHeader"
       ref={ref as MutableRefObject<HTMLDivElement>}
     >
       <span>#</span>
@@ -59,7 +58,7 @@ export default function Titles({
         <Clock />
       </span>
       <style jsx>{`
-        .titles {
+        .trackListHeader {
           border-bottom: 1px solid transparent;
           box-sizing: content-box;
           height: 36px;
@@ -78,19 +77,19 @@ export default function Titles({
             ? "[index] 48px [first] 6fr [last] minmax(160px,1fr)"
             : "[index] 55px [first] 4fr [last] minmax(160px,1fr)"};
         }
-        .titles span {
+        .trackListHeader span {
           display: flex;
           align-items: center;
           font-size: 0.75rem;
           color: #b3b3b3;
           font-family: sans-serif;
         }
-        .titles span:nth-of-type(1) {
+        .trackListHeader span:nth-of-type(1) {
           font-size: 16px;
           justify-self: center;
           margin-left: 16px;
         }
-        .titles span:nth-of-type(2) {
+        .trackListHeader span:nth-of-type(2) {
           margin-left: 70px;
         }
         .clock {

@@ -3,7 +3,7 @@ import useHeader from "hooks/useHeader";
 import useAuth from "hooks/useAuth";
 import { useEffect, ReactElement, useState } from "react";
 import Link from "next/link";
-import PresentationCard from "components/PlaylistCard";
+import PresentationCard from "components/PresentationCard";
 import { getYear } from "utils/getYear";
 import { getAllAlbums } from "utils/getAllAlbums";
 import useSpotify from "hooks/useSpotify";

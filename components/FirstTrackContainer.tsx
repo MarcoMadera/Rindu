@@ -1,4 +1,4 @@
-import { PlayButton } from "components/forPlaylistsPage/PlayButton";
+import { PlayButton } from "components/PlayButton";
 import useAuth from "hooks/useAuth";
 import useContextMenu from "hooks/useContextMenu";
 import useOnScreen from "hooks/useOnScreen";
