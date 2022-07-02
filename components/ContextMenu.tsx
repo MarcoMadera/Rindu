@@ -146,7 +146,7 @@ export default function ContextMenu(): ReactPortal | null {
             <button
               type="button"
               onClick={() => {
-                if (contextMenuData.data.uri && deviceId) {
+                if (contextMenuData.data?.uri && deviceId) {
                   addToQueue(
                     contextMenuData.data.uri,
                     deviceId,
@@ -203,7 +203,7 @@ export default function ContextMenu(): ReactPortal | null {
                       <button
                         type="button"
                         onClick={() => {
-                          if (contextMenuData.data.uri && deviceId) {
+                          if (contextMenuData.data?.uri && deviceId) {
                             addItemsToPlaylist(playlist.id, [
                               contextMenuData.data.uri,
                             ]).then((res) => {

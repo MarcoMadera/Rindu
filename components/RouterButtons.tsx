@@ -1,40 +1,86 @@
 import { useRouter } from "next/router";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import { __isServer__ } from "utils/constants";
 import { AngleBrackect } from "./icons";
 
 export default function RouterButtons(): ReactElement {
   const router = useRouter();
-  const [lastIndexHistory, setLastIndexHistory] = useState(0);
-  const [biggestLastIdxHistory, setBiggestLastIdxHistory] = useState(0);
+  const [disableForwardButton, setDisableForwardButton] = useState(true);
+  const [disableBackButton, setDisableBackButton] = useState(true);
+  const userPosition = useRef(0);
 
   useEffect(() => {
-    setLastIndexHistory(window.history.state.idx);
-    if (window.history.state.idx > biggestLastIdxHistory) {
-      setBiggestLastIdxHistory(window.history.state.idx);
+    sessionStorage.setItem("history", JSON.stringify([]));
+    userPosition.current = 0;
+  }, []);
+
+  useEffect(() => {
+    const historyValue: string = history.state.key;
+    const historyFromSessionStorage = sessionStorage.getItem("history");
+    const prevValue: string[] = historyFromSessionStorage
+      ? JSON.parse(historyFromSessionStorage)
+      : [];
+
+    if (historyValue === prevValue.at(userPosition.current - 1)) {
+      userPosition.current--;
+      setDisableForwardButton(false);
+      setDisableBackButton(userPosition.current === 0);
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const newValue = [...prevValue, historyValue];
+
+    if (newValue.length !== 1) {
+      setDisableBackButton(false);
+    }
+    setDisableForwardButton(prevValue[userPosition.current + 2] === undefined);
+
+    if (
+      prevValue.length > 1 &&
+      prevValue[userPosition.current + 1] === historyValue
+    ) {
+      userPosition.current++;
+      return;
+    }
+
+    sessionStorage.setItem("history", JSON.stringify(newValue));
+
+    if (newValue.length === 1) return;
+    userPosition.current++;
+
+    if (
+      newValue.length - 1 > userPosition.current &&
+      historyValue !== newValue.at(userPosition.current)
+    ) {
+      setDisableForwardButton(true);
+      const slicedPrevValue = prevValue.slice(0, userPosition.current);
+      sessionStorage.setItem(
+        "history",
+        JSON.stringify([...slicedPrevValue, historyValue])
+      );
+    }
   }, [router.asPath]);
 
   return (
     <div>
       <button
+        type="button"
         onClick={() => {
-          router.back();
+          window.history.back();
         }}
-        disabled={__isServer__ || history.state.idx === 0}
+        disabled={disableBackButton}
         className="back"
         aria-label="Go back"
       >
         <AngleBrackect angle="less" />
       </button>
       <button
+        type="button"
         onClick={() => {
           if (!__isServer__) {
             window.history.forward();
           }
         }}
-        disabled={lastIndexHistory === biggestLastIdxHistory}
+        disabled={disableForwardButton}
         className="forward"
         aria-label="Go forward"
       >
