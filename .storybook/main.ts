@@ -20,6 +20,7 @@ const config: StorybookConfig = {
   },
   features: {
     postcss: false,
+    previewMdx2: true,
   },
   webpackFinal: (configuration) => {
     return {
