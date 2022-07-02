@@ -5,3 +5,9 @@ body {
   background-color: unset;
   color-scheme: unset;
 }
+.sbdocs-content p,
+.sbdocs-content h1,
+.sbdocs-content h2,
+.sbdocs-content h3 {
+  color: #000;
+}
