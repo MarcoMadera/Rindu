@@ -17,6 +17,7 @@
     "@types/react": "^18.0.14"
   },
   "dependencies": {
+    "@storybook/addon-knobs": "^6.4.0",
     "html-entities": "^2.3.3",
     "lottie-react": "^2.3.1",
     "next": "12.2.0",

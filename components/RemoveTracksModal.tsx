@@ -48,7 +48,7 @@ export default function RemoveTracksModal({
 
     analyzePlaylist(
       playlistDetails?.id,
-      playlistDetails?.tracks.total,
+      playlistDetails?.tracks?.total,
       isLibrary,
       accessToken
     ).then((res) => {

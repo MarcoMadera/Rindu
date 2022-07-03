@@ -8,7 +8,7 @@ import { getAuth } from "utils/getAuth";
 import { getArtistById } from "utils/spotifyCalls/getArtistById";
 import useHeader from "hooks/useHeader";
 import { getArtistTopTracks } from "utils/spotifyCalls/getArtistTopTracks";
-import ModalCardTrack from "components/CardTrack";
+import CardTrack from "components/CardTrack";
 import useSpotify from "hooks/useSpotify";
 import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
 import {
@@ -232,7 +232,7 @@ export default function ArtistPage({
                     return null;
                   }
                   return (
-                    <ModalCardTrack
+                    <CardTrack
                       accessToken={accessToken ?? ""}
                       isTrackInLibrary={false}
                       playlistUri=""
