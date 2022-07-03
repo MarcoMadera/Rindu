@@ -25,7 +25,7 @@ import useContextMenu from "hooks/useContextMenu";
 import useOnScreen from "hooks/useOnScreen";
 import ExplicitSign from "./ExplicitSign";
 
-interface ModalCardTrackProps {
+interface CardTrackProps {
   track: normalTrackTypes;
   accessToken: string | undefined;
   playlistUri: string;
@@ -49,7 +49,7 @@ export default function CardTrack({
   position,
   onClickAdd,
   uri,
-}: ModalCardTrackProps): ReactElement {
+}: CardTrackProps): ReactElement {
   const {
     deviceId,
     currrentlyPlaying,
@@ -264,7 +264,7 @@ export default function CardTrack({
               height="48"
             />
           ) : (
-            <div className="img"></div>
+            <div className="img">{track?.images?.[0].url}</div>
           )
         ) : null}
         <div className="trackArtistsContainer">

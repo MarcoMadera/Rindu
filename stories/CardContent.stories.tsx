@@ -1,12 +1,23 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import PresentationCard from "../components/PresentationCard";
-import { UserContextProvider } from "context/UserContext";
+import UserContext from "context/UserContext";
 import { ToastContextProvider } from "context/ToastContext";
 import { HeaderContextProvider } from "context/HeaderContext";
-import { SpotifyContextProvider } from "context/SpotifyContext";
+import SpotifyContext from "context/SpotifyContext";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import SubTitle from "components/SubtTitle";
+import {
+  withKnobs,
+  text,
+  optionsKnob as options,
+  boolean,
+} from "@storybook/addon-knobs";
+import {
+  ISpotifyContext,
+  normalTrackTypes,
+  PlaylistItems,
+} from "types/spotify";
 
 export default {
   title: "Components/CardContent",
@@ -32,28 +43,74 @@ export default {
       ],
       control: { type: "select" },
     },
+    track: { control: "object" },
+    isSingle: { control: "boolean" },
   },
+  decorators: [withKnobs],
 } as ComponentMeta<typeof PresentationCard>;
 
 const Template: ComponentStory<typeof PresentationCard> = (args) => (
   <div style={{ maxWidth: "192px", margin: "2em" }}>
     <ToastContextProvider>
-      <UserContextProvider>
+      <UserContext.Provider
+        value={{
+          isLogin: true,
+          user: {
+            product: options(
+              "product",
+              {
+                Premium: "premium",
+                Open: "open",
+              },
+              "premium",
+              {
+                display: "inline-radio",
+              }
+            ),
+          } as SpotifyApi.UserObjectPrivate,
+          accessToken: text("accessToken", "you need a token here"),
+          setAccessToken: () => "token",
+          setIsLogin: () => true,
+          setUser: () => ({}),
+        }}
+      >
         <HeaderContextProvider>
-          <SpotifyContextProvider>
+          <SpotifyContext.Provider
+            value={
+              {
+                deviceId: text("deviceId", ""),
+                playlists: [] as PlaylistItems,
+                currrentlyPlaying: boolean("IsPlaying", false)
+                  ? ({
+                      id: args.id,
+                    } as normalTrackTypes)
+                  : undefined,
+                playlistPlayingId: boolean("IsPlaying", false)
+                  ? args.id
+                  : undefined,
+                isPlaying: boolean("IsPlaying", false),
+                setPlayedSource: (() => "") as React.Dispatch<
+                  React.SetStateAction<string | undefined>
+                >,
+                setPlaylistPlayingId: (() => "") as React.Dispatch<
+                  React.SetStateAction<string | undefined>
+                >,
+              } as ISpotifyContext
+            }
+          >
             <ContextMenuContextProvider>
               <PresentationCard {...args} />
             </ContextMenuContextProvider>
-          </SpotifyContextProvider>
+          </SpotifyContext.Provider>
         </HeaderContextProvider>
-      </UserContextProvider>
+      </UserContext.Provider>
     </ToastContextProvider>
   </div>
 );
 
 export const Playlist = Template.bind({});
 Playlist.args = {
-  id: "1",
+  id: "37i9dQZF1DX5KARSfd7WcM",
   type: "playlist",
   images: [
     {
@@ -68,7 +125,7 @@ Playlist.args = {
 
 export const Track = Template.bind({});
 Track.args = {
-  id: "1",
+  id: "0gYXw7aPoybWFfB7btQ0eM",
   type: "track",
   images: [
     {
@@ -111,11 +168,17 @@ Track.args = {
       albumType="single"
     />
   ),
+  track: {
+    uri: "spotify:track:0gYXw7aPoybWFfB7btQ0eM",
+    name: "DON'T YOU WORRY",
+    id: "0gYXw7aPoybWFfB7btQ0eM",
+  } as SpotifyApi.TrackObjectFull,
+  isSingle: true,
 };
 
 export const Artist = Template.bind({});
 Artist.args = {
-  id: "4",
+  id: "6qqNVTkY8uBg9cP3Jd7DAH",
   type: "artist",
   images: [
     {

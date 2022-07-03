@@ -1,4 +1,4 @@
-import { CardContent } from "./CardContentProps";
+import { CardContent } from "./CardContent";
 import { HTMLAttributes } from "react";
 import { PlayButton } from "components/PlayButton";
 import useAuth from "hooks/useAuth";

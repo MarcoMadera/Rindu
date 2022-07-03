@@ -70,6 +70,7 @@ export default function Carousel({
           {maxMoves > 0 ? (
             <>
               <button
+                type="button"
                 aria-label="Previous"
                 disabled={timesMoveCarousel <= 0}
                 onClick={() => {
@@ -80,6 +81,7 @@ export default function Carousel({
                 <Chevron rotation={"0deg"} />
               </button>
               <button
+                type="button"
                 aria-label="Next"
                 disabled={timesMoveCarousel >= maxMoves}
                 onClick={() => {

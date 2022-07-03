@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useRef, useState } from "react";
-import { __isServer__ } from "utils/constants";
 import { AngleBrackect } from "./icons";
 
 export default function RouterButtons(): ReactElement {
@@ -21,7 +20,10 @@ export default function RouterButtons(): ReactElement {
       ? JSON.parse(historyFromSessionStorage)
       : [];
 
-    if (historyValue === prevValue.at(userPosition.current - 1)) {
+    if (
+      prevValue.at(userPosition.current - 1) &&
+      historyValue === prevValue.at(userPosition.current - 1)
+    ) {
       userPosition.current--;
       setDisableForwardButton(false);
       setDisableBackButton(userPosition.current === 0);
@@ -29,7 +31,7 @@ export default function RouterButtons(): ReactElement {
     }
     const newValue = [...prevValue, historyValue];
 
-    if (newValue.length !== 1) {
+    if (newValue.length > 1) {
       setDisableBackButton(false);
     }
     setDisableForwardButton(prevValue[userPosition.current + 2] === undefined);
@@ -76,9 +78,7 @@ export default function RouterButtons(): ReactElement {
       <button
         type="button"
         onClick={() => {
-          if (!__isServer__) {
-            window.history.forward();
-          }
+          window.history.forward();
         }}
         disabled={disableForwardButton}
         className="forward"
