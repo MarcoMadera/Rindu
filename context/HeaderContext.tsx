@@ -12,6 +12,7 @@ export interface Context {
   displayOnFixed: boolean;
   setDisplayOnFixed: Dispatch<SetStateAction<boolean>>;
   alwaysDisplayColor: boolean;
+  disableBackground: boolean;
   setAlwaysDisplayColor: Dispatch<SetStateAction<boolean>>;
   setElement: Dispatch<SetStateAction<ReactElement | null>>;
   headerColor: string;
@@ -20,6 +21,7 @@ export interface Context {
   setHeaderOpacity: Dispatch<SetStateAction<number>>;
   disableOpacityChange: boolean;
   setDisableOpacityChange: Dispatch<SetStateAction<boolean>>;
+  setDisableBackground: Dispatch<SetStateAction<boolean>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -38,6 +40,7 @@ export function HeaderContextProvider({
   const [element, setElement] = useState<ReactElement | null>(null);
   const [headerColor, setHeaderColor] = useState<string>("#7a7a7a");
   const [headerOpacity, setHeaderOpacity] = useState<number>(0);
+  const [disableBackground, setDisableBackground] = useState<boolean>(false);
   return (
     <HeaderContext.Provider
       value={{
@@ -53,6 +56,8 @@ export function HeaderContextProvider({
         setHeaderOpacity,
         disableOpacityChange,
         setDisableOpacityChange,
+        disableBackground,
+        setDisableBackground,
       }}
     >
       {children}

@@ -12,6 +12,7 @@ export default function useHeader(
     showOnFixed: boolean;
     alwaysDisplayColor: boolean;
     disableOpacityChange: boolean;
+    disableBackground: boolean;
   }>
 ): {
   element: ReactElement | null;
@@ -24,6 +25,7 @@ export default function useHeader(
   headerOpacity: number;
   setHeaderOpacity: Dispatch<SetStateAction<number>>;
   disableOpacityChange: boolean;
+  disableBackground: boolean;
   setDisableOpacityChange: Dispatch<SetStateAction<boolean>>;
 } {
   const {
@@ -39,6 +41,8 @@ export default function useHeader(
     setHeaderOpacity,
     disableOpacityChange,
     setDisableOpacityChange,
+    setDisableBackground,
+    disableBackground,
   } = useContext(HeaderContext);
 
   useEffect(() => {
@@ -51,19 +55,25 @@ export default function useHeader(
     if (options?.disableOpacityChange) {
       setDisableOpacityChange(options?.disableOpacityChange);
     }
+    if (options?.disableBackground) {
+      setDisableBackground(options?.disableBackground);
+    }
     return () => {
       setDisplayOnFixed(false);
       setAlwaysDisplayColor(false);
       setDisableOpacityChange(false);
+      setDisableBackground(false);
       setElement(null);
     };
   }, [
     options?.alwaysDisplayColor,
     options?.disableOpacityChange,
     options?.showOnFixed,
+    options?.disableBackground,
     setAlwaysDisplayColor,
     setDisableOpacityChange,
     setDisplayOnFixed,
+    setDisableBackground,
     setElement,
   ]);
 
@@ -79,5 +89,6 @@ export default function useHeader(
     setHeaderOpacity,
     disableOpacityChange,
     setDisableOpacityChange,
+    disableBackground,
   };
 }

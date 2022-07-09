@@ -1,5 +1,6 @@
 import useAuth from "hooks/useAuth";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
+import useToggle from "hooks/useToggle";
 import { removeTracksRequest } from "lib/requests";
 import Head from "next/head";
 import {
@@ -53,6 +54,7 @@ export function SpotifyContextProvider({
   const pictureInPictureCanvas = useRef<HTMLCanvasElement>();
   const videoRef = useRef<HTMLVideoElement>();
   const [reconnectionError, setReconnectionError] = useState(false);
+  const [showLyrics, setShowLyrics] = useToggle();
 
   const { user } = useAuth();
   const isPremium = user?.product === "premium";
@@ -325,6 +327,8 @@ export function SpotifyContextProvider({
         recentlyPlayed,
         setReconnectionError,
         removeTracks,
+        showLyrics,
+        setShowLyrics,
       }}
     >
       {currrentlyPlaying?.name && (

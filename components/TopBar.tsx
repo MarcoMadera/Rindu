@@ -23,6 +23,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
     headerOpacity,
     setHeaderOpacity,
     disableOpacityChange,
+    disableBackground,
   } = useHeader();
   const isPremium = user?.product === "premium";
   const { setShowHamburguerMenu } = useSpotify();
@@ -37,7 +38,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
       headerOpacityPercentage > 1 ? 1 : headerOpacityPercentage;
     setHeaderOpacity(headerOpacity);
 
-    if ((app?.scrollTop || 0) > 223) {
+    if ((app?.scrollTop || 0) > 223 && !disableBackground) {
       setShowFixed(true);
     } else {
       setShowFixed(false);
