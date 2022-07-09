@@ -5,6 +5,8 @@ import SpotifyPlayer from "components/SpotifyPlayer";
 import SideBar from "components/SideBar";
 import { MutableRefObject, ReactElement, ReactNode, useRef } from "react";
 import useRefreshAccessToken from "hooks/useRefreshAccessToken";
+import useSpotify from "hooks/useSpotify";
+import FullScreenLyrics from "components/FullScreenLyrics";
 
 export default function MainLayout({
   children,
@@ -14,6 +16,8 @@ export default function MainLayout({
   const router = useRouter();
   const isLoginPage = router.asPath === "/";
   const appRef = useRef<HTMLDivElement>();
+  const { showLyrics, currrentlyPlaying } = useSpotify();
+  const shouldDisplayLyrics = showLyrics && currrentlyPlaying?.type === "track";
 
   useRefreshAccessToken();
 
@@ -36,7 +40,11 @@ export default function MainLayout({
               ref={appRef as MutableRefObject<HTMLDivElement>}
             >
               <TopBar appRef={appRef} />
-              {children}
+              {shouldDisplayLyrics ? (
+                <FullScreenLyrics appRef={appRef} />
+              ) : (
+                children
+              )}
             </div>
             <style jsx>{`
               div.container {

@@ -1,10 +1,14 @@
+import useSpotify from "hooks/useSpotify";
 import { ReactElement } from "react";
 import DeviceConnectControl from "./DeviceConnectControl";
+import LyricsControl from "./LyricsControl";
 import VolumeControl from "./VolumeControl";
 
 export default function PlaybackExtraControls(): ReactElement {
+  const { currrentlyPlaying } = useSpotify();
   return (
     <div className="extras">
+      {currrentlyPlaying?.type === "track" && <LyricsControl />}
       <DeviceConnectControl />
       <VolumeControl />
       <style jsx>{`

@@ -1,4 +1,5 @@
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
+import { IUseToggleHandlers } from "hooks/useToggle";
 import { Dispatch, MutableRefObject, SetStateAction } from "react";
 
 export type AuthorizationResponse = {
@@ -154,4 +155,6 @@ export interface ISpotifyContext {
     tracks: number[],
     snapshotID: string | undefined
   ) => Promise<string | undefined>;
+  showLyrics: boolean;
+  setShowLyrics: IUseToggleHandlers;
 }

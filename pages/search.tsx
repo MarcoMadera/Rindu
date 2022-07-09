@@ -15,80 +15,13 @@ import Carousel from "components/Carousel";
 import { SearchInputElement } from "components/SearchInputElement";
 import useSpotify from "hooks/useSpotify";
 import CardTrack from "components/CardTrack";
+import { colors } from "utils/colors";
 
 interface SearchPageProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
   accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
 }
-
-const cardBackgroundColors = [
-  "#27856a",
-  "#1e3264",
-  "#8d67ab",
-  "#e8115b",
-  "#8d67ab",
-  "#1e3264",
-  "#b49bc8",
-  "#f037a5",
-  "#e13300",
-  "#477d95",
-  "#8c1932",
-  "#1e3264",
-  "#477d95",
-  "#777777",
-  "#ba5d07",
-  "#503750",
-  "#477d95",
-  "#9cf0e1",
-  "#af2896",
-  "#8d67ab",
-  "#dc148c",
-  "#e61e32",
-  "#608108",
-  "#1e3264",
-  "#148a08",
-  "#af2896",
-  "#eb1e32",
-  "#dc148c",
-  "#477d95",
-  "#e8115b",
-  "#477d95",
-  "#8d67ab",
-  "#af2896",
-  "#477d95",
-  "#8d67ab",
-  "#509bf5",
-  "#ba5d07",
-  "#777777",
-  "#1e3264",
-  "#148a08",
-  "#af2896",
-  "#0d73ec",
-  "#148a08",
-  "#4b917d",
-  "#8c1932",
-  "#f59b23",
-  "#eb1e32",
-  "#1e3264",
-  "#8d67ab",
-  "#dc148c",
-  "#e61e32",
-  "#1e3264",
-  "#ff6437",
-  "#ffc864",
-  "#509bf5",
-  "#2d46b9",
-  "#1e3264",
-  "#0d73ec",
-  "#af2896",
-  "#0d73ec",
-  "#e13300",
-  "#1e3264",
-  "#509bf5",
-  "#b49bc8",
-  "#8c1932",
-];
 
 export default function SearchPage({
   categories,
@@ -284,7 +217,7 @@ export default function SearchPage({
             {categories?.items.map(({ name, id, icons }, i) => {
               return (
                 <Link key={id} href={`/genre/${id}`}>
-                  <a style={{ backgroundColor: cardBackgroundColors[i] }}>
+                  <a style={{ backgroundColor: colors[i] }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={icons[0].url} alt={name} />
                     <h3>{name}</h3>
