@@ -69,21 +69,13 @@ export default function TrackPage({
         uri: track.uri,
       });
 
-      const artistTopTracksFor = artistTopTracks.map((track) => ({
-        ...track,
-        audio: track.preview_url,
-      }));
-
-      const sameTrackIdx = artistTopTracksFor.findIndex(
+      const sameTrackIdx = artistTopTracks.findIndex(
         (artistTrack) => artistTrack.uri === track.uri
       );
 
       setSameTrackIndex(sameTrackIdx);
 
-      setAllTracks([
-        { ...track, audio: track.preview_url },
-        ...artistTopTracksFor,
-      ]);
+      setAllTracks([track, ...artistTopTracks]);
     }
     setElement(() => (
       <PlaylistTopBarExtraField isSingle track={track ?? undefined} />
@@ -245,6 +237,7 @@ export default function TrackPage({
                     key={artistTrack.id}
                     type="playlist"
                     position={position}
+                    visualPosition={i + 1}
                     isSingleTrack
                   />
                 );

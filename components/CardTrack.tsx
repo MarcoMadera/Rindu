@@ -36,6 +36,7 @@ interface CardTrackProps {
   position?: number;
   onClickAdd?: () => void;
   uri?: string;
+  visualPosition?: number;
 }
 
 export default function CardTrack({
@@ -49,6 +50,7 @@ export default function CardTrack({
   position,
   onClickAdd,
   uri,
+  visualPosition,
 }: CardTrackProps): ReactElement {
   const {
     deviceId,
@@ -247,7 +249,7 @@ export default function CardTrack({
           <Play fill="#fff" />
         ) : (
           <span className="position">{`${
-            typeof position === "number" ? position + 1 : ""
+            visualPosition ?? (typeof position === "number" ? position + 1 : "")
           }`}</span>
         )}
       </button>

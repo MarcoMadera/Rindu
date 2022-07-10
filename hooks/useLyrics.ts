@@ -18,11 +18,17 @@ export default function useLyrics({
   const [lyrics, setLyrics] = useState<string[]>([]);
   const [lyricsLoading, setLoading] = useToggle();
   const [lyricsError, setLyricsError] = useState<string | null>(null);
+  const [res, setRes] = useState<{
+    error: string | null;
+    id?: string | null;
+    data: string | null;
+  }>({ error: null, data: null, id: null });
 
   useEffect(() => {
     setLoading.on();
     setLyricsError(null);
     setLyrics([]);
+    setRes({ error: null, data: null, id: null });
 
     if (!artist || !title) {
       setLyrics([]);
@@ -31,19 +37,11 @@ export default function useLyrics({
       return;
     }
 
-    within(getLyrics(artist, title), 40000)
-      .then((res) => {
-        if (res.data) return setLyrics(formaLyrics(res.data));
-        if (res.error === "timeout") {
-          setLyricsError(
-            "Sorry, This seems to be very slow and we don't want to make you wait more"
-          );
-        } else {
-          setLyricsError("No lyrics found");
-        }
-        setLyrics([]);
-      })
-      .finally(() => setLoading.off());
+    within(getLyrics(artist, title), 40000, artist + title).then((res) => {
+      if (res) {
+        setRes(res);
+      }
+    });
 
     return () => {
       setLyrics([]);
@@ -51,6 +49,32 @@ export default function useLyrics({
       setLyricsError(null);
     };
   }, [artist, setLoading, setLyricsError, title]);
+
+  useEffect(() => {
+    if (!res || !artist || !title || res.id !== artist + title) return;
+    if (res.error === "timeout") {
+      setLyricsError(
+        "Sorry, This seems to be very slow and we don't want to make you wait more"
+      );
+      setLoading.off();
+      setLyrics([]);
+      return;
+    }
+
+    if (!res.error) {
+      setLoading.on();
+    }
+
+    setLoading.off();
+
+    if (!res.data) {
+      setLyricsError("No lyrics found");
+      return;
+    }
+
+    setLyricsError(null);
+    setLyrics(formaLyrics(res.data));
+  }, [artist, res, setLoading, title]);
 
   return {
     lyrics,
