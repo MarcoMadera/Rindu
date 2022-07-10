@@ -2,7 +2,11 @@ import useAuth from "hooks/useAuth";
 import Link from "next/link";
 import { ReactElement } from "react";
 
-export default function Logo({ color }: { color: string }): ReactElement {
+interface LogoProps {
+  color: string;
+}
+
+export default function Logo({ color }: LogoProps): ReactElement {
   const { isLogin } = useAuth();
   return (
     <>

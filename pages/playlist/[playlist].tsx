@@ -1,16 +1,16 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { AllTracksFromAPlaylistResponse, ISpotifyContext } from "types/spotify";
+import { ISpotifyContext, ITrack } from "types/spotify";
 import PlaylistLayout from "layouts/playlist";
 import { getAuth } from "utils/getAuth";
 import { serverRedirect } from "utils/serverRedirect";
-import { getPlaylistDetails } from "utils/spotifyCalls/getPlaylistDetails";
+import { getpageDetails } from "utils/spotifyCalls/getPlaylistDetails";
 import { getTracksFromPlayList } from "utils/spotifyCalls/getTracksFromPlayList";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 
 export interface PlaylistProps {
-  playlistDetails: ISpotifyContext["playlistDetails"] | null;
+  pageDetails: ISpotifyContext["pageDetails"] | null;
   tracksInLibrary: boolean[] | null;
-  playListTracks: AllTracksFromAPlaylistResponse | null;
+  playListTracks: ITrack[] | null;
   accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
 }
@@ -19,7 +19,7 @@ const Playlist: NextPage<PlaylistProps> = (props) => {
   return (
     <PlaylistLayout
       isLibrary={false}
-      playlistDetails={props.playlistDetails}
+      pageDetails={props.pageDetails}
       playListTracks={props.playListTracks}
       tracksInLibrary={props.tracksInLibrary}
       user={props.user}
@@ -48,11 +48,7 @@ export async function getServerSideProps({
   }
   const { accessToken, user } = (await getAuth(res, cookies)) || {};
 
-  const playlistDetails = await getPlaylistDetails(
-    playlist,
-    accessToken,
-    cookies
-  );
+  const pageDetails = await getpageDetails(playlist, accessToken, cookies);
   const playListTracks = await getTracksFromPlayList(
     playlist,
     user?.country ?? "US",
@@ -60,14 +56,14 @@ export async function getServerSideProps({
     cookies
   );
 
-  const trackIds = playListTracks?.tracks.map(({ id }) => id);
+  const trackIds = playListTracks?.map(({ id }) => id);
   const tracksInLibrary = await checkTracksInLibrary(
     trackIds as string[],
     accessToken || ""
   );
   return {
     props: {
-      playlistDetails,
+      pageDetails,
       tracksInLibrary,
       playListTracks,
       accessToken: accessToken ?? null,

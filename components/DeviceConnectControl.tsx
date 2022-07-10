@@ -163,6 +163,12 @@ export default function DeviceConnectControl(): ReactElement {
           width: 32px;
           height: 32px;
         }
+        button:hover :global(svg path) {
+          fill: #fff;
+        }
+        li {
+          list-style: none;
+        }
       `}</style>
     </div>
   );

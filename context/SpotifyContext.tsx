@@ -5,20 +5,14 @@ import { removeTracksRequest } from "lib/requests";
 import Head from "next/head";
 import {
   createContext,
+  PropsWithChildren,
   ReactElement,
-  ReactNode,
   useCallback,
   useEffect,
   useRef,
   useState,
 } from "react";
-import {
-  AllTracksFromAPlayList,
-  ISpotifyContext,
-  normalTrackTypes,
-  PlaylistItems,
-  trackItem,
-} from "types/spotify";
+import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
 import { callPictureInPicture } from "utils/callPictureInPicture";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -27,16 +21,14 @@ export default SpotifyContext;
 
 export function SpotifyContextProvider({
   children,
-}: {
-  children: ReactNode;
-}): ReactElement {
+}: PropsWithChildren): ReactElement {
   const [playlists, setPlaylists] = useState<PlaylistItems>([]);
   const [totalPlaylists, setTotalPlaylists] = useState<number>(0);
-  const [allTracks, setAllTracks] = useState<AllTracksFromAPlayList>([]);
+  const [allTracks, setAllTracks] = useState<ITrack[]>([]);
   const [deviceId, setDeviceId] = useState<string>();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isShowingSideBarImg, setIsShowingSideBarImg] = useState(false);
-  const [currrentlyPlaying, setCurrentlyPlaying] = useState<trackItem>();
+  const [currrentlyPlaying, setCurrentlyPlaying] = useState<ITrack>();
   const [currentlyPlayingPosition, setCurrentlyPlayingPosition] =
     useState<number>();
   const [currentlyPlayingDuration, setCurrentlyPlayingDuration] =
@@ -44,13 +36,13 @@ export function SpotifyContextProvider({
   const [player, setPlayer] = useState<Spotify.Player | AudioPlayer>();
   const [playlistPlayingId, setPlaylistPlayingId] = useState<string>();
   const [playedSource, setPlayedSource] = useState<string>();
-  const [playlistDetails, setPlaylistDetails] =
-    useState<ISpotifyContext["playlistDetails"]>(null);
+  const [pageDetails, setPageDetails] =
+    useState<ISpotifyContext["pageDetails"]>(null);
   const [volume, setVolume] = useState<number>(1);
   const [lastVolume, setLastVolume] = useState<number>(1);
   const [isPip, setIsPip] = useState(false);
   const [showHamburguerMenu, setShowHamburguerMenu] = useState(false);
-  const [recentlyPlayed, setRecentlyPlayed] = useState<normalTrackTypes[]>([]);
+  const [recentlyPlayed, setRecentlyPlayed] = useState<ITrack[]>([]);
   const pictureInPictureCanvas = useRef<HTMLCanvasElement>();
   const videoRef = useRef<HTMLVideoElement>();
   const [reconnectionError, setReconnectionError] = useState(false);
@@ -131,7 +123,7 @@ export function SpotifyContextProvider({
         artwork: currrentlyPlaying.album?.images?.map(
           ({ url, width, height }) => {
             return {
-              src: url,
+              src: url ?? "",
               sizes: `${width}x${height}`,
               type: "",
             };
@@ -182,10 +174,8 @@ export function SpotifyContextProvider({
   }, [currrentlyPlaying, isPlaying]);
 
   useEffect(() => {
-    const duration =
-      currrentlyPlaying?.duration_ms ||
-      currrentlyPlaying?.duration ||
-      currentlyPlayingDuration;
+    const duration = currrentlyPlaying?.duration_ms;
+    currentlyPlayingDuration;
     if ("setPositionState" in navigator.mediaSession) {
       navigator.mediaSession.setPositionState({
         duration: duration ?? 0,
@@ -308,8 +298,8 @@ export function SpotifyContextProvider({
         setPlayer,
         playlistPlayingId,
         setPlaylistPlayingId,
-        playlistDetails,
-        setPlaylistDetails,
+        pageDetails,
+        setPageDetails,
         playedSource,
         setPlayedSource,
         isShowingSideBarImg,

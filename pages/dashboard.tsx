@@ -27,6 +27,7 @@ import { RefreshResponse } from "types/spotify";
 import SingleTrackCard from "components/SingleTrackCard";
 import Carousel from "components/Carousel";
 import SubTitle from "components/SubtTitle";
+import { CardType } from "components/CardContent";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -151,7 +152,7 @@ const Dashboard: NextPage<DashboardProps> = ({
                 ({ images, name, description, id, owner }) => {
                   return (
                     <PresentationCard
-                      type="playlist"
+                      type={CardType.PLAYLIST}
                       key={id}
                       images={images}
                       title={name}
@@ -170,7 +171,7 @@ const Dashboard: NextPage<DashboardProps> = ({
             {recentlyPlayed.map((track) => {
               return (
                 <PresentationCard
-                  type="track"
+                  type={CardType.TRACK}
                   key={track.id}
                   images={track.album?.images as SpotifyApi.ImageObject[]}
                   title={track.name ?? ""}
@@ -187,41 +188,7 @@ const Dashboard: NextPage<DashboardProps> = ({
                   }
                   id={track.id ?? ""}
                   isSingle
-                  track={{
-                    ...track,
-                    album: {
-                      ...track.album,
-                      name: track.album?.name ?? "",
-                      total_tracks: track.album?.total_tracks ?? 0,
-                      uri:
-                        track.album?.uri ?? `spotify:album:${track.album?.id}`,
-                      images: track.album?.images as SpotifyApi.ImageObject[],
-                      release_date_precision: "day",
-                      href: "",
-                      album_type: "album",
-                      artists:
-                        track.artists as SpotifyApi.ArtistObjectSimplified[],
-                      id: track.album?.id ?? "",
-                      release_date: track.album?.release_date ?? "",
-                      type: "album",
-                      external_urls: { spotify: "" },
-                    },
-                    external_ids: { isrc: "" },
-                    disc_number: 1,
-                    duration_ms: 0,
-                    popularity: 0,
-                    preview_url: "",
-                    external_urls: { spotify: "" },
-                    track_number: 1,
-                    href: "",
-                    artists:
-                      track.artists as SpotifyApi.ArtistObjectSimplified[],
-                    explicit: false,
-                    id: track.id ?? "",
-                    name: track.name ?? "",
-                    type: "track",
-                    uri: track.uri ?? "",
-                  }}
+                  track={track}
                 />
               );
             })}
@@ -233,7 +200,7 @@ const Dashboard: NextPage<DashboardProps> = ({
               ({ images, name, id, artists, album_type }) => {
                 return (
                   <PresentationCard
-                    type="album"
+                    type={CardType.ALBUM}
                     key={id}
                     images={images}
                     title={name}
@@ -270,13 +237,7 @@ const Dashboard: NextPage<DashboardProps> = ({
                             accessToken={accessToken ?? ""}
                             isTrackInLibrary={tracksInLibrary?.[index] ?? false}
                             playlistUri=""
-                            track={{
-                              ...track,
-                              media_type: "audio",
-                              audio: track.preview_url,
-                              images: track.album.images,
-                              duration: track.duration_ms,
-                            }}
+                            track={track}
                             key={track.id}
                             type="presentation"
                             position={index}
@@ -297,7 +258,7 @@ const Dashboard: NextPage<DashboardProps> = ({
             {recentListeningRecommendations?.map((track) => {
               return (
                 <PresentationCard
-                  type="track"
+                  type={CardType.TRACK}
                   key={track.id}
                   images={track.album.images}
                   title={track.name}
@@ -315,7 +276,7 @@ const Dashboard: NextPage<DashboardProps> = ({
             {topArtists.items?.map(({ images, name, id }) => {
               return (
                 <PresentationCard
-                  type="artist"
+                  type={CardType.ARTIST}
                   key={id}
                   images={images}
                   title={name}
@@ -331,7 +292,7 @@ const Dashboard: NextPage<DashboardProps> = ({
             {categories?.items.map(({ name, id, icons }) => {
               return (
                 <PresentationCard
-                  type="genre"
+                  type={CardType.GENRE}
                   key={id}
                   images={icons}
                   title={name}

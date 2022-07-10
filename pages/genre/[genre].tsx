@@ -9,6 +9,7 @@ import { getCategoryPlaylists } from "utils/spotifyCalls/getCategoryPlaylists";
 import useHeader from "hooks/useHeader";
 import { getSingleCategoryInfo } from "utils/spotifyCalls/getSingleCategoryInfo";
 import useSpotify from "hooks/useSpotify";
+import { CardType } from "components/CardContent";
 
 interface CategoryProps {
   categoryInfo: SpotifyApi.SingleCategoryResponse | null;
@@ -51,7 +52,7 @@ export default function Category({
             return (
               <PresentationCard
                 key={id}
-                type="playlist"
+                type={CardType.PLAYLIST}
                 images={images}
                 title={name}
                 subTitle={description ?? ""}

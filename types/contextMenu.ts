@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
-import { normalTrackTypes } from "./spotify";
+import { ITrack } from "./spotify";
 
 export interface ContextMenuContextProviderProps {
   contextMenuData:
     | {
         type: "cardTrack";
-        data: normalTrackTypes;
+        data: ITrack;
         position: { x: number; y: number };
       }
     | undefined;

@@ -2,12 +2,12 @@ import {
   createContext,
   Dispatch,
   ReactElement,
-  ReactNode,
+  PropsWithChildren,
   SetStateAction,
   useState,
 } from "react";
 
-export interface Context {
+export interface IHeaderContext {
   element: ReactElement | null;
   displayOnFixed: boolean;
   setDisplayOnFixed: Dispatch<SetStateAction<boolean>>;
@@ -25,14 +25,12 @@ export interface Context {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const HeaderContext = createContext<Context>(null!);
+const HeaderContext = createContext<IHeaderContext>(null!);
 export default HeaderContext;
 
 export function HeaderContextProvider({
   children,
-}: {
-  children: ReactNode;
-}): ReactElement {
+}: PropsWithChildren): ReactElement {
   const [displayOnFixed, setDisplayOnFixed] = useState<boolean>(false);
   const [alwaysDisplayColor, setAlwaysDisplayColor] = useState<boolean>(false);
   const [disableOpacityChange, setDisableOpacityChange] =

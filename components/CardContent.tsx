@@ -4,20 +4,23 @@ import { useRouter } from "next/router";
 import { useRef } from "react";
 import { SITE_URL } from "utils/constants";
 
+export enum CardType {
+  PLAYLIST = "playlist",
+  ALBUM = "album",
+  ARTIST = "artist",
+  USER = "user",
+  SHOW = "show",
+  GENRE = "genre",
+  TRACK = "track",
+  EPISODE = "episode",
+}
+
 interface CardContentProps {
   id: string;
   images?: SpotifyApi.ImageObject[];
   title: string;
   subTitle: string | JSX.Element;
-  type:
-    | "playlist"
-    | "album"
-    | "artist"
-    | "user"
-    | "show"
-    | "genre"
-    | "track"
-    | "episode";
+  type: CardType;
 }
 
 export const CardContent: React.FC<CardContentProps> = ({

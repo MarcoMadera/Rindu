@@ -3,16 +3,19 @@ import Footer from "components/Footer";
 import TopBar from "components/TopBar";
 import SpotifyPlayer from "components/SpotifyPlayer";
 import SideBar from "components/SideBar";
-import { MutableRefObject, ReactElement, ReactNode, useRef } from "react";
+import {
+  MutableRefObject,
+  PropsWithChildren,
+  ReactElement,
+  useRef,
+} from "react";
 import useRefreshAccessToken from "hooks/useRefreshAccessToken";
 import useSpotify from "hooks/useSpotify";
 import FullScreenLyrics from "components/FullScreenLyrics";
 
 export default function MainLayout({
   children,
-}: {
-  children: ReactNode;
-}): ReactElement {
+}: PropsWithChildren): ReactElement {
   const router = useRouter();
   const isLoginPage = router.asPath === "/";
   const appRef = useRef<HTMLDivElement>();

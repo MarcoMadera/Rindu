@@ -4,8 +4,8 @@ import {
   createContext,
   Dispatch,
   SetStateAction,
-  ReactNode,
   ReactElement,
+  PropsWithChildren,
 } from "react";
 import type { IToast } from "types/toast";
 
@@ -20,9 +20,7 @@ interface ToastContextProviderProps {
 
 export function ToastContextProvider({
   children,
-}: {
-  children: ReactNode;
-}): ReactElement {
+}: PropsWithChildren): ReactElement {
   const [toasts, setToasts] = useState<IToast[]>([]);
 
   return (

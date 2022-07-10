@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { HeaderType, normalTrackTypes } from "types/spotify";
+import { HeaderType } from "types/pageHeader";
+import { ITrack } from "types/spotify";
 import { useRouter } from "next/router";
 import useAuth from "hooks/useAuth";
 import useAnalitycs from "hooks/useAnalytics";
@@ -26,7 +27,7 @@ interface AlbumPageProps {
   album: SpotifyApi.SingleAlbumResponse | null;
   accessToken?: string;
   user: SpotifyApi.UserObjectPrivate | null;
-  tracks: normalTrackTypes[] | null;
+  tracks: ITrack[] | null;
   tracksInLibrary: boolean[] | null;
 }
 
@@ -39,7 +40,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
 }) => {
   const { setIsLogin, setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalitycs } = useAnalitycs();
-  const { setAllTracks, setPlaylistDetails } = useSpotify();
+  const { setAllTracks, setPageDetails } = useSpotify();
   const router = useRouter();
   const [isPin, setIsPin] = useState(false);
   const [isFollowingThisAlbum, setIsFollowingThisAlbum] = useState(false);
@@ -79,38 +80,12 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
       return;
     }
 
-    setPlaylistDetails({
-      collaborative: false,
-      description: "",
-      external_urls: album.external_urls,
-      followers: { href: null, total: 0 },
-      href: album.href,
+    setPageDetails({
       id: album.id,
-      images: album.images,
-      name: album.name,
-      tracks: {
-        href: album.tracks.href,
-        total: album.tracks.total,
-        items: [],
-        limit: album.tracks.limit,
-        next: album.tracks.next,
-        offset: album.tracks.offset,
-        previous: album.tracks.previous,
-      },
-      owner: {
-        type: "user",
-        href: "",
-        images: [],
-        external_urls: { spotify: "" },
-        id: "",
-        uri: "",
-        display_name: "",
-        followers: { href: null, total: 0 },
-      },
-      public: true,
-      snapshot_id: "",
-      type: "playlist",
       uri: album.uri,
+      type: "playlist",
+      name: album.name,
+      tracks: { total: album.tracks.total },
     });
   }, [
     accessToken,
@@ -119,7 +94,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
     setAccessToken,
     setAllTracks,
     setIsLogin,
-    setPlaylistDetails,
+    setPageDetails,
     setUser,
     trackWithGoogleAnalitycs,
     tracks,
@@ -278,37 +253,23 @@ export async function getServerSideProps({
     trackIds ?? [],
     accessToken || ""
   );
-  const tracks: normalTrackTypes[] | undefined = album?.tracks.items.map(
-    (track) => {
-      const isCorrupted =
-        !track?.name && !track?.artists?.[0]?.name && track?.duration_ms === 0;
-      return {
-        name: track.name,
-        album: {
-          images: album.images,
-          id: album.id,
-          name: album.name,
-          artists: album.artists,
-          uri: album.uri,
-        },
-        media_type: "audio",
-        type: track?.type,
-        added_at: album.release_date,
-        artists: track.artists,
-        audio: track.preview_url,
-        corruptedTrack: isCorrupted,
-        duration: track.duration_ms,
-        explicit: track.explicit,
-        href: track.href,
-        id: track.id,
+  const tracks: ITrack[] | undefined = album?.tracks.items.map((track) => {
+    const isCorrupted =
+      !track?.name && !track?.artists?.[0]?.name && track?.duration_ms === 0;
+    return {
+      ...track,
+      album: {
         images: album.images,
-        is_local: false,
-        is_playable: track?.is_playable ?? false,
-        position: track.track_number - 1,
-        uri: track.uri,
-      };
-    }
-  );
+        id: album.id,
+        name: album.name,
+        uri: album.uri,
+      },
+      is_local: false,
+      corruptedTrack: isCorrupted,
+      added_at: album.release_date,
+      position: track.track_number - 1,
+    };
+  });
 
   return {
     props: {

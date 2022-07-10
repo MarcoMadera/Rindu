@@ -1,18 +1,14 @@
 import useHeader from "hooks/useHeader";
+import useLyrics from "hooks/useLyrics";
 import useSpotify from "hooks/useSpotify";
-import useToggle from "hooks/useToggle";
 import {
   MutableRefObject,
   ReactElement,
-  useEffect,
-  useRef,
+  useLayoutEffect,
   useState,
 } from "react";
 import { getRandomColor } from "utils/colors";
-import formaLyrics from "utils/formatLyrics";
-import { getLyrics } from "utils/getLyrics";
 import { hexToHsl } from "utils/hexToHsl";
-import { within } from "utils/whitin";
 import { LoadingSpinner } from "./LoadingSpinner";
 
 interface FullScreenLyricsProps {
@@ -22,74 +18,48 @@ interface FullScreenLyricsProps {
 export default function FullScreenLyrics({
   appRef,
 }: FullScreenLyricsProps): ReactElement {
-  const { currrentlyPlaying } = useSpotify();
-  const { headerColor, setHeaderColor } = useHeader({
+  const { currrentlyPlaying, setShowLyrics } = useSpotify();
+  const [lyricLineColor, setLyricLineColor] = useState<string>("#fff");
+  const { lyrics, lyricsError, lyricsLoading } = useLyrics({
+    artist: currrentlyPlaying?.artists?.[0]?.name,
+    title: currrentlyPlaying?.name,
+  });
+
+  useHeader({
     disableOpacityChange: true,
     alwaysDisplayColor: false,
     showOnFixed: false,
     disableBackground: true,
   });
-  const [lyrics, setLyrics] = useState<string[] | null | undefined>(undefined);
-  const [error, setError] = useToggle();
-  const [loading, setLoading] = useToggle();
-  const backgroundColor = useRef<string>(getRandomColor());
-  const [lyricLineColor, setLyricLineColor] = useState<string>("#fff");
 
-  useEffect(() => {
-    const hslBackgroundColor = hexToHsl(backgroundColor.current, true);
-    const lightness = hslBackgroundColor?.[2];
-    const newLightness = lightness && lightness - 20;
-    const newHslBackgroundColor = `hsl(${hslBackgroundColor?.[0] ?? 0}, ${
-      hslBackgroundColor?.[1] ?? 0
-    }%, ${newLightness ?? 0}%)`;
-    setLyricLineColor(newHslBackgroundColor);
-  }, [lyrics]);
-
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const lyricsBackgroundColor = getRandomColor();
+    const [h, s, l] = hexToHsl(lyricsBackgroundColor, true) || [];
+    setLyricLineColor(`hsl(${h}, ${s}%, ${l - 20}%)`);
     const app = appRef?.current;
-    if (currrentlyPlaying?.type !== "track" || !app) return setError.on();
-    const originalBackgroundColor: string = app.style.backgroundColor;
-    const originalHeaderColor: string = headerColor;
-    const artist = currrentlyPlaying?.artists?.[0]?.name;
-    const title = currrentlyPlaying?.name;
-    app.style.backgroundColor = backgroundColor.current;
-    setHeaderColor(backgroundColor.current);
+    if (currrentlyPlaying?.type !== "track" || !app) return setShowLyrics.off();
+    const appBackgroundColor: string = app.style.backgroundColor;
 
-    if (artist && title && !loading) {
-      setLoading.on();
-      within(getLyrics(artist, title), 40000)
-        .then((res) => {
-          if (res) return setLyrics(formaLyrics(res));
-          setError.on();
-        })
-        .finally(() => setLoading.off());
-    } else {
-      setError.on();
-    }
+    app.style.backgroundColor = lyricsBackgroundColor;
 
     return () => {
-      setLyrics(undefined);
-      app.style.backgroundColor = originalBackgroundColor;
-      setHeaderColor(originalHeaderColor);
-      setError.reset();
-      setLoading.off();
+      app.style.backgroundColor = appBackgroundColor;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currrentlyPlaying?.uri]);
+  }, [appRef, currrentlyPlaying?.type, setShowLyrics]);
 
   return (
     <div className="lyrics-container">
-      {!lyrics ? (
+      {!lyrics.length ? (
         <div className="message-container">
-          {loading && <LoadingSpinner />}
-          {error && !loading && (
+          {lyricsLoading && <LoadingSpinner />}
+          {lyricsError && !lyricsLoading && (
             <div className="lyrics-error">
-              <p>Could not find lyrics</p>
+              <p>{lyricsError}</p>
             </div>
           )}
         </div>
       ) : null}
-      {lyrics && (
+      {lyrics.length > 0 && (
         <div className="lyrics">
           {lyrics.map((line, i) => {
             return (
@@ -100,6 +70,11 @@ export default function FullScreenLyrics({
           })}
         </div>
       )}
+      <style jsx>{`
+        .line {
+          color: ${lyricLineColor};
+        }
+      `}</style>
       <style jsx>{`
         .lyrics-container {
           width: 100%;
@@ -140,19 +115,18 @@ export default function FullScreenLyrics({
           line-height: 54px;
           cursor: pointer;
           transition: all 0.1s ease-out 0s;
-          color: ${lyricLineColor};
         }
         .lyrics .line:hover {
-          color: white;
+          color: #fff;
         }
         .lyrics {
           font-size: 2rem;
-          color: white;
+          color: #fff;
           padding: 1rem;
         }
         .lyrics-error {
           font-size: 2rem;
-          color: white;
+          color: #fff;
           text-align: center;
           padding: 1rem;
           display: flex;

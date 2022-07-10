@@ -1,5 +1,10 @@
 import dynamic from "next/dynamic";
-import { useState, createContext, ReactNode, ReactElement } from "react";
+import {
+  useState,
+  createContext,
+  PropsWithChildren,
+  ReactElement,
+} from "react";
 import { ContextMenuContextProviderProps } from "types/contextMenu";
 
 const ContextMenuContext = createContext<
@@ -12,9 +17,7 @@ const ContextMenu = dynamic(() => import("components/ContextMenu"), {
 
 export function ContextMenuContextProvider({
   children,
-}: {
-  children: ReactNode;
-}): ReactElement {
+}: PropsWithChildren): ReactElement {
   const [contextMenuData, setContextMenuData] =
     useState<ContextMenuContextProviderProps["contextMenuData"]>(undefined);
 

@@ -1,4 +1,4 @@
-import { AllTracksFromAPlaylistResponse } from "types/spotify";
+import { ITrack } from "types/spotify";
 import { ACCESS_TOKEN_COOKIE, SITE_URL } from "utils/constants";
 import { takeCookie } from "utils/cookies";
 
@@ -7,7 +7,7 @@ export async function getTracksFromPlayList(
   market: string,
   accessToken?: string,
   cookies?: string | undefined
-): Promise<AllTracksFromAPlaylistResponse | null> {
+): Promise<ITrack[] | null> {
   const res = await fetch(
     `${SITE_URL}/api/playlists?market=${market}&additional_types=track,episode`,
     {
@@ -22,7 +22,7 @@ export async function getTracksFromPlayList(
     }
   );
   if (res.ok) {
-    const data: AllTracksFromAPlaylistResponse = await res.json();
+    const data = await res.json();
     return data;
   }
   return null;

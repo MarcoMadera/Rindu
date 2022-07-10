@@ -16,6 +16,7 @@ import { SearchInputElement } from "components/SearchInputElement";
 import useSpotify from "hooks/useSpotify";
 import CardTrack from "components/CardTrack";
 import { colors } from "utils/colors";
+import { CardType } from "components/CardContent";
 
 interface SearchPageProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
@@ -79,13 +80,7 @@ export default function SearchPage({
                         accessToken={accessToken ?? ""}
                         isTrackInLibrary={false}
                         playlistUri=""
-                        track={{
-                          ...track,
-                          media_type: "audio",
-                          audio: track.preview_url,
-                          images: track.album.images,
-                          duration: track.duration_ms,
-                        }}
+                        track={track}
                         key={track.id}
                         isSingleTrack
                         position={i}
@@ -99,7 +94,7 @@ export default function SearchPage({
                 {data.tracks?.items.slice(5)?.map((track) => {
                   return (
                     <PresentationCard
-                      type="track"
+                      type={CardType.TRACK}
                       key={track.id}
                       track={track}
                       images={track.album.images}
@@ -122,7 +117,7 @@ export default function SearchPage({
                   }
                   return (
                     <PresentationCard
-                      type="playlist"
+                      type={CardType.PLAYLIST}
                       key={id}
                       images={images}
                       title={name}
@@ -141,7 +136,7 @@ export default function SearchPage({
               {data.artists?.items?.map(({ images, name, id }) => {
                 return (
                   <PresentationCard
-                    type="artist"
+                    type={CardType.ARTIST}
                     key={id}
                     images={images}
                     title={name}
@@ -162,7 +157,7 @@ export default function SearchPage({
                     : artistNames.join(", ");
                   return (
                     <PresentationCard
-                      type="album"
+                      type={CardType.ALBUM}
                       key={id}
                       images={images}
                       title={name}
@@ -179,7 +174,7 @@ export default function SearchPage({
               {data.shows?.items?.map(({ images, name, id, publisher }) => {
                 return (
                   <PresentationCard
-                    type="show"
+                    type={CardType.SHOW}
                     key={id}
                     images={images}
                     title={name}
@@ -197,7 +192,7 @@ export default function SearchPage({
               )?.items?.map(({ images, name, id, description }) => {
                 return (
                   <PresentationCard
-                    type="episode"
+                    type={CardType.EPISODE}
                     key={id}
                     images={images}
                     title={name}

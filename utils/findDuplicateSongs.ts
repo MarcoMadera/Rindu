@@ -1,6 +1,6 @@
-import { AllTracksFromAPlayList } from "types/spotify";
+import { ITrack } from "types/spotify";
 
-export function findDuplicateSongs(allTracks: AllTracksFromAPlayList): {
+export function findDuplicateSongs(allTracks: ITrack[]): {
   index: number;
   id: string | null;
 }[] {
@@ -23,8 +23,8 @@ export function findDuplicateSongs(allTracks: AllTracksFromAPlayList): {
         if (seenNameAndArtistKey in seenByNameAndArtist) {
           const similarDuration =
             seenByNameAndArtist[seenNameAndArtistKey].filter((duration) => {
-              if (track.duration) {
-                return Math.abs(duration - track.duration) < 2000;
+              if (track.duration_ms) {
+                return Math.abs(duration - track.duration_ms) < 2000;
               }
 
               return false;
@@ -45,7 +45,7 @@ export function findDuplicateSongs(allTracks: AllTracksFromAPlayList): {
         seenByNameAndArtist[seenNameAndArtistKey] =
           seenByNameAndArtist[seenNameAndArtistKey] || [];
         seenByNameAndArtist[seenNameAndArtistKey].push(
-          track.duration as number
+          track.duration_ms as number
         );
       }
 

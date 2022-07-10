@@ -5,7 +5,7 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { AllTracksFromAPlayList } from "types/spotify";
+import { ITrack } from "types/spotify";
 import useAuth from "./useAuth";
 import useToast from "./useToast";
 import useSpotify from "./useSpotify";
@@ -17,7 +17,7 @@ export interface AudioPlayer extends HTMLAudioElement {
   seek: (time: number) => void;
   previousTrack: () => void;
   togglePlay: () => void;
-  allTracks: AllTracksFromAPlayList;
+  allTracks: ITrack[];
   sliderBusy: boolean;
 }
 
@@ -89,7 +89,7 @@ export default function useSpotifyPlayer({
         const player = audioPlayer.current;
         function getNextTrack() {
           const currentTrackIndex = player?.allTracks?.findIndex(
-            ({ audio }) => audio === player?.src
+            ({ preview_url }) => preview_url === player?.src
           );
           const nextTrackIndex = (currentTrackIndex ?? -1) + 1;
           let nextTrack;
@@ -98,7 +98,7 @@ export default function useSpotifyPlayer({
             index < (player?.allTracks ? player?.allTracks.length : 0);
             index++
           ) {
-            const audio = player?.allTracks[index]?.audio;
+            const audio = player?.allTracks[index]?.preview_url;
             if (audio) {
               nextTrack = {
                 track: player?.allTracks[index],
@@ -124,14 +124,14 @@ export default function useSpotifyPlayer({
         const player = audioPlayer.current;
         function getPreviousTrack() {
           const currentTrackIndex = player?.allTracks.findIndex(
-            ({ audio }) => audio === player?.src
+            ({ preview_url }) => preview_url === player?.src
           );
           let previousTrackIndex = (currentTrackIndex ?? -1) - 1;
           let previousTrack;
 
           while (previousTrackIndex >= 0) {
             const audio =
-              audioPlayer.current?.allTracks[previousTrackIndex]?.audio;
+              audioPlayer.current?.allTracks[previousTrackIndex]?.preview_url;
             if (audio) {
               previousTrack = {
                 track: audioPlayer.current?.allTracks[previousTrackIndex],

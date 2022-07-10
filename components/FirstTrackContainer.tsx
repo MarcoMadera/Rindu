@@ -7,17 +7,19 @@ import { useRouter } from "next/router";
 import { Fragment, ReactElement, useEffect, useRef, useState } from "react";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
 
+interface FirstTrackContainerProps {
+  preview: string | null;
+  track: SpotifyApi.TrackObjectFull;
+  backgroundColor?: string;
+  position?: number;
+}
+
 export default function FirstTrackContainer({
   preview,
   track,
   backgroundColor,
   position,
-}: {
-  preview: string | null;
-  track: SpotifyApi.TrackObjectFull;
-  backgroundColor?: string;
-  position?: number;
-}): ReactElement {
+}: FirstTrackContainerProps): ReactElement {
   const [containerColor, setContainerColor] = useState<string | undefined>(
     backgroundColor
   );

@@ -1,7 +1,7 @@
 import { ACCESS_TOKEN_COOKIE, SITE_URL } from "utils/constants";
 import { takeCookie } from "utils/cookies";
 
-export async function getPlaylistDetailsById(
+export async function getpageDetailsById(
   id: string,
   accessToken?: string,
   cookies?: string | undefined

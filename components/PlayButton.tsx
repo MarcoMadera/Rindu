@@ -14,6 +14,16 @@ import { play } from "lib/spotify";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import useToast from "hooks/useToast";
 import useOnScreen from "hooks/useOnScreen";
+import { ITrack } from "types/spotify";
+
+interface PlayButtonProps {
+  size: number;
+  centerSize: number;
+  track?: ITrack;
+  isSingle?: boolean;
+  uri?: string;
+  position?: number;
+}
 
 export function PlayButton({
   size,
@@ -23,19 +33,12 @@ export function PlayButton({
   uri,
   position,
   ...props
-}: {
-  size: number;
-  centerSize: number;
-  track?: SpotifyApi.TrackObjectFull;
-  isSingle?: boolean;
-  uri?: string;
-  position?: number;
-} & HTMLAttributes<HTMLButtonElement>): ReactElement | null {
+}: PlayButtonProps & HTMLAttributes<HTMLButtonElement>): ReactElement | null {
   const {
     isPlaying,
     player,
     deviceId,
-    playlistDetails,
+    pageDetails,
     playlistPlayingId,
     allTracks,
     setPlaylistPlayingId,
@@ -82,7 +85,7 @@ export function PlayButton({
   }, [
     isPlaying,
     playlistPlayingId,
-    playlistDetails?.id,
+    pageDetails?.id,
     track?.id,
     currrentlyPlaying?.id,
     track?.artists,
@@ -109,7 +112,7 @@ export function PlayButton({
   const handleClick = useCallback(
     async (e: MouseEvent) => {
       e.preventDefault();
-      if (!accessToken || (!playlistDetails && !track && !uri) || !user) {
+      if (!accessToken || (!pageDetails && !track && !uri) || !user) {
         return;
       }
 
@@ -119,7 +122,7 @@ export function PlayButton({
           playbackState?.track_window?.current_track?.uri === track?.uri) ||
         (playlistPlayingId && playlistPlayingId === uriId && !isSingle) ||
         (playbackState?.context.uri &&
-          playbackState?.context.uri === playlistDetails?.uri &&
+          playbackState?.context.uri === pageDetails?.uri &&
           !track &&
           !uri);
 
@@ -160,12 +163,12 @@ export function PlayButton({
               setReconnectionError(true);
             }
             if (res.ok) {
-              const source = track?.uri || playlistDetails?.uri;
+              const source = track?.uri || pageDetails?.uri;
 
               const isCollection = source?.split(":")?.[3];
               setPlayedSource(
-                isCollection && playlistDetails
-                  ? `spotify:${playlistDetails?.type}:${playlistDetails?.id}`
+                isCollection && pageDetails
+                  ? `spotify:${pageDetails?.type}:${pageDetails?.id}`
                   : source
               );
 
@@ -180,7 +183,7 @@ export function PlayButton({
           accessToken,
           deviceId,
           {
-            context_uri: uri ?? playlistDetails?.uri,
+            context_uri: uri ?? pageDetails?.uri,
           },
           setAccessToken
         ).then((res) => {
@@ -192,13 +195,13 @@ export function PlayButton({
             });
             setReconnectionError(true);
           }
-          if (res.ok && (playlistDetails || uri)) {
-            setPlaylistPlayingId(uriId ?? playlistDetails?.id);
-            const source = uri ?? playlistDetails?.uri;
+          if (res.ok && (pageDetails || uri)) {
+            setPlaylistPlayingId(uriId ?? pageDetails?.id);
+            const source = uri ?? pageDetails?.uri;
             const isCollection = source?.split(":")?.[3];
             setPlayedSource(
               isCollection
-                ? `spotify:${playlistDetails?.type}:${playlistDetails?.id}`
+                ? `spotify:${pageDetails?.type}:${pageDetails?.id}`
                 : source
             );
           }
@@ -208,7 +211,7 @@ export function PlayButton({
       if (!isPremium) {
         if (
           (track && isThisTrackPlaying) ||
-          (playlistDetails && isThisPlaylistPlaying && !track)
+          (pageDetails && isThisPlaylistPlaying && !track)
         ) {
           player?.togglePlay();
           return;
@@ -218,16 +221,16 @@ export function PlayButton({
           setIsPlaying(false);
           (player as AudioPlayer).allTracks = [track];
         }
-        if (track?.preview_url || allTracks[0]?.audio) {
-          const audio = track?.preview_url || allTracks[0].audio;
+        if (track?.preview_url || allTracks[0]?.preview_url) {
+          const audio = track?.preview_url || allTracks[0].preview_url;
           (player as AudioPlayer).src = audio as string;
           (player as AudioPlayer)?.play();
           setCurrentlyPlaying(track || allTracks[0]);
         } else {
           (player as AudioPlayer)?.nextTrack();
         }
-        if (playlistDetails) {
-          setPlaylistPlayingId(playlistDetails.id);
+        if (pageDetails) {
+          setPlaylistPlayingId(pageDetails.id);
         }
       }
     },
@@ -243,7 +246,7 @@ export function PlayButton({
       isThisPlaylistPlaying,
       isThisTrackPlaying,
       player,
-      playlistDetails,
+      pageDetails,
       playlistPlayingId,
       position,
       setAccessToken,

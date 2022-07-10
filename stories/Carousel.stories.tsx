@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import Carousel from "../components/Carousel";
 import { number, withKnobs } from "@storybook/addon-knobs";
@@ -16,7 +16,7 @@ export default {
   decorators: [withKnobs],
 } as ComponentMeta<typeof Carousel>;
 
-const Box = ({ children }: { children: React.ReactNode }) => (
+const Box = ({ children }: PropsWithChildren) => (
   <div
     style={{
       minWidth: `${number("Box Width", 200, {

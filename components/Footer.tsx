@@ -1,4 +1,6 @@
-const Footer: React.FC = () => {
+import { ReactElement } from "react";
+
+export default function Footer(): ReactElement {
   return (
     <footer>
       <p>
@@ -39,6 +41,4 @@ const Footer: React.FC = () => {
       `}</style>
     </footer>
   );
-};
-
-export default Footer;
+}

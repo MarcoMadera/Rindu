@@ -8,7 +8,7 @@ import { getAuth } from "utils/getAuth";
 import { getUserById } from "utils/spotifyCalls/getUserById";
 import { getPlaylistsFromUser } from "utils/spotifyCalls/getPlaylistsFromUser";
 import PageHeader from "components/PageHeader";
-import { HeaderType } from "types/spotify";
+import { HeaderType } from "types/pageHeader";
 import { SITE_URL } from "utils/constants";
 
 interface CurrentUserProps {

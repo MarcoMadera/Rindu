@@ -18,7 +18,7 @@ import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
 import CardTrack from "components/CardTrack";
 import { getArtistTopTracks } from "utils/spotifyCalls/getArtistTopTracks";
 import { getArtistById } from "utils/spotifyCalls/getArtistById";
-import { HeaderType } from "types/spotify";
+import { HeaderType } from "types/pageHeader";
 import { SITE_URL } from "utils/constants";
 import useToast from "hooks/useToast";
 import BigPill from "components/BigPill";
@@ -46,7 +46,7 @@ export default function TrackPage({
   const [artistTopTracks, setArtistTopTracks] = useState<
     SpotifyApi.TrackObjectFull[]
   >([]);
-  const { setPlaylistDetails, setAllTracks, isPlaying } = useSpotify();
+  const { setPageDetails, setAllTracks, isPlaying } = useSpotify();
   const [artistInfo, setArtistInfo] =
     useState<SpotifyApi.SingleArtistResponse | null>(null);
   const [sameTrackIndex, setSameTrackIndex] = useState(-1);
@@ -54,41 +54,17 @@ export default function TrackPage({
 
   useEffect(() => {
     if (track) {
-      setPlaylistDetails({
+      setPageDetails({
         name: track.name,
         owner: {
-          ...track.artists[0],
-          type: "user",
+          id: track.artists[0].id,
           display_name: track.artists[0].name,
         },
         tracks: {
-          items: [
-            {
-              added_at: "",
-              added_by: { ...track.artists[0], type: "user" },
-              is_local: false,
-              track,
-            },
-          ],
           total: 1,
-          href: "",
-          limit: 0,
-          next: "",
-          offset: 0,
-          previous: "",
         },
-        collaborative: false,
-        description: "",
-        external_urls: track.external_urls,
-        followers: {
-          href: null,
-          total: 0,
-        },
-        href: track.href,
         id: track.id,
         images: track.album.images,
-        public: true,
-        snapshot_id: "",
         type: "playlist",
         uri: track.uri,
       });
@@ -121,7 +97,7 @@ export default function TrackPage({
     setAllTracks,
     setElement,
     setHeaderColor,
-    setPlaylistDetails,
+    setPageDetails,
     track,
   ]);
 
@@ -265,14 +241,7 @@ export default function TrackPage({
                     accessToken={accessToken ?? ""}
                     isTrackInLibrary={false}
                     playlistUri=""
-                    track={{
-                      ...artistTrack,
-                      media_type: "audio",
-                      audio: artistTrack.preview_url,
-                      images: artistTrack.album.images,
-                      duration: artistTrack.duration_ms,
-                      position: i,
-                    }}
+                    track={artistTrack}
                     key={artistTrack.id}
                     type="playlist"
                     position={position}
@@ -414,7 +383,13 @@ export async function getServerSideProps({
   let lyrics: string | null = null;
 
   if (track?.name && track.artists[0].name) {
-    lyrics = await within(getLyrics(track.artists[0].name, track.name), 6000);
+    const lyricsResponse = await within(
+      getLyrics(track.artists[0].name, track.name),
+      6000
+    );
+    if (lyricsResponse.data) {
+      lyrics = lyricsResponse.data;
+    }
   }
 
   return {

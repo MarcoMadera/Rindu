@@ -10,7 +10,7 @@ import {
   List,
   WindowScroller,
 } from "react-virtualized";
-import { AllTracksFromAPlayList } from "types/spotify";
+import { ITrack } from "types/spotify";
 import { __isServer__ } from "utils/constants";
 import { getTracksFromLibrary } from "utils/getTracksFromLibrary";
 import { mapPlaylistItems } from "utils/mapPlaylistItems";
@@ -27,7 +27,7 @@ export default function VirtualizedList({
   initialTracksInLibrary,
   isLibrary,
 }: Props): ReactElement | null {
-  const { allTracks, playlistDetails, setAllTracks } = useSpotify();
+  const { allTracks, pageDetails, setAllTracks } = useSpotify();
   const { accessToken } = useAuth();
   const [tracksInLibrary, setTracksInLibrary] = useState<boolean[] | null>(
     initialTracksInLibrary
@@ -47,7 +47,7 @@ export default function VirtualizedList({
 
   const addTracksToPlaylists = useCallback(
     (
-      tracks: AllTracksFromAPlayList,
+      tracks: ITrack[],
       tracksInLibrary: boolean[] | null,
       position: number
     ): void => {
@@ -67,7 +67,7 @@ export default function VirtualizedList({
       const data = isLibrary
         ? await getTracksFromLibrary(startIndex, accessToken)
         : await getTracksFromPlaylist(
-            playlistDetails?.id ?? "",
+            pageDetails?.id ?? "",
             startIndex,
             accessToken
           );
@@ -81,7 +81,7 @@ export default function VirtualizedList({
       );
       addTracksToPlaylists(tracks, tracksInLibrary, startIndex);
     },
-    [accessToken, addTracksToPlaylists, isLibrary, playlistDetails?.id]
+    [accessToken, addTracksToPlaylists, isLibrary, pageDetails?.id]
   );
 
   const scrollElement = !__isServer__
@@ -100,7 +100,7 @@ export default function VirtualizedList({
                   }}
                   loadMoreRows={loadMoreRows}
                   rowCount={
-                    (playlistDetails?.tracks.total || allTracks?.length) ?? 0
+                    (pageDetails?.tracks?.total || allTracks?.length) ?? 0
                   }
                 >
                   {({ onRowsRendered, registerChild }) => (
@@ -113,8 +113,7 @@ export default function VirtualizedList({
                       onScroll={onChildScroll}
                       overscanRowCount={2}
                       rowCount={
-                        (playlistDetails?.tracks.total || allTracks?.length) ??
-                        0
+                        (pageDetails?.tracks?.total || allTracks?.length) ?? 0
                       }
                       rowHeight={65}
                       scrollTop={scrollTop}
@@ -126,13 +125,14 @@ export default function VirtualizedList({
                             key={key}
                             style={style}
                             track={allTracks?.[index]}
-                            playlistUri={playlistDetails?.uri ?? ""}
+                            playlistUri={pageDetails?.uri ?? ""}
                             isTrackInLibrary={
                               tracksInLibrary?.[
                                 allTracks?.[index]?.position ?? -1
                               ]
                             }
                             type={type}
+                            position={allTracks?.[index]?.position}
                           />
                         );
                       }}

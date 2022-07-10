@@ -13,11 +13,8 @@ import {
   optionsKnob as options,
   boolean,
 } from "@storybook/addon-knobs";
-import {
-  ISpotifyContext,
-  normalTrackTypes,
-  PlaylistItems,
-} from "types/spotify";
+import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
+import { CardType } from "components/CardContent";
 
 export default {
   title: "Components/CardContent",
@@ -31,16 +28,7 @@ export default {
     subTitle: { control: "text", type: "string" },
     images: { control: "array" },
     type: {
-      options: [
-        "track",
-        "playlist",
-        "album",
-        "artist",
-        "user",
-        "show",
-        "genre",
-        "episode",
-      ],
+      options: CardType,
       control: { type: "select" },
     },
     track: { control: "object" },
@@ -83,7 +71,7 @@ const Template: ComponentStory<typeof PresentationCard> = (args) => (
                 currrentlyPlaying: boolean("IsPlaying", false)
                   ? ({
                       id: args.id,
-                    } as normalTrackTypes)
+                    } as ITrack)
                   : undefined,
                 playlistPlayingId: boolean("IsPlaying", false)
                   ? args.id
@@ -111,7 +99,7 @@ const Template: ComponentStory<typeof PresentationCard> = (args) => (
 export const Playlist = Template.bind({});
 Playlist.args = {
   id: "37i9dQZF1DX5KARSfd7WcM",
-  type: "playlist",
+  type: CardType.PLAYLIST,
   images: [
     {
       url: "https://i.scdn.co/image/ab67706f00000003523f91ed9aa259969526c305",
@@ -126,7 +114,7 @@ Playlist.args = {
 export const Track = Template.bind({});
 Track.args = {
   id: "0gYXw7aPoybWFfB7btQ0eM",
-  type: "track",
+  type: CardType.TRACK,
   images: [
     {
       url: "https://i.scdn.co/image/ab67616d0000b2738576efada2170fafa9577cad",
@@ -179,7 +167,7 @@ Track.args = {
 export const Artist = Template.bind({});
 Artist.args = {
   id: "6qqNVTkY8uBg9cP3Jd7DAH",
-  type: "artist",
+  type: CardType.ARTIST,
   images: [
     {
       url: "https://studiosol-a.akamaihd.net/uploadfile/letras/fotos/6/1/c/a/61ca1dcbc2cdda2af430927f4fe4b98c.jpg",

@@ -1,7 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import ContextMenu from "../components/ContextMenu";
-import UserContext, { Context } from "context/UserContext";
+import UserContext, { IUserContext } from "context/UserContext";
 import { ToastContextProvider } from "context/ToastContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import SpotifyContext from "context/SpotifyContext";
@@ -21,7 +21,9 @@ export default {
 
 export const Track: ComponentStory<typeof ContextMenu> = () => (
   <ToastContextProvider>
-    <UserContext.Provider value={{ user: { id: "12133024755" } } as Context}>
+    <UserContext.Provider
+      value={{ user: { id: "12133024755" } } as IUserContext}
+    >
       <HeaderContextProvider>
         <SpotifyContext.Provider
           value={
@@ -62,40 +64,15 @@ export const Track: ComponentStory<typeof ContextMenu> = () => (
                   type: "cardTrack",
                   data: {
                     album: {
-                      album_type: "single",
-                      artists: [
-                        {
-                          external_urls: {
-                            spotify:
-                              "https://open.spotify.com/artist/6sFIWsNpZYqfjUpaCgueju",
-                          },
-                          href: "https://api.spotify.com/v1/artists/6sFIWsNpZYqfjUpaCgueju",
-                          id: "6sFIWsNpZYqfjUpaCgueju",
-                          name: "Carly Rae Jepsen",
-                          type: "artist",
-                          uri: "spotify:artist:6sFIWsNpZYqfjUpaCgueju",
-                        },
-                      ],
-                      external_urls: {
-                        spotify:
-                          "https://open.spotify.com/album/31776n0a6xHYMHSlK4983u",
-                      },
-                      href: "https://api.spotify.com/v1/albums/31776n0a6xHYMHSlK4983u",
                       id: "31776n0a6xHYMHSlK4983u",
                       name: "EMOTION SIDE B",
                       release_date: "2016-07-15",
-                      release_date_precision: "day",
-                      total_tracks: 8,
                       type: "album",
                       uri: "spotify:album:31776n0a6xHYMHSlK4983u",
+                      images: [],
                     },
                     artists: [
                       {
-                        external_urls: {
-                          spotify:
-                            "https://open.spotify.com/artist/6sFIWsNpZYqfjUpaCgueju",
-                        },
-                        href: "https://api.spotify.com/v1/artists/6sFIWsNpZYqfjUpaCgueju",
                         id: "6sFIWsNpZYqfjUpaCgueju",
                         name: "Carly Rae Jepsen",
                         type: "artist",
@@ -104,8 +81,6 @@ export const Track: ComponentStory<typeof ContextMenu> = () => (
                     ],
                     duration_ms: 236533,
                     explicit: false,
-                    href: "https://api.spotify.com/v1/tracks/7wgxq27uOvfydLunYkcmAU",
-                    id: "7wgxq27uOvfydLunYkcmAU",
                     is_local: false,
                     name: "Cry",
                     type: "track",
@@ -115,6 +90,9 @@ export const Track: ComponentStory<typeof ContextMenu> = () => (
                     x: number("position x", 50),
                     y: number("position y", 50),
                   },
+                },
+                setContextMenuData: () => {
+                  console.log("setContextMenuData");
                 },
               } as ContextMenuContextProviderProps
             }

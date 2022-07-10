@@ -4,7 +4,7 @@ import {
   AuthorizationResponse,
   RefreshResponse,
   RemoveTracksResponse,
-  AllTracksFromAPlaylistResponse,
+  ITrack,
 } from "types/spotify";
 import { getAccessToken } from "utils/spotifyCalls/getAccessToken";
 
@@ -117,7 +117,7 @@ export const getAllTracksFromPlaylist = async (
   accessToken: string,
   playlist: string,
   market: string
-): Promise<AllTracksFromAPlaylistResponse> => {
+): Promise<ITrack[]> => {
   try {
     if (accessToken) {
       spotifyAPI.setAccessToken(accessToken);
@@ -131,38 +131,22 @@ export const getAllTracksFromPlaylist = async (
     const { body } = data;
 
     tracks = body.items;
-    return {
-      tracks: tracks.map(({ track, added_at, is_local }, i) => {
-        const isCorrupted =
-          !track?.name &&
-          !track?.artists?.[0]?.name &&
-          track?.duration_ms === 0;
-        return {
-          name: track?.name,
-          images: track?.album.images,
-          uri: track?.uri,
-          href: track?.external_urls.spotify,
-          artists: track?.artists,
-          id: track?.id,
-          explicit: track?.explicit,
-          duration: track?.duration_ms,
-          audio: track?.preview_url,
-          corruptedTrack: isCorrupted,
-          position: i,
-          album: track?.album,
-          added_at,
-          type: track?.type,
-          media_type: "audio",
-          is_playable: track?.is_playable,
-          is_local,
-        };
-      }),
-    };
+    return tracks.map(({ track, added_at, is_local }, i) => {
+      const isCorrupted =
+        !track?.name && !track?.artists?.[0]?.name && track?.duration_ms === 0;
+      return {
+        ...track,
+        corruptedTrack: isCorrupted,
+        position: i,
+        added_at,
+        is_local,
+      };
+    });
   } catch (err) {
     throw new Error(`getAllTracksFromPlaylist error: ${err}`);
   }
 };
-export const getPlaylistDetails = async (
+export const getpageDetails = async (
   accessToken: string,
   playlist: string
 ): Promise<SpotifyApi.SinglePlaylistResponse> => {
@@ -174,7 +158,7 @@ export const getPlaylistDetails = async (
     const { body } = data;
     return body;
   } catch (err) {
-    throw new Error(`getPlaylistDetails error: ${err}`);
+    throw new Error(`getpageDetails error: ${err}`);
   }
 };
 

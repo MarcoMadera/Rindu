@@ -2,7 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import FirstTrackContainer from "../components/FirstTrackContainer";
 import { ToastContextProvider } from "context/ToastContext";
-import UserContext, { Context } from "context/UserContext";
+import UserContext, { IUserContext } from "context/UserContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import SpotifyContext from "context/SpotifyContext";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
@@ -12,12 +12,7 @@ import {
   boolean,
   optionsKnob as options,
 } from "@storybook/addon-knobs";
-import {
-  AllTracksFromAPlayList,
-  ISpotifyContext,
-  normalTrackTypes,
-  PlaylistItems,
-} from "types/spotify";
+import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
 export default {
   title: "Components/FirstTrackContainer",
   component: FirstTrackContainer,
@@ -52,7 +47,7 @@ const Template: ComponentStory<typeof FirstTrackContainer> = (args) => {
                 ),
               },
               accessToken: text("accessToken", "you need a token here"),
-            } as Context
+            } as IUserContext
           }
         >
           <HeaderContextProvider>
@@ -61,13 +56,11 @@ const Template: ComponentStory<typeof FirstTrackContainer> = (args) => {
                 {
                   deviceId: text("deviceId", ""),
                   playlists: [] as PlaylistItems,
-                  allTracks: [
-                    { uri: args.track.uri },
-                  ] as AllTracksFromAPlayList,
+                  allTracks: [{ uri: args.track.uri }] as ITrack[],
                   currrentlyPlaying: boolean("IsPlaying", false)
                     ? ({
                         id: args.track.id,
-                      } as normalTrackTypes)
+                      } as ITrack)
                     : undefined,
                   playlistPlayingId: boolean("IsPlaying", false)
                     ? args.track.id

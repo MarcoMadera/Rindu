@@ -1,7 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import UserWidget from "../components/UserWidget";
-import UserContext, { Context } from "context/UserContext";
+import UserContext, { IUserContext } from "context/UserContext";
 import { ToastContextProvider } from "context/ToastContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import { SpotifyContextProvider } from "context/SpotifyContext";
@@ -48,7 +48,7 @@ const Template: ComponentStory<typeof UserWidget> = () => (
           },
           isLogin: true,
           accessToken: text("accessToken", "you need a token here"),
-        } as Context
+        } as IUserContext
       }
     >
       <HeaderContextProvider>

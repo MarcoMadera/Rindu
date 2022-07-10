@@ -14,18 +14,6 @@ export type RefreshResponse = {
   expiresIn: number;
 };
 
-export enum HeaderType {
-  song = "SONG",
-  playlist = "PLAYLIST",
-  album = "ALBUM",
-  artist = "ARTIST",
-  profile = "PROFILE",
-  podcast = "PODCAST",
-  single = "SINGLE",
-  compilation = "COMPILATION",
-  episode = "EPISODE",
-}
-
 export type SpotifyUserResponse = {
   name: string | undefined;
   image: string | undefined;
@@ -45,61 +33,49 @@ export type UserPlaylistsResponse = {
   total: number;
 };
 
-interface Artist extends Spotify.Artist {
-  id?: string | null;
-  type?: "artist" | undefined;
-  href?: string | undefined;
-  external_urls?: SpotifyApi.ExternalUrlObject | undefined;
-}
-
-interface Album extends Spotify.Album {
-  album_type?: "album" | "single" | "compilation";
-  artists?: Artist[];
-  id?: string;
-  release_date?: string;
-  external_urls?: SpotifyApi.ExternalUrlObject;
-  available_markets?: string[];
-  type?: "track" | "album" | "episode" | "ad";
-  total_tracks?: number;
-}
-
-//Tracks
-export type normalTrackTypes = {
-  name?: string;
-  corruptedTrack?: boolean;
-  position?: number;
-  images?: Array<{ url: string }>;
-  uri?: Spotify.Track["uri"];
-  href?: string;
-  artists?: Artist[];
-  id?: string | null;
-  audio?: string | null;
-  explicit?: boolean;
-  duration?: number;
-  duration_ms?: number;
-  album?: Album | SpotifyApi.AlbumObjectSimplified;
-  added_at?: string | number;
-  type?: "track" | "episode" | "ad";
-  media_type?: "audio" | "video";
-  is_playable?: boolean | undefined;
-  is_local?: boolean;
-};
-export type trackItem = normalTrackTypes;
-
-export type AllTracksFromAPlayList = trackItem[];
-
-export type AllTracksFromAPlaylistResponse = {
-  tracks: AllTracksFromAPlayList;
-};
-
 export type RemoveTracksResponse = string | undefined;
 
-type Identity<T> = { [P in keyof T]: T[P] };
-type Replace<T, K extends keyof T, TReplace> = Identity<
-  Pick<T, Exclude<keyof T, K>> & {
-    [P in K]: TReplace;
-  }
->;
+interface IPageDetails {
+  id?: string;
+  uri?: string;
+  type?: "playlist" | "artist" | "collection";
+  name?: string;
+  description?: string | null;
+  tracks?: { total?: number };
+  snapshot_id?: string;
+  owner?: { id?: string; display_name?: string };
+  followers?: { total?: number };
+  images?: { url?: string }[];
+}
+
+export interface ITrack {
+  uri?: string;
+  preview_url?: string | null;
+  id?: string | null;
+  name?: string;
+  album?: {
+    id?: string;
+    name?: string;
+    images: { url?: string; width?: number | null; height?: number | null }[];
+    type?: "track" | "album" | "episode" | "ad";
+    uri?: string;
+    release_date?: string;
+  };
+  artists?: {
+    name?: string;
+    id?: string;
+    uri?: string;
+    type?: "artist" | undefined;
+  }[];
+  type?: "track" | "episode" | "ad";
+  is_local?: boolean;
+  duration_ms?: number;
+  position?: number;
+  is_playable?: boolean;
+  corruptedTrack?: boolean;
+  explicit?: boolean;
+  added_at?: string | number;
+}
 
 export interface ISpotifyContext {
   playlists: PlaylistItems;
@@ -108,36 +84,26 @@ export interface ISpotifyContext {
   setTotalPlaylists: Dispatch<SetStateAction<number>>;
   deviceId: string | undefined;
   setDeviceId: Dispatch<SetStateAction<string | undefined>>;
-  allTracks: AllTracksFromAPlayList;
-  setAllTracks: Dispatch<SetStateAction<AllTracksFromAPlayList>>;
+  allTracks: ITrack[];
+  setAllTracks: Dispatch<SetStateAction<ITrack[]>>;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
   isPlaying: boolean;
   isPip: boolean;
   setIsShowingSideBarImg: Dispatch<SetStateAction<boolean>>;
   setIsPip: Dispatch<SetStateAction<boolean>>;
   isShowingSideBarImg: boolean;
-  setCurrentlyPlaying: Dispatch<SetStateAction<trackItem | undefined>>;
-  currrentlyPlaying: trackItem | undefined;
+  setCurrentlyPlaying: Dispatch<SetStateAction<ITrack | undefined>>;
+  currrentlyPlaying: ITrack | undefined;
   currentlyPlayingPosition: number | undefined;
   currentlyPlayingDuration: number | undefined;
   setCurrentlyPlayingPosition: Dispatch<SetStateAction<number | undefined>>;
   setCurrentlyPlayingDuration: Dispatch<SetStateAction<number | undefined>>;
   player: Spotify.Player | AudioPlayer | undefined;
   setPlayer: Dispatch<SetStateAction<Spotify.Player | AudioPlayer | undefined>>;
-  playlistDetails: Replace<
-    SpotifyApi.SinglePlaylistResponse,
-    "type",
-    "playlist" | "artist" | "collection"
-  > | null;
+  pageDetails: IPageDetails | null;
   setPlaylistPlayingId: Dispatch<SetStateAction<string | undefined>>;
   playlistPlayingId: string | undefined;
-  setPlaylistDetails: Dispatch<
-    SetStateAction<Replace<
-      SpotifyApi.SinglePlaylistResponse,
-      "type",
-      "playlist" | "artist" | "collection"
-    > | null>
-  >;
+  setPageDetails: Dispatch<SetStateAction<IPageDetails | null>>;
   playedSource: string | undefined;
   setPlayedSource: Dispatch<SetStateAction<string | undefined>>;
   volume: number;
@@ -149,7 +115,7 @@ export interface ISpotifyContext {
   showHamburguerMenu: boolean;
   setShowHamburguerMenu: Dispatch<SetStateAction<boolean>>;
   setReconnectionError: Dispatch<SetStateAction<boolean>>;
-  recentlyPlayed: normalTrackTypes[];
+  recentlyPlayed: ITrack[];
   removeTracks: (
     playlist: string | undefined,
     tracks: number[],

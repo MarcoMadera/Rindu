@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
-import { HeaderType, normalTrackTypes } from "types/spotify";
+import { ITrack } from "types/spotify";
 import PageHeader from "../../components/PageHeader";
 import useAnalitycs from "../../hooks/useAnalytics";
 import useAuth from "hooks/useAuth";
@@ -24,9 +24,10 @@ import CardTrack from "components/CardTrack";
 import { checkUsersFollowAPlaylist } from "utils/spotifyCalls/checkUsersFollowAPlaylist";
 import { followPlaylist } from "utils/spotifyCalls/followPlaylist";
 import { unfollowPlaylist } from "utils/spotifyCalls/unfollowPlaylist";
+import { HeaderType } from "types/pageHeader";
 
 const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
-  playlistDetails,
+  pageDetails,
   playListTracks,
   user,
   tracksInLibrary,
@@ -40,20 +41,20 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
     isPlaying,
     deviceId,
     setPlaylistPlayingId,
-    setPlaylistDetails,
+    setPageDetails,
     setAllTracks,
     allTracks,
   } = useSpotify();
   const { setElement } = useHeader();
   const [isPin, setIsPin] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const isMyPlaylist = playlistDetails?.owner.id === user?.id;
+  const isMyPlaylist = pageDetails?.owner?.id === user?.id;
   const [isFollowingThisPlaylist, setIsFollowingThisPlaylist] = useState(false);
   const [searchedData, setSearchedData] =
     useState<SpotifyApi.SearchResponse | null>(null);
   const { addToast } = useToast();
 
-  const tracks = useMemo(() => playListTracks?.tracks ?? [], [playListTracks]);
+  const tracks = useMemo(() => playListTracks ?? [], [playListTracks]);
 
   useEffect(() => {
     if (isMyPlaylist) {
@@ -62,22 +63,22 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
     async function fetchData() {
       const userFollowThisPlaylist = await checkUsersFollowAPlaylist(
         [user?.id ?? ""],
-        playlistDetails?.id,
+        pageDetails?.id,
         accessToken
       );
       setIsFollowingThisPlaylist(!!userFollowThisPlaylist?.[0]);
     }
     fetchData();
-  }, [accessToken, playlistDetails?.id, user?.id, isMyPlaylist]);
+  }, [accessToken, pageDetails?.id, user?.id, isMyPlaylist]);
 
   useEffect(() => {
-    if (!playlistDetails) {
+    if (!pageDetails) {
       router.push("/");
     }
 
-    setElement(() => <PlaylistTopBarExtraField uri={playlistDetails?.uri} />);
+    setElement(() => <PlaylistTopBarExtraField uri={pageDetails?.uri} />);
 
-    setPlaylistDetails(playlistDetails);
+    setPageDetails(pageDetails);
     trackWithGoogleAnalitycs();
     setAllTracks(tracks);
 
@@ -86,8 +87,8 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
     setUser(user);
   }, [
     setElement,
-    setPlaylistDetails,
-    playlistDetails,
+    setPageDetails,
+    pageDetails,
     trackWithGoogleAnalitycs,
     setIsLogin,
     setUser,
@@ -100,8 +101,8 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
   useEffect(() => {
     if (deviceId && isPlaying && user?.product === "premium") {
       (player as Spotify.Player)?.getCurrentState().then((e) => {
-        if (e?.context.uri === playlistDetails?.uri) {
-          setPlaylistPlayingId(playlistDetails?.id);
+        if (e?.context.uri === pageDetails?.uri) {
+          setPlaylistPlayingId(pageDetails?.id);
           return;
         }
       });
@@ -110,28 +111,21 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
     isPlaying,
     deviceId,
     player,
-    playlistDetails,
+    pageDetails,
     setPlaylistPlayingId,
     user?.product,
   ]);
 
   useEffect(() => {
-    const emptyTrackItem: normalTrackTypes = {
-      images: [
-        {
-          url: "",
-        },
-      ],
+    const emptyTrackItem: ITrack = {
       name: "",
       id: "",
-      href: "",
       album: { images: [{ url: "" }], name: "", uri: "", type: "track" },
-      media_type: "audio",
       type: "track",
     };
 
     const restTrackItems = new Array(
-      (playlistDetails?.tracks.total ?? tracks.length) - tracks.length
+      (pageDetails?.tracks?.total ?? tracks.length) - tracks.length
     ).fill(emptyTrackItem);
 
     setAllTracks([...tracks, ...restTrackItems]);
@@ -143,32 +137,28 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
     <main>
       {!isPlaying && (
         <Head>
-          <title>{`Rindu: ${playlistDetails?.name}`}</title>
+          <title>{`Rindu: ${pageDetails?.name}`}</title>
         </Head>
       )}
       <PageHeader
         type={HeaderType.playlist}
-        title={playlistDetails?.name ?? ""}
-        description={playlistDetails?.description ?? ""}
+        title={pageDetails?.name ?? ""}
+        description={pageDetails?.description ?? ""}
         coverImg={
-          playlistDetails?.images?.[0]?.url ??
-          playlistDetails?.images?.[1]?.url ??
+          pageDetails?.images?.[0]?.url ??
+          pageDetails?.images?.[1]?.url ??
           `${SITE_URL}/defaultSongCover.jpeg`
         }
-        ownerDisplayName={playlistDetails?.owner?.display_name ?? ""}
-        ownerId={playlistDetails?.owner?.id ?? ""}
-        totalFollowers={playlistDetails?.followers.total ?? 0}
-        totalTracks={playlistDetails?.tracks?.total ?? 0}
+        ownerDisplayName={pageDetails?.owner?.display_name ?? ""}
+        ownerId={pageDetails?.owner?.id ?? ""}
+        totalFollowers={pageDetails?.followers?.total ?? 0}
+        totalTracks={pageDetails?.tracks?.total ?? 0}
       />
       <div className="tracksContainer">
         {allTracks.length > 0 ? (
           <>
             <div className="options">
-              <PlayButton
-                uri={playlistDetails?.uri}
-                size={56}
-                centerSize={28}
-              />
+              <PlayButton uri={pageDetails?.uri} size={56} centerSize={28} />
               <div className="info">
                 {isMyPlaylist ? (
                   <button
@@ -185,9 +175,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
                   <Heart
                     active={isFollowingThisPlaylist}
                     handleLike={async () => {
-                      const followRes = await followPlaylist(
-                        playlistDetails?.id
-                      );
+                      const followRes = await followPlaylist(pageDetails?.id);
                       if (followRes) {
                         setIsFollowingThisPlaylist(true);
                         addToast({
@@ -200,7 +188,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
                     }}
                     handleDislike={async () => {
                       const unfollowRes = await unfollowPlaylist(
-                        playlistDetails?.id
+                        pageDetails?.id
                       );
                       if (unfollowRes) {
                         setIsFollowingThisPlaylist(false);
@@ -231,7 +219,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
             </div>
           </>
         ) : null}
-        {playListTracks && playListTracks?.tracks?.length === 0 ? (
+        {playListTracks && playListTracks?.length === 0 ? (
           <div className="noTracks">
             <h3>Let&apos;s find something for your playlist</h3>
             <SearchInputElement setData={setSearchedData} source="playlist" />
@@ -244,33 +232,27 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
                       accessToken={accessToken ?? ""}
                       isTrackInLibrary={tracksInLibrary?.[i] ?? false}
                       playlistUri=""
-                      track={{
-                        ...track,
-                        media_type: "audio",
-                        audio: track.preview_url,
-                        images: track.album.images,
-                        duration: track.duration_ms,
-                      }}
+                      track={track}
                       onClickAdd={() => {
-                        if (!playlistDetails?.id) return;
-                        addItemsToPlaylist(playlistDetails.id, [
-                          track.uri,
-                        ]).then((res) => {
-                          if (res?.snapshot_id) {
-                            setAllTracks((prev) => {
-                              return [
-                                ...prev,
-                                {
-                                  ...track,
-                                  position: prev.length,
-                                  images: track.album.images,
-                                  duration: track.duration_ms,
-                                  added_at: Date.now(),
-                                },
-                              ];
-                            });
+                        if (!pageDetails?.id) return;
+                        addItemsToPlaylist(pageDetails.id, [track.uri]).then(
+                          (res) => {
+                            if (res?.snapshot_id) {
+                              setAllTracks((prev) => {
+                                return [
+                                  ...prev,
+                                  {
+                                    ...track,
+                                    position: prev.length,
+                                    images: track.album.images,
+                                    duration: track.duration_ms,
+                                    added_at: Date.now(),
+                                  },
+                                ];
+                              });
+                            }
                           }
-                        });
+                        );
                       }}
                       key={track.id}
                       type="presentation"
@@ -291,45 +273,34 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
                       accessToken={accessToken ?? ""}
                       isTrackInLibrary={tracksInLibrary?.[i] ?? false}
                       playlistUri=""
-                      track={{
-                        ...track,
-                        media_type: "audio",
-                        audio: track.audio_preview_url,
-                        images: track.images,
-                        duration: track.duration_ms,
-                        album: {
-                          images: track.images,
-                          name: track.name,
-                          uri: track.uri,
-                        },
-                      }}
+                      track={track}
                       onClickAdd={() => {
-                        if (!playlistDetails?.id) return;
-                        addItemsToPlaylist(playlistDetails.id, [
-                          track.uri,
-                        ]).then((res) => {
-                          if (res?.snapshot_id) {
-                            setAllTracks((prev) => {
-                              return [
-                                ...prev,
-                                {
-                                  ...track,
-                                  position: prev.length,
-                                  images: track.images,
-                                  duration: track.duration_ms,
-                                  added_at: Date.now(),
-                                  album: {
+                        if (!pageDetails?.id) return;
+                        addItemsToPlaylist(pageDetails.id, [track.uri]).then(
+                          (res) => {
+                            if (res?.snapshot_id) {
+                              setAllTracks((prev) => {
+                                return [
+                                  ...prev,
+                                  {
+                                    ...track,
+                                    position: prev.length,
                                     images: track.images,
-                                    name: track.name,
-                                    uri: track.uri,
-                                    id: track.id,
-                                    type: "episode",
+                                    duration: track.duration_ms,
+                                    added_at: Date.now(),
+                                    album: {
+                                      images: track.images,
+                                      name: track.name,
+                                      uri: track.uri,
+                                      id: track.id,
+                                      type: "episode",
+                                    },
                                   },
-                                },
-                              ];
-                            });
+                                ];
+                              });
+                            }
                           }
-                        });
+                        );
                       }}
                       key={track.id}
                       type="presentation"

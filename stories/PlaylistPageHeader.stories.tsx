@@ -6,7 +6,7 @@ import { ToastContextProvider } from "context/ToastContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import { SpotifyContextProvider } from "context/SpotifyContext";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
-import { HeaderType } from "types/spotify";
+import { HeaderType } from "types/pageHeader";
 
 export default {
   title: "Components/PageHeader",

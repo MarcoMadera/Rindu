@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { ReactElement } from "react";
 import { SITE_URL } from "../utils/constants";
+
 export default function Seo(): ReactElement {
   const router = useRouter();
   const twitter = "@madera_marco";
@@ -10,6 +11,7 @@ export default function Seo(): ReactElement {
  repetidos, Rindu elimina esos tracks que están de más y deja solo uno.`;
   const description = des.replace(/\n/g, "");
   const cover = `${SITE_URL}/logo.png`;
+
   return (
     <Head key={1}>
       <meta charSet="utf-8" />

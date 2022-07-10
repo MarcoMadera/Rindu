@@ -1,19 +1,19 @@
-import { AllTracksFromAPlayList, normalTrackTypes } from "types/spotify";
+import { ITrack } from "types/spotify";
 import { findDuplicateSongs } from "./findDuplicateSongs";
 import { getAllTracksFromPlaylist } from "./getAllTracksFromPlaylist";
 
 export async function analyzePlaylist(
-  id: string,
-  totalTracks: number,
+  id: string | undefined,
+  totalTracks: number | undefined,
   isLibrary: boolean,
   accessToken: string
 ): Promise<{
-  tracks: AllTracksFromAPlayList;
+  tracks: ITrack[];
   duplicateTracksIndexes: number[];
   corruptedSongsIndexes: number[];
-  tracksToRemove: normalTrackTypes[];
+  tracksToRemove: ITrack[];
 } | null> {
-  if (!id || !accessToken) {
+  if (!id || !accessToken || !totalTracks) {
     return null;
   }
   const tracks = await getAllTracksFromPlaylist(

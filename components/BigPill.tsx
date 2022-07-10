@@ -1,17 +1,19 @@
 import Link from "next/link";
 import { ReactElement } from "react";
 
+interface BigPillProps {
+  img?: string;
+  title: string;
+  subTitle: string;
+  href: string;
+}
+
 export default function BigPill({
   img,
   title,
   subTitle,
   href,
-}: {
-  img: string | undefined;
-  title: string;
-  subTitle: string;
-  href: string;
-}): ReactElement {
+}: BigPillProps): ReactElement {
   return (
     <Link href={href}>
       <a className="big-pill">

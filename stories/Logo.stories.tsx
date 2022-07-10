@@ -1,6 +1,6 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import UserContext, { Context } from "context/UserContext";
+import UserContext, { IUserContext } from "context/UserContext";
 import Logo from "../components/Logo";
 import { withKnobs, boolean } from "@storybook/addon-knobs";
 
@@ -21,7 +21,7 @@ const Template: ComponentStory<typeof Logo> = (args) => {
       }}
     >
       <UserContext.Provider
-        value={{ isLogin: boolean("isLogin", true) } as Context}
+        value={{ isLogin: boolean("isLogin", true) } as IUserContext}
       >
         <Logo {...args} />
       </UserContext.Provider>

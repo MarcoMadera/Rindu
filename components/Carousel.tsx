@@ -1,25 +1,26 @@
 import {
   Children,
   ReactElement,
-  ReactNode,
   useEffect,
   useRef,
   useState,
   isValidElement,
   cloneElement,
   useId,
+  PropsWithChildren,
 } from "react";
 import { Chevron } from "./icons/Chevron";
+
+interface CarouselProps {
+  title?: string;
+  gap: number;
+}
 
 export default function Carousel({
   title,
   gap = 24,
   children,
-}: {
-  title?: string;
-  gap: number;
-  children: ReactNode;
-}): ReactElement | null {
+}: PropsWithChildren<CarouselProps>): ReactElement | null {
   const [timesMoveCarousel, setTimesMoveCarousel] = useState(0);
   const totalItems = Children.count(children);
   const containerRef = useRef<HTMLDivElement>(null);

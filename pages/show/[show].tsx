@@ -3,7 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { getAuth } from "utils/getAuth";
 import { serverRedirect } from "utils/serverRedirect";
 import { getShow } from "utils/spotifyCalls/getShow";
-import { AllTracksFromAPlayList, HeaderType } from "types/spotify";
+import { ITrack } from "types/spotify";
+import { HeaderType } from "types/pageHeader";
 import { SITE_URL } from "utils/constants";
 import PageHeader from "components/PageHeader";
 import { PlayButton } from "components/PlayButton";
@@ -27,7 +28,7 @@ interface PlaylistProps {
 const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
   const [isShowInLibrary, setIsShowInLibrary] = useState(false);
   const { setIsLogin, setAccessToken, setUser } = useAuth();
-  const { setPlaylistDetails, setAllTracks } = useSpotify();
+  const { setPageDetails, setAllTracks } = useSpotify();
   const { addToast } = useToast();
   const { setElement } = useHeader({
     showOnFixed: false,
@@ -61,59 +62,33 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
     fetchData();
   }, [accessToken, show?.id]);
 
-  const allTracks: AllTracksFromAPlayList | undefined = useMemo(
+  const allTracks: ITrack[] | undefined = useMemo(
     () =>
       show?.episodes.items.map((episode) => ({
         album: {
-          album_type: "single",
-          artists: [
-            {
-              external_urls: {
-                spotify: `https://open.spotify.com/artist/${show?.id}`,
-              },
-              name: show.publisher ?? "",
-              id: show.id ?? "",
-              type: "artist",
-              href: `https://open.spotify.com/show/${show?.id}`,
-              uri: `spotify:show:${show?.id}`,
-            },
-          ],
-          external_urls: { spotify: "" },
-          href: "",
-          id: show.id ?? "",
-          images: show.images ?? [],
-          name: show.name ?? "",
-          release_date: episode?.release_date ?? "",
-          release_date_precision: "year",
+          id: show.id,
+          name: show.name,
+          images: show.images,
+          release_date: episode?.release_date,
           type: "album",
-          uri: show?.uri ?? "",
+          uri: show?.uri,
         },
         artists: [
           {
-            external_urls: {
-              spotify: `https://open.spotify.com/episode/${episode?.id}`,
-            },
             name: show.publisher ?? "",
             id: show.id ?? "",
             type: "artist",
-            href: `https://open.spotify.com/show/${show?.id}`,
             uri: `spotify:show:${show?.id}`,
           },
         ],
-        id: episode?.id ?? "",
-        name: episode?.name ?? "",
-        disc_number: 1,
+        id: episode?.id,
+        name: episode?.name,
         duration_ms: episode?.duration_ms ?? 0,
         explicit: episode?.explicit ?? false,
-        preview_url: episode?.audio_preview_url ?? "",
-        track_number: 1,
-        type: "track",
-        uri: episode?.uri ?? "",
-        external_ids: {},
-        popularity: 0,
-        available_markets: [],
-        external_urls: { spotify: "" },
-        href: "",
+        preview_url: episode?.audio_preview_url,
+        position: 1,
+        type: "episode",
+        uri: episode?.uri,
       })),
     [show]
   );
@@ -123,107 +98,17 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
   }, [allTracks, setAllTracks]);
 
   useEffect(() => {
-    setPlaylistDetails({
-      collaborative: false,
-      description: "",
-      external_urls: show?.external_urls ?? { spotify: "" },
-      followers: { href: null, total: 0 },
-      href: show?.href ?? "",
-      id: show?.id ?? "",
-      images: show?.images ?? [],
-      name: show?.name ?? "",
+    setPageDetails({
+      id: show?.id,
+      images: show?.images,
+      name: show?.name,
       tracks: {
-        href: show?.href ?? "",
-        total: show?.episodes.total ?? 0,
-        items:
-          show?.episodes.items.map((episode) => ({
-            added_at: episode.release_date ?? "",
-            added_by: {
-              type: "user",
-              href: "",
-              images: [],
-              external_urls: { spotify: "" },
-              id: "",
-              uri: "",
-              display_name: "",
-              followers: { href: null, total: 0 },
-            },
-            is_local: false,
-            track: {
-              album: {
-                album_type: "single",
-                artists: [
-                  {
-                    external_urls: {
-                      spotify: `https://open.spotify.com/artist/${show?.id}`,
-                    },
-                    name: show.publisher ?? "",
-                    id: show.id ?? "",
-                    type: "artist",
-                    href: `https://open.spotify.com/show/${show?.id}`,
-                    uri: `spotify:show:${show?.id}`,
-                  },
-                ],
-                external_urls: { spotify: "" },
-                href: "",
-                id: show.id ?? "",
-                images: show.images ?? [],
-                name: show.name ?? "",
-                release_date: episode?.release_date ?? "",
-                release_date_precision: "year",
-                type: "album",
-                uri: show?.uri ?? "",
-                total_tracks: 1,
-              },
-              artists: [
-                {
-                  external_urls: {
-                    spotify: `https://open.spotify.com/episode/${episode?.id}`,
-                  },
-                  name: show.publisher ?? "",
-                  id: show.id ?? "",
-                  type: "artist",
-                  href: `https://open.spotify.com/show/${show?.id}`,
-                  uri: `spotify:show:${show?.id}`,
-                },
-              ],
-              id: episode?.id ?? "",
-              name: episode?.name ?? "",
-              disc_number: 1,
-              duration_ms: episode?.duration_ms ?? 0,
-              explicit: episode?.explicit ?? false,
-              preview_url: episode?.audio_preview_url ?? "",
-              track_number: 1,
-              type: "track",
-              uri: episode?.uri ?? "",
-              external_ids: {},
-              popularity: 0,
-              available_markets: [],
-              external_urls: { spotify: "" },
-              href: "",
-            },
-          })) ?? [],
-        limit: 1,
-        next: "",
-        offset: 0,
-        previous: "",
+        total: show?.episodes.total,
       },
-      owner: {
-        type: "user",
-        href: "",
-        images: [],
-        external_urls: { spotify: "" },
-        id: "",
-        uri: "",
-        display_name: "",
-        followers: { href: null, total: 0 },
-      },
-      public: true,
-      snapshot_id: "",
       type: "playlist",
-      uri: show?.uri ?? "",
+      uri: show?.uri,
     });
-  }, [setPlaylistDetails, show]);
+  }, [setPageDetails, show]);
 
   return (
     <main>

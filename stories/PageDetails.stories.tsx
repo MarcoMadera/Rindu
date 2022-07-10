@@ -4,12 +4,7 @@ import PageDetails from "../components/PageDetails";
 import { HeaderContextProvider } from "context/HeaderContext";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import { ToastContextProvider } from "context/ToastContext";
-import {
-  AllTracksFromAPlayList,
-  ISpotifyContext,
-  normalTrackTypes,
-  PlaylistItems,
-} from "types/spotify";
+import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
 import {
   withKnobs,
   text,
@@ -17,7 +12,7 @@ import {
   optionsKnob as options,
 } from "@storybook/addon-knobs";
 import SpotifyContext from "context/SpotifyContext";
-import UserContext, { Context } from "context/UserContext";
+import UserContext, { IUserContext } from "context/UserContext";
 export default {
   title: "Components/PageDetails",
   component: PageDetails,
@@ -123,7 +118,7 @@ const Template: ComponentStory<typeof PageDetails> = (args) => {
               ),
             },
             accessToken: text("accessToken", "you need a token here"),
-          } as Context
+          } as IUserContext
         }
       >
         <HeaderContextProvider>
@@ -132,9 +127,9 @@ const Template: ComponentStory<typeof PageDetails> = (args) => {
               {
                 deviceId: text("deviceId", ""),
                 playlists: [] as PlaylistItems,
-                allTracks: [] as AllTracksFromAPlayList,
+                allTracks: [] as ITrack[],
                 currrentlyPlaying: boolean("IsPlaying", false)
-                  ? (track as normalTrackTypes)
+                  ? (track as ITrack)
                   : undefined,
                 playlistPlayingId: boolean("IsPlaying", false)
                   ? track.id
@@ -171,5 +166,5 @@ WithBanner.args = {
 };
 export const WithData = Template.bind({});
 WithData.args = {
-  data: track as normalTrackTypes,
+  data: track as ITrack,
 };

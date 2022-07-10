@@ -2,16 +2,18 @@ import { ReactElement } from "react";
 import useSpotify from "hooks/useSpotify";
 import { PlayButton } from "./PlayButton";
 
+interface PlaylistTopBarExtraFieldProps {
+  isSingle?: boolean;
+  track?: SpotifyApi.TrackObjectFull;
+  uri?: string;
+}
+
 export default function PlaylistTopBarExtraField({
   isSingle,
   track,
   uri,
-}: {
-  isSingle?: boolean;
-  track?: SpotifyApi.TrackObjectFull;
-  uri?: string;
-}): ReactElement {
-  const { playlistDetails } = useSpotify();
+}: PlaylistTopBarExtraFieldProps): ReactElement {
+  const { pageDetails } = useSpotify();
   return (
     <div>
       <PlayButton
@@ -21,7 +23,7 @@ export default function PlaylistTopBarExtraField({
         isSingle={isSingle}
         track={track}
       />
-      <span>{playlistDetails?.name}</span>
+      <span>{pageDetails?.name}</span>
       <style jsx>{`
         span {
           color: #fff;

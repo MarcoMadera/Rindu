@@ -6,14 +6,9 @@ import { ToastContextProvider } from "context/ToastContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import SpotifyContext from "context/SpotifyContext";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
-import {
-  AllTracksFromAPlayList,
-  HeaderType,
-  ISpotifyContext,
-  normalTrackTypes,
-  PlaylistItems,
-} from "types/spotify";
+import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
 import { withKnobs, text, boolean } from "@storybook/addon-knobs";
+import { HeaderType } from "types/pageHeader";
 export default {
   title: "Components/EpisodeCard",
   component: EpisodeCard,
@@ -53,10 +48,10 @@ const Template: ComponentStory<typeof EpisodeCard> = (args) => (
             {
               deviceId: text("deviceId", ""),
               playlists: [] as PlaylistItems,
-              allTracks: [{ uri: args.item.uri }] as AllTracksFromAPlayList,
+              allTracks: [{ uri: args.item.uri }] as ITrack[],
               currrentlyPlaying: {
                 uri: boolean("IsPlaying", false) ? args.item.uri : undefined,
-              } as normalTrackTypes,
+              } as ITrack,
               isPlaying: boolean("IsPlaying", false),
               setPlayedSource: (() => "") as React.Dispatch<
                 React.SetStateAction<string | undefined>

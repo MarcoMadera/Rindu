@@ -1,29 +1,29 @@
-import { CardContent } from "./CardContent";
-import { HTMLAttributes } from "react";
+import { CardContent, CardType } from "./CardContent";
+import { HTMLAttributes, ReactElement } from "react";
 import { PlayButton } from "components/PlayButton";
 import useAuth from "hooks/useAuth";
+import { ITrack } from "types/spotify";
 
 export interface PresentationCardProps {
-  type:
-    | "playlist"
-    | "album"
-    | "artist"
-    | "user"
-    | "show"
-    | "genre"
-    | "track"
-    | "episode";
+  type: CardType;
   id: string;
   images?: SpotifyApi.ImageObject[];
   title: string;
   subTitle: string | JSX.Element;
-  track?: SpotifyApi.TrackObjectFull;
+  track?: ITrack;
   isSingle?: boolean;
 }
 
-const PresentationCard: React.FC<
-  PresentationCardProps & HTMLAttributes<HTMLAnchorElement>
-> = ({ images, title, subTitle, id, type, isSingle, track, ...props }) => {
+function PresentationCard({
+  images,
+  title,
+  subTitle,
+  id,
+  type,
+  isSingle,
+  track,
+  ...props
+}: PresentationCardProps & HTMLAttributes<HTMLAnchorElement>): ReactElement {
   const unsupportedUris = ["genre", "user"];
   const uri = unsupportedUris.includes(type)
     ? undefined
@@ -85,6 +85,6 @@ const PresentationCard: React.FC<
       `}</style>
     </div>
   );
-};
+}
 
 export default PresentationCard;

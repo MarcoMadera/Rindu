@@ -10,7 +10,7 @@ import PageHeader from "../../components/PageHeader";
 import { PlayButton } from "components/PlayButton";
 import { getEpisodeById } from "utils/spotifyCalls/getEpisodeById";
 import { SITE_URL } from "utils/constants";
-import { HeaderType } from "types/spotify";
+import { HeaderType } from "types/pageHeader";
 import Link from "next/link";
 import { checkEpisodesInLibrary } from "utils/spotifyCalls/checkEpisodesInLibrary";
 import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFromLibrary";
@@ -33,7 +33,7 @@ export default function EpisodePage({
   });
   const { setUser, setAccessToken } = useAuth();
   const [isEpisodeInLibrary, setIsEpisodeInLibrary] = useState(false);
-  const { setPlaylistDetails, isPlaying } = useSpotify();
+  const { setPageDetails, isPlaying } = useSpotify();
   const episodeTrack: SpotifyApi.TrackObjectFull = useMemo(
     () => ({
       album: {
@@ -102,40 +102,14 @@ export default function EpisodePage({
   }, [episodeTrack, setElement]);
 
   useEffect(() => {
-    setPlaylistDetails({
-      collaborative: false,
-      description: "",
-      external_urls: episode?.external_urls ?? { spotify: "" },
-      followers: { href: null, total: 0 },
-      href: episode?.href ?? "",
-      id: episode?.id ?? "",
-      images: episode?.images ?? [],
-      name: episode?.name ?? "",
-      tracks: {
-        href: episode?.href ?? "",
-        total: 1,
-        items: [],
-        limit: 1,
-        next: "",
-        offset: 0,
-        previous: "",
-      },
-      owner: {
-        type: "user",
-        href: "",
-        images: [],
-        external_urls: { spotify: "" },
-        id: "",
-        uri: "",
-        display_name: "",
-        followers: { href: null, total: 0 },
-      },
-      public: true,
-      snapshot_id: "",
+    setPageDetails({
+      id: episode?.id,
+      uri: episode?.uri,
       type: "playlist",
-      uri: episode?.uri ?? "",
+      name: episode?.name,
+      tracks: { total: 1 },
     });
-  }, [episode, setPlaylistDetails]);
+  }, [episode, setPageDetails]);
 
   useEffect(() => {
     if (accessToken) {

@@ -6,12 +6,7 @@ import { ToastContextProvider } from "context/ToastContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import SpotifyContext from "context/SpotifyContext";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
-import {
-  AllTracksFromAPlayList,
-  ISpotifyContext,
-  normalTrackTypes,
-  PlaylistItems,
-} from "types/spotify";
+import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
 import { withKnobs, text, boolean } from "@storybook/addon-knobs";
 export default {
   title: "Components/CardTrack",
@@ -47,10 +42,10 @@ const Template: ComponentStory<typeof CardTrack> = (args) => (
             {
               deviceId: text("deviceId", ""),
               playlists: [] as PlaylistItems,
-              allTracks: [{ uri: args.track.uri }] as AllTracksFromAPlayList,
+              allTracks: [{ uri: args.track.uri }] as ITrack[],
               currrentlyPlaying: {
                 uri: boolean("IsPlaying", false) ? args.track.uri : undefined,
-              } as normalTrackTypes,
+              } as ITrack,
               isPlaying: boolean("IsPlaying", false),
               setPlayedSource: (() => "") as React.Dispatch<
                 React.SetStateAction<string | undefined>
@@ -136,10 +131,6 @@ const track = {
   ],
   artists: [
     {
-      external_urls: {
-        spotify: "https://open.spotify.com/artist/11sIz9STeD6yVSuBaD8nMW",
-      },
-      href: "https://api.spotify.com/v1/artists/11sIz9STeD6yVSuBaD8nMW",
       id: "11sIz9STeD6yVSuBaD8nMW",
       name: "Artem Pivovarov",
       type: "artist",
@@ -155,7 +146,7 @@ const track = {
   name: "Собирай меня",
   type: "track",
   uri: "spotify:track:1pCblJqsFVRNc9Xmg0oQz8",
-} as normalTrackTypes;
+} as ITrack;
 
 export const Default = Template.bind({});
 Default.args = {

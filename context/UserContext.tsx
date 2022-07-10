@@ -2,14 +2,14 @@ import { useRouter } from "next/router";
 import {
   createContext,
   Dispatch,
+  PropsWithChildren,
   ReactElement,
-  ReactNode,
   SetStateAction,
   useEffect,
   useState,
 } from "react";
 
-export interface Context {
+export interface IUserContext {
   isLogin: boolean;
   user: SpotifyApi.UserObjectPrivate | null;
   setIsLogin: Dispatch<SetStateAction<boolean>>;
@@ -19,18 +19,17 @@ export interface Context {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const UserContext = createContext<Context>(null!);
+const UserContext = createContext<IUserContext>(null!);
 export default UserContext;
 
 export function UserContextProvider({
   children,
-}: {
-  children: ReactNode;
-}): ReactElement {
+}: PropsWithChildren): ReactElement {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [user, setUser] = useState<SpotifyApi.UserObjectPrivate | null>(null);
   const [accessToken, setAccessToken] = useState<string>();
+
   useEffect(() => {
     if (router.query.code && isLogin) {
       router.replace("/dashboard", undefined, { shallow: true });

@@ -22,13 +22,14 @@ import { follow, Follow_type } from "utils/spotifyCalls/follow";
 import { unFollow } from "utils/spotifyCalls/unFollow";
 import { checkIfUserFollowArtistUser } from "utils/spotifyCalls/checkIfUserFollowArtistUser";
 import PageHeader from "../../components/PageHeader";
-import { HeaderType } from "types/spotify";
+import { HeaderType } from "types/pageHeader";
 import { MONTHS, SITE_URL } from "utils/constants";
 import Carousel from "components/Carousel";
 import SubTitle from "components/SubtTitle";
 import { getSetLists, SetLists } from "utils/getSetLists";
 import { ArtistsInfo, getArtistInfo } from "utils/getArtistInfo";
 import { conjuction } from "utils/conjuction";
+import { CardType } from "components/CardContent";
 
 interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
@@ -66,7 +67,7 @@ export default function ArtistPage({
     showOnFixed: false,
   });
   const router = useRouter();
-  const { setPlaylistDetails, setAllTracks } = useSpotify();
+  const { setPageDetails, setAllTracks } = useSpotify();
   const [showMoreTopTracks, setShowMoreTopTracks] = useState(false);
   const [isFollowingThisArtist, setIsFollowingThisArtist] = useState(false);
   const [showMoreAbout, setShowMoreAbout] = useState(false);
@@ -124,34 +125,18 @@ export default function ArtistPage({
         is_local: false,
       })) ?? [];
 
-    const tracks = {
-      href: "",
-      total: 10,
-      items: items,
-      next: "",
-      previous: "",
-      limit: 0,
-      offset: 0,
-    };
-
-    setPlaylistDetails({
-      name: currentArtist?.name ?? "",
-      images: [{ url: "", height: 0, width: 0 }],
-      uri: currentArtist?.uri ?? "",
-      followers: { href: null, total: currentArtist?.followers?.total ?? 0 },
-      collaborative: false,
-      description: currentArtist?.name ?? "",
-      id: currentArtist?.id ?? "",
-      tracks: tracks,
-      external_urls: { spotify: currentArtist?.external_urls?.spotify ?? "" },
+    setPageDetails({
+      name: currentArtist?.name,
+      uri: currentArtist?.uri,
+      followers: { total: currentArtist?.followers?.total },
+      description: currentArtist?.name,
+      id: currentArtist?.id,
+      tracks: { total: 10 },
       owner: user,
-      public: false,
-      snapshot_id: "",
       type: "artist",
-      href: "",
     });
     setAllTracks(
-      tracks.items.map((track) => ({
+      items.map((track) => ({
         ...track,
         audio: track.preview_url,
         type: "track",
@@ -160,7 +145,7 @@ export default function ArtistPage({
   }, [
     topTracks,
     setElement,
-    setPlaylistDetails,
+    setPageDetails,
     router,
     setAllTracks,
     currentArtist?.name,
@@ -236,14 +221,7 @@ export default function ArtistPage({
                       accessToken={accessToken ?? ""}
                       isTrackInLibrary={false}
                       playlistUri=""
-                      track={{
-                        ...track,
-                        media_type: "audio",
-                        audio: track.preview_url,
-                        images: track.album.images,
-                        duration: track.duration_ms,
-                        position: i,
-                      }}
+                      track={track}
                       key={track.id}
                       isSingleTrack
                       position={i}
@@ -300,14 +278,13 @@ export default function ArtistPage({
             </div>
           ) : null}
         </div>
-
         {singleAlbums && singleAlbums?.items?.length > 0 ? (
           <Carousel title={"Albums"} gap={24}>
             {singleAlbums?.items?.map(
               ({ images, name, id, artists, release_date, album_type }) => {
                 return (
                   <PresentationCard
-                    type="album"
+                    type={CardType.ALBUM}
                     key={id}
                     images={images}
                     title={name}
@@ -331,7 +308,7 @@ export default function ArtistPage({
               ({ images, name, id, artists, release_date, album_type }) => {
                 return (
                   <PresentationCard
-                    type="album"
+                    type={CardType.ALBUM}
                     key={id}
                     images={images}
                     title={name}
@@ -354,7 +331,7 @@ export default function ArtistPage({
             {relatedArtists?.artists?.map(({ images, name, id }) => {
               return (
                 <PresentationCard
-                  type="artist"
+                  type={CardType.ARTIST}
                   key={id}
                   images={images}
                   title={name}

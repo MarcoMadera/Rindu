@@ -1,7 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import DeviceConnectControl from "../components/DeviceConnectControl";
-import UserContext, { Context } from "context/UserContext";
+import UserContext, { IUserContext } from "context/UserContext";
 import { ToastContextProvider } from "context/ToastContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import { SpotifyContextProvider } from "context/SpotifyContext";
@@ -40,7 +40,7 @@ const Template: ComponentStory<typeof DeviceConnectControl> = () => (
             ),
           },
           accessToken: text("accessToken", "you need a token here"),
-        } as Context
+        } as IUserContext
       }
     >
       <HeaderContextProvider>

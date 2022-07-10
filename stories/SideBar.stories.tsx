@@ -2,7 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import SideBar from "../components/SideBar";
 import { ToastContextProvider } from "context/ToastContext";
-import UserContext, { Context } from "context/UserContext";
+import UserContext, { IUserContext } from "context/UserContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import SpotifyContext from "context/SpotifyContext";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
@@ -11,11 +11,7 @@ import {
   text,
   optionsKnob as options,
 } from "@storybook/addon-knobs";
-import {
-  AllTracksFromAPlayList,
-  ISpotifyContext,
-  PlaylistItems,
-} from "types/spotify";
+import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
 export default {
   title: "Components/SideBar",
   component: SideBar,
@@ -45,7 +41,7 @@ const Template: ComponentStory<typeof SideBar> = () => {
               ),
             },
             accessToken: text("accessToken", "you need a token here"),
-          } as Context
+          } as IUserContext
         }
       >
         <HeaderContextProvider>
@@ -83,10 +79,10 @@ const Template: ComponentStory<typeof SideBar> = () => {
                     owner: { id: "12133024755", display_name: "Marco Madera" },
                   },
                 ] as PlaylistItems,
-                allTracks: [] as AllTracksFromAPlayList,
+                allTracks: [] as ITrack[],
                 currrentlyPlaying: undefined,
                 playlistPlayingId: undefined,
-                playlistDetails: {
+                pageDetails: {
                   name: "Собирай меня",
                 },
                 isPlaying: false,
@@ -95,7 +91,7 @@ const Template: ComponentStory<typeof SideBar> = () => {
                 >,
                 setAllTracks: (() =>
                   console.log("setAllTracks")) as React.Dispatch<
-                  React.SetStateAction<AllTracksFromAPlayList>
+                  React.SetStateAction<ITrack[]>
                 >,
                 setLastVolume: (() =>
                   console.log("setLastVolume")) as React.Dispatch<

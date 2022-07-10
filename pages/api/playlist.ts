@@ -1,4 +1,4 @@
-import { getPlaylistDetails } from "../../lib/spotify";
+import { getpageDetails } from "../../lib/spotify";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function playlist(
@@ -7,7 +7,7 @@ export default async function playlist(
 ): Promise<void> {
   if (req.body.playlistId) {
     try {
-      const data = await getPlaylistDetails(
+      const data = await getpageDetails(
         req.body.accessToken,
         req.body.playlistId
       );

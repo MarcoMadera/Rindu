@@ -1,11 +1,5 @@
-import HeaderContext from "context/HeaderContext";
-import {
-  Dispatch,
-  ReactElement,
-  SetStateAction,
-  useContext,
-  useEffect,
-} from "react";
+import HeaderContext, { IHeaderContext } from "context/HeaderContext";
+import { useContext, useEffect } from "react";
 
 export default function useHeader(
   options?: Partial<{
@@ -14,35 +8,20 @@ export default function useHeader(
     disableOpacityChange: boolean;
     disableBackground: boolean;
   }>
-): {
-  element: ReactElement | null;
-  setDisplayOnFixed: Dispatch<SetStateAction<boolean>>;
-  headerColor: string;
-  setHeaderColor: Dispatch<SetStateAction<string>>;
-  alwaysDisplayColor: boolean;
-  displayOnFixed: boolean;
-  setElement: Dispatch<SetStateAction<ReactElement | null>>;
-  headerOpacity: number;
-  setHeaderOpacity: Dispatch<SetStateAction<number>>;
-  disableOpacityChange: boolean;
-  disableBackground: boolean;
-  setDisableOpacityChange: Dispatch<SetStateAction<boolean>>;
-} {
+): Omit<
+  IHeaderContext,
+  | "setAlwaysDisplayColor"
+  | "setDisableBackground"
+  | "setDisplayOnFixed"
+  | "setDisableOpacityChange"
+> {
   const {
-    element,
     setElement,
     setDisplayOnFixed,
-    displayOnFixed,
-    headerColor,
-    setHeaderColor,
     setAlwaysDisplayColor,
-    alwaysDisplayColor,
-    headerOpacity,
-    setHeaderOpacity,
-    disableOpacityChange,
     setDisableOpacityChange,
     setDisableBackground,
-    disableBackground,
+    ...context
   } = useContext(HeaderContext);
 
   useEffect(() => {
@@ -78,17 +57,7 @@ export default function useHeader(
   ]);
 
   return {
-    element,
     setElement,
-    setDisplayOnFixed,
-    displayOnFixed,
-    headerColor,
-    setHeaderColor,
-    alwaysDisplayColor,
-    headerOpacity,
-    setHeaderOpacity,
-    disableOpacityChange,
-    setDisableOpacityChange,
-    disableBackground,
+    ...context,
   };
 }

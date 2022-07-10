@@ -2,7 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import NowPlaying from "../components/NowPlaying";
 import { ToastContextProvider } from "context/ToastContext";
-import UserContext, { Context } from "context/UserContext";
+import UserContext, { IUserContext } from "context/UserContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import SpotifyContext from "context/SpotifyContext";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
@@ -12,12 +12,7 @@ import {
   boolean,
   optionsKnob as options,
 } from "@storybook/addon-knobs";
-import {
-  AllTracksFromAPlayList,
-  ISpotifyContext,
-  normalTrackTypes,
-  PlaylistItems,
-} from "types/spotify";
+import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
 
 export default {
   title: "Components/NowPlaying",
@@ -132,7 +127,7 @@ const Template: ComponentStory<typeof NowPlaying> = () => {
                 ),
               },
               accessToken: text("accessToken", "you need a token here"),
-            } as Context
+            } as IUserContext
           }
         >
           <HeaderContextProvider>
@@ -141,9 +136,9 @@ const Template: ComponentStory<typeof NowPlaying> = () => {
                 {
                   deviceId: text("deviceId", ""),
                   playlists: [] as PlaylistItems,
-                  allTracks: [track] as AllTracksFromAPlayList,
+                  allTracks: [track] as ITrack[],
                   currrentlyPlaying: boolean("IsPlaying", false)
-                    ? (track as normalTrackTypes)
+                    ? (track as ITrack)
                     : undefined,
                   playlistPlayingId: boolean("IsPlaying", false)
                     ? track.id

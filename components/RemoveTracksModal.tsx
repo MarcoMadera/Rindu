@@ -11,7 +11,7 @@ import {
 } from "react";
 import useSpotify from "hooks/useSpotify";
 import useAuth from "hooks/useAuth";
-import { normalTrackTypes } from "types/spotify";
+import { ITrack } from "types/spotify";
 import CardTrack from "./CardTrack";
 import { takeCookie } from "utils/cookies";
 import { ACCESS_TOKEN_COOKIE } from "utils/constants";
@@ -34,21 +34,21 @@ export default function RemoveTracksModal({
   const [targetNode, setTargetNode] = useState<Element>();
   const firstButtonRef = useRef<HTMLButtonElement | null>(null);
   const secondButtonRef = useRef<HTMLButtonElement | null>(null);
-  const { removeTracks, playlistDetails, setAllTracks } = useSpotify();
+  const { removeTracks, pageDetails, setAllTracks } = useSpotify();
   const { accessToken } = useAuth();
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const { addToast } = useToast();
   const [duplicateTracksIdx, setDuplicateTracksIdx] = useState<number[]>([]);
   const [corruptedSongsIdx, setCorruptedSongsIdx] = useState<number[]>([]);
-  const [tracksToRemove, setTracksToRemove] = useState<normalTrackTypes[]>([]);
+  const [tracksToRemove, setTracksToRemove] = useState<ITrack[]>([]);
 
   useEffect(() => {
-    if (!playlistDetails || !accessToken) return;
+    if (!pageDetails || !accessToken) return;
     setIsLoadingComplete(false);
 
     analyzePlaylist(
-      playlistDetails?.id,
-      playlistDetails?.tracks?.total,
+      pageDetails?.id,
+      pageDetails?.tracks?.total,
       isLibrary,
       accessToken
     ).then((res) => {
@@ -60,7 +60,7 @@ export default function RemoveTracksModal({
       setTracksToRemove(res.tracksToRemove);
       setIsLoadingComplete(true);
     });
-  }, [accessToken, isLibrary, playlistDetails, setAllTracks]);
+  }, [accessToken, isLibrary, pageDetails, setAllTracks]);
 
   const onPressKey = useCallback(
     (event: KeyboardEvent) => {
@@ -173,7 +173,7 @@ export default function RemoveTracksModal({
                       accessToken={accessToken}
                       isTrackInLibrary={false}
                       track={tracksToRemove[index]}
-                      playlistUri={playlistDetails?.uri ?? ""}
+                      playlistUri={pageDetails?.uri ?? ""}
                       type="album"
                     />
                   </div>
@@ -204,9 +204,9 @@ export default function RemoveTracksModal({
                   ...new Set([...corruptedSongsIdx, ...duplicateTracksIdx]),
                 ];
                 const snapshot = await removeTracks(
-                  playlistDetails?.id,
+                  pageDetails?.id,
                   indexes,
-                  playlistDetails?.snapshot_id
+                  pageDetails?.snapshot_id
                 );
                 if (snapshot) {
                   setAllTracks((tracks) => {

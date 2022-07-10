@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { AllTracksFromAPlaylistResponse, ISpotifyContext } from "types/spotify";
+import { ISpotifyContext, ITrack } from "types/spotify";
 import PlaylistLayout from "layouts/playlist";
 import { serverRedirect } from "utils/serverRedirect";
 import { getAuth } from "utils/getAuth";
@@ -7,8 +7,8 @@ import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import { getMyLikedSongs } from "utils/spotifyCalls/getMyLikedSongs";
 
 interface PlaylistProps {
-  playlistDetails: ISpotifyContext["playlistDetails"];
-  playListTracks: AllTracksFromAPlaylistResponse;
+  pageDetails: ISpotifyContext["pageDetails"];
+  playListTracks: ITrack[];
   tracksInLibrary: boolean[] | null;
   accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
@@ -18,7 +18,7 @@ const Playlist: NextPage<PlaylistProps> = (props) => {
   return (
     <PlaylistLayout
       isLibrary={true}
-      playlistDetails={props.playlistDetails}
+      pageDetails={props.pageDetails}
       playListTracks={props.playListTracks}
       tracksInLibrary={props.tracksInLibrary}
       user={props.user}
@@ -67,73 +67,42 @@ export async function getServerSideProps({
     return { props: null };
   }
 
-  const playlistDetails: ISpotifyContext["playlistDetails"] = {
-    collaborative: false,
-    description: "",
-    external_urls: { spotify: "https://open.spotify.com/collection/tracks" },
-    followers: { total: 0, href: null },
-    href: "",
+  const pageDetails: ISpotifyContext["pageDetails"] = {
     id: "tracks",
     images: [
       {
         url: "https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png",
-        height: 300,
-        width: 300,
       },
     ],
     name: "Liked Songs",
     owner: {
-      id: user?.id ?? "",
-      external_urls: { spotify: user?.href ?? "" },
-      href: user?.href ?? "",
-      type: "user",
-      uri: `spotify:user:${user?.id}`,
-      display_name: user?.display_name ?? "",
+      id: user?.id,
+      display_name: user?.display_name,
     },
-    public: false,
-    snapshot_id: "",
     tracks: {
-      total: playListTracks.total ?? 0,
-      previous: playListTracks.previous,
-      href: playListTracks.href,
-      items: playListTracks.items ?? [],
-      limit: playListTracks.limit,
-      next: playListTracks.next,
-      offset: playListTracks.offset,
+      total: playListTracks.total,
     },
     type: "collection",
     uri: `spotify:user:${user?.id}:collection`,
   };
   return {
     props: {
-      playlistDetails,
+      pageDetails,
       tracksInLibrary,
-      playListTracks: {
-        tracks: playListTracks.items.map(({ track, added_at }, i: number) => {
+      playListTracks: playListTracks.items.map(
+        ({ track, added_at }, i: number) => {
           const isCorrupted =
             !track?.name &&
             !track?.artists?.[0]?.name &&
             track?.duration_ms === 0;
           return {
-            name: track?.name,
-            images: track?.album.images,
-            uri: track?.uri,
-            href: track?.external_urls.spotify,
-            artists: track?.artists,
-            id: track?.id,
-            explicit: track?.explicit,
-            duration: track?.duration_ms,
-            audio: track?.preview_url,
+            ...track,
             corruptedTrack: isCorrupted,
             position: i,
-            album: track?.album,
             added_at,
-            type: track?.type,
-            media_type: "audio",
-            is_local: track?.is_local,
           };
-        }),
-      },
+        }
+      ),
       accessToken: accessToken ?? null,
       user: user ?? null,
     },

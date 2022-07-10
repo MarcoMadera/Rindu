@@ -11,22 +11,24 @@ import { Pause, Play } from "./icons";
 import Add from "./icons/Add";
 import ThreeDots from "./icons/ThreeDots";
 
+interface EpisodeCardProps {
+  item: SpotifyApi.EpisodeObjectSimplified;
+  position: number;
+  show: SpotifyApi.ShowObject;
+}
+
 export default function EpisodeCard({
   item,
   position,
   show,
-}: {
-  item: SpotifyApi.EpisodeObjectSimplified;
-  position: number;
-  show: SpotifyApi.ShowObject;
-}): ReactElement {
+}: EpisodeCardProps): ReactElement {
   const {
     isPlaying,
     currrentlyPlaying,
     deviceId,
     player,
     allTracks,
-    playlistDetails,
+    pageDetails,
     setCurrentlyPlaying,
     setPlaylistPlayingId,
   } = useSpotify();
@@ -114,45 +116,26 @@ export default function EpisodeCard({
             playCurrentTrack(
               {
                 album: {
-                  album_type: "single",
-                  artists: [
-                    {
-                      external_urls: {
-                        spotify: `https://open.spotify.com/show/${show?.id}`,
-                      },
-                      name: show.name ?? "",
-                      id: show.id ?? "",
-                      type: "artist",
-                      href: `https://open.spotify.com/show/${show?.id}`,
-                      uri: `spotify:show:${show?.id}`,
-                    },
-                  ],
-                  external_urls: { spotify: "" },
-                  id: show?.id ?? "",
+                  id: show?.id,
                   images: item?.images ?? [],
-                  name: show?.name ?? "",
-                  release_date: item?.release_date ?? "",
+                  name: show?.name,
+                  release_date: item?.release_date,
                   type: "album",
-                  uri: show?.uri ?? "",
+                  uri: show?.uri,
                 },
                 artists: [
                   {
-                    external_urls: {
-                      spotify: `https://open.spotify.com/show/${show?.id}`,
-                    },
-                    name: show.name ?? "",
-                    id: show.id ?? "",
+                    name: show.name,
+                    id: show.id,
                     type: "artist",
-                    href: `https://open.spotify.com/show/${show?.id}`,
                     uri: `spotify:show:${show?.id}`,
                   },
                 ],
-                id: item?.id ?? "",
-                name: item?.name ?? "",
+                id: item?.id,
+                name: item?.name,
                 explicit: item?.explicit ?? false,
                 type: "track",
-                uri: item?.uri ?? "",
-                href: "",
+                uri: item?.uri,
               },
               {
                 player,
@@ -160,8 +143,8 @@ export default function EpisodeCard({
                 allTracks,
                 accessToken,
                 deviceId,
-                playlistUri: playlistDetails?.uri,
-                playlistId: playlistDetails?.id,
+                playlistUri: pageDetails?.uri,
+                playlistId: pageDetails?.id,
                 setCurrentlyPlaying,
                 setPlaylistPlayingId,
                 isSingleTrack: true,

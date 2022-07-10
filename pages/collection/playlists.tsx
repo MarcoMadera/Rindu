@@ -1,51 +1,18 @@
 import Head from "next/head";
 import useHeader from "hooks/useHeader";
 import { useEffect, ReactElement } from "react";
-import Link from "next/link";
 import useSpotify from "hooks/useSpotify";
 import PresentationCard from "components/PresentationCard";
 import { decode } from "html-entities";
+import { CardType } from "components/CardContent";
+import NavigationTopBarExtraField from "components/NavigationTopBarExtraField";
+
 export default function CollectionPlaylists(): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
   const { playlists, isPlaying } = useSpotify();
 
   useEffect(() => {
-    setElement(() => {
-      return (
-        <div>
-          <Link href="/collection/playlists">
-            <a>Playlists</a>
-          </Link>
-          <Link href="/collection/podcasts">
-            <a>Podcasts</a>
-          </Link>
-          <Link href="/collection/artists">
-            <a>Artists</a>
-          </Link>
-          <Link href="/collection/albums">
-            <a>Albums</a>
-          </Link>
-          <style jsx>{`
-            div {
-              display: flex;
-              column-gap: 8px;
-              margin-left: 24px;
-            }
-            a {
-              padding: 12px 18px;
-              color: white;
-              text-decoration: none;
-              font-weight: 800;
-              font-size: 13px;
-              border-radius: 4px;
-            }
-            a:nth-of-type(1) {
-              background-color: #343434;
-            }
-          `}</style>
-        </div>
-      );
-    });
+    setElement(() => <NavigationTopBarExtraField />);
 
     setHeaderColor("#242424");
 
@@ -67,7 +34,7 @@ export default function CollectionPlaylists(): ReactElement {
           ? playlists.map(({ images, name, description, id, owner }) => {
               return (
                 <PresentationCard
-                  type="playlist"
+                  type={CardType.PLAYLIST}
                   key={id}
                   images={images}
                   title={name}
@@ -112,6 +79,9 @@ export default function CollectionPlaylists(): ReactElement {
           margin: 20px 0 50px 0;
           justify-content: space-between;
           padding-bottom: 50px;
+        }
+        :global(.extraField-nav li:nth-of-type(1) a) {
+          background-color: #343434;
         }
       `}</style>
     </main>

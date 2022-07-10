@@ -11,7 +11,7 @@ import {
   CSSProperties,
   ReactElement,
 } from "react";
-import { normalTrackTypes } from "types/spotify";
+import { ITrack } from "types/spotify";
 import { formatTime } from "utils/formatTime";
 import Link from "next/link";
 import useAuth from "hooks/useAuth";
@@ -26,7 +26,7 @@ import useOnScreen from "hooks/useOnScreen";
 import ExplicitSign from "./ExplicitSign";
 
 interface CardTrackProps {
-  track: normalTrackTypes;
+  track: ITrack;
   accessToken: string | undefined;
   playlistUri: string;
   style?: CSSProperties;
@@ -58,7 +58,7 @@ export default function CardTrack({
     setIsPlaying,
     allTracks,
     setCurrentlyPlaying,
-    playlistDetails,
+    pageDetails,
     setPlaylistPlayingId,
     setPlayedSource,
     setReconnectionError,
@@ -75,7 +75,7 @@ export default function CardTrack({
 
   const isPlayable =
     track?.type === "episode" ||
-    (!isPremium && track?.audio) ||
+    (!isPremium && track?.preview_url) ||
     (isPremium && !(track?.is_playable === false) && !track?.is_local);
 
   const isTheSameAsCurrentlyPlaying =
@@ -90,7 +90,7 @@ export default function CardTrack({
       accessToken,
       deviceId,
       playlistUri,
-      playlistId: playlistDetails?.id,
+      playlistId: pageDetails?.id,
       setCurrentlyPlaying,
       setPlaylistPlayingId,
       isSingleTrack,
@@ -107,11 +107,11 @@ export default function CardTrack({
         setReconnectionError(true);
       }
       if (status === 200) {
-        const source = playlistDetails?.uri;
+        const source = pageDetails?.uri;
         const isCollection = source?.split(":")?.[3];
         setPlayedSource(
-          isCollection && playlistDetails
-            ? `spotify:${playlistDetails?.type}:${playlistDetails?.id}`
+          isCollection && pageDetails
+            ? `spotify:${pageDetails?.type}:${pageDetails?.id}`
             : source ?? track.uri
         );
       }
@@ -196,7 +196,7 @@ export default function CardTrack({
           if (isPlaying && isTheSameAsCurrentlyPlaying) {
             player?.pause();
             setIsPlaying(false);
-            setPlaylistPlayingId(playlistDetails?.id);
+            setPlaylistPlayingId(pageDetails?.id);
           } else {
             if (isPlayable) {
               playThisTrack();
@@ -247,24 +247,24 @@ export default function CardTrack({
           <Play fill="#fff" />
         ) : (
           <span className="position">{`${
-            typeof track?.position === "number" ? track?.position + 1 : ""
+            typeof position === "number" ? position + 1 : ""
           }`}</span>
         )}
       </button>
       <section>
         {type !== "presentation" ? (
-          track?.images?.length ? (
+          track?.album?.images?.length ? (
             //  eslint-disable-next-line @next/next/no-img-element
             <img
               loading="lazy"
-              src={track?.images[2]?.url ?? track?.images[1]?.url}
+              src={track?.album?.images[2]?.url ?? track?.album?.images[1]?.url}
               alt=""
               className="img"
               width="48"
               height="48"
             />
           ) : (
-            <div className="img">{track?.images?.[0].url}</div>
+            <div className="img">{track?.album?.images?.[0].url}</div>
           )
         ) : null}
         <div className="trackArtistsContainer">
@@ -365,7 +365,9 @@ export default function CardTrack({
           }}
         />
         <p className="trackArtists time">
-          {track?.duration ? formatTime((track?.duration || 0) / 1000) : ""}
+          {track?.duration_ms
+            ? formatTime((track?.duration_ms || 0) / 1000)
+            : ""}
         </p>
         {onClickAdd && (
           <button
@@ -406,7 +408,9 @@ export default function CardTrack({
       <style jsx>{`
         .playbutton {
           background-image: ${type === "presentation"
-            ? `url(${track?.images?.[2]?.url ?? track?.images?.[1]?.url})`
+            ? `url(${
+                track?.album?.images?.[2]?.url ?? track?.album?.images?.[1]?.url
+              })`
             : "unset"};
         }
         .trackItem :global(.trackHeart) {

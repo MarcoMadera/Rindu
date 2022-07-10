@@ -1,10 +1,13 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import TopBar from "../components/TopBar";
-import UserContext, { Context, UserContextProvider } from "context/UserContext";
+import UserContext, {
+  IUserContext,
+  UserContextProvider,
+} from "context/UserContext";
 import { ToastContextProvider } from "context/ToastContext";
 import HeaderContext, {
-  Context as HContext,
+  IHeaderContext as HContext,
   HeaderContextProvider,
 } from "context/HeaderContext";
 import SpotifyContext, { SpotifyContextProvider } from "context/SpotifyContext";
@@ -144,7 +147,7 @@ const LoggedInTemplate: ComponentStory<typeof TopBar> = () => (
           },
           isLogin: true,
           accessToken: text("accessToken", "you need a token here"),
-        } as Context
+        } as IUserContext
       }
     >
       <HeaderContextProvider>
@@ -183,7 +186,7 @@ const LoggedInWithExtraFieldTemplate: ComponentStory<typeof TopBar> = () => (
           },
           isLogin: true,
           accessToken: text("accessToken", "you need a token here"),
-        } as Context
+        } as IUserContext
       }
     >
       <HeaderContext.Provider
@@ -214,7 +217,7 @@ const LoggedInWithExtraFieldTemplate: ComponentStory<typeof TopBar> = () => (
         <SpotifyContext.Provider
           value={
             {
-              playlistDetails: { name: "Extra field" },
+              pageDetails: { name: "Extra field" },
               playlists: [] as PlaylistItems,
             } as ISpotifyContext
           }

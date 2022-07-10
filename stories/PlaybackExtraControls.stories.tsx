@@ -2,7 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import PlaybackExtraControls from "../components/PlaybackExtraControls";
 import { ToastContextProvider } from "context/ToastContext";
-import UserContext, { Context } from "context/UserContext";
+import UserContext, { IUserContext } from "context/UserContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import SpotifyContext from "context/SpotifyContext";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
@@ -11,11 +11,7 @@ import {
   text,
   optionsKnob as options,
 } from "@storybook/addon-knobs";
-import {
-  AllTracksFromAPlayList,
-  ISpotifyContext,
-  PlaylistItems,
-} from "types/spotify";
+import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
 export default {
   title: "Components/PlaybackExtraControls",
   component: PlaybackExtraControls,
@@ -54,7 +50,7 @@ const Template: ComponentStory<typeof PlaybackExtraControls> = () => {
                 ),
               },
               accessToken: text("accessToken", "you need a token here"),
-            } as Context
+            } as IUserContext
           }
         >
           <HeaderContextProvider>
@@ -63,7 +59,7 @@ const Template: ComponentStory<typeof PlaybackExtraControls> = () => {
                 {
                   deviceId: text("deviceId", ""),
                   playlists: [] as PlaylistItems,
-                  allTracks: [] as AllTracksFromAPlayList,
+                  allTracks: [] as ITrack[],
                   currrentlyPlaying: undefined,
                   playlistPlayingId: undefined,
                   isPlaying: false,
