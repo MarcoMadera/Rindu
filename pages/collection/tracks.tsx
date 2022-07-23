@@ -5,6 +5,7 @@ import { serverRedirect } from "utils/serverRedirect";
 import { getAuth } from "utils/getAuth";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import { getMyLikedSongs } from "utils/spotifyCalls/getMyLikedSongs";
+import { isCorruptedTrack } from "utils/isCorruptedTrack";
 
 interface PlaylistProps {
   pageDetails: ISpotifyContext["pageDetails"];
@@ -91,13 +92,9 @@ export async function getServerSideProps({
       tracksInLibrary,
       playListTracks: playListTracks.items.map(
         ({ track, added_at }, i: number) => {
-          const isCorrupted =
-            !track?.name &&
-            !track?.artists?.[0]?.name &&
-            track?.duration_ms === 0;
           return {
             ...track,
-            corruptedTrack: isCorrupted,
+            corruptedTrack: isCorruptedTrack(track),
             position: i,
             added_at,
           };

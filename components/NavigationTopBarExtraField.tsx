@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { ReactElement } from "react";
 
-export default function NavigationTopBarExtraField(): ReactElement {
+interface NavigationTopBarExtraFieldProps {
+  selected: number;
+}
+
+export default function NavigationTopBarExtraField({
+  selected,
+}: NavigationTopBarExtraFieldProps): ReactElement {
   return (
     <nav className="extraField-nav">
       <ul>
@@ -26,6 +32,11 @@ export default function NavigationTopBarExtraField(): ReactElement {
           </Link>
         </li>
       </ul>
+      <style jsx>{`
+        li:nth-of-type(${selected}) a {
+          background-color: #343434;
+        }
+      `}</style>
       <style jsx>{`
         ul {
           display: flex;

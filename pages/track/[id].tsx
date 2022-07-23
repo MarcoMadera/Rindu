@@ -25,6 +25,7 @@ import BigPill from "components/BigPill";
 import { within } from "utils/whitin";
 import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
+import useToggle from "hooks/useToggle";
 
 interface TrackPageProps {
   track: SpotifyApi.TrackObjectFull | null;
@@ -44,7 +45,7 @@ export default function TrackPage({
   });
   const { setUser, setAccessToken } = useAuth();
   const [isTrackInLibrary, setIsTrackInLibrary] = useState(false);
-  const [showMoreTopTracks, setShowMoreTopTracks] = useState(false);
+  const [showMoreTopTracks, setShowMoreTopTracks] = useToggle(false);
   const [artistTopTracks, setArtistTopTracks] = useState<
     SpotifyApi.TrackObjectFull[]
   >([]);
@@ -104,9 +105,9 @@ export default function TrackPage({
 
   useEffect(() => {
     if (!track) return;
-    checkTracksInLibrary([track.id]).then((res) => {
-      if (res) {
-        setIsTrackInLibrary(res[0]);
+    checkTracksInLibrary([track.id]).then((tracksInLibrary) => {
+      if (tracksInLibrary) {
+        setIsTrackInLibrary(tracksInLibrary[0]);
       }
     });
   }, [track]);
@@ -150,116 +151,112 @@ export default function TrackPage({
         release_date={track?.album?.release_date ?? ""}
         data={track}
       />
-      <div className="tracksContainer">
-        <div className="content">
-          <div className="options">
-            <PlayButton
-              size={56}
-              centerSize={28}
-              isSingle
-              track={track ?? undefined}
-            />
-            <div className="info">
-              <Heart
-                active={isTrackInLibrary}
-                style={{ width: 80, height: 80 }}
-                handleLike={async () => {
-                  if (!track) return null;
-                  const saveRes = await saveTracksToLibrary([track.id]);
-                  if (saveRes) {
-                    addToast({
-                      variant: "success",
-                      message: "Song added to library.",
-                    });
-                    return true;
-                  }
-                  return null;
-                }}
-                handleDislike={async () => {
-                  if (!track) return null;
-                  const removeRes = await removeTracksFromLibrary([track.id]);
-                  if (removeRes) {
-                    addToast({
-                      variant: "success",
-                      message: "Song removed from library.",
-                    });
-                    return true;
-                  }
-                  return null;
-                }}
-              />
-            </div>
-          </div>
-          {lyrics ? (
-            <div className="lyrics-container">
-              <Heading number={3} as="h2">
-                Letra
-              </Heading>
-              <p className="lyrics">{lyrics}</p>
-            </div>
-          ) : null}
-          {artistInfo && (
-            <BigPill
-              img={artistInfo?.images?.[0]?.url}
-              title={"ARTIST"}
-              subTitle={artistInfo.name}
-              href={`/artist/${artistInfo.id}`}
-            />
-          )}
-          {artistTopTracks.length > 0 && (
-            <div className="topTracks">
-              <div className="topTracks-header">
-                <span className="topTracks-header-d">
-                  Canciones populares de
-                </span>
-                <Heading number={3} as="h2">
-                  {track?.artists[0].name ?? ""}
-                </Heading>
-              </div>
-              {artistTopTracks?.map((artistTrack, i) => {
-                const maxToShow = showMoreTopTracks ? 10 : 5;
-                if (i >= maxToShow) {
-                  return null;
+      <div className="content">
+        <div className="options">
+          <PlayButton
+            size={56}
+            centerSize={28}
+            isSingle
+            track={track ?? undefined}
+          />
+          <div className="info">
+            <Heart
+              active={isTrackInLibrary}
+              style={{ width: 80, height: 80 }}
+              handleLike={async () => {
+                if (!track) return null;
+                const saveRes = await saveTracksToLibrary([track.id]);
+                if (saveRes) {
+                  addToast({
+                    variant: "success",
+                    message: "Song added to library.",
+                  });
+                  return true;
                 }
-                const isTheSameAsTrack = artistTrack.uri
-                  ? artistTrack.uri === track?.uri
-                  : false;
-                const mainTrackExistInArtistTopTracks = sameTrackIndex >= 0;
-                const isValidPosition = i - sameTrackIndex > 0;
-                const mainTrackIsFirstPosition = isTheSameAsTrack && i === 0;
-                const position =
-                  mainTrackExistInArtistTopTracks && isValidPosition
-                    ? i
-                    : isTheSameAsTrack || mainTrackIsFirstPosition
-                    ? 0
-                    : i + 1;
-
-                return (
-                  <CardTrack
-                    accessToken={accessToken ?? ""}
-                    isTrackInLibrary={false}
-                    playlistUri=""
-                    track={artistTrack}
-                    key={artistTrack.id}
-                    type="playlist"
-                    position={position}
-                    visualPosition={i + 1}
-                    isSingleTrack
-                  />
-                );
-              })}
-              <button
-                type="button"
-                className="show-more"
-                onClick={() => {
-                  setShowMoreTopTracks((prev) => !prev);
-                }}
-              >
-                {showMoreTopTracks ? "MOSTRAR MENOS" : "MOSTRAR MÁS"}
-              </button>
-            </div>
-          )}
+                return null;
+              }}
+              handleDislike={async () => {
+                if (!track) return null;
+                const removeRes = await removeTracksFromLibrary([track.id]);
+                if (removeRes) {
+                  addToast({
+                    variant: "success",
+                    message: "Song removed from library.",
+                  });
+                  return true;
+                }
+                return null;
+              }}
+            />
+          </div>
         </div>
+        {lyrics ? (
+          <div className="lyrics-container">
+            <Heading number={3} as="h2">
+              Letra
+            </Heading>
+            <p className="lyrics">{lyrics}</p>
+          </div>
+        ) : null}
+        {artistInfo && (
+          <BigPill
+            img={artistInfo?.images?.[0]?.url}
+            title={"ARTIST"}
+            subTitle={artistInfo.name}
+            href={`/artist/${artistInfo.id}`}
+          />
+        )}
+        {artistTopTracks.length > 0 && (
+          <div className="topTracks">
+            <div className="topTracks-header">
+              <span>Canciones populares de</span>
+              <Heading number={3} as="h2">
+                {track?.artists[0].name ?? ""}
+              </Heading>
+            </div>
+            {artistTopTracks?.map((artistTrack, i) => {
+              const maxToShow = showMoreTopTracks ? 10 : 5;
+              if (i >= maxToShow) {
+                return null;
+              }
+              const isTheSameAsTrack = artistTrack.uri
+                ? artistTrack.uri === track?.uri
+                : false;
+              const mainTrackExistInArtistTopTracks = sameTrackIndex >= 0;
+              const isValidPosition = i - sameTrackIndex > 0;
+              const mainTrackIsFirstPosition = isTheSameAsTrack && i === 0;
+              const position =
+                mainTrackExistInArtistTopTracks && isValidPosition
+                  ? i
+                  : isTheSameAsTrack || mainTrackIsFirstPosition
+                  ? 0
+                  : i + 1;
+
+              return (
+                <CardTrack
+                  accessToken={accessToken ?? ""}
+                  isTrackInLibrary={false}
+                  playlistUri=""
+                  track={artistTrack}
+                  key={artistTrack.id}
+                  type="playlist"
+                  position={position}
+                  visualPosition={i + 1}
+                  isSingleTrack
+                />
+              );
+            })}
+            <button
+              type="button"
+              className="show-more"
+              onClick={() => {
+                setShowMoreTopTracks.toggle();
+              }}
+            >
+              {showMoreTopTracks ? "MOSTRAR MENOS" : "MOSTRAR MÁS"}
+            </button>
+          </div>
+        )}
       </div>
       <style jsx>{`
         .topTracks-header {
@@ -269,7 +266,7 @@ export default function TrackPage({
         }
         .topTracks-header span {
           display: block;
-          color: rgb(179, 179, 179);
+          color: #b3b3b3;
         }
         .info :global(button) {
           margin-left: 12px;

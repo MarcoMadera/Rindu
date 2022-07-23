@@ -12,6 +12,7 @@ import useSpotify from "hooks/useSpotify";
 import { CardType } from "components/CardContent";
 import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
+import Grid from "components/Grid";
 
 interface CategoryProps {
   categoryInfo: SpotifyApi.SingleCategoryResponse | null;
@@ -49,7 +50,7 @@ export default function Category({
       )}
       {categoryInfo && <Heading number={1}>{categoryInfo?.name}</Heading>}
       {playlists && playlists?.items?.length > 0 ? (
-        <section>
+        <Grid>
           {playlists?.items?.map(({ images, name, description, id }) => {
             return (
               <PresentationCard
@@ -62,18 +63,10 @@ export default function Category({
               />
             );
           })}
-        </section>
+        </Grid>
       ) : (
         <p>This section is empty</p>
       )}
-      <style jsx>{`
-        section {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-          grid-gap: 24px;
-          justify-content: space-between;
-        }
-      `}</style>
     </ContentContainer>
   );
 }

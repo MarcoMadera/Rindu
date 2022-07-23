@@ -1,4 +1,5 @@
 import { ITrack } from "types/spotify";
+import { isCorruptedTrack } from "./isCorruptedTrack";
 
 export async function getAllTracksFromPlaylist(
   id: string | undefined,
@@ -26,13 +27,9 @@ export async function getAllTracksFromPlaylist(
     const data: SpotifyApi.PlaylistTrackResponse | undefined = await res.json();
     const newTracks: ITrack[] | undefined = data?.items?.map(
       ({ track, added_at, is_local }, index) => {
-        const isCorrupted =
-          !track?.name &&
-          !track?.artists?.[0]?.name &&
-          track?.duration_ms === 0;
         return {
           ...track,
-          corruptedTrack: isCorrupted,
+          corruptedTrack: isCorruptedTrack(track),
           position: limit * i + index,
           added_at,
           is_local,

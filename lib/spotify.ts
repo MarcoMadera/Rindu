@@ -6,6 +6,7 @@ import {
   RemoveTracksResponse,
   ITrack,
 } from "types/spotify";
+import { isCorruptedTrack } from "utils/isCorruptedTrack";
 import { getAccessToken } from "utils/spotifyCalls/getAccessToken";
 
 const SPOTIFY_CLIENT_ID = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
@@ -132,11 +133,9 @@ export const getAllTracksFromPlaylist = async (
 
     tracks = body.items;
     return tracks.map(({ track, added_at, is_local }, i) => {
-      const isCorrupted =
-        !track?.name && !track?.artists?.[0]?.name && track?.duration_ms === 0;
       return {
         ...track,
-        corruptedTrack: isCorrupted,
+        corruptedTrack: isCorruptedTrack(track),
         position: i,
         added_at,
         is_local,

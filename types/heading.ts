@@ -1,3 +1,5 @@
+import { Range } from "./customTypes";
+
 export enum AsType {
   H1 = "h1",
   H2 = "h2",
@@ -8,17 +10,6 @@ export enum AsType {
   P = "p",
   SPAN = "span",
 }
-type Enumerate<
-  N extends number,
-  Acc extends number[] = []
-> = Acc["length"] extends N
-  ? Acc[number]
-  : Enumerate<N, [...Acc, Acc["length"]]>;
-
-type Range<F extends number, T extends number> = Exclude<
-  Enumerate<T>,
-  Enumerate<F>
->;
 
 export interface HeadingProps {
   number: Range<1, 7>;
