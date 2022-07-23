@@ -243,7 +243,7 @@ export async function getServerSideProps({
     trackIds ?? [],
     accessToken || ""
   );
-  const tracks: ITrack[] | undefined = album?.tracks.items.map((track) => {
+  const tracks: ITrack[] | undefined = album?.tracks.items.map((track, i) => {
     const isCorrupted =
       !track?.name && !track?.artists?.[0]?.name && track?.duration_ms === 0;
     return {
@@ -257,7 +257,7 @@ export async function getServerSideProps({
       is_local: false,
       corruptedTrack: isCorrupted,
       added_at: album.release_date,
-      position: track.track_number - 1,
+      position: album.album_type === "compilation" ? i : track.track_number - 1,
     };
   });
 
