@@ -9,6 +9,7 @@ import {
   useId,
   PropsWithChildren,
 } from "react";
+import Heading from "./Heading";
 import { Chevron } from "./icons/Chevron";
 
 interface CarouselProps {
@@ -66,7 +67,9 @@ export default function Carousel({
   return (
     <div className="carousel-container" ref={containerRef}>
       <div className="header">
-        <h2 id={`title-${id}`}>{title}</h2>
+        <Heading id={`title-${id}`} number={2}>
+          {title}
+        </Heading>
         <div className="button-container">
           {maxMoves > 0 ? (
             <>
@@ -133,22 +136,6 @@ export default function Carousel({
           grid-gap: ${gap}px;
           margin: 20px 0 50px 0;
           transition: 400ms ease-in;
-        }
-        h2 {
-          color: #fff;
-          display: inline-block;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-size: 2.2rem;
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 45px;
-          text-transform: none;
-          margin: 0;
-          z-index: 1;
-          position: relative;
         }
         .button-container {
           display: flex;

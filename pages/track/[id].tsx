@@ -24,6 +24,7 @@ import useToast from "hooks/useToast";
 import BigPill from "components/BigPill";
 import { within } from "utils/whitin";
 import ContentContainer from "components/ContentContainer";
+import Heading from "components/Heading";
 
 interface TrackPageProps {
   track: SpotifyApi.TrackObjectFull | null;
@@ -191,7 +192,9 @@ export default function TrackPage({
           </div>
           {lyrics ? (
             <div className="lyrics-container">
-              <h2>Letra</h2>
+              <Heading number={3} as="h2">
+                Letra
+              </Heading>
               <p className="lyrics">{lyrics}</p>
             </div>
           ) : null}
@@ -209,7 +212,9 @@ export default function TrackPage({
                 <span className="topTracks-header-d">
                   Canciones populares de
                 </span>
-                <h2>{track?.artists[0].name ?? ""}</h2>
+                <Heading number={3} as="h2">
+                  {track?.artists[0].name ?? ""}
+                </Heading>
               </div>
               {artistTopTracks?.map((artistTrack, i) => {
                 const maxToShow = showMoreTopTracks ? 10 : 5;
@@ -265,20 +270,6 @@ export default function TrackPage({
         .topTracks-header span {
           display: block;
           color: rgb(179, 179, 179);
-        }
-        h2 {
-          color: #fff;
-          display: inline-block;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-size: 24px;
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 28px;
-          text-transform: none;
-          margin: 0;
         }
         .info :global(button) {
           margin-left: 12px;

@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { ReactElement } from "react";
+import { Eyebrow } from "./Eyebrow";
+import Heading from "./Heading";
 
 interface BigPillProps {
   img?: string;
@@ -24,8 +26,10 @@ export default function BigPill({
           <div className="img"></div>
         )}
         <div className="big-pill-content">
-          <span>{title}</span>
-          <h2>{subTitle}</h2>
+          <Eyebrow size="medium">{title}</Eyebrow>
+          <Heading number={3} as={"h2"}>
+            {subTitle}
+          </Heading>
         </div>
         <style jsx>{`
           .big-pill {
@@ -60,16 +64,6 @@ export default function BigPill({
             flex-direction: column;
             width: 100%;
             height: 100%;
-          }
-          .big-pill-content h2 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-          }
-          .big-pill-content h3 {
-            font-size: 1rem;
-            font-weight: bold;
-            margin-bottom: 10px;
           }
         `}</style>
       </a>

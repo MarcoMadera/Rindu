@@ -19,6 +19,7 @@ import { List } from "react-virtualized";
 import { LoadingSpinner } from "./LoadingSpinner";
 import useToast from "hooks/useToast";
 import { analyzePlaylist } from "utils/analyzePlaylist";
+import Heading from "./Heading";
 
 interface RemoveTracksModalProps {
   openModal: boolean;
@@ -136,10 +137,10 @@ export default function RemoveTracksModal({
         {!isLoadingComplete ? (
           <div className="loading-message">
             <LoadingSpinner />
-            <h3 id="globalModalTitle">Analizando playlist</h3>
+            <Heading number={2}>Analizando playlist</Heading>
           </div>
         ) : (
-          <h3 id="globalModalTitle">
+          <Heading number={2} textAlign="center">
             {duplicateTracksIdx.length === 0 && corruptedSongsIdx.length === 0
               ? "No hay canciones corruptas ni duplicadas"
               : duplicateTracksIdx.length === 1 &&
@@ -156,7 +157,7 @@ export default function RemoveTracksModal({
               : duplicateTracksIdx.length > 1 && corruptedSongsIdx.length === 0
               ? "Hay " + duplicateTracksIdx.length + " canciones duplicadas"
               : `${corruptedSongsIdx.length} canciones corruptas y ${duplicateTracksIdx.length} canciones duplicadas`}
-          </h3>
+          </Heading>
         )}
         <div className="tracks">
           {tracksToRemove.length > 0 ? (
@@ -175,6 +176,7 @@ export default function RemoveTracksModal({
                       track={tracksToRemove[index]}
                       playlistUri={pageDetails?.uri ?? ""}
                       type="album"
+                      position={tracksToRemove[index].position}
                     />
                   </div>
                 );
@@ -297,10 +299,6 @@ export default function RemoveTracksModal({
         }
       `}</style>
       <style jsx>{`
-        h3 {
-          text-align: center;
-          margin: 0 0 10px 0;
-        }
         .overlay {
           position: fixed;
           top: 0px;

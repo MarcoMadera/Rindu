@@ -8,6 +8,7 @@ import useSpotify from "hooks/useSpotify";
 import { CardType } from "components/CardContent";
 import NavigationTopBarExtraField from "components/NavigationTopBarExtraField";
 import ContentContainer from "components/ContentContainer";
+import Heading from "components/Heading";
 
 export default function CollectionPlaylists(): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
@@ -44,7 +45,9 @@ export default function CollectionPlaylists(): ReactElement {
           <title>Rindu - Library</title>
         </Head>
       )}
-      <h2>Artists</h2>
+      <Heading number={3} as="h2">
+        Artists
+      </Heading>
       <section>
         {artists?.length > 0
           ? artists.map(({ id, images, name }) => {
@@ -62,20 +65,6 @@ export default function CollectionPlaylists(): ReactElement {
           : null}
       </section>
       <style jsx>{`
-        h2 {
-          color: #fff;
-          display: inline-block;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-size: 24px;
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 28px;
-          text-transform: none;
-          margin: 0;
-        }
         section {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));

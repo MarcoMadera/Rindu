@@ -3,10 +3,12 @@ import useSpotify from "hooks/useSpotify";
 import useToast from "hooks/useToast";
 import Link from "next/link";
 import { ReactElement } from "react";
+import { AsType } from "types/heading";
 import { formatTime } from "utils/formatTime";
 import { getTimeAgo } from "utils/getTimeAgo";
 import { playCurrentTrack } from "utils/playCurrentTrack";
 import ExplicitSign from "./ExplicitSign";
+import Heading from "./Heading";
 import { Pause, Play } from "./icons";
 import Add from "./icons/Add";
 import ThreeDots from "./icons/ThreeDots";
@@ -47,7 +49,9 @@ export default function EpisodeCard({
       <div className="header">
         <Link href={`/episode/${item.id}`}>
           <a>
-            <h4>{item.name}</h4>
+            <Heading number={5} as={AsType.SPAN}>
+              {item.name}
+            </Heading>
           </a>
         </Link>
       </div>
@@ -205,19 +209,6 @@ export default function EpisodeCard({
         .header a {
           color: #fff;
           text-decoration: none;
-        }
-        .header h4 {
-          align-items: center;
-          display: flex;
-          overflow: hidden;
-          padding: 0px;
-          line-height: 24px;
-          word-break: break-word;
-          color: #fff;
-          font-size: 16px;
-          font-weight: 700;
-          letter-spacing: normal;
-          margin: 0;
         }
         .description {
           grid-area: description;

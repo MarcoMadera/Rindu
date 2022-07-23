@@ -28,6 +28,7 @@ export default function ContentContainer({
         @media (max-width: 1000px) {
           main {
             width: 100vw;
+            margin: 0;
           }
         }
       }
