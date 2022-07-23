@@ -25,6 +25,7 @@ import { checkUsersFollowAPlaylist } from "utils/spotifyCalls/checkUsersFollowAP
 import { followPlaylist } from "utils/spotifyCalls/followPlaylist";
 import { unfollowPlaylist } from "utils/spotifyCalls/unfollowPlaylist";
 import { HeaderType } from "types/pageHeader";
+import ContentContainer from "components/ContentContainer";
 
 const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
   pageDetails,
@@ -134,7 +135,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
   }, []);
 
   return (
-    <main>
+    <ContentContainer hasPageHeader>
       {!isPlaying && (
         <Head>
           <title>{`Rindu: ${pageDetails?.name}`}</title>
@@ -420,19 +421,8 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
         .trc :global(.titles span:nth-of-type(5)) {
           justify-content: center;
         }
-        main {
-          display: block;
-          margin: -60px auto 0 auto;
-          height: calc(100vh - 90px);
-          width: calc(100vw - 245px);
-        }
-        @media (max-width: 1000px) {
-          main {
-            width: 100vw;
-          }
-        }
       `}</style>
-    </main>
+    </ContentContainer>
   );
 };
 

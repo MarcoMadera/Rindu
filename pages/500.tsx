@@ -1,3 +1,4 @@
+import ContentContainer from "components/ContentContainer";
 import useAnalytics from "hooks/useAnalytics";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -15,7 +16,7 @@ export default function Custom500(): ReactElement {
   }, [pathname, trackWithGoogleAnalitycs]);
 
   return (
-    <main id="main">
+    <ContentContainer id="main">
       <Head>
         <title>Rindu - 😫 500 - Servidor?</title>
       </Head>
@@ -25,15 +26,13 @@ export default function Custom500(): ReactElement {
         h1 {
           margin: 0;
           font-size: 100px;
-        }
-        main {
-          height: calc(100vh - 257px);
           text-align: center;
         }
         p {
           font-size: 30px;
+          text-align: center;
         }
       `}</style>
-    </main>
+    </ContentContainer>
   );
 }

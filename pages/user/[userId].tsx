@@ -10,6 +10,7 @@ import { getPlaylistsFromUser } from "utils/spotifyCalls/getPlaylistsFromUser";
 import PageHeader from "components/PageHeader";
 import { HeaderType } from "types/pageHeader";
 import { SITE_URL } from "utils/constants";
+import ContentContainer from "components/ContentContainer";
 
 interface CurrentUserProps {
   currentUser: SpotifyApi.UserObjectPublic | null;
@@ -51,7 +52,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
   ]);
 
   return (
-    <main>
+    <ContentContainer hasPageHeader>
       <PageHeader
         type={HeaderType.profile}
         title={currentUser?.display_name ?? ""}
@@ -63,20 +64,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
         totalPublicPlaylists={currentUserPlaylists?.total ?? 0}
         totalFollowers={currentUser?.followers?.total ?? 0}
       />
-      <style jsx>{`
-        main {
-          display: block;
-          margin: -60px auto 0 auto;
-          height: calc(100vh - 90px);
-          width: calc(100vw - 245px);
-        }
-        @media (max-width: 1000px) {
-          main {
-            width: 100vw;
-          }
-        }
-      `}</style>
-    </main>
+    </ContentContainer>
   );
 };
 

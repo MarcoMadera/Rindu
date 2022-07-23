@@ -16,6 +16,7 @@ import { checkEpisodesInLibrary } from "utils/spotifyCalls/checkEpisodesInLibrar
 import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFromLibrary";
 import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
 import useSpotify from "hooks/useSpotify";
+import ContentContainer from "components/ContentContainer";
 
 interface EpisodePageProps {
   episode: SpotifyApi.EpisodeObject | null;
@@ -128,7 +129,7 @@ export default function EpisodePage({
   }, [episode]);
 
   return (
-    <main>
+    <ContentContainer hasPageHeader>
       {!isPlaying && (
         <Head>
           <title>Rindu - {episode?.name ?? "Canciones"}</title>
@@ -185,17 +186,6 @@ export default function EpisodePage({
         </Link>
       </div>
       <style jsx>{`
-        main {
-          display: block;
-          margin: -60px auto 0 auto;
-          height: calc(100vh - 90px);
-          width: calc(100vw - 245px);
-        }
-        @media (max-width: 1000px) {
-          main {
-            width: 100vw;
-          }
-        }
         .container {
           margin: 0 32px;
           position: relative;
@@ -285,7 +275,7 @@ export default function EpisodePage({
           flex-direction: row;
         }
       `}</style>
-    </main>
+    </ContentContainer>
   );
 }
 

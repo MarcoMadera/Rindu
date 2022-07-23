@@ -30,6 +30,7 @@ import { getSetLists, SetLists } from "utils/getSetLists";
 import { ArtistsInfo, getArtistInfo } from "utils/getArtistInfo";
 import { conjuction } from "utils/conjuction";
 import { CardType } from "components/CardContent";
+import ContentContainer from "components/ContentContainer";
 
 interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
@@ -157,7 +158,7 @@ export default function ArtistPage({
   ]);
 
   return (
-    <main>
+    <ContentContainer hasPageHeader>
       <PageHeader
         type={HeaderType.artist}
         title={currentArtist?.name ?? ""}
@@ -396,12 +397,6 @@ export default function ArtistPage({
         ) : null}
       </div>
       <style jsx>{`
-        main {
-          display: block;
-          margin: -60px auto 0 auto;
-          height: calc(100vh - 90px);
-          width: calc(100vw - 245px);
-        }
         .attribution {
           margin-top: 16px;
           padding-bottom: 24px;
@@ -613,11 +608,6 @@ export default function ArtistPage({
           flex: 60%;
           height: fit-content;
         }
-        @media (max-width: 1000px) {
-          main {
-            width: 100vw;
-          }
-        }
         @media (max-width: 500px) {
           .popular-content,
           .about {
@@ -625,7 +615,7 @@ export default function ArtistPage({
           }
         }
       `}</style>
-    </main>
+    </ContentContainer>
   );
 }
 
