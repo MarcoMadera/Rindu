@@ -10,6 +10,7 @@ import { CardType } from "components/CardContent";
 import NavigationTopBarExtraField from "components/NavigationTopBarExtraField";
 import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
+import Grid from "components/Grid";
 
 export default function CollectionAlbums(): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
@@ -18,7 +19,7 @@ export default function CollectionAlbums(): ReactElement {
   const { isPlaying } = useSpotify();
 
   useEffect(() => {
-    setElement(() => <NavigationTopBarExtraField />);
+    setElement(() => <NavigationTopBarExtraField selected={4} />);
 
     return () => {
       setElement(null);
@@ -48,7 +49,7 @@ export default function CollectionAlbums(): ReactElement {
       <Heading number={3} as="h2">
         Albums
       </Heading>
-      <section>
+      <Grid>
         {albums?.length > 0
           ? albums.map(({ album }) => {
               const artistNames = album?.artists?.map((artist) => artist.name);
@@ -67,31 +68,7 @@ export default function CollectionAlbums(): ReactElement {
               );
             })
           : null}
-      </section>
-      <style jsx>{`
-        main {
-          display: block;
-          min-height: calc(100vh - 90px);
-          width: calc(100vw - 245px);
-          margin: 0 auto;
-          padding: 0px 30px;
-        }
-        @media (max-width: 1000px) {
-          main {
-            width: 100vw;
-          }
-        }
-        section {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-          grid-gap: 24px;
-          margin: 20px 0 50px 0;
-          justify-content: space-between;
-        }
-        :global(.extraField-nav li:nth-of-type(4) a) {
-          background-color: #343434;
-        }
-      `}</style>
+      </Grid>
     </ContentContainer>
   );
 }

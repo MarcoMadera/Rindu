@@ -23,6 +23,7 @@ import PageHeader from "components/PageHeader";
 import { SITE_URL } from "utils/constants";
 import useToast from "hooks/useToast";
 import ContentContainer from "components/ContentContainer";
+import { isCorruptedTrack } from "utils/isCorruptedTrack";
 
 interface AlbumPageProps {
   album: SpotifyApi.SingleAlbumResponse | null;
@@ -244,8 +245,6 @@ export async function getServerSideProps({
     accessToken || ""
   );
   const tracks: ITrack[] | undefined = album?.tracks.items.map((track, i) => {
-    const isCorrupted =
-      !track?.name && !track?.artists?.[0]?.name && track?.duration_ms === 0;
     return {
       ...track,
       album: {
@@ -255,7 +254,7 @@ export async function getServerSideProps({
         uri: album.uri,
       },
       is_local: false,
-      corruptedTrack: isCorrupted,
+      corruptedTrack: isCorruptedTrack(track),
       added_at: album.release_date,
       position: album.album_type === "compilation" ? i : track.track_number - 1,
     };

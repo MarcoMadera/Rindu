@@ -5,12 +5,13 @@ import useOnScreen from "hooks/useOnScreen";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, ReactElement, useEffect, useRef, useState } from "react";
+import { ITrack } from "types/spotify";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
 import Heading from "./Heading";
 
 interface FirstTrackContainerProps {
-  preview: string | null;
-  track: SpotifyApi.TrackObjectFull;
+  preview?: string | null;
+  track: ITrack;
   backgroundColor?: string;
   position?: number;
 }
@@ -68,7 +69,7 @@ export default function FirstTrackContainer({
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={track.album.images[1].url}
+            src={track.album?.images[1].url}
             width={100}
             height={100}
             alt=""

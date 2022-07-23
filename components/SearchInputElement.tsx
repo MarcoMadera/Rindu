@@ -10,6 +10,7 @@ import {
   MutableRefObject,
 } from "react";
 import Search from "./icons/Search";
+import { isCorruptedTrack } from "utils/isCorruptedTrack";
 
 interface InputElementProps {
   setData: Dispatch<SetStateAction<SpotifyApi.SearchResponse | null>>;
@@ -63,14 +64,10 @@ export function SearchInputElement({
         setAllTracks(() => {
           if (!searchData?.tracks) return [];
           return searchData.tracks?.items?.map((track) => {
-            const isCorrupted =
-              !track?.name &&
-              !track?.artists?.[0]?.name &&
-              track?.duration_ms === 0;
             return {
               ...track,
               audio: track.preview_url,
-              corruptedTrack: isCorrupted,
+              corruptedTrack: isCorruptedTrack(track),
             };
           });
         });

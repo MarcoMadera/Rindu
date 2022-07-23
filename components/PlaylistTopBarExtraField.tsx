@@ -1,10 +1,11 @@
 import { ReactElement } from "react";
 import useSpotify from "hooks/useSpotify";
 import { PlayButton } from "./PlayButton";
+import { ITrack } from "types/spotify";
 
 interface PlaylistTopBarExtraFieldProps {
   isSingle?: boolean;
-  track?: SpotifyApi.TrackObjectFull;
+  track?: ITrack;
   uri?: string;
 }
 

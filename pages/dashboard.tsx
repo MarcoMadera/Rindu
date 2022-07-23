@@ -15,21 +15,20 @@ import useHeader from "hooks/useHeader";
 import { useRouter } from "next/router";
 import { getRecommendations } from "utils/spotifyCalls/getRecommendations";
 import { getMyTop, TopType } from "utils/spotifyCalls/getMyTop";
-import CardTrack from "components/CardTrack";
 import { getFeaturedPlaylists } from "utils/spotifyCalls/getFeaturedPlaylists";
 import { getNewReleases } from "utils/spotifyCalls/getNewReleases";
 import { getCategories } from "utils/spotifyCalls/getCategories";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
-import FirstTrackContainer from "components/FirstTrackContainer";
 import useSpotify from "hooks/useSpotify";
 import { takeCookie } from "utils/cookies";
 import { RefreshResponse } from "types/spotify";
-import SingleTrackCard from "components/SingleTrackCard";
 import Carousel from "components/Carousel";
 import SubTitle from "components/SubtTitle";
 import { CardType } from "components/CardContent";
 import ContentContainer from "components/ContentContainer";
-import Heading from "components/Heading";
+import TopTracks from "components/TopTracks";
+import { isCorruptedTrack } from "utils/isCorruptedTrack";
+import MainTracks from "components/MainTracks";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -41,17 +40,6 @@ interface DashboardProps {
   topArtists: SpotifyApi.UsersTopArtistsResponse | null;
   tracksRecommendations: SpotifyApi.TrackObjectFull[] | null;
   tracksInLibrary: boolean[] | null;
-}
-
-function divideArray<T>(array: T[], chunkSize: number) {
-  const res: T[][] = [];
-  array.forEach((_, i) => {
-    const condition = i % chunkSize;
-    if (!condition) {
-      res.push(array.slice(i, i + chunkSize));
-    }
-  });
-  return res;
 }
 
 const Dashboard: NextPage<DashboardProps> = ({
@@ -80,15 +68,11 @@ const Dashboard: NextPage<DashboardProps> = ({
     ) {
       const seeds: string[] = [];
       recentlyPlayed.forEach((track) => {
-        if (track.id) {
-          seeds.push(track.id);
-        }
+        if (track.id) seeds.push(track.id);
       });
       getRecommendations(seeds.slice(0, 5), user?.country, accessToken).then(
-        (res) => {
-          if (res) {
-            setRecentListeningRecommendations(res);
-          }
+        (tracks) => {
+          if (tracks) setRecentListeningRecommendations(tracks);
         }
       );
     }
@@ -110,14 +94,10 @@ const Dashboard: NextPage<DashboardProps> = ({
     if (!tracksRecommendations) return;
     setAllTracks(() => {
       return tracksRecommendations?.map((track) => {
-        const isCorrupted =
-          !track?.name &&
-          !track?.artists?.[0]?.name &&
-          track?.duration_ms === 0;
         return {
           ...track,
           audio: track.preview_url,
-          corruptedTrack: isCorrupted,
+          corruptedTrack: isCorruptedTrack(track),
         };
       });
     });
@@ -129,213 +109,140 @@ const Dashboard: NextPage<DashboardProps> = ({
   }, [router, setHeaderColor]);
 
   return (
-    <>
-      <ContentContainer>
-        {topTracks && topTracks?.items.length > 0 ? (
-          <>
-            <Heading number={2}>Esto te encanta</Heading>
-            <section className="top-tracks">
-              {topTracks &&
-                topTracks?.items?.map((track, i) => {
-                  if (i >= 9) return null;
-                  return <SingleTrackCard key={track.id} track={track} />;
-                })}
-            </section>
-          </>
-        ) : null}
-        {featuredPlaylists &&
-        featuredPlaylists?.playlists?.items?.length > 0 ? (
-          <Carousel
-            title={featuredPlaylists.message ?? "Disfruta de estás playlists"}
-            gap={24}
-          >
-            {featuredPlaylists &&
-              featuredPlaylists.playlists?.items?.map(
-                ({ images, name, description, id, owner }) => {
-                  return (
-                    <PresentationCard
-                      type={CardType.PLAYLIST}
-                      key={id}
-                      images={images}
-                      title={name}
-                      subTitle={
-                        decode(description) || `De ${owner?.display_name ?? ""}`
-                      }
-                      id={id}
-                    />
-                  );
-                }
-              )}
-          </Carousel>
-        ) : null}
-        {recentlyPlayed && recentlyPlayed?.length > 0 ? (
-          <Carousel title="Recién escuchaste" gap={24}>
-            {recentlyPlayed.map((track) => {
+    <ContentContainer>
+      {topTracks && topTracks?.items.length > 0 ? (
+        <TopTracks topTracks={topTracks} />
+      ) : null}
+      {featuredPlaylists && featuredPlaylists?.playlists?.items?.length > 0 ? (
+        <Carousel
+          title={featuredPlaylists.message ?? "Disfruta de estás playlists"}
+          gap={24}
+        >
+          {featuredPlaylists.playlists?.items?.map(
+            ({ images, name, description, id, owner }) => {
               return (
                 <PresentationCard
-                  type={CardType.TRACK}
-                  key={track.id}
-                  images={track.album?.images as SpotifyApi.ImageObject[]}
-                  title={track.name ?? ""}
-                  subTitle={
-                    track.artists ? (
-                      <SubTitle
-                        artists={
-                          track.artists as SpotifyApi.ArtistObjectSimplified[]
-                        }
-                      />
-                    ) : (
-                      ""
-                    )
-                  }
-                  id={track.id ?? ""}
-                  isSingle
-                  track={track}
-                />
-              );
-            })}
-          </Carousel>
-        ) : null}
-        {newReleases && newReleases.albums?.items?.length > 0 ? (
-          <Carousel title={newReleases.message ?? "Lo más nuevo"} gap={24}>
-            {newReleases.albums?.items?.map(
-              ({ images, name, id, artists, album_type }) => {
-                return (
-                  <PresentationCard
-                    type={CardType.ALBUM}
-                    key={id}
-                    images={images}
-                    title={name}
-                    subTitle={
-                      <SubTitle artists={artists} albumType={album_type} />
-                    }
-                    id={id}
-                  />
-                );
-              }
-            )}
-          </Carousel>
-        ) : null}
-        {tracksRecommendations && tracksRecommendations?.length > 0 && (
-          <>
-            <Carousel title="Te van a gustar" gap={24}>
-              {divideArray(tracksRecommendations, 5).map((chunk, i) => {
-                return (
-                  <div className="tracks" key={i}>
-                    <FirstTrackContainer
-                      track={chunk?.[0]}
-                      preview={chunk?.[0].preview_url}
-                      position={i * 5}
-                    />
-                    <div className="trackSearch">
-                      {chunk?.map((track, chunkIndex) => {
-                        if (chunkIndex === 0 || chunkIndex > 4) {
-                          return null;
-                        }
-                        const index = i * 5 + chunkIndex;
-
-                        return (
-                          <CardTrack
-                            accessToken={accessToken ?? ""}
-                            isTrackInLibrary={tracksInLibrary?.[index] ?? false}
-                            playlistUri=""
-                            track={track}
-                            key={track.id}
-                            type="presentation"
-                            position={index}
-                            isSingleTrack
-                          />
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </Carousel>
-          </>
-        )}
-        {recentListeningRecommendations &&
-        recentListeningRecommendations?.length > 0 ? (
-          <Carousel title={"Basado en lo que escuchaste"} gap={24}>
-            {recentListeningRecommendations?.map((track) => {
-              return (
-                <PresentationCard
-                  type={CardType.TRACK}
-                  key={track.id}
-                  images={track.album.images}
-                  title={track.name}
-                  subTitle={<SubTitle artists={track.artists} />}
-                  id={track.id}
-                  isSingle
-                  track={track}
-                />
-              );
-            })}
-          </Carousel>
-        ) : null}
-        {topArtists && topArtists.items?.length > 0 ? (
-          <Carousel title={"Disfruta de tus artistas favoritos"} gap={24}>
-            {topArtists.items?.map(({ images, name, id }) => {
-              return (
-                <PresentationCard
-                  type={CardType.ARTIST}
+                  type={CardType.PLAYLIST}
                   key={id}
                   images={images}
                   title={name}
-                  subTitle={"Artist"}
+                  subTitle={
+                    decode(description) || `De ${owner?.display_name ?? ""}`
+                  }
                   id={id}
                 />
               );
-            })}
-          </Carousel>
-        ) : null}
-        {categories && categories?.items?.length > 0 ? (
-          <Carousel title={"Categorias"} gap={24}>
-            {categories?.items.map(({ name, id, icons }) => {
+            }
+          )}
+        </Carousel>
+      ) : null}
+      {recentlyPlayed && recentlyPlayed?.length > 0 ? (
+        <Carousel title="Recién escuchaste" gap={24}>
+          {recentlyPlayed.map((track) => {
+            return (
+              <PresentationCard
+                type={CardType.TRACK}
+                key={track.id}
+                images={track.album?.images as SpotifyApi.ImageObject[]}
+                title={track.name ?? ""}
+                subTitle={
+                  track.artists ? (
+                    <SubTitle
+                      artists={
+                        track.artists as SpotifyApi.ArtistObjectSimplified[]
+                      }
+                    />
+                  ) : (
+                    ""
+                  )
+                }
+                id={track.id ?? ""}
+                isSingle
+                track={track}
+              />
+            );
+          })}
+        </Carousel>
+      ) : null}
+      {newReleases && newReleases.albums?.items?.length > 0 ? (
+        <Carousel title={newReleases.message ?? "Lo más nuevo"} gap={24}>
+          {newReleases.albums?.items?.map(
+            ({ images, name, id, artists, album_type }) => {
               return (
                 <PresentationCard
-                  type={CardType.GENRE}
+                  type={CardType.ALBUM}
                   key={id}
-                  images={icons}
+                  images={images}
                   title={name}
-                  subTitle={""}
+                  subTitle={
+                    <SubTitle artists={artists} albumType={album_type} />
+                  }
                   id={id}
                 />
               );
-            })}
-          </Carousel>
-        ) : null}
-      </ContentContainer>
-
-      <style jsx>{`
-        .tracks {
-          display: grid;
-          grid-template-columns: 49% 49%;
-          width: 100%;
-          grid-gap: 20px;
-          margin: 10px 0 30px;
-          min-width: calc(100% - 24px);
-        }
-        @media (max-width: 1000px) {
-          .tracks {
-            grid-template-columns: 100%;
-          }
-        }
-        .top-tracks {
-          grid-gap: 16px 24px;
-          display: grid;
-          grid-template: auto/repeat(auto-fill, minmax(max(270px, 25%), 1fr));
-        }
-        section {
-          display: flex;
-          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-          grid-gap: 24px;
-          margin: 20px 0 50px 0;
-          justify-content: space-between;
-          transition: 400ms ease-in;
-        }
-      `}</style>
-    </>
+            }
+          )}
+        </Carousel>
+      ) : null}
+      {tracksRecommendations && tracksRecommendations?.length > 0 && (
+        <MainTracks
+          title="Te van a gustar"
+          tracksInLibrary={tracksInLibrary}
+          tracksRecommendations={tracksRecommendations}
+        />
+      )}
+      {recentListeningRecommendations &&
+      recentListeningRecommendations?.length > 0 ? (
+        <Carousel title={"Basado en lo que escuchaste"} gap={24}>
+          {recentListeningRecommendations?.map((track) => {
+            return (
+              <PresentationCard
+                type={CardType.TRACK}
+                key={track.id}
+                images={track.album.images}
+                title={track.name}
+                subTitle={<SubTitle artists={track.artists} />}
+                id={track.id}
+                isSingle
+                track={track}
+              />
+            );
+          })}
+        </Carousel>
+      ) : null}
+      {topArtists && topArtists.items?.length > 0 ? (
+        <Carousel title={"Disfruta de tus artistas favoritos"} gap={24}>
+          {topArtists.items?.map(({ images, name, id }) => {
+            return (
+              <PresentationCard
+                type={CardType.ARTIST}
+                key={id}
+                images={images}
+                title={name}
+                subTitle={"Artist"}
+                id={id}
+              />
+            );
+          })}
+        </Carousel>
+      ) : null}
+      {categories && categories?.items?.length > 0 ? (
+        <Carousel title={"Categorias"} gap={24}>
+          {categories?.items.map(({ name, id, icons }) => {
+            return (
+              <PresentationCard
+                type={CardType.GENRE}
+                key={id}
+                images={icons}
+                title={name}
+                subTitle={""}
+                id={id}
+              />
+            );
+          })}
+        </Carousel>
+      ) : null}
+    </ContentContainer>
   );
 };
 export default Dashboard;

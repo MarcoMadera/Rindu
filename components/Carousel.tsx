@@ -37,7 +37,8 @@ export default function Carousel({
       const container = containerRef.current;
       const containerWidth = container.offsetWidth;
       const itemsInMainContainer = Math.floor(containerWidth / itemWidth);
-      const maximumMoves = Math.ceil(totalItems / itemsInMainContainer) - 1;
+      const maximumMoves =
+        Math.ceil(totalItems / (itemsInMainContainer || 1)) - 1;
       const shouldMove =
         timesMoveCarousel >= 0 && timesMoveCarousel <= maximumMoves;
       const spaceToMove = timesMoveCarousel * itemsInMainContainer * itemWidth;

@@ -18,6 +18,7 @@ import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary"
 import useSpotify from "hooks/useSpotify";
 import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
+import { ITrack } from "types/spotify";
 
 interface EpisodePageProps {
   episode: SpotifyApi.EpisodeObject | null;
@@ -36,59 +37,31 @@ export default function EpisodePage({
   const { setUser, setAccessToken } = useAuth();
   const [isEpisodeInLibrary, setIsEpisodeInLibrary] = useState(false);
   const { setPageDetails, isPlaying } = useSpotify();
-  const episodeTrack: SpotifyApi.TrackObjectFull = useMemo(
-    () => ({
+  const episodeTrack: ITrack = useMemo(
+    (): ITrack => ({
       album: {
-        album_type: "single",
-        artists: [
-          {
-            external_urls: {
-              spotify: `https://open.spotify.com/artist/${episode?.show?.id}`,
-            },
-            name: episode?.show.publisher ?? "",
-            id: episode?.show.id ?? "",
-            type: "artist",
-            href: `https://open.spotify.com/show/${episode?.show?.id}`,
-            uri: `spotify:show:${episode?.show?.id}`,
-          },
-        ],
-        external_urls: { spotify: "" },
-        href: "",
         id: episode?.show.id ?? "",
         images: episode?.show.images ?? [],
         name: episode?.show.name ?? "",
         release_date: episode?.release_date ?? "",
-        release_date_precision: "year",
         type: "album",
         uri: episode?.show.uri ?? "",
-        total_tracks: 1,
       },
       artists: [
         {
-          external_urls: {
-            spotify: `https://open.spotify.com/artist/${episode?.show?.id}`,
-          },
           name: episode?.show.publisher ?? "",
           id: episode?.show.id ?? "",
           type: "artist",
-          href: `https://open.spotify.com/show/${episode?.show?.id}`,
           uri: `spotify:show:${episode?.show?.id}`,
         },
       ],
       id: episode?.id ?? "",
       name: episode?.name ?? "",
-      disc_number: 1,
       duration_ms: episode?.duration_ms ?? 0,
       explicit: episode?.explicit ?? false,
       preview_url: episode?.audio_preview_url ?? "",
-      track_number: 1,
       type: "track",
       uri: episode?.uri ?? "",
-      external_ids: {},
-      popularity: 0,
-      available_markets: [],
-      external_urls: { spotify: "" },
-      href: "",
     }),
     [episode]
   );
