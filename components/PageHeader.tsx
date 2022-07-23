@@ -182,8 +182,8 @@ export default function PageHeader({
           }
           div.playlistInfo {
             align-self: flex-end;
-            width: calc(100% - 310px);
             text-shadow: ${banner ? "0px 0px 20px #00000078" : "none"};
+            margin-right: 50px;
           }
           p.description {
             margin-bottom: 4px;
