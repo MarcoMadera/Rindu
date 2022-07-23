@@ -18,6 +18,7 @@ import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
 import useHeader from "hooks/useHeader";
 import useToast from "hooks/useToast";
 import EpisodeCard from "components/EpisodeCard";
+import ContentContainer from "components/ContentContainer";
 
 interface PlaylistProps {
   show: SpotifyApi.SingleShowResponse | null;
@@ -111,7 +112,7 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
   }, [setPageDetails, show]);
 
   return (
-    <main>
+    <ContentContainer hasPageHeader>
       <PageHeader
         type={HeaderType.podcast}
         title={show?.name ?? ""}
@@ -177,17 +178,6 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
         </div>
       </section>
       <style jsx>{`
-        main {
-          display: block;
-          margin: -60px auto 0 auto;
-          height: calc(100vh - 90px);
-          width: calc(100vw - 245px);
-        }
-        @media (max-width: 1000px) {
-          main {
-            width: 100vw;
-          }
-        }
         .content {
           display: grid;
           grid-template-columns: 700px 1fr;
@@ -242,7 +232,7 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
           font-family: "Lato", sans-serif;
         }
       `}</style>
-    </main>
+    </ContentContainer>
   );
 };
 

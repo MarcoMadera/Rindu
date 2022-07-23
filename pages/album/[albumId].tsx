@@ -22,6 +22,7 @@ import { followAlbums } from "utils/spotifyCalls/followAlbums";
 import PageHeader from "components/PageHeader";
 import { SITE_URL } from "utils/constants";
 import useToast from "hooks/useToast";
+import ContentContainer from "components/ContentContainer";
 
 interface AlbumPageProps {
   album: SpotifyApi.SingleAlbumResponse | null;
@@ -103,7 +104,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
   ]);
 
   return (
-    <main>
+    <ContentContainer hasPageHeader>
       <PageHeader
         type={
           album?.album_type === "single"
@@ -170,17 +171,6 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
         </div>
       </div>
       <style jsx>{`
-        main {
-          display: block;
-          margin: -60px auto 0 auto;
-          height: calc(100vh - 90px);
-          width: calc(100vw - 245px);
-        }
-        @media (max-width: 1000px) {
-          main {
-            width: 100vw;
-          }
-        }
         .copy {
           margin-top: 16px;
           padding-bottom: 24px;
@@ -223,7 +213,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
           margin-bottom: 50px;
         }
       `}</style>
-    </main>
+    </ContentContainer>
   );
 };
 

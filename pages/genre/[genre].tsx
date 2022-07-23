@@ -10,6 +10,7 @@ import useHeader from "hooks/useHeader";
 import { getSingleCategoryInfo } from "utils/spotifyCalls/getSingleCategoryInfo";
 import useSpotify from "hooks/useSpotify";
 import { CardType } from "components/CardContent";
+import ContentContainer from "components/ContentContainer";
 
 interface CategoryProps {
   categoryInfo: SpotifyApi.SingleCategoryResponse | null;
@@ -39,7 +40,7 @@ export default function Category({
   }, [accessToken, setAccessToken, setUser, user]);
 
   return (
-    <main>
+    <ContentContainer>
       {!isPlaying && (
         <Head>
           <title>Rindu - {categoryInfo?.name || "Generos"}</title>
@@ -65,19 +66,6 @@ export default function Category({
         <p>This section is empty</p>
       )}
       <style jsx>{`
-        main {
-          display: block;
-          margin: 0 auto;
-          min-height: calc(100vh - 90px);
-          width: calc(100vw - 245px);
-          max-width: 1955px;
-          padding: 40px 32px;
-        }
-        @media (max-width: 1000px) {
-          main {
-            width: 100vw;
-          }
-        }
         section {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -86,7 +74,6 @@ export default function Category({
         }
         h1 {
           padding: 0;
-          margin-top: -20px;
           visibility: visible;
           width: 100%;
           font-size: 96px;
@@ -95,7 +82,7 @@ export default function Category({
           color: #fff;
         }
       `}</style>
-    </main>
+    </ContentContainer>
   );
 }
 

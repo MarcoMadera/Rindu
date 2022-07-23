@@ -28,6 +28,7 @@ import SingleTrackCard from "components/SingleTrackCard";
 import Carousel from "components/Carousel";
 import SubTitle from "components/SubtTitle";
 import { CardType } from "components/CardContent";
+import ContentContainer from "components/ContentContainer";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -128,7 +129,7 @@ const Dashboard: NextPage<DashboardProps> = ({
 
   return (
     <>
-      <main>
+      <ContentContainer>
         {topTracks && topTracks?.items.length > 0 ? (
           <>
             <h2>Esto te encanta</h2>
@@ -303,13 +304,9 @@ const Dashboard: NextPage<DashboardProps> = ({
             })}
           </Carousel>
         ) : null}
-      </main>
+      </ContentContainer>
 
       <style jsx>{`
-        main {
-          margin: 0 auto;
-          padding: 0 20px;
-        }
         .tracks {
           display: grid;
           grid-template-columns: 49% 49%;

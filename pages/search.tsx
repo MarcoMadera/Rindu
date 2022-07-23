@@ -17,6 +17,7 @@ import useSpotify from "hooks/useSpotify";
 import CardTrack from "components/CardTrack";
 import { colors } from "utils/colors";
 import { CardType } from "components/CardContent";
+import ContentContainer from "components/ContentContainer";
 
 interface SearchPageProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
@@ -52,7 +53,7 @@ export default function SearchPage({
   }, [user, accessToken, setUser, setAccessToken]);
 
   return (
-    <main>
+    <ContentContainer>
       {!isPlaying && (
         <Head>
           <title>Rindu - Search</title>
@@ -224,19 +225,6 @@ export default function SearchPage({
         </>
       )}
       <style jsx>{`
-        main {
-          display: block;
-          margin: 0 auto;
-          min-height: calc(100vh - 90px);
-          width: calc(100vw - 245px);
-          max-width: 1955px;
-          padding: 20px 32px 40px;
-        }
-        @media (max-width: 1000px) {
-          main {
-            width: 100vw;
-          }
-        }
         h2 {
           color: #fff;
           display: inline-block;
@@ -318,7 +306,7 @@ export default function SearchPage({
           object-position: center center;
         }
       `}</style>
-    </main>
+    </ContentContainer>
   );
 }
 

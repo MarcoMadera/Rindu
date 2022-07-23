@@ -23,6 +23,7 @@ import { SITE_URL } from "utils/constants";
 import useToast from "hooks/useToast";
 import BigPill from "components/BigPill";
 import { within } from "utils/whitin";
+import ContentContainer from "components/ContentContainer";
 
 interface TrackPageProps {
   track: SpotifyApi.TrackObjectFull | null;
@@ -129,7 +130,7 @@ export default function TrackPage({
   }, [accessToken, track, user?.country]);
 
   return (
-    <main>
+    <ContentContainer hasPageHeader>
       {!isPlaying && (
         <Head>
           <title>Rindu - {track?.name ?? "Canciones"}</title>
@@ -256,17 +257,6 @@ export default function TrackPage({
         </div>
       </div>
       <style jsx>{`
-        main {
-          display: block;
-          margin: -60px auto 0 auto;
-          height: calc(100vh - 90px);
-          width: calc(100vw - 245px);
-        }
-        @media (max-width: 1000px) {
-          main {
-            width: 100vw;
-          }
-        }
         .topTracks-header {
           display: block;
           margin-bottom: 20px;
@@ -351,7 +341,7 @@ export default function TrackPage({
           z-index: 1;
         }
       `}</style>
-    </main>
+    </ContentContainer>
   );
 }
 

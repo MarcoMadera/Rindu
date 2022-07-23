@@ -7,6 +7,7 @@ import { getMyArtists } from "utils/spotifyCalls/getMyArtists";
 import useSpotify from "hooks/useSpotify";
 import { CardType } from "components/CardContent";
 import NavigationTopBarExtraField from "components/NavigationTopBarExtraField";
+import ContentContainer from "components/ContentContainer";
 
 export default function CollectionPlaylists(): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
@@ -37,7 +38,7 @@ export default function CollectionPlaylists(): ReactElement {
   }, [accessToken, setArtists]);
 
   return (
-    <main>
+    <ContentContainer>
       {!isPlaying && (
         <Head>
           <title>Rindu - Library</title>
@@ -61,18 +62,6 @@ export default function CollectionPlaylists(): ReactElement {
           : null}
       </section>
       <style jsx>{`
-        main {
-          display: block;
-          min-height: calc(100vh - 90px);
-          width: calc(100vw - 245px);
-          margin: 0 auto;
-          padding: 0px 30px;
-        }
-        @media (max-width: 1000px) {
-          main {
-            width: 100vw;
-          }
-        }
         h2 {
           color: #fff;
           display: inline-block;
@@ -98,6 +87,6 @@ export default function CollectionPlaylists(): ReactElement {
           background-color: #343434;
         }
       `}</style>
-    </main>
+    </ContentContainer>
   );
 }
