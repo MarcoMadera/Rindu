@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, ReactElement, useEffect, useRef, useState } from "react";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
+import Heading from "./Heading";
 
 interface FirstTrackContainerProps {
   preview: string | null;
@@ -81,7 +82,9 @@ export default function FirstTrackContainer({
               setImageIsLoaded(true);
             }}
           />
-          <h3>{track.name}</h3>
+          <Heading number={2} as="h3" fontSize="32px" margin="1rem 0">
+            {track.name}
+          </Heading>
         </a>
       </Link>
       {isPlayable ? (
@@ -179,19 +182,8 @@ export default function FirstTrackContainer({
           max-width: 80%;
           display: inline;
         }
-        .firstTrack-Container h3 {
-          font-size: 32px;
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 36px;
-          text-transform: none;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          color: #fff;
+        .firstTrack-Container :global(h3) {
           max-width: 80%;
-          position: relative;
-          z-index: 3294343;
         }
         .firstTrack-Container a {
           color: #b3b3b3;

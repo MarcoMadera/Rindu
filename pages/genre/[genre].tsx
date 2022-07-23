@@ -11,6 +11,7 @@ import { getSingleCategoryInfo } from "utils/spotifyCalls/getSingleCategoryInfo"
 import useSpotify from "hooks/useSpotify";
 import { CardType } from "components/CardContent";
 import ContentContainer from "components/ContentContainer";
+import Heading from "components/Heading";
 
 interface CategoryProps {
   categoryInfo: SpotifyApi.SingleCategoryResponse | null;
@@ -46,7 +47,7 @@ export default function Category({
           <title>Rindu - {categoryInfo?.name || "Generos"}</title>
         </Head>
       )}
-      {categoryInfo && <h1>{categoryInfo?.name}</h1>}
+      {categoryInfo && <Heading number={1}>{categoryInfo?.name}</Heading>}
       {playlists && playlists?.items?.length > 0 ? (
         <section>
           {playlists?.items?.map(({ images, name, description, id }) => {
@@ -71,15 +72,6 @@ export default function Category({
           grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
           grid-gap: 24px;
           justify-content: space-between;
-        }
-        h1 {
-          padding: 0;
-          visibility: visible;
-          width: 100%;
-          font-size: 96px;
-          line-height: 96px;
-          font-weight: 900;
-          color: #fff;
         }
       `}</style>
     </ContentContainer>

@@ -3,6 +3,7 @@ import useToast from "hooks/useToast";
 import { ReactElement, useState } from "react";
 import { getAvailableDevices } from "utils/spotifyCalls/getAvailableDevices";
 import { transferPlayback } from "utils/spotifyCalls/transferPlayback";
+import Heading from "./Heading";
 import DeviceConnect from "./icons/DeviceConnect";
 
 export default function DeviceConnectControl(): ReactElement {
@@ -16,7 +17,7 @@ export default function DeviceConnectControl(): ReactElement {
       {devices.length > 0 && (
         <div className="devices-container">
           <header>
-            <h3>Connect to a device</h3>
+            <Heading number={3}>Connect to a device</Heading>
             <div className="device-img-header-container">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -99,22 +100,12 @@ export default function DeviceConnectControl(): ReactElement {
           border-radius: 5px;
           background-color: #282828;
           box-shadow: 0px 2px 9px 0px rgb(0 0 0 / 5%);
-          padding: 3px;
+          padding: 17px 3px 3px 3px;
           width: 300px;
         }
         .devices-container header {
           display: grid;
           justify-content: center;
-        }
-        .devices-container h3 {
-          display: block;
-          padding: 14px 35px 10px 14px;
-          font-size: 1.4rem;
-          line-height: 1.5rem;
-          text-transform: none;
-          letter-spacing: normal;
-          font-weight: 700;
-          color: #fff;
         }
         .device-img-header-container {
           padding: 16px 0;

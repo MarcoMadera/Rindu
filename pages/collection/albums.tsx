@@ -9,6 +9,7 @@ import useSpotify from "hooks/useSpotify";
 import { CardType } from "components/CardContent";
 import NavigationTopBarExtraField from "components/NavigationTopBarExtraField";
 import ContentContainer from "components/ContentContainer";
+import Heading from "components/Heading";
 
 export default function CollectionAlbums(): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
@@ -44,7 +45,9 @@ export default function CollectionAlbums(): ReactElement {
           <title>Rindu - Library</title>
         </Head>
       )}
-      <h2>Albums</h2>
+      <Heading number={3} as="h2">
+        Albums
+      </Heading>
       <section>
         {albums?.length > 0
           ? albums.map(({ album }) => {
@@ -66,19 +69,17 @@ export default function CollectionAlbums(): ReactElement {
           : null}
       </section>
       <style jsx>{`
-        h2 {
-          color: #fff;
-          display: inline-block;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-size: 24px;
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 28px;
-          text-transform: none;
-          margin: 0;
+        main {
+          display: block;
+          min-height: calc(100vh - 90px);
+          width: calc(100vw - 245px);
+          margin: 0 auto;
+          padding: 0px 30px;
+        }
+        @media (max-width: 1000px) {
+          main {
+            width: 100vw;
+          }
         }
         section {
           display: grid;

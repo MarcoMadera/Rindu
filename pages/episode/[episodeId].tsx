@@ -17,6 +17,7 @@ import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFrom
 import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
 import useSpotify from "hooks/useSpotify";
 import ContentContainer from "components/ContentContainer";
+import Heading from "components/Heading";
 
 interface EpisodePageProps {
   episode: SpotifyApi.EpisodeObject | null;
@@ -179,7 +180,9 @@ export default function EpisodePage({
             </button>
           </div>
         </div>
-        <h2>Episode description</h2>
+        <Heading number={3} as="h2">
+          Episode description
+        </Heading>
         <p>{episode?.description}</p>
         <Link href={`/show/${episode?.show?.id}`}>
           <a>SEE ALL EPISODES</a>
@@ -228,20 +231,6 @@ export default function EpisodePage({
           color: #6a6a6a;
           max-width: 672px;
           padding-top: 16px;
-        }
-        h2 {
-          color: #fff;
-          display: inline-block;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-size: 24px;
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 28px;
-          text-transform: none;
-          margin: 0;
         }
         .info .follow-button {
           background-color: transparent;

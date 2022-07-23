@@ -19,6 +19,7 @@ import useHeader from "hooks/useHeader";
 import useToast from "hooks/useToast";
 import EpisodeCard from "components/EpisodeCard";
 import ContentContainer from "components/ContentContainer";
+import Heading from "components/Heading";
 
 interface PlaylistProps {
   show: SpotifyApi.SingleShowResponse | null;
@@ -172,7 +173,9 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
             })}
           </div>
           <div className="description">
-            <h2>About</h2>
+            <Heading number={3} as="h2">
+              About
+            </Heading>
             <p>{show?.description}</p>
           </div>
         </div>
@@ -206,20 +209,6 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
           width: 100%;
           align-items: center;
           flex-direction: row;
-        }
-        h2 {
-          color: #fff;
-          display: inline-block;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-size: 24px;
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 28px;
-          text-transform: none;
-          margin: 0;
         }
         p {
           font-size: 1rem;

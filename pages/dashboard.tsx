@@ -29,6 +29,7 @@ import Carousel from "components/Carousel";
 import SubTitle from "components/SubtTitle";
 import { CardType } from "components/CardContent";
 import ContentContainer from "components/ContentContainer";
+import Heading from "components/Heading";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -132,7 +133,7 @@ const Dashboard: NextPage<DashboardProps> = ({
       <ContentContainer>
         {topTracks && topTracks?.items.length > 0 ? (
           <>
-            <h2>Esto te encanta</h2>
+            <Heading number={2}>Esto te encanta</Heading>
             <section className="top-tracks">
               {topTracks &&
                 topTracks?.items?.map((track, i) => {
@@ -325,11 +326,6 @@ const Dashboard: NextPage<DashboardProps> = ({
           display: grid;
           grid-template: auto/repeat(auto-fill, minmax(max(270px, 25%), 1fr));
         }
-        h1 {
-          color: #fff;
-          font-weight: bold;
-          margin: 0;
-        }
         section {
           display: flex;
           grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -337,22 +333,6 @@ const Dashboard: NextPage<DashboardProps> = ({
           margin: 20px 0 50px 0;
           justify-content: space-between;
           transition: 400ms ease-in;
-        }
-        h2 {
-          color: #fff;
-          display: inline-block;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-size: 2.2rem;
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 45px;
-          text-transform: none;
-          margin: 0;
-          z-index: 1;
-          position: relative;
         }
       `}</style>
     </>

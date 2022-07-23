@@ -18,6 +18,7 @@ import CardTrack from "components/CardTrack";
 import { colors } from "utils/colors";
 import { CardType } from "components/CardContent";
 import ContentContainer from "components/ContentContainer";
+import Heading from "components/Heading";
 
 interface SearchPageProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
@@ -63,7 +64,9 @@ export default function SearchPage({
         <div>
           {data?.tracks?.items && data.tracks?.items?.length > 0 ? (
             <>
-              <h2>Canciones</h2>
+              <Heading number={3} as="h2">
+                Canciones
+              </Heading>
               <section className="tracks">
                 <FirstTrackContainer
                   track={data.tracks.items[0]}
@@ -208,7 +211,9 @@ export default function SearchPage({
         </div>
       ) : (
         <>
-          <h2>Browse All</h2>
+          <Heading number={3} as="h1">
+            Browse All
+          </Heading>
           <div className="browse">
             {categories?.items.map(({ name, id, icons }, i) => {
               return (
@@ -216,7 +221,9 @@ export default function SearchPage({
                   <a style={{ backgroundColor: colors[i] }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={icons[0].url} alt={name} />
-                    <h3>{name}</h3>
+                    <Heading number={3} as="h2">
+                      {name}
+                    </Heading>
                   </a>
                 </Link>
               );
@@ -225,20 +232,6 @@ export default function SearchPage({
         </>
       )}
       <style jsx>{`
-        h2 {
-          color: #fff;
-          display: inline-block;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-size: 24px;
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 28px;
-          text-transform: none;
-          margin: 0;
-        }
         .playlists {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -283,16 +276,9 @@ export default function SearchPage({
           display: block;
           padding-bottom: 100%;
         }
-        .browse h3 {
-          font-size: 24px;
-          letter-spacing: -0.04em;
-          line-height: 1.3em;
-          max-width: 100%;
-          overflow-wrap: break-word;
+        .browse :global(h2) {
           padding: 16px;
           position: absolute;
-          display: block;
-          margin: 0;
         }
         .browse img {
           transform: rotate(25deg) translate(18%, -2%);

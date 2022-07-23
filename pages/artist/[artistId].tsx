@@ -31,6 +31,7 @@ import { ArtistsInfo, getArtistInfo } from "utils/getArtistInfo";
 import { conjuction } from "utils/conjuction";
 import { CardType } from "components/CardContent";
 import ContentContainer from "components/ContentContainer";
+import Heading from "components/Heading";
 
 interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
@@ -206,7 +207,7 @@ export default function ArtistPage({
       </div>
       <div className="content">
         {topTracks?.tracks && topTracks?.tracks?.length > 0 ? (
-          <h3>Popular</h3>
+          <Heading number={2}>Popular</Heading>
         ) : null}
         <div className="popular-content">
           <div className="topTracks">
@@ -244,7 +245,7 @@ export default function ArtistPage({
           {setLists?.setlist && setLists?.setlist?.length > 0 ? (
             <div className="set-list">
               <div className="set-list-content">
-                <h3>Concerts</h3>
+                <Heading number={2}>Concerts</Heading>
                 {setLists?.setlist?.map((set, i) => {
                   if (i > 4) return null;
                   const date = set.eventDate.split("-");
@@ -263,7 +264,9 @@ export default function ArtistPage({
                         <span className="year">{year}</span>
                       </div>
                       <div className="set-info">
-                        <h4>{set.venue?.name}</h4>
+                        <Heading number={5} as="h4">
+                          {set.venue?.name}
+                        </Heading>
                         <span>
                           {conjuction([
                             set.venue?.city.name,
@@ -346,7 +349,9 @@ export default function ArtistPage({
         {artistInfo?.artists?.[0]?.strBiographyEN && (
           <section className="about">
             <div>
-              <h2>About</h2>
+              <Heading number={3} as="h2">
+                About
+              </Heading>
               {showMoreAbout ? (
                 <p>{artistInfo?.artists?.[0]?.strBiographyEN}</p>
               ) : (
@@ -413,20 +418,12 @@ export default function ArtistPage({
         a {
           color: #b3b3b3;
         }
-        h3 {
-          z-index: 999999;
-          position: relative;
-        }
         .set {
           display: flex;
           margin: 10px 0;
         }
         .set-info {
           margin-left: 18px;
-        }
-        .set-info h4 {
-          margin: 0;
-          font-size: 16px;
         }
         .set-info span {
           margin: 0;
@@ -438,6 +435,7 @@ export default function ArtistPage({
           display: flex;
           flex-direction: column;
           align-items: center;
+          z-index: 999999;
         }
         .month {
           text-align: left;
@@ -490,20 +488,6 @@ export default function ArtistPage({
           border-radius: 10px;
           max-height: 400px;
           aspect-ratio: 1;
-        }
-        h2 {
-          color: #fff;
-          display: inline-block;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-size: 24px;
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 28px;
-          text-transform: none;
-          margin: 0;
         }
         p {
           font-size: 1rem;

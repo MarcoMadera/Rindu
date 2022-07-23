@@ -1,4 +1,5 @@
 import ContentContainer from "components/ContentContainer";
+import Heading from "components/Heading";
 import useAnalytics from "hooks/useAnalytics";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -20,14 +21,9 @@ export default function Custom500(): ReactElement {
       <Head>
         <title>Rindu - 😫 500 - Servidor?</title>
       </Head>
-      <h1>500?</h1>
+      <Heading number={1}>500?</Heading>
       <p>Ha ocurrido un error en el servidor</p>
       <style jsx>{`
-        h1 {
-          margin: 0;
-          font-size: 100px;
-          text-align: center;
-        }
         p {
           font-size: 30px;
           text-align: center;

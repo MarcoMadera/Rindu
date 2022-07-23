@@ -26,6 +26,7 @@ import { followPlaylist } from "utils/spotifyCalls/followPlaylist";
 import { unfollowPlaylist } from "utils/spotifyCalls/unfollowPlaylist";
 import { HeaderType } from "types/pageHeader";
 import ContentContainer from "components/ContentContainer";
+import Heading from "components/Heading";
 
 const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
   pageDetails,
@@ -222,11 +223,15 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
         ) : null}
         {playListTracks && playListTracks?.length === 0 ? (
           <div className="noTracks">
-            <h3>Let&apos;s find something for your playlist</h3>
+            <Heading number={3} as="h2" margin="1rem 0">
+              Let&apos;s find something for your playlist
+            </Heading>
             <SearchInputElement setData={setSearchedData} source="playlist" />
             {searchedData?.tracks && searchedData.tracks.items.length > 0 && (
               <>
-                <h5>Songs</h5>
+                <Heading number={4} margin="20px 0 0 0">
+                  Songs
+                </Heading>
                 {searchedData.tracks?.items?.map((track, i) => {
                   return (
                     <CardTrack
@@ -267,7 +272,9 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
             )}
             {searchedData?.episodes && searchedData.episodes.items.length > 0 && (
               <>
-                <h5>Episodes</h5>
+                <Heading number={4} margin="20px 0 0 0">
+                  Episodes
+                </Heading>
                 {searchedData.episodes?.items?.map((track, i) => {
                   return (
                     <CardTrack
@@ -324,30 +331,6 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
         />
       ) : null}
       <style jsx>{`
-        h3,
-        h5 {
-          color: #fff;
-          display: inline-block;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 1.75rem;
-          text-transform: none;
-          margin: 0;
-          z-index: 1;
-          position: relative;
-          margin: 16px 0;
-        }
-        h3 {
-          font-size: 1.5rem;
-        }
-        h5 {
-          margin-top: 20px;
-          font-size: 1.1rem;
-        }
         .info :global(button) {
           margin-left: 12px;
           display: flex;

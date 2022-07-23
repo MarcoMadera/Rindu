@@ -16,6 +16,9 @@ import { HeaderType } from "types/pageHeader";
 import { getYear } from "utils/getYear";
 import { useRouter } from "next/router";
 import { HeaderProps } from "types/pageHeader";
+import Heading from "./Heading";
+import { Eyebrow } from "./Eyebrow";
+import { AsType } from "types/heading";
 
 export default function PageHeader({
   type,
@@ -77,8 +80,21 @@ export default function PageHeader({
         !banner && <div id="cover-image"></div>
       )}
       <div className="playlistInfo">
-        <h2>{type}</h2>
-        <h1>{title}</h1>
+        <Eyebrow>{type}</Eyebrow>
+        <Heading
+          number={1}
+          fontSize={
+            title.length < 16
+              ? "96px"
+              : title.length < 21
+              ? "72px"
+              : title.length < 30
+              ? "64px"
+              : "48px"
+          }
+        >
+          {title}
+        </Heading>
         {description ? (
           <p className="description">{decode(description)}</p>
         ) : null}
@@ -101,7 +117,9 @@ export default function PageHeader({
                   })}
               </span>
             ) : type === HeaderType.podcast ? (
-              <h2 className="singleDisplayName">{decode(ownerDisplayName)}</h2>
+              <Heading number={3} as={AsType.SPAN}>
+                {decode(ownerDisplayName)}
+              </Heading>
             ) : (
               ownerDisplayName && (
                 <Link
@@ -161,50 +179,6 @@ export default function PageHeader({
           div h2,
           div p {
             padding: ${banner ? "0px 0 15px 10px" : "0.08em 0px"};
-          }
-          h1 {
-            color: #fff;
-            margin: 0;
-            pointer-events: none;
-            user-select: none;
-            font-size: ${title.length < 16
-              ? "96px"
-              : title.length < 21
-              ? "72px"
-              : title.length < 30
-              ? "64px"
-              : "48px"};
-            line-height: ${title.length < 20
-              ? "96px"
-              : title.length < 30
-              ? "72px"
-              : "48px"};
-            visibility: visible;
-            width: 100%;
-            font-weight: 900;
-            letter-spacing: -0.04em;
-            text-transform: none;
-            overflow: hidden;
-            text-align: left;
-            text-overflow: ellipsis;
-            white-space: unset;
-            -webkit-box-orient: vertical;
-            display: -webkit-box;
-            line-break: anywhere;
-            -webkit-line-clamp: 3;
-            z-index: 13232;
-          }
-          h2 {
-            font-size: 12px;
-            margin-top: 4px;
-            margin-bottom: 0;
-            font-weight: 700;
-          }
-          .singleDisplayName {
-            font-size: 24px;
-            font-weight: 700;
-            line-height: 28px;
-            color: #fff;
           }
           div.playlistInfo {
             align-self: flex-end;
