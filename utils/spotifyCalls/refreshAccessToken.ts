@@ -1,12 +1,13 @@
 import { SITE_URL } from "../constants";
 
 interface IRefreshAccessTokenResponse {
-  accessToken: string;
-  expiresIn: number;
+  access_token: string;
+  refresh_token: string;
+  expires_in: string;
 }
 
 export async function refreshAccessToken(
-  refreshToken: string
+  refreshToken?: string
 ): Promise<IRefreshAccessTokenResponse | null> {
   const res = await fetch(`${SITE_URL}/api/spotify-refresh`, {
     method: "POST",

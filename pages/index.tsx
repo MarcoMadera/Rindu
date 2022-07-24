@@ -372,15 +372,15 @@ Home.getInitialProps = async ({
   const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE, cookies);
 
   if (refreshToken) {
-    const { accessToken } = (await refreshAccessToken(refreshToken)) || {};
+    const { access_token } = (await refreshAccessToken(refreshToken)) || {};
 
-    if (!accessToken) {
+    if (!access_token) {
       removeTokensFromCookieServer(res);
       return { accessToken: null };
     }
 
     res?.setHeader("Set-Cookie", [
-      `${ACCESS_TOKEN_COOKIE}=${accessToken}; Path=/;"`,
+      `${ACCESS_TOKEN_COOKIE}=${access_token}; Path=/;"`,
     ]);
 
     if (res) {
@@ -390,7 +390,7 @@ Home.getInitialProps = async ({
       Router.replace("/dashboard");
     }
 
-    return { accessToken };
+    return { accessToken: access_token };
   }
   removeTokensFromCookieServer(res);
 

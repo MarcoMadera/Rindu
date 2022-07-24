@@ -1,9 +1,9 @@
-import { RefreshResponse } from "types/spotify";
+import { AuthorizationResponse } from "types/spotify";
 import { SITE_URL } from "utils/constants";
 
 export async function getAuthorizationByCode(
   code: string
-): Promise<RefreshResponse | null> {
+): Promise<AuthorizationResponse | null> {
   const res = await fetch(`${SITE_URL}/api/spotify-login`, {
     method: "POST",
     headers: {
@@ -12,7 +12,7 @@ export async function getAuthorizationByCode(
     body: JSON.stringify({ code }),
   });
   if (res.ok) {
-    const data: RefreshResponse = await res.json();
+    const data: AuthorizationResponse = await res.json();
     return data;
   }
   return null;

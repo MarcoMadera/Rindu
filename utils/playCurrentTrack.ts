@@ -1,5 +1,5 @@
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
-import { play } from "lib/spotify";
+import { play } from "utils/spotifyCalls/play";
 import { Dispatch, SetStateAction } from "react";
 import { ITrack } from "types/spotify";
 

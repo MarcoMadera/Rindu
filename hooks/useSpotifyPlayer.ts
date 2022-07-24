@@ -9,7 +9,7 @@ import { ITrack } from "types/spotify";
 import useAuth from "./useAuth";
 import useToast from "./useToast";
 import useSpotify from "./useSpotify";
-import { getAccessToken } from "utils/spotifyCalls/getAccessToken";
+import { refreshAccessToken } from "utils/spotifyCalls/refreshAccessToken";
 
 export interface AudioPlayer extends HTMLAudioElement {
   nextTrack: () => void;
@@ -44,7 +44,7 @@ export default function useSpotifyPlayer({
   } = useSpotify();
   const spotifyPlayer = useRef<Spotify.Player>();
   const audioPlayer = useRef<AudioPlayer>();
-  const { user } = useAuth();
+  const { user, setAccessToken } = useAuth();
   const { addToast } = useToast();
 
   useEffect(() => {
@@ -185,9 +185,10 @@ export default function useSpotifyPlayer({
     window.onSpotifyWebPlaybackSDKReady = () => {
       spotifyPlayer.current = new window.Spotify.Player({
         getOAuthToken: async (callback: CallableFunction) => {
-          const { accessToken } = (await getAccessToken()) || {};
-          if (accessToken) {
-            callback(accessToken);
+          const { access_token } = (await refreshAccessToken()) || {};
+          if (access_token) {
+            callback(access_token);
+            setAccessToken(access_token);
           }
         },
         name,

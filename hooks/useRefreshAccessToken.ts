@@ -25,12 +25,12 @@ export default function useRefreshAccessToken(): void {
     const interval = setInterval(async () => {
       const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE);
       if (refreshToken) {
-        const { accessToken } = (await refreshAccessToken(refreshToken)) || {};
-        if (accessToken) {
-          setAccessToken(accessToken);
+        const { access_token } = (await refreshAccessToken(refreshToken)) || {};
+        if (access_token) {
+          setAccessToken(access_token);
           makeCookie({
             name: ACCESS_TOKEN_COOKIE,
-            value: accessToken,
+            value: access_token,
             age: 60 * 60 * 24 * 30 * 2,
           });
           return;

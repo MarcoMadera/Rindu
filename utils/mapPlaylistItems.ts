@@ -2,7 +2,7 @@ import { ITrack } from "types/spotify";
 import { isCorruptedTrack } from "./isCorruptedTrack";
 
 export function mapPlaylistItems(
-  items: SpotifyApi.PlaylistTrackObject[] | undefined,
+  items: SpotifyApi.PlaylistTrackObject[] | undefined | null,
   startIndex: number
 ): ITrack[] {
   if (!items) return [];

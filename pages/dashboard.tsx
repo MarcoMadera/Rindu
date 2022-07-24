@@ -21,7 +21,7 @@ import { getCategories } from "utils/spotifyCalls/getCategories";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import useSpotify from "hooks/useSpotify";
 import { takeCookie } from "utils/cookies";
-import { RefreshResponse } from "types/spotify";
+import { AuthorizationResponse } from "types/spotify";
 import Carousel from "components/Carousel";
 import SubTitle from "components/SubtTitle";
 import { CardType } from "components/CardContent";
@@ -259,7 +259,7 @@ export async function getServerSideProps({
   props: DashboardProps;
 }> {
   const cookies = req?.headers?.cookie ?? "";
-  let tokens: Record<string, string | null> | RefreshResponse = {
+  let tokens: Record<string, string | null> | AuthorizationResponse = {
     accessToken: takeCookie(ACCESS_TOKEN_COOKIE, cookies),
     refreshToken: takeCookie(REFRESH_TOKEN_COOKIE, cookies),
     expiresIn: takeCookie(EXPIRE_TOKEN_COOKIE, cookies),
@@ -270,7 +270,7 @@ export async function getServerSideProps({
     if (authorization) {
       tokens = authorization;
     }
-    if (!tokens.accessToken) {
+    if (!tokens.access_token) {
       serverRedirect(res, "/");
     }
 
@@ -278,13 +278,13 @@ export async function getServerSideProps({
     expireCookieDate.setDate(expireCookieDate.getDate() + 30);
     res.setHeader("Set-Cookie", [
       `${ACCESS_TOKEN_COOKIE}=${
-        tokens.accessToken
+        tokens.access_token
       }; Path=/; expires=${expireCookieDate.toUTCString()};`,
       `${REFRESH_TOKEN_COOKIE}=${
-        tokens.refreshToken
+        tokens.refresh_token
       }; Path=/; expires=${expireCookieDate.toUTCString()};`,
       `${EXPIRE_TOKEN_COOKIE}=${
-        tokens.expiresIn
+        tokens.expires_in
       }; Path=/; expires=${expireCookieDate.toUTCString()};`,
     ]);
   }

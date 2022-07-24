@@ -1,28 +1,26 @@
-import { ITrack } from "types/spotify";
-import { ACCESS_TOKEN_COOKIE, SITE_URL } from "utils/constants";
+import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 import { takeCookie } from "utils/cookies";
 
-export async function getTracksFromPlayList(
+export async function getTracksFromPlaylist(
   playlistId: string,
-  market: string,
-  accessToken?: string,
+  offset = 0,
+  accessToken?: string | undefined,
   cookies?: string | undefined
-): Promise<ITrack[] | null> {
+): Promise<SpotifyApi.PlaylistTrackResponse | null> {
   const res = await fetch(
-    `${SITE_URL}/api/playlists?market=${market}&additional_types=track,episode`,
+    `https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=${offset}&limit=50`,
     {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${
+          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE, cookies)
+        }`,
       },
-      body: JSON.stringify({
-        accessToken: accessToken ?? takeCookie(ACCESS_TOKEN_COOKIE, cookies),
-        playlistId,
-      }),
     }
   );
   if (res.ok) {
-    const data = await res.json();
+    const data: SpotifyApi.PlaylistTrackResponse = await res.json();
     return data;
   }
   return null;

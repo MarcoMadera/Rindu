@@ -1,5 +1,5 @@
-import { getSpotifyAuthorization } from "../../lib/spotify";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { AuthorizationResponse } from "types/spotify";
 import { getMe } from "utils/spotifyCalls/getMe";
 
 export default async function login(
@@ -17,7 +17,24 @@ export default async function login(
   }
   if (req.body.code) {
     try {
-      const data = await getSpotifyAuthorization(req.body.code);
+      const tokenResponse = await fetch(
+        "https://accounts.spotify.com/api/token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({
+            grant_type: "authorization_code",
+            redirect_uri: process.env
+              .NEXT_PUBLIC_SPOTIFY_REDIRECT_URL as string,
+            code: req.body.code,
+            client_id: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID as string,
+            client_secret: process.env.SPOTIFY_CLIENT_SECRET as string,
+          }),
+        }
+      );
+      const data: AuthorizationResponse = await tokenResponse.json();
 
       return res.json(data);
     } catch (err) {

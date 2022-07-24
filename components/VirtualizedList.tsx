@@ -1,7 +1,6 @@
 import CardTrack from "components/CardTrack";
 import useAuth from "hooks/useAuth";
 import useSpotify from "hooks/useSpotify";
-import { getTracksFromPlaylist } from "lib/requests";
 import { ReactElement, useCallback, useState } from "react";
 import {
   AutoSizer,
@@ -15,6 +14,7 @@ import { __isServer__ } from "utils/constants";
 import { getTracksFromLibrary } from "utils/getTracksFromLibrary";
 import { mapPlaylistItems } from "utils/mapPlaylistItems";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
+import { getTracksFromPlaylist } from "utils/spotifyCalls/getTracksFromPlayList";
 
 interface Props {
   type: "playlist" | "album" | "presentation";
