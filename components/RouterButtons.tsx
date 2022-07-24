@@ -21,6 +21,7 @@ export default function RouterButtons(): ReactElement {
       : [];
 
     if (
+      userPosition.current !== 0 &&
       prevValue.at(userPosition.current - 1) &&
       historyValue === prevValue.at(userPosition.current - 1)
     ) {
