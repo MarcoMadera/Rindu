@@ -22,8 +22,8 @@ export default function FirstTrackContainer({
   backgroundColor,
   position,
 }: FirstTrackContainerProps): ReactElement {
-  const [containerColor, setContainerColor] = useState<string | undefined>(
-    backgroundColor
+  const [containerColor, setContainerColor] = useState<string>(
+    backgroundColor ?? ""
   );
   const { user } = useAuth();
   const { addContextMenu } = useContextMenu();
@@ -31,18 +31,14 @@ export default function FirstTrackContainer({
   const isPlayable =
     (!isPremium && preview) ||
     (isPremium && !(track?.is_playable === false) && !track.is_local);
-  const [imageIsLoaded, setImageIsLoaded] = useState(false);
-  const image = useRef<HTMLImageElement>(null);
   const router = useRouter();
   const cardRef = useRef<HTMLAnchorElement>(null);
   const isVisible = useOnScreen(cardRef, "-60px");
 
   useEffect(() => {
-    if ((image.current?.complete || imageIsLoaded) && backgroundColor) {
-      if (backgroundColor) return;
-      setContainerColor(getMainColorFromImage(`cover-image-${track.id}`));
-    }
-  }, [backgroundColor, imageIsLoaded, router.asPath, track.id]);
+    if (backgroundColor) return;
+    getMainColorFromImage(`cover-image-${track.id}`, setContainerColor);
+  }, [backgroundColor, router.asPath, track.id]);
 
   return (
     <div
@@ -73,15 +69,7 @@ export default function FirstTrackContainer({
             width={100}
             height={100}
             alt=""
-            ref={image}
             id={`cover-image-${track.id}`}
-            onLoad={() => {
-              if (backgroundColor) return;
-              setContainerColor(
-                getMainColorFromImage(`cover-image-${track.id}`)
-              );
-              setImageIsLoaded(true);
-            }}
           />
           <Heading number={2} as="h3" fontSize="32px" margin="1rem 0">
             {track.name}

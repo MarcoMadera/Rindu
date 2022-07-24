@@ -63,6 +63,7 @@ function PresentationCard({
           background-color: #181818;
           transition: background-color 0.3s ease;
           border-radius: 4px;
+          width: min-content;
         }
         span {
           position: absolute;

@@ -1,10 +1,4 @@
-import React, {
-  Fragment,
-  ReactElement,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { Fragment, ReactElement, useEffect } from "react";
 import { decode } from "html-entities";
 import Link from "next/link";
 import formatNumber from "utils/formatNumber";
@@ -39,8 +33,6 @@ export default function PageHeader({
   disableOpacityChange,
 }: HeaderProps): ReactElement {
   const { setHeaderColor } = useHeader({ disableOpacityChange });
-  const image = useRef<HTMLImageElement>(null);
-  const [imageIsLoaded, setImageIsLoaded] = useState(false);
   const router = useRouter();
 
   const isAlbumVariant =
@@ -50,10 +42,8 @@ export default function PageHeader({
 
   useEffect(() => {
     if (banner) return;
-    if (image.current?.complete || imageIsLoaded) {
-      setHeaderColor((prev) => getMainColorFromImage("cover-image") ?? prev);
-    }
-  }, [banner, imageIsLoaded, router.asPath, setHeaderColor]);
+    getMainColorFromImage("cover-image", setHeaderColor);
+  }, [banner, router.asPath, setHeaderColor]);
 
   return (
     <PageDetails
@@ -63,19 +53,7 @@ export default function PageHeader({
     >
       {coverImg && !banner ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={coverImg}
-          ref={image}
-          alt=""
-          id="cover-image"
-          onLoad={() => {
-            if (banner) return;
-            setHeaderColor(
-              (prev) => getMainColorFromImage("cover-image") ?? prev
-            );
-            setImageIsLoaded(true);
-          }}
-        />
+        <img src={coverImg} alt="" id="cover-image" />
       ) : (
         !banner && <div id="cover-image"></div>
       )}
