@@ -15,6 +15,7 @@ export default function Heading({
   fontSize,
   margin,
   textAlign,
+  multiline,
   children,
   ...props
 }: PropsWithChildren<HeadingProps> &
@@ -27,6 +28,7 @@ export default function Heading({
     fontSize,
     margin,
     textAlign,
+    multiline,
   });
 
   return (

@@ -11,13 +11,17 @@ export enum AsType {
   SPAN = "span",
 }
 
-export interface HeadingProps {
-  number: Range<1, 7>;
-  as?: AsType | Heading;
+export interface HeadingStyles {
   color?: Color;
   fontSize?: string;
   margin?: string;
   textAlign?: string;
+  multiline?: number;
+}
+
+export interface HeadingProps extends HeadingStyles {
+  number: Range<1, 7>;
+  as?: AsType | Heading;
 }
 export interface SubHeadingProps {
   number: Range<1, 3>;

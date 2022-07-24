@@ -71,7 +71,13 @@ export default function FirstTrackContainer({
             alt=""
             id={`cover-image-${track.id}`}
           />
-          <Heading number={2} as="h3" fontSize="32px" margin="1rem 0">
+          <Heading
+            number={2}
+            as="h3"
+            fontSize="32px"
+            margin="1rem 0"
+            multiline={1}
+          >
             {track.name}
           </Heading>
         </a>

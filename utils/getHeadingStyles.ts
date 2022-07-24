@@ -1,5 +1,5 @@
 import css from "styled-jsx/css";
-import type { AsType, Heading } from "types/heading";
+import type { AsType, Heading, HeadingStyles } from "types/heading";
 import { Color } from "types/heading";
 
 const fontSizes = ["96px", "2.1rem", "24px", "20px", "16px", "12px"];
@@ -8,12 +8,7 @@ const lineHeights = ["100px", "40px", "30px", "24px", "20px", "16px"];
 export function getHeadingStyles(
   number: number,
   element: AsType | Heading,
-  {
-    color,
-    fontSize,
-    margin,
-    textAlign,
-  }: { color?: Color; fontSize?: string; margin?: string; textAlign?: string }
+  { color, fontSize, margin, textAlign, multiline }: HeadingStyles
 ): {
   className: string;
   styles: JSX.Element;
@@ -36,7 +31,7 @@ export function getHeadingStyles(
       text-align: ${textAlign ?? "left"};
       white-space: unset;
       z-index: 999999;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: ${multiline ?? 3};
       -webkit-box-orient: vertical;
       pointer-events: ${number === 1 ? "none" : "auto"};
       user-select: ${number === 1 ? "none" : "auto"};
