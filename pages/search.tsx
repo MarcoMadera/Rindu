@@ -87,10 +87,7 @@ export default function SearchPage({
           {data.playlists?.items && data.playlists?.items?.length > 0 ? (
             <Carousel title={"Playlists"} gap={24}>
               {data.playlists?.items?.map(
-                ({ images, name, description, id, owner }, i) => {
-                  if (i > 4) {
-                    return;
-                  }
+                ({ images, name, description, id, owner }) => {
                   return (
                     <PresentationCard
                       type={CardType.PLAYLIST}
