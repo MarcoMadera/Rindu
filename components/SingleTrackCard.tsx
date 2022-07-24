@@ -2,7 +2,7 @@ import useContextMenu from "hooks/useContextMenu";
 import useHeader from "hooks/useHeader";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
 import { PlayButton } from "./PlayButton";
 
@@ -14,19 +14,13 @@ export default function SingleTrackCard({
   track,
 }: ISingleTrackCard): ReactElement {
   const { setHeaderColor } = useHeader();
-  const [mainTrackColor, setMainTrackColor] = useState<string>();
-  const [imageIsLoaded, setImageIsLoaded] = useState(false);
+  const [mainTrackColor, setMainTrackColor] = useState<string>("");
   const { addContextMenu } = useContextMenu();
-  const image = useRef<HTMLImageElement>(null);
   const router = useRouter();
 
   useEffect(() => {
-    if (image.current?.complete || imageIsLoaded) {
-      setMainTrackColor(
-        (prev) => getMainColorFromImage(`cover-image-${track.id}`) ?? prev
-      );
-    }
-  }, [imageIsLoaded, track.id, router.asPath]);
+    getMainColorFromImage(`cover-image-${track.id}`, setMainTrackColor);
+  }, [track.id, router.asPath]);
 
   return (
     <Link href={`/track/${track.id}`}>
@@ -51,14 +45,7 @@ export default function SingleTrackCard({
         <img
           src={track.album.images[0].url}
           alt={track.name}
-          ref={image}
           id={`cover-image-${track.id}`}
-          onLoad={() => {
-            setMainTrackColor(
-              (prev) => getMainColorFromImage(`cover-image-${track.id}`) ?? prev
-            );
-            setImageIsLoaded(true);
-          }}
         />
         <div>
           <p>{track.name}</p>

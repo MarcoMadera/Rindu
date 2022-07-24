@@ -1,13 +1,7 @@
 import useContextMenu from "hooks/useContextMenu";
 import useHeader from "hooks/useHeader";
 import { useRouter } from "next/router";
-import React, {
-  PropsWithChildren,
-  ReactElement,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { PropsWithChildren, ReactElement, useEffect } from "react";
 import { ITrack } from "types/spotify";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
 
@@ -27,16 +21,12 @@ export default function PageDetails({
     disableOpacityChange,
   });
   const { addContextMenu } = useContextMenu();
-  const [imageIsLoaded, setImageIsLoaded] = useState(false);
-  const image = useRef<HTMLImageElement>(null);
   const router = useRouter();
 
   useEffect(() => {
     if (!banner) return;
-    if (image.current?.complete || imageIsLoaded) {
-      setHeaderColor((prev) => getMainColorFromImage("banner") ?? prev);
-    }
-  }, [banner, imageIsLoaded, router.asPath, setHeaderColor]);
+    getMainColorFromImage("banner", setHeaderColor);
+  }, [banner, router.asPath, setHeaderColor]);
 
   return (
     <>
@@ -45,12 +35,7 @@ export default function PageDetails({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={banner}
-            ref={image}
             alt=""
-            onLoad={() => {
-              setHeaderColor((prev) => getMainColorFromImage("banner") ?? prev);
-              setImageIsLoaded(true);
-            }}
             className="banner"
             id="banner"
             style={{

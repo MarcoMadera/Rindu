@@ -110,7 +110,7 @@ export const CardContent: React.FC<CardContentProps> = ({
         }
         article {
           width: 100%;
-          min-width: 100%;
+          min-width: 190px;
           height: 100%;
           text-align: left;
           border-radius: 4px;
