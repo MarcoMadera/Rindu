@@ -21,7 +21,7 @@ import { getCategories } from "utils/spotifyCalls/getCategories";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import useSpotify from "hooks/useSpotify";
 import { takeCookie } from "utils/cookies";
-import { AuthorizationResponse } from "types/spotify";
+import { AuthorizationResponse, ITrack } from "types/spotify";
 import Carousel from "components/Carousel";
 import SubTitle from "components/SubtTitle";
 import { CardType } from "components/CardContent";
@@ -38,7 +38,7 @@ interface DashboardProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
   topTracks: SpotifyApi.UsersTopTracksResponse | null;
   topArtists: SpotifyApi.UsersTopArtistsResponse | null;
-  tracksRecommendations: SpotifyApi.TrackObjectFull[] | null;
+  tracksRecommendations: ITrack[] | null;
   tracksInLibrary: boolean[] | null;
 }
 
@@ -53,7 +53,7 @@ const Dashboard: NextPage<DashboardProps> = ({
   tracksInLibrary,
   topArtists,
 }) => {
-  const { setIsLogin, setUser } = useAuth();
+  const { setUser } = useAuth();
   const { setHeaderColor } = useHeader({ alwaysDisplayColor: true });
   const router = useRouter();
   const { setAllTracks, recentlyPlayed } = useSpotify();
@@ -85,10 +85,9 @@ const Dashboard: NextPage<DashboardProps> = ({
 
   useEffect(() => {
     if (!user) return;
-    setIsLogin(true);
 
     setUser(user);
-  }, [setIsLogin, setUser, user]);
+  }, [setUser, user]);
 
   useEffect(() => {
     if (!tracksRecommendations) return;
@@ -141,7 +140,7 @@ const Dashboard: NextPage<DashboardProps> = ({
           {recentlyPlayed.map((track) => {
             return (
               <PresentationCard
-                type={CardType.TRACK}
+                type={track.type ?? CardType.TRACK}
                 key={track.id}
                 images={track.album?.images as SpotifyApi.ImageObject[]}
                 title={track.name ?? ""}

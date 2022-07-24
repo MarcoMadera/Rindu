@@ -40,7 +40,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
   tracks,
   tracksInLibrary,
 }) => {
-  const { setIsLogin, setUser, setAccessToken } = useAuth();
+  const { setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalitycs } = useAnalitycs();
   const { setAllTracks, setPageDetails } = useSpotify();
   const router = useRouter();
@@ -70,8 +70,6 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
     setElement(() => <PlaylistTopBarExtraField uri={album?.uri} />);
     trackWithGoogleAnalitycs();
 
-    setIsLogin(true);
-
     setAccessToken(accessToken);
 
     setUser(user);
@@ -95,7 +93,6 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
     router,
     setAccessToken,
     setAllTracks,
-    setIsLogin,
     setPageDetails,
     setUser,
     trackWithGoogleAnalitycs,

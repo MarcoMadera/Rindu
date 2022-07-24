@@ -6,7 +6,7 @@ import { ITrack } from "types/spotify";
 import { useRouter } from "next/router";
 
 export interface PresentationCardProps {
-  type: CardType;
+  type: ITrack["type"] | CardType;
   id: string;
   images?: SpotifyApi.ImageObject[];
   title: string;
@@ -26,7 +26,7 @@ function PresentationCard({
   ...props
 }: PresentationCardProps & HTMLAttributes<HTMLAnchorElement>): ReactElement {
   const unsupportedUris = ["genre", "user"];
-  const uri = unsupportedUris.includes(type)
+  const uri = unsupportedUris.includes(type ?? "")
     ? undefined
     : `spotify:${type}:${id}`;
   const { user } = useAuth();

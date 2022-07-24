@@ -31,6 +31,10 @@ export function UserContextProvider({
   const [accessToken, setAccessToken] = useState<string>();
 
   useEffect(() => {
+    setIsLogin(!!user);
+  }, [user]);
+
+  useEffect(() => {
     if (router.query.code && isLogin) {
       router.replace("/dashboard", undefined, { shallow: true });
     }
