@@ -25,7 +25,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
   accessToken,
   currentUserPlaylists,
 }) => {
-  const { setIsLogin, setUser, setAccessToken } = useAuth();
+  const { setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalitycs } = useAnalitycs();
   const router = useRouter();
 
@@ -35,8 +35,6 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
     }
     trackWithGoogleAnalitycs();
 
-    setIsLogin(true);
-
     setAccessToken(accessToken);
 
     setUser(user);
@@ -45,7 +43,6 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
     currentUser,
     router,
     setAccessToken,
-    setIsLogin,
     setUser,
     trackWithGoogleAnalitycs,
     user,

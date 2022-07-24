@@ -56,7 +56,7 @@ export default function ArtistPage({
   setLists,
   artistInfo,
 }: ArtistPageProps): ReactElement {
-  const { setIsLogin, setUser, setAccessToken } = useAuth();
+  const { setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalitycs } = useAnalitycs();
   const banner =
     artistInfo?.artists?.[0]?.strArtistFanart ||
@@ -80,8 +80,6 @@ export default function ArtistPage({
     }
     trackWithGoogleAnalitycs();
 
-    setIsLogin(true);
-
     setAccessToken(accessToken);
 
     setUser(user);
@@ -90,7 +88,6 @@ export default function ArtistPage({
     currentArtist,
     router,
     setAccessToken,
-    setIsLogin,
     setUser,
     trackWithGoogleAnalitycs,
     user,

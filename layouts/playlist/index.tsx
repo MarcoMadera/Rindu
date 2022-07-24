@@ -36,7 +36,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
   isLibrary,
 }) => {
   const router = useRouter();
-  const { setIsLogin, setUser, accessToken } = useAuth();
+  const { setUser, accessToken } = useAuth();
   const { trackWithGoogleAnalitycs } = useAnalitycs();
   const {
     player,
@@ -84,15 +84,12 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
     trackWithGoogleAnalitycs();
     setAllTracks(tracks);
 
-    setIsLogin(true);
-
     setUser(user);
   }, [
     setElement,
     setPageDetails,
     pageDetails,
     trackWithGoogleAnalitycs,
-    setIsLogin,
     setUser,
     user,
     router,

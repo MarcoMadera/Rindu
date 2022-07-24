@@ -29,29 +29,19 @@ interface PlaylistProps {
 
 const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
   const [isShowInLibrary, setIsShowInLibrary] = useState(false);
-  const { setIsLogin, setAccessToken, setUser } = useAuth();
+  const { setAccessToken, setUser } = useAuth();
   const { setPageDetails, setAllTracks } = useSpotify();
   const { addToast } = useToast();
   const { setElement } = useHeader({
     showOnFixed: false,
   });
   useEffect(() => {
-    setIsLogin(true);
-
     setElement(() => <PlaylistTopBarExtraField uri={show?.uri} />);
 
     setAccessToken(accessToken);
 
     setUser(user);
-  }, [
-    accessToken,
-    setAccessToken,
-    setElement,
-    setIsLogin,
-    setUser,
-    show?.uri,
-    user,
-  ]);
+  }, [accessToken, setAccessToken, setElement, setUser, show?.uri, user]);
 
   useEffect(() => {
     async function fetchData() {

@@ -2,6 +2,7 @@ import useOnScreen from "hooks/useOnScreen";
 import { decode } from "html-entities";
 import { useRouter } from "next/router";
 import { useRef } from "react";
+import { ITrack } from "types/spotify";
 import { SITE_URL } from "utils/constants";
 
 export enum CardType {
@@ -13,6 +14,7 @@ export enum CardType {
   GENRE = "genre",
   TRACK = "track",
   EPISODE = "episode",
+  AD = "ad",
 }
 
 interface CardContentProps {
@@ -20,7 +22,7 @@ interface CardContentProps {
   images?: SpotifyApi.ImageObject[];
   title: string;
   subTitle: string | JSX.Element;
-  type: CardType;
+  type: ITrack["type"] | CardType;
 }
 
 export const CardContent: React.FC<CardContentProps> = ({
