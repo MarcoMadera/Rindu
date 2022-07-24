@@ -118,7 +118,6 @@ export const CardContent: React.FC<CardContentProps> = ({
           isolation: isolate;
           padding: 16px;
           position: relative;
-          max-width: min-content;
         }
         img {
           width: 100%;
