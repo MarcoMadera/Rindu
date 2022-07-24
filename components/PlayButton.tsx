@@ -10,7 +10,7 @@ import React, {
 import useAuth from "hooks/useAuth";
 import useSpotify from "hooks/useSpotify";
 import { Pause, Play } from "components/icons";
-import { play } from "lib/spotify";
+import { play } from "utils/spotifyCalls/play";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import useToast from "hooks/useToast";
 import useOnScreen from "hooks/useOnScreen";

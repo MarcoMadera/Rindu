@@ -1,7 +1,6 @@
 import useAuth from "hooks/useAuth";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import useToggle from "hooks/useToggle";
-import { removeTracksRequest } from "lib/requests";
 import Head from "next/head";
 import {
   createContext,
@@ -14,6 +13,7 @@ import {
 } from "react";
 import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
 import { callPictureInPicture } from "utils/callPictureInPicture";
+import { removeTracksFromPlaylist } from "utils/spotifyCalls/removeTracksFromPlaylist";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const SpotifyContext = createContext<ISpotifyContext>(null!);
@@ -261,12 +261,15 @@ export function SpotifyContextProvider({
       snapshotID: string | undefined
     ) => {
       try {
-        const res = await removeTracksRequest(playlist, tracks, snapshotID);
-        if (!res.ok) {
-          throw Error(res.statusText);
+        const res = await removeTracksFromPlaylist(
+          playlist,
+          tracks,
+          snapshotID
+        );
+        if (!res) {
+          throw Error("Failed to remove tracks");
         }
-        const { snapshot_id }: { snapshot_id: string } = await res.json();
-        return snapshot_id;
+        return res.snapshot_id;
       } catch (err) {
         console.log(err);
         return;

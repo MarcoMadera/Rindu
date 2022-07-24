@@ -1,5 +1,5 @@
 import { NextApiResponse } from "next";
-import { RefreshResponse } from "types/spotify";
+import { AuthorizationResponse } from "types/spotify";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "./constants";
 import { takeCookie } from "./cookies";
 import { serverRedirect } from "./serverRedirect";
@@ -9,29 +9,29 @@ import { refreshAccessToken } from "./spotifyCalls/refreshAccessToken";
 export async function getAuth(
   res: NextApiResponse,
   cookies: string,
-  tokens?: Record<string, string | null> | RefreshResponse
+  tokens?: Record<string, string | null> | AuthorizationResponse
 ): Promise<{ user: SpotifyApi.UserObjectPrivate; accessToken: string } | null> {
   const refreshToken =
-    tokens?.refreshToken ?? takeCookie(REFRESH_TOKEN_COOKIE, cookies);
+    tokens?.refresh_token ?? takeCookie(REFRESH_TOKEN_COOKIE, cookies);
   const accessTokenFromCookie =
-    tokens?.accessToken ?? takeCookie(ACCESS_TOKEN_COOKIE, cookies);
+    tokens?.access_token ?? takeCookie(ACCESS_TOKEN_COOKIE, cookies);
   const user = await getMe(accessTokenFromCookie, cookies);
   if (refreshToken && !user) {
-    const { accessToken } = (await refreshAccessToken(refreshToken)) || {};
+    const { access_token } = (await refreshAccessToken(refreshToken)) || {};
 
-    if (!accessToken) {
+    if (!access_token) {
       serverRedirect(res, "/");
       return null;
     }
 
-    const userFromRefreshedToken = await getMe(accessToken, cookies);
+    const userFromRefreshedToken = await getMe(access_token, cookies);
 
     if (!userFromRefreshedToken) {
       serverRedirect(res, "/");
       return null;
     }
 
-    return { user: userFromRefreshedToken, accessToken };
+    return { user: userFromRefreshedToken, accessToken: access_token };
   }
 
   if (!user || !accessTokenFromCookie || !refreshToken) {

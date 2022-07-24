@@ -3,7 +3,7 @@ import { ReactElement, useCallback } from "react";
 import { useRouter } from "next/router";
 import useAuth from "hooks/useAuth";
 import { Volume } from "./icons/Volume";
-import { play } from "lib/spotify";
+import { play } from "utils/spotifyCalls/play";
 import useClickPreventionOnDoubleClick from "hooks/useClickPreventionOnDoubleClick";
 import useToast from "hooks/useToast";
 

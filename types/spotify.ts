@@ -2,38 +2,21 @@ import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { IUseToggleHandlers } from "hooks/useToggle";
 import { Dispatch, MutableRefObject, SetStateAction } from "react";
 
-export type AuthorizationResponse = {
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
-};
+export interface RefreshTokenResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  scope: string;
+}
 
-export type RefreshResponse = {
-  accessToken: string;
-  refreshToken: string | undefined;
-  expiresIn: number;
-};
+export interface AuthorizationResponse extends RefreshTokenResponse {
+  refresh_token: string;
+}
 
-export type SpotifyUserResponse = {
-  name: string | undefined;
-  image: string | undefined;
-  href: string;
-  id: string;
-  product: string | undefined;
-  followers: SpotifyApi.FollowersObject | undefined;
-  country: string;
-};
 // Playlists
 export type PlaylistItem = SpotifyApi.PlaylistObjectSimplified;
 
 export type PlaylistItems = PlaylistItem[];
-
-export type UserPlaylistsResponse = {
-  items: PlaylistItems;
-  total: number;
-};
-
-export type RemoveTracksResponse = string | undefined;
 
 interface IPageDetails {
   id?: string;

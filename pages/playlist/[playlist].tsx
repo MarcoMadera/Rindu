@@ -4,8 +4,9 @@ import PlaylistLayout from "layouts/playlist";
 import { getAuth } from "utils/getAuth";
 import { serverRedirect } from "utils/serverRedirect";
 import { getpageDetails } from "utils/spotifyCalls/getPlaylistDetails";
-import { getTracksFromPlayList } from "utils/spotifyCalls/getTracksFromPlayList";
+import { getTracksFromPlaylist } from "utils/spotifyCalls/getTracksFromPlayList";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
+import { mapPlaylistItems } from "utils/mapPlaylistItems";
 
 export interface PlaylistProps {
   pageDetails: ISpotifyContext["pageDetails"] | null;
@@ -49,12 +50,13 @@ export async function getServerSideProps({
   const { accessToken, user } = (await getAuth(res, cookies)) || {};
 
   const pageDetails = await getpageDetails(playlist, accessToken, cookies);
-  const playListTracks = await getTracksFromPlayList(
+  const playlistTrackResponse = await getTracksFromPlaylist(
     playlist,
-    user?.country ?? "US",
+    0,
     accessToken,
     cookies
   );
+  const playListTracks = mapPlaylistItems(playlistTrackResponse?.items, 0);
 
   const trackIds = playListTracks?.map(({ id }) => id);
   const tracksInLibrary = await checkTracksInLibrary(
