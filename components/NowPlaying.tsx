@@ -182,27 +182,29 @@ export default function NowPlaying(): ReactElement | null {
           }}
         />
       )}
-      <button
-        type="button"
-        aria-label="Picture in Picture"
-        className="navBar-Button pictureInPicture"
-        onClick={() => {
-          if (pictureInPictureCanvas.current && videoRef.current) {
-            if (isPip && document.pictureInPictureElement) {
-              setIsPip(false);
-              document.exitPictureInPicture();
-            } else {
-              callPictureInPicture(
-                pictureInPictureCanvas.current,
-                videoRef.current
-              );
-              setIsPip(true);
+      {!!document?.pictureInPictureEnabled && (
+        <button
+          type="button"
+          aria-label="Picture in Picture"
+          className="navBar-Button pictureInPicture"
+          onClick={() => {
+            if (pictureInPictureCanvas.current && videoRef.current) {
+              if (isPip && document.pictureInPictureElement) {
+                setIsPip(false);
+                document.exitPictureInPicture();
+              } else {
+                callPictureInPicture(
+                  pictureInPictureCanvas.current,
+                  videoRef.current
+                );
+                setIsPip(true);
+              }
             }
-          }
-        }}
-      >
-        <PictureInPicture />
-      </button>
+          }}
+        >
+          <PictureInPicture />
+        </button>
+      )}
       <style jsx>{`
         section {
           margin-right: 10px;

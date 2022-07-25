@@ -107,12 +107,13 @@ export function SpotifyContextProvider({
     if (playback) {
       const playbackObj = JSON.parse(decodeURI(playback));
       setVolume(playbackObj.volume);
+      player?.setVolume(playbackObj.volume);
     }
     if (recentlyPlayedFromLocal) {
       const recentlyPlayedObj = JSON.parse(recentlyPlayedFromLocal);
       setRecentlyPlayed(recentlyPlayedObj);
     }
-  }, [user?.id]);
+  }, [player, user?.id]);
 
   useEffect(() => {
     if (currrentlyPlaying && "mediaSession" in navigator) {
@@ -159,6 +160,7 @@ export function SpotifyContextProvider({
     });
 
     video.muted = true;
+    canvas.getContext("2d");
     video.srcObject = canvas.captureStream();
     pictureInPictureCanvas.current = canvas;
     videoRef.current = video;

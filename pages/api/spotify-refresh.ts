@@ -41,18 +41,19 @@ export default async function refresh(
     );
     const data: RefreshTokenResponse = await refreshTokenResponse.json();
     const expireCookieDate = new Date();
-    expireCookieDate.setDate(expireCookieDate.getDate() + 30);
-
+    expireCookieDate.setTime(
+      expireCookieDate.getTime() + 1000 * 60 * 60 * 24 * 30
+    );
     res.setHeader("Set-Cookie", [
       `${ACCESS_TOKEN_COOKIE}=${
         data.access_token
-      }; Path=/; expires=${expireCookieDate.toUTCString()};`,
+      }; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax;`,
       `${REFRESH_TOKEN_COOKIE}=${
         req.body.refreshToken || refreshTokenFromCookie
-      }; Path=/; expires=${expireCookieDate.toUTCString()};`,
+      }; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax;`,
       `${EXPIRE_TOKEN_COOKIE}=${
         data.expires_in
-      }; Path=/; expires=${expireCookieDate.toUTCString()};`,
+      }; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax;`,
     ]);
 
     return res.json(data);

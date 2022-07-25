@@ -162,6 +162,7 @@ export default function PageHeader({
             align-self: flex-end;
             text-shadow: ${banner ? "0px 0px 20px #00000078" : "none"};
             margin-right: 50px;
+            width: 100%;
           }
           p.description {
             margin-bottom: 4px;
