@@ -63,7 +63,7 @@ export default function FullScreenLyrics({
         <div className="lyrics">
           {lyrics.map((line, i) => {
             return (
-              <div key={i} className="line">
+              <div key={i} className="line" dir="auto">
                 {line}
               </div>
             );
