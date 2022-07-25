@@ -379,8 +379,13 @@ Home.getInitialProps = async ({
       return { accessToken: null };
     }
 
+    const expireCookieDate = new Date();
+    expireCookieDate.setTime(
+      expireCookieDate.getTime() + 1000 * 60 * 60 * 24 * 30
+    );
+
     res?.setHeader("Set-Cookie", [
-      `${ACCESS_TOKEN_COOKIE}=${access_token}; Path=/;"`,
+      `${ACCESS_TOKEN_COOKIE}=${access_token}; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax; Secure;`,
     ]);
 
     if (res) {
