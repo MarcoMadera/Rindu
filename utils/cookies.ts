@@ -1,4 +1,4 @@
-import { __isServer__ } from "./constants";
+import { isServer } from "./enviroment";
 
 /**
  * Get the value of the cookie
@@ -10,11 +10,13 @@ export function takeCookie(
   cookieName: string | undefined,
   cookiesJar?: string
 ): string | null {
-  const allCookies = `; ${__isServer__ ? cookiesJar : document.cookie}`;
+  const allCookies = `; ${isServer() ? cookiesJar : document.cookie}`;
   const parts = allCookies.split(`; ${cookieName}=`);
+  console.log(parts);
   if (parts.length === 2) {
     return parts.pop()?.split(";").shift() || null;
   }
+  console.log(`Cookie ${cookieName} not found`);
   return null;
 }
 
@@ -34,7 +36,7 @@ export function makeCookie({
   value: string;
   age: number;
 }): void {
-  document.cookie = `${name}=${value}; max-age=${age}; Path=/; SameSite=lax; Secure;"`;
+  document.cookie = `${name}=${value}; max-age=${age}; Path=/; SameSite=lax; Secure;`;
 }
 
 /**

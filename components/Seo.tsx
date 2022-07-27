@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { ReactElement } from "react";
-import { SITE_URL } from "../utils/constants";
+import { getSiteUrl } from "../utils/enviroment";
 
 export default function Seo(): ReactElement {
   const router = useRouter();
@@ -10,7 +10,7 @@ export default function Seo(): ReactElement {
   const des = `Ya sea si tienes un bot que añade tracks y te ha estado añadiendo
  repetidos, Rindu elimina esos tracks que están de más y deja solo uno.`;
   const description = des.replace(/\n/g, "");
-  const cover = `${SITE_URL}/logo.png`;
+  const cover = `${getSiteUrl()}/logo.png`;
 
   return (
     <Head key={1}>
@@ -24,15 +24,19 @@ export default function Seo(): ReactElement {
       <link
         rel="icon"
         type="image/png"
-        href={`${SITE_URL}/favicon-32x32.png`}
+        href={`${getSiteUrl()}/favicon-32x32.png`}
       />
-      <link rel="apple-touch-icon" href={`${SITE_URL}/favicon-32x32.png`} />
+      <link rel="apple-touch-icon" href={`${getSiteUrl()}/favicon-32x32.png`} />
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta property="og:title" content={title} />
       <link
         rel="canonical"
-        href={router.asPath === "/" ? SITE_URL : `${SITE_URL}/${router.asPath}`}
+        href={
+          router.asPath === "/"
+            ? getSiteUrl()
+            : `${getSiteUrl()}/${router.asPath}`
+        }
       />
       <meta property="og:locale" content="es-MX" />
       <meta name="robots" content="index,follow" />

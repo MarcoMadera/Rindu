@@ -3,7 +3,7 @@ import { decode } from "html-entities";
 import { useRouter } from "next/router";
 import { useRef } from "react";
 import { ITrack } from "types/spotify";
-import { SITE_URL } from "utils/constants";
+import { getSiteUrl } from "utils/enviroment";
 
 export enum CardType {
   PLAYLIST = "playlist",
@@ -58,7 +58,7 @@ export const CardContent: React.FC<CardContentProps> = ({
           loading="lazy"
           src={
             images[0]?.url ??
-            (images[1]?.url || `${SITE_URL}/defaultSongCover.jpeg`)
+            (images[1]?.url || `${getSiteUrl()}/defaultSongCover.jpeg`)
           }
           alt={title}
         />

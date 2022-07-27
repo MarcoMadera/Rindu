@@ -9,7 +9,7 @@ import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
 import PageHeader from "../../components/PageHeader";
 import { PlayButton } from "components/PlayButton";
 import { getEpisodeById } from "utils/spotifyCalls/getEpisodeById";
-import { SITE_URL } from "utils/constants";
+import { getSiteUrl } from "utils/enviroment";
 import { HeaderType } from "types/pageHeader";
 import Link from "next/link";
 import { checkEpisodesInLibrary } from "utils/spotifyCalls/checkEpisodesInLibrary";
@@ -115,7 +115,7 @@ export default function EpisodePage({
         coverImg={
           episode?.show?.images?.[0]?.url ??
           episode?.show?.images?.[1]?.url ??
-          `${SITE_URL}/defaultSongCover.jpeg`
+          `${getSiteUrl()}/defaultSongCover.jpeg`
         }
         ownerId={episode?.show?.id ?? ""}
         ownerDisplayName={episode?.show?.name ?? ""}

@@ -10,7 +10,7 @@ import {
   WindowScroller,
 } from "react-virtualized";
 import { ITrack } from "types/spotify";
-import { __isServer__ } from "utils/constants";
+import { isServer } from "utils/enviroment";
 import { getTracksFromLibrary } from "utils/getTracksFromLibrary";
 import { mapPlaylistItems } from "utils/mapPlaylistItems";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
@@ -84,7 +84,7 @@ export default function VirtualizedList({
     [accessToken, addTracksToPlaylists, isLibrary, pageDetails?.id]
   );
 
-  const scrollElement = !__isServer__
+  const scrollElement = !isServer()
     ? document?.getElementsByClassName("app")?.[0]
     : undefined;
   return (

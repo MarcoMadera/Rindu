@@ -5,7 +5,7 @@ import { serverRedirect } from "utils/serverRedirect";
 import { getShow } from "utils/spotifyCalls/getShow";
 import { ITrack } from "types/spotify";
 import { HeaderType } from "types/pageHeader";
-import { SITE_URL } from "utils/constants";
+import { getSiteUrl } from "utils/enviroment";
 import PageHeader from "components/PageHeader";
 import { PlayButton } from "components/PlayButton";
 import { Heart } from "components/icons/Heart";
@@ -110,7 +110,7 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
         coverImg={
           show?.images?.[0]?.url ??
           show?.images?.[1]?.url ??
-          `${SITE_URL}/defaultSongCover.jpeg`
+          `${getSiteUrl()}/defaultSongCover.jpeg`
         }
         ownerDisplayName={show?.publisher ?? ""}
         ownerId={show?.id ?? ""}

@@ -11,8 +11,8 @@ export function findDuplicateSongs(allTracks: ITrack[]): {
   const duplicateSongs = allTracks.reduce(
     (duplicates: { index: number; id: string }[], track, index) => {
       if (track === null) return duplicates;
-      if (!track.id) return duplicates;
       if (!track) return duplicates;
+      if (!track.id) return duplicates;
       let isDuplicate = false;
       const seenNameAndArtistKey = `${track.name}:${
         Array.isArray(track.artists) && track.artists[0].name
@@ -37,7 +37,7 @@ export function findDuplicateSongs(allTracks: ITrack[]): {
       }
 
       if (isDuplicate) {
-        duplicates.push({ index, id: track.id ?? null });
+        duplicates.push({ index, id: track.id });
       }
 
       if (!isDuplicate) {
