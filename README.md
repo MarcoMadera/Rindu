@@ -13,7 +13,24 @@ npm run dev
 
 For the project to work properly a `.env.local` file similar to [`.env.example`](https://github.com/MarcoMadera/spotify-playlists-cleaner/blob/master/.env.example) is required.
 
-**Note:** The `.env.local` file is not pushed to GitHub.
+To get the client ID and client secret, go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/).
+
+Create a new app and copy the client ID and client secret.
+
+Create a `.env.local` file and paste the client ID and client secret as the example [`.env.example`](https://github.com/MarcoMadera/spotify-playlists-cleaner/blob/master/.env.example).
+
+
+In the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/) for your app, go to "edit settings" and click "Add redirect URI" and paste the following URL: http://localhost:3000/dashboard
+
+You can get the SETLIST_FM_API_KEY [here](https://api.setlist.fm/docs/1.0/index.html) and paste it in the `.env.local`.
+
+**Important:** The `.env.local` file with client id, client secret and apikeys is not pushed to GitHub.
+
+Now you can run the project locally.
+
+```bash
+npm run dev
+```
 
 ## **Components**
 
