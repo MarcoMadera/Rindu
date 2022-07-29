@@ -1,8 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-
-function rgbToHex({ r, g, b }: { r: number; g: number; b: number }) {
-  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-}
+import { rgbToHex } from "utils/rgbToHex";
 
 export function getMainColorFromImage(
   imageId: string,
@@ -50,6 +47,6 @@ export function getMainColorFromImage(
       return;
     }
     const hex = rgbToHex(rgb);
-    callback((prev) => hex ?? prev);
+    callback(hex);
   };
 }

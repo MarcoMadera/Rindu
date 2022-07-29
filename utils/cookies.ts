@@ -12,11 +12,9 @@ export function takeCookie(
 ): string | null {
   const allCookies = `; ${isServer() ? cookiesJar : document.cookie}`;
   const parts = allCookies.split(`; ${cookieName}=`);
-  console.log(parts);
   if (parts.length === 2) {
     return parts.pop()?.split(";").shift() || null;
   }
-  console.log(`Cookie ${cookieName} not found`);
   return null;
 }
 

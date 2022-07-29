@@ -75,10 +75,6 @@ describe("getArtistInfo", () => {
   });
   it("should return null if response is not ok", async () => {
     expect.assertions(1);
-    jest.spyOn(global, "fetch").mockResolvedValue({
-      json: jest.fn(() => ({ artists: [artistInfo] })),
-      ok: false,
-    });
 
     global.fetch = jest.fn(() =>
       Promise.resolve({

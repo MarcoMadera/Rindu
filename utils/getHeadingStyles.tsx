@@ -16,26 +16,13 @@ export function getHeadingStyles(
   return css.resolve`
     ${element} {
       color: ${color ?? (number === 1 ? Color.Primary : Color.Secondary)};
-      display: -webkit-box;
-      font-family: "Lato", "sans-serif";
       font-weight: ${number === 1 ? "900" : "700"};
       font-size: ${fontSize ?? fontSizes[number - 1]};
-      letter-spacing: -0.04em;
-      line-break: anywhere;
       margin: ${margin ?? 0};
-      max-width: 100%;
-      overflow: hidden;
-      position: relative;
-      text-overflow: ellipsis;
-      text-transform: none;
       text-align: ${textAlign ?? "left"};
-      white-space: unset;
-      z-index: 999999;
       -webkit-line-clamp: ${multiline ?? 3};
-      -webkit-box-orient: vertical;
       pointer-events: ${number === 1 ? "none" : "auto"};
       user-select: ${number === 1 ? "none" : "auto"};
-      width: 100%;
       padding: ${number === 1 ? "0.08em 0px" : "0"};
       line-height: ${fontSize ??
       (number === 3 ? "28px" : lineHeights[number - 1])};
