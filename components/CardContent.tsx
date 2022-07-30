@@ -39,6 +39,7 @@ export const CardContent: React.FC<CardContentProps> = ({
     <article>
       <div
         ref={handlerRef}
+        data-testid="cardContent-button"
         aria-hidden="true"
         className="handler"
         onClick={() => {

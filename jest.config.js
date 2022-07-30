@@ -16,7 +16,6 @@ const customJestConfig = {
     "!**/types/**",
     "!**/.storybook/**",
     "!**/stories/**",
-    "!**/components/**",
     "!**/hooks/**",
     "!**/pages/**",
     "!**/layouts/**",

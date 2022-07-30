@@ -6,14 +6,13 @@ jest.mock("utils/spotifyCalls/getMyAlbums", () => ({
   getMyAlbums: jest.fn(),
 }));
 
-const { album, paginObject, accessToken } = jest.requireActual<IUtilsMocks>(
-  "./__mocks__/mocks.ts"
-);
+const { savedAlbum, paginObject, accessToken } =
+  jest.requireActual<IUtilsMocks>("./__mocks__/mocks.ts");
 
 const getAlbums = (number: number): SpotifyApi.SavedAlbumObject[] => {
   const albums: SpotifyApi.SavedAlbumObject[] = Array.from(
     { length: number },
-    () => album
+    () => savedAlbum
   );
   return albums;
 };
