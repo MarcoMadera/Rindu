@@ -1,6 +1,6 @@
 import { getSiteUrl } from "../enviroment";
 
-interface IRefreshAccessTokenResponse {
+export interface IRefreshAccessTokenResponse {
   access_token: string;
   refresh_token: string;
   expires_in: string;

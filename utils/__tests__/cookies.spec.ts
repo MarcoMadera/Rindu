@@ -1,3 +1,4 @@
+import { IUtilsMocks } from "types/mocks";
 import {
   ACCESS_TOKEN_COOKIE,
   EXPIRE_TOKEN_COOKIE,
@@ -5,14 +6,15 @@ import {
 } from "utils/constants";
 import { makeCookie, takeCookie, eatCookie } from "utils/cookies";
 
+const { setupCookies } = jest.requireActual<IUtilsMocks>(
+  "./__mocks__/mocks.ts"
+);
+
 describe("cookies", () => {
   it("should set a cookie", () => {
     expect.assertions(1);
     const value = "testValue";
-    Object.defineProperty(document, "cookie", {
-      writable: true,
-      value: "",
-    });
+    setupCookies("");
     makeCookie({ name: ACCESS_TOKEN_COOKIE, value, age: 1000 });
     expect(document.cookie).toBe(
       `${ACCESS_TOKEN_COOKIE}=${value}; max-age=1000; Path=/; SameSite=lax; Secure;`
@@ -21,10 +23,7 @@ describe("cookies", () => {
 
   it("should remove a cookie", () => {
     expect.assertions(1);
-    Object.defineProperty(document, "cookie", {
-      writable: true,
-      value: "",
-    });
+    setupCookies("");
     const value = "testValue";
     makeCookie({ name: REFRESH_TOKEN_COOKIE, value, age: 1000 });
     eatCookie(REFRESH_TOKEN_COOKIE);

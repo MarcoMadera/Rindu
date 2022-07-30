@@ -1,3 +1,4 @@
+import { IUtilsMocks } from "types/mocks";
 import { getAllAlbums } from "utils/getAllAlbums";
 import { getMyAlbums } from "utils/spotifyCalls/getMyAlbums";
 
@@ -5,49 +6,14 @@ jest.mock("utils/spotifyCalls/getMyAlbums", () => ({
   getMyAlbums: jest.fn(),
 }));
 
+const { album, paginObject, accessToken } = jest.requireActual<IUtilsMocks>(
+  "./__mocks__/mocks.ts"
+);
+
 const getAlbums = (number: number): SpotifyApi.SavedAlbumObject[] => {
   const albums: SpotifyApi.SavedAlbumObject[] = Array.from(
     { length: number },
-    () => ({
-      album: {
-        name: "albumName",
-        images: [{ url: "albumUrl" }],
-        album_type: "album",
-        artists: [
-          {
-            name: "artistName",
-            external_urls: { spotify: "artistUrl" },
-            href: "",
-            id: "",
-            type: "artist",
-            uri: "",
-          },
-        ],
-        copyrights: [{ text: "copyrightText", type: "C" }],
-        external_ids: { isrc: "isrc" },
-        external_urls: { spotify: "spotifyUrl" },
-        genres: ["genre"],
-        release_date: "releaseDate",
-        total_tracks: 10,
-        href: "href",
-        id: "id",
-        type: "album",
-        label: "label",
-        popularity: 10,
-        tracks: {
-          href: "",
-          items: [],
-          limit: 0,
-          next: "",
-          offset: 0,
-          previous: "",
-          total: 0,
-        },
-        release_date_precision: "day",
-        uri: "uri",
-      },
-      added_at: "addedAt",
-    })
+    () => album
   );
   return albums;
 };
@@ -55,26 +21,17 @@ const getAlbums = (number: number): SpotifyApi.SavedAlbumObject[] => {
 describe("getAllAlbums", () => {
   it("should return items with empty array", async () => {
     expect.assertions(3);
-    const accessToken = "accessToken";
 
     (
       getMyAlbums as jest.Mock<
         Promise<SpotifyApi.UsersSavedAlbumsResponse | null>
       >
-    ).mockResolvedValue({
-      total: 0,
-      items: [],
-      href: "",
-      limit: 50,
-      next: "",
-      offset: 0,
-      previous: "",
-    });
+    ).mockResolvedValue(paginObject);
 
-    const albumsData = await getAllAlbums(accessToken);
+    const allAlbums = await getAllAlbums(accessToken);
     expect(getMyAlbums).toHaveBeenCalledTimes(1);
-    expect(albumsData).toBeDefined();
-    expect(albumsData?.items).toHaveLength(0);
+    expect(allAlbums).toBeDefined();
+    expect(allAlbums?.items).toHaveLength(0);
     (
       getMyAlbums as jest.Mock<
         Promise<SpotifyApi.UsersSavedAlbumsResponse | null>
@@ -84,7 +41,6 @@ describe("getAllAlbums", () => {
 
   it("should return albums equal null if response is null", async () => {
     expect.assertions(2);
-    const accessToken = "accessToken";
 
     (
       getMyAlbums as jest.Mock<
@@ -92,9 +48,9 @@ describe("getAllAlbums", () => {
       >
     ).mockResolvedValue(null);
 
-    const albumsData = await getAllAlbums(accessToken);
+    const allAlbums = await getAllAlbums(accessToken);
     expect(getMyAlbums).toHaveBeenCalledTimes(1);
-    expect(albumsData).toBeNull();
+    expect(allAlbums).toBeNull();
     (
       getMyAlbums as jest.Mock<
         Promise<SpotifyApi.UsersSavedAlbumsResponse | null>
@@ -103,7 +59,6 @@ describe("getAllAlbums", () => {
   });
   it("should return albums data if next response is null", async () => {
     expect.assertions(2);
-    const accessToken = "accessToken";
 
     (
       getMyAlbums as jest.Mock<
@@ -111,19 +66,15 @@ describe("getAllAlbums", () => {
       >
     )
       .mockResolvedValueOnce({
+        ...paginObject,
         total: 80,
         items: getAlbums(50),
-        href: "",
-        limit: 50,
-        next: "",
-        offset: 0,
-        previous: "",
       })
       .mockResolvedValueOnce(null);
 
-    const albumsData = await getAllAlbums(accessToken);
+    const allAlbums = await getAllAlbums(accessToken);
     expect(getMyAlbums).toHaveBeenCalledTimes(2);
-    expect(albumsData).toBeNull();
+    expect(allAlbums).toBeNull();
     (
       getMyAlbums as jest.Mock<
         Promise<SpotifyApi.UsersSavedAlbumsResponse | null>
@@ -133,26 +84,21 @@ describe("getAllAlbums", () => {
 
   it("should return all albums", async () => {
     expect.assertions(3);
-    const accessToken = "accessToken";
 
     (
       getMyAlbums as jest.Mock<
         Promise<SpotifyApi.UsersSavedAlbumsResponse | null>
       >
     ).mockResolvedValue({
+      ...paginObject,
       total: 50,
       items: getAlbums(50),
-      href: "",
-      limit: 50,
-      next: "",
-      offset: 0,
-      previous: "",
     });
 
-    const albumsData = await getAllAlbums(accessToken);
+    const allAlbums = await getAllAlbums(accessToken);
     expect(getMyAlbums).toHaveBeenCalledTimes(1);
-    expect(albumsData).toBeDefined();
-    expect(albumsData?.items).toHaveLength(50);
+    expect(allAlbums).toBeDefined();
+    expect(allAlbums?.items).toHaveLength(50);
     (
       getMyAlbums as jest.Mock<
         Promise<SpotifyApi.UsersSavedAlbumsResponse | null>
@@ -162,7 +108,6 @@ describe("getAllAlbums", () => {
 
   it("should call getMyAlbums if total is more than limit", async () => {
     expect.assertions(3);
-    const accessToken = "accessToken";
 
     (
       getMyAlbums as jest.Mock<
@@ -170,28 +115,20 @@ describe("getAllAlbums", () => {
       >
     )
       .mockResolvedValueOnce({
+        ...paginObject,
         total: 60,
         items: getAlbums(50),
-        href: "",
-        limit: 50,
-        next: "",
-        offset: 0,
-        previous: "",
       })
       .mockResolvedValueOnce({
+        ...paginObject,
         total: 60,
         items: getAlbums(10),
-        href: "",
-        limit: 50,
-        next: "",
-        offset: 0,
-        previous: "",
       });
 
-    const albumsData = await getAllAlbums(accessToken);
+    const allAlbums = await getAllAlbums(accessToken);
     expect(getMyAlbums).toHaveBeenCalledTimes(2);
-    expect(albumsData).toBeDefined();
-    expect(albumsData?.items).toHaveLength(60);
+    expect(allAlbums).toBeDefined();
+    expect(allAlbums?.items).toHaveLength(60);
     (
       getMyAlbums as jest.Mock<
         Promise<SpotifyApi.UsersSavedAlbumsResponse | null>
@@ -201,7 +138,6 @@ describe("getAllAlbums", () => {
 
   it("should get all albums", async () => {
     expect.assertions(3);
-    const accessToken = "accessToken";
 
     (
       getMyAlbums as jest.Mock<
@@ -209,45 +145,29 @@ describe("getAllAlbums", () => {
       >
     )
       .mockResolvedValueOnce({
+        ...paginObject,
         total: 170,
         items: getAlbums(50),
-        href: "",
-        limit: 50,
-        next: "",
-        offset: 0,
-        previous: "",
       })
       .mockResolvedValueOnce({
+        ...paginObject,
         total: 170,
         items: getAlbums(50),
-        href: "",
-        limit: 50,
-        next: "",
-        offset: 0,
-        previous: "",
       })
       .mockResolvedValueOnce({
+        ...paginObject,
         total: 170,
         items: getAlbums(50),
-        href: "",
-        limit: 50,
-        next: "",
-        offset: 0,
-        previous: "",
       })
       .mockResolvedValueOnce({
+        ...paginObject,
         total: 170,
         items: getAlbums(20),
-        href: "",
-        limit: 50,
-        next: "",
-        offset: 0,
-        previous: "",
       });
 
-    const albumsData = await getAllAlbums(accessToken);
+    const allAlbums = await getAllAlbums(accessToken);
     expect(getMyAlbums).toHaveBeenCalledTimes(4);
-    expect(albumsData).toBeDefined();
-    expect(albumsData?.items).toHaveLength(170);
+    expect(allAlbums).toBeDefined();
+    expect(allAlbums?.items).toHaveLength(170);
   });
 });

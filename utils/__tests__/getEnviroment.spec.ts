@@ -1,4 +1,9 @@
+import { IUtilsMocks } from "types/mocks";
 import { isProduction, isServer, getSiteUrl } from "utils/enviroment";
+
+const { setupEnviroment } = jest.requireActual<IUtilsMocks>(
+  "./__mocks__/mocks.ts"
+);
 
 describe("enviroment", () => {
   describe("isProduction", () => {
@@ -10,11 +15,8 @@ describe("enviroment", () => {
 
     it("should be truthy if is production", () => {
       expect.assertions(1);
-      Object.defineProperty(global.process, "env", {
-        writable: true,
-        value: {
-          NODE_ENV: "production",
-        },
+      setupEnviroment({
+        NODE_ENV: "production",
       });
 
       expect(isProduction()).toBeTruthy();
@@ -28,7 +30,7 @@ describe("enviroment", () => {
       expect(isServer()).toBeFalsy();
     });
 
-    it("should be truthy if is production", () => {
+    it("should be truthy if is server", () => {
       expect.assertions(1);
       Object.defineProperty(window, "document", {
         writable: true,
@@ -42,12 +44,9 @@ describe("enviroment", () => {
   describe("getSiteUrl", () => {
     it("should be equal to the development url", () => {
       expect.assertions(1);
-      Object.defineProperty(global.process, "env", {
-        writable: true,
-        value: {
-          NODE_ENV: "development",
-          NEXT_PUBLIC_SITE_URL: "http://localhost:3000",
-        },
+      setupEnviroment({
+        NODE_ENV: "development",
+        NEXT_PUBLIC_SITE_URL: "http://localhost:3000",
       });
 
       expect(getSiteUrl()).toBe("http://localhost:3000");
@@ -55,12 +54,9 @@ describe("enviroment", () => {
 
     it("should be equal to the production url", () => {
       expect.assertions(1);
-      Object.defineProperty(global.process, "env", {
-        writable: true,
-        value: {
-          NODE_ENV: "production",
-          NEXT_PUBLIC_SITE_URL: "https://rindu.marcomadera.com",
-        },
+      setupEnviroment({
+        NODE_ENV: "production",
+        NEXT_PUBLIC_SITE_URL: "https://rindu.marcomadera.com",
       });
 
       expect(getSiteUrl()).toBe("https://rindu.marcomadera.com");

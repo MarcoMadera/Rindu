@@ -1,15 +1,18 @@
+import { IUtilsMocks } from "types/mocks";
 import { callPictureInPicture } from "utils/callPictureInPicture";
+
+const { setupMediaSession } = jest.requireActual<IUtilsMocks>(
+  "./__mocks__/mocks.ts"
+);
+
 describe("callPictureInPicture", () => {
   it("should return undefined if not artwork defined", async () => {
     expect.assertions(1);
-    Object.defineProperty(window.navigator, "mediaSession", {
-      writable: true,
-      value: {
-        metadata: {
-          artwork: undefined,
-        },
+    setupMediaSession({
+      metadata: {
+        artwork: undefined,
       },
-    });
+    } as unknown as MediaSession);
     const canvas = document.createElement("canvas");
     const video = document.createElement("video");
 
@@ -19,19 +22,16 @@ describe("callPictureInPicture", () => {
 
   it("should return undefined if src artwork is undefined", async () => {
     expect.assertions(1);
-    Object.defineProperty(window.navigator, "mediaSession", {
-      writable: true,
-      value: {
-        metadata: {
-          artwork: [
-            {
-              width: 100,
-              height: 200,
-            },
-          ],
-        },
+    setupMediaSession({
+      metadata: {
+        artwork: [
+          {
+            width: 100,
+            height: 200,
+          },
+        ],
       },
-    });
+    } as unknown as MediaSession);
     const canvas = document.createElement("canvas");
     const video = document.createElement("video");
 
@@ -41,20 +41,7 @@ describe("callPictureInPicture", () => {
 
   it("should log error", async () => {
     expect.assertions(1);
-    Object.defineProperty(window.navigator, "mediaSession", {
-      writable: true,
-      value: {
-        metadata: {
-          artwork: [
-            {
-              src: "https://example.com/image.png",
-              width: 100,
-              height: 200,
-            },
-          ],
-        },
-      },
-    });
+    setupMediaSession();
 
     const canvas = document.createElement("canvas");
     const video = document.createElement("video");
@@ -69,20 +56,7 @@ describe("callPictureInPicture", () => {
 
   it("should call requestPictureInPicture", async () => {
     expect.assertions(4);
-    Object.defineProperty(window.navigator, "mediaSession", {
-      writable: true,
-      value: {
-        metadata: {
-          artwork: [
-            {
-              src: "src",
-              width: 100,
-              height: 200,
-            },
-          ],
-        },
-      },
-    });
+    setupMediaSession();
     Object.defineProperty(Image.prototype, "decode", {
       writable: true,
       value: jest.fn(() => Promise.resolve()),

@@ -27,6 +27,7 @@ const customJestConfig = {
   testEnvironment: "jsdom",
   moduleFileExtensions: ["ts", "tsx", "js", "json", "jsx"],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  testMatch: ["**/?(*.)+(test|spec).[jt]s?(x)"],
   moduleDirectories: ["<rootDir>", "node_modules"],
   coverageThreshold: {
     global: {

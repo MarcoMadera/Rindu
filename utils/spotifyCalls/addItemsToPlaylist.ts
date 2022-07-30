@@ -20,7 +20,7 @@ export async function addItemsToPlaylist(
       body: JSON.stringify(uris),
     }
   );
-
+  window.navigator.mediaSession;
   if (res.ok) {
     const data: SpotifyApi.AddTracksToPlaylistResponse = await res.json();
     return data;

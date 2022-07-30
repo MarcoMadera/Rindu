@@ -1,57 +1,10 @@
+import { IUtilsMocks } from "types/mocks";
 import { getArtistInfo } from "utils/getArtistInfo";
 
-const artistInfo = {
-  idArtist: "",
-  strArtist: "",
-  strArtistStripped: null,
-  strArtistAlternate: "",
-  strLabel: "",
-  idLabel: "",
-  intFormedYear: "",
-  intBornYear: "",
-  intDiedYear: null,
-  strDisbanded: null,
-  strStyle: "",
-  strGenre: "",
-  strMood: "",
-  strWebsite: "",
-  strFacebook: "",
-  strTwitter: "",
-  strGender: "",
-  intMembers: "",
-  strCountry: "",
-  strCountryCode: "",
-  strArtistThumb: "",
-  strArtistLogo: "",
-  strArtistCutout: "",
-  strArtistClearart: "",
-  strArtistWideThumb: "",
-  strArtistFanart: "",
-  strArtistFanart2: "",
-  strArtistFanart3: "",
-  strArtistFanart4: "",
-  strArtistBanner: "",
-  strMusicBrainzID: "",
-  strISNIcode: null,
-  strLastFMChart: "",
-  intCharted: "",
-  strLocked: "",
-  strBiographyEN: "",
-  strBiographyDE: "",
-  strBiographyFR: "",
-  strBiographyCN: "",
-  strBiographyIT: "",
-  strBiographyJP: "",
-  strBiographyRU: "",
-  strBiographyES: "",
-  strBiographyPT: "",
-  strBiographySE: "",
-  strBiographyNL: "",
-  strBiographyHU: "",
-  strBiographyNO: "",
-  strBiographyIL: "",
-  strBiographyPL: "",
-};
+const { artistInfo, mockFetchSuccess } = jest.requireActual<IUtilsMocks>(
+  "./__mocks__/mocks.ts"
+);
+
 describe("getArtistInfo", () => {
   it("should return null if no artistName provided", async () => {
     expect.assertions(1);
@@ -62,26 +15,16 @@ describe("getArtistInfo", () => {
 
   it("should call fetch", async () => {
     expect.assertions(1);
-    // eslint-disable-next-line jest/prefer-spy-on
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () => ({ artists: [artistInfo] }),
-        ok: true,
-      })
-    ) as unknown as () => Promise<Response>;
+    mockFetchSuccess({ artists: [artistInfo] }, true);
 
     const result = await getArtistInfo("artistName");
     expect(result).toStrictEqual({ artists: [artistInfo] });
   });
+
   it("should return null if response is not ok", async () => {
     expect.assertions(1);
 
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () => ({ artists: [artistInfo] }),
-        ok: false,
-      })
-    ) as unknown as () => Promise<Response>;
+    mockFetchSuccess({ artists: [artistInfo] }, false);
 
     const result = await getArtistInfo("artistName");
     expect(result).toBeNull();

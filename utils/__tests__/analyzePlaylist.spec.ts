@@ -1,3 +1,4 @@
+import { IUtilsMocks } from "types/mocks";
 import { ITrack } from "types/spotify";
 import { analyzePlaylist } from "utils/analyzePlaylist";
 import { getAllTracksFromPlaylist } from "utils/getAllTracksFromPlaylist";
@@ -5,6 +6,9 @@ import { getAllTracksFromPlaylist } from "utils/getAllTracksFromPlaylist";
 jest.mock("utils/getAllTracksFromPlaylist", () => ({
   getAllTracksFromPlaylist: jest.fn(),
 }));
+const { track, accessToken } = jest.requireActual<IUtilsMocks>(
+  "./__mocks__/mocks.ts"
+);
 
 describe("analyzePlaylist", () => {
   it("should return null if no id or accessToken or totalTracks", async () => {
@@ -14,17 +18,15 @@ describe("analyzePlaylist", () => {
       undefined,
       undefined,
       false,
-      "accessToken"
+      accessToken
     );
     expect(result).toBeNull();
   });
 
   it("should return empty array values if there are not tracks", async () => {
     expect.assertions(1);
-
     (getAllTracksFromPlaylist as jest.Mock).mockResolvedValue([]);
-
-    const result = await analyzePlaylist("id", 20, true, "accessToken");
+    const result = await analyzePlaylist("id", 20, true, accessToken);
     expect(result).toStrictEqual({
       corruptedSongsIndexes: [],
       duplicateTracksIndexes: [],
@@ -38,22 +40,19 @@ describe("analyzePlaylist", () => {
 
     const tracks: ITrack[] = [
       {
+        ...track,
         id: "id 1",
-        name: "name",
         duration_ms: 123,
-        artists: [{ name: "artist" }],
       },
       {
+        ...track,
         id: "id 2",
-        name: "name",
         duration_ms: 123,
-        artists: [{ name: "artist" }],
       },
       {
+        ...track,
         id: "id 3",
-        name: "name",
         duration_ms: 123,
-        artists: [{ name: "artist" }],
       },
     ];
 
@@ -61,7 +60,7 @@ describe("analyzePlaylist", () => {
       getAllTracksFromPlaylist as jest.Mock<Promise<ITrack[]>>
     ).mockResolvedValue(tracks);
 
-    const result = await analyzePlaylist("id", 20, true, "accessToken");
+    const result = await analyzePlaylist("id", 20, true, accessToken);
     expect(result).toStrictEqual({
       corruptedSongsIndexes: [],
       duplicateTracksIndexes: [1, 2],
@@ -74,43 +73,30 @@ describe("analyzePlaylist", () => {
     expect.assertions(1);
 
     const tracks: ITrack[] = [
+      { ...track, corruptedTrack: true, position: 0 },
       {
-        corruptedTrack: true,
-        position: 0,
-      },
-      {
+        ...track,
         corruptedTrack: false,
         position: 1,
+        id: "2",
+        duration_ms: 21333,
       },
-      {
-        corruptedTrack: true,
-        position: 2,
-      },
-      {
-        corruptedTrack: true,
-        position: 3,
-      },
-      {
-        corruptedTrack: false,
-        position: 4,
-      },
-      {
-        corruptedTrack: true,
-        position: 5,
-      },
+      { ...track, corruptedTrack: true, position: 2 },
+      { ...track, corruptedTrack: true, position: 3 },
+      { ...track, corruptedTrack: true, position: 4 },
     ];
 
     (
       getAllTracksFromPlaylist as jest.Mock<Promise<ITrack[]>>
     ).mockResolvedValue(tracks);
 
-    const result = await analyzePlaylist("id", 20, true, "accessToken");
+    const result = await analyzePlaylist("id", 20, true, accessToken);
 
     expect(result?.tracksToRemove).toStrictEqual([
       tracks[0],
       tracks[2],
       tracks[3],
-      tracks[5],
+      tracks[4],
     ]);
   });
   it("should return index 0 if corrupted track position does not exists", async () => {
@@ -118,11 +104,18 @@ describe("analyzePlaylist", () => {
 
     const tracks: ITrack[] = [
       {
+        ...track,
         corruptedTrack: true,
         position: 0,
+        id: "id 1",
+        duration_ms: 123,
       },
       {
+        ...track,
         corruptedTrack: true,
+        position: undefined,
+        id: "id 2",
+        duration_ms: 99999,
       },
     ];
 
@@ -130,8 +123,7 @@ describe("analyzePlaylist", () => {
       getAllTracksFromPlaylist as jest.Mock<Promise<ITrack[]>>
     ).mockResolvedValue(tracks);
 
-    const result = await analyzePlaylist("id", 20, true, "accessToken");
-
+    const result = await analyzePlaylist("id", 20, true, accessToken);
     expect(result?.tracksToRemove).toStrictEqual([tracks[0]]);
   });
 });
