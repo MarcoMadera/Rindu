@@ -1,10 +1,11 @@
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useId } from "react";
 import ToastContext from "context/ToastContext";
-import { nanoid } from "nanoid";
 import type { UseToast, IToast } from "types/toast";
+import { uniqueId } from "lodash";
 
 export default function useToast(): UseToast {
   const context = useContext(ToastContext);
+  const id = useId();
 
   if (context === undefined) {
     throw new Error("useToast must be used within a ToastProvider");
@@ -33,18 +34,16 @@ export default function useToast(): UseToast {
 
       const newToast: IToast = {
         ...toast,
-        id: nanoid(),
+        id: uniqueId(id),
         displayTime,
         timeOut: setTimeout(() => {
           removeToast(newToast.id);
         }, displayTime),
       };
 
-      setToasts(() => {
-        return [newToast];
-      });
+      setToasts([newToast]);
     },
-    [setToasts, removeToast]
+    [id, setToasts, removeToast]
   );
 
   return {

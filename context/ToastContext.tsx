@@ -13,7 +13,7 @@ const ToastContext = createContext<ToastContextProviderProps | undefined>(
   undefined
 );
 
-interface ToastContextProviderProps {
+export interface ToastContextProviderProps {
   toasts: IToast[];
   setToasts: Dispatch<SetStateAction<ToastContextProviderProps["toasts"]>>;
 }

@@ -16,7 +16,6 @@ const customJestConfig = {
     "!**/types/**",
     "!**/.storybook/**",
     "!**/stories/**",
-    "!**/hooks/**",
     "!**/pages/**",
     "!**/layouts/**",
     "!**/context/**",
@@ -25,15 +24,16 @@ const customJestConfig = {
   ],
   testEnvironment: "jsdom",
   moduleFileExtensions: ["ts", "tsx", "js", "json", "jsx"],
+  setupFiles: ["jest-canvas-mock"],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   testMatch: ["**/?(*.)+(test|spec).[jt]s?(x)"],
   moduleDirectories: ["<rootDir>", "node_modules"],
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
+      branches: 15,
+      functions: 15,
+      lines: 15,
+      statements: 15,
     },
   },
 };

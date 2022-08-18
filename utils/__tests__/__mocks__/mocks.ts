@@ -1,4 +1,4 @@
-import { ITrack } from "types/spotify";
+import { ITrack, PlaylistItem } from "types/spotify";
 import {
   ACCESS_TOKEN_COOKIE,
   EXPIRE_TOKEN_COOKIE,
@@ -68,6 +68,22 @@ export const albumFull: SpotifyApi.AlbumObjectFull = {
 export const savedAlbum: SpotifyApi.SavedAlbumObject = {
   album: albumFull,
   added_at: "addedAt",
+};
+
+export const simplePlaylist: PlaylistItem = {
+  collaborative: false,
+  description: "playlist description",
+  external_urls: { spotify: "spotifyurl" },
+  href: "href",
+  id: "playlist id",
+  images: [{ url: "url", height: 300, width: 300 }],
+  name: "playlist name",
+  owner: user,
+  public: true,
+  snapshot_id: "snapshot_id",
+  tracks: { href: "tracks href", total: 50 },
+  type: "playlist",
+  uri: "uri",
 };
 
 export const trackFull: SpotifyApi.TrackObjectFull = {
