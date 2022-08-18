@@ -19,7 +19,7 @@ import CardTrack from "components/CardTrack";
 import { getArtistTopTracks } from "utils/spotifyCalls/getArtistTopTracks";
 import { getArtistById } from "utils/spotifyCalls/getArtistById";
 import { HeaderType } from "types/pageHeader";
-import { SITE_URL } from "utils/constants";
+import { getSiteUrl } from "utils/enviroment";
 import useToast from "hooks/useToast";
 import BigPill from "components/BigPill";
 import { within } from "utils/whitin";
@@ -144,7 +144,7 @@ export default function TrackPage({
         coverImg={
           track?.album?.images?.[0]?.url ??
           track?.album?.images?.[1]?.url ??
-          `${SITE_URL}/defaultSongCover.jpeg`
+          `${getSiteUrl()}/defaultSongCover.jpeg`
         }
         duration_s={track?.duration_ms ? track?.duration_ms / 1000 : 0}
         artists={track?.artists ?? []}

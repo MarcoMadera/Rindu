@@ -128,7 +128,6 @@ export default function PlaylistText({
         .playlistName {
           display: flex;
           align-items: center;
-          margin-bottom: 10px;
           justify-content: space-between;
         }
         .volume,
@@ -166,6 +165,7 @@ export default function PlaylistText({
           width: 100%;
           text-decoration: none;
           text-align: left;
+          padding-bottom: 10px;
         }
       `}</style>
     </div>

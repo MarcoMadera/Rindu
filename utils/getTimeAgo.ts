@@ -1,7 +1,7 @@
 const DATE_UNITS = {
   year: 28_982_400,
   month: 2_415_200,
-  week: 603_800,
+  week: 604_800,
   day: 86_400,
   hour: 3_600,
   minute: 60,
@@ -9,13 +9,16 @@ const DATE_UNITS = {
 };
 
 function getUnitAndValueDate(secondsElapsed: number) {
-  for (const [unit, secondsInUnit] of Object.entries(DATE_UNITS)) {
-    if (secondsElapsed >= secondsInUnit || unit === "second") {
-      const value = Math.floor(secondsElapsed / secondsInUnit) * -1;
-      return { value, unit };
+  let unit = "second";
+  let value = secondsElapsed;
+  for (const [dateUnit, secondsInUnit] of Object.entries(DATE_UNITS)) {
+    if (Math.abs(secondsElapsed) >= secondsInUnit) {
+      value = Math.floor(secondsElapsed / secondsInUnit) * -1;
+      unit = dateUnit;
+      break;
     }
   }
-  return { value: 0, unit: "error" };
+  return { value, unit };
 }
 
 function getSecondsDiff(timeStamp: number) {

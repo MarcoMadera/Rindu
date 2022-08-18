@@ -148,6 +148,7 @@ export default function CardTrack({
         }
       }}
       role="button"
+      data-testid="cardTrack-container"
       tabIndex={isVisible ? 0 : -1}
       aria-hidden={isVisible ? "false" : "true"}
       onMouseEnter={() => {
@@ -266,7 +267,7 @@ export default function CardTrack({
               height="48"
             />
           ) : (
-            <div className="img">{track?.album?.images?.[0].url}</div>
+            <div className="img"></div>
           )
         ) : null}
         <div className="trackArtistsContainer">

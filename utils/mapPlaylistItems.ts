@@ -6,11 +6,12 @@ export function mapPlaylistItems(
   startIndex: number
 ): ITrack[] {
   if (!items) return [];
-  return items?.map(({ track, added_at, is_local }, i) => {
+  return items?.map(({ track, added_at, is_local, added_by }, i) => {
     return {
       ...track,
       is_local,
       added_at,
+      added_by,
       position: startIndex + i,
       corruptedTrack: isCorruptedTrack(track),
     };

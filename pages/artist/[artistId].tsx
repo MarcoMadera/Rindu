@@ -23,7 +23,7 @@ import { unFollow } from "utils/spotifyCalls/unFollow";
 import { checkIfUserFollowArtistUser } from "utils/spotifyCalls/checkIfUserFollowArtistUser";
 import PageHeader from "../../components/PageHeader";
 import { HeaderType } from "types/pageHeader";
-import { MONTHS, SITE_URL } from "utils/constants";
+import { getSiteUrl } from "utils/enviroment";
 import Carousel from "components/Carousel";
 import SubTitle from "components/SubtTitle";
 import { getSetLists, SetLists } from "utils/getSetLists";
@@ -32,6 +32,7 @@ import { conjuction } from "utils/conjuction";
 import { CardType } from "components/CardContent";
 import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
+import { getMonth } from "utils/getMonth";
 
 interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
@@ -163,7 +164,7 @@ export default function ArtistPage({
         coverImg={
           currentArtist?.images?.[0]?.url ??
           currentArtist?.images?.[1]?.url ??
-          `${SITE_URL}/defaultSongCover.jpeg`
+          `${getSiteUrl()}/defaultSongCover.jpeg`
         }
         totalFollowers={currentArtist?.followers?.total ?? 0}
         popularity={currentArtist?.popularity ?? 0}
@@ -255,7 +256,7 @@ export default function ArtistPage({
                     <div key={set.id} className="set">
                       <div className="set-date">
                         <span className="month">
-                          {MONTHS[Number(month) - 1]}
+                          {getMonth(Number(month) - 1)}
                         </span>
                         <span className="day">{day}</span>
                         <span className="year">{year}</span>

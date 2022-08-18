@@ -15,7 +15,7 @@ import { Broom } from "components/icons/Broom";
 import RemoveTracksModal from "components/RemoveTracksModal";
 import PlaylistTopBarExtraField from "../../components/PlaylistTopBarExtraField";
 import { Heart } from "components/icons/Heart";
-import { SITE_URL } from "utils/constants";
+import { getSiteUrl } from "utils/enviroment";
 import { PlaylistProps } from "pages/playlist/[playlist]";
 import { SearchInputElement } from "components/SearchInputElement";
 import { addItemsToPlaylist } from "utils/spotifyCalls/addItemsToPlaylist";
@@ -146,7 +146,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
         coverImg={
           pageDetails?.images?.[0]?.url ??
           pageDetails?.images?.[1]?.url ??
-          `${SITE_URL}/defaultSongCover.jpeg`
+          `${getSiteUrl()}/defaultSongCover.jpeg`
         }
         ownerDisplayName={pageDetails?.owner?.display_name ?? ""}
         ownerId={pageDetails?.owner?.id ?? ""}

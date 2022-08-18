@@ -10,10 +10,6 @@ export async function getAllAlbums(
   let restAlbumsData: SpotifyApi.UsersSavedAlbumsResponse | undefined;
   const max = Math.ceil(albumsData.total / limit);
 
-  if (max <= 1) {
-    return albumsData;
-  }
-
   for (let i = 1; i < max; i++) {
     const resAlbumsData = await getMyAlbums(limit * i, accessToken);
     if (!resAlbumsData) return null;
@@ -22,11 +18,15 @@ export async function getAllAlbums(
         ...restAlbumsData,
         items: [...restAlbumsData.items, ...resAlbumsData.items],
       };
+    } else {
+      restAlbumsData = resAlbumsData;
     }
   }
+
   if (!restAlbumsData) {
     return albumsData;
   }
+
   const allAlbums = {
     ...albumsData,
     items: [...albumsData.items, ...restAlbumsData.items],

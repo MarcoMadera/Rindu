@@ -1,10 +1,10 @@
 import { AuthorizationResponse } from "types/spotify";
-import { SITE_URL } from "utils/constants";
+import { getSiteUrl } from "utils/enviroment";
 
 export async function getAuthorizationByCode(
   code: string
 ): Promise<AuthorizationResponse | null> {
-  const res = await fetch(`${SITE_URL}/api/spotify-login`, {
+  const res = await fetch(`${getSiteUrl()}/api/spotify-login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

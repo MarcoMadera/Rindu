@@ -20,7 +20,7 @@ import { checkIfUserFollowAlbums } from "utils/spotifyCalls/checkIfUserFollowAlb
 import { unFollowAlbums } from "utils/spotifyCalls/unFollowAlbums";
 import { followAlbums } from "utils/spotifyCalls/followAlbums";
 import PageHeader from "components/PageHeader";
-import { SITE_URL } from "utils/constants";
+import { getSiteUrl } from "utils/enviroment";
 import useToast from "hooks/useToast";
 import ContentContainer from "components/ContentContainer";
 import { isCorruptedTrack } from "utils/isCorruptedTrack";
@@ -115,7 +115,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
         coverImg={
           album?.images?.[0]?.url ??
           album?.images?.[1]?.url ??
-          `${SITE_URL}/defaultSongCover.jpeg`
+          `${getSiteUrl()}/defaultSongCover.jpeg`
         }
         artists={album?.artists ?? []}
         totalTracks={album?.tracks.total ?? 0}

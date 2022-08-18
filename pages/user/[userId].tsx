@@ -9,8 +9,8 @@ import { getUserById } from "utils/spotifyCalls/getUserById";
 import { getPlaylistsFromUser } from "utils/spotifyCalls/getPlaylistsFromUser";
 import PageHeader from "components/PageHeader";
 import { HeaderType } from "types/pageHeader";
-import { SITE_URL } from "utils/constants";
 import ContentContainer from "components/ContentContainer";
+import { getSiteUrl } from "utils/enviroment";
 
 interface CurrentUserProps {
   currentUser: SpotifyApi.UserObjectPublic | null;
@@ -56,7 +56,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
         coverImg={
           currentUser?.images?.[0]?.url ??
           currentUser?.images?.[1]?.url ??
-          `${SITE_URL}/defaultSongCover.jpeg`
+          `${getSiteUrl()}/defaultSongCover.jpeg`
         }
         totalPublicPlaylists={currentUserPlaylists?.total ?? 0}
         totalFollowers={currentUser?.followers?.total ?? 0}
