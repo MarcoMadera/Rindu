@@ -167,5 +167,6 @@ Default.args = {
     type: "show",
     uri: "spotify:show:2OLNxlrm2OCdATbUaonmEh",
     available_markets: [],
+    html_description: "",
   } as SpotifyApi.ShowObject,
 };

@@ -3,9 +3,11 @@ import { takeCookie } from "utils/cookies";
 
 export async function transferPlayback(
   device_ids: string[],
-  accessToken?: string,
-  cookies?: string
+  options:
+    | { play?: boolean; accessToken?: string; cookies?: string }
+    | undefined
 ): Promise<boolean> {
+  const { accessToken, cookies, play = true } = options || {};
   const res = await fetch("https://api.spotify.com/v1/me/player", {
     method: "PUT",
     headers: {
@@ -16,7 +18,7 @@ export async function transferPlayback(
     },
     body: JSON.stringify({
       device_ids,
-      play: true,
+      play,
     }),
   });
 

@@ -46,10 +46,10 @@ describe("callPictureInPicture", () => {
     const canvas = document.createElement("canvas");
     const video = document.createElement("video");
 
-    const log = jest.spyOn(console, "log");
+    const error = jest.spyOn(console, "error");
 
     await callPictureInPicture(canvas, video);
-    expect(log).toHaveBeenCalledWith(
+    expect(error).toHaveBeenCalledWith(
       new TypeError("image.decode is not a function")
     );
   });

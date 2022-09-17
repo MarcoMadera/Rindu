@@ -43,13 +43,15 @@ describe("cardTrack", () => {
   });
 
   it("should play on double click", async () => {
-    expect.assertions(2);
+    expect.assertions(3);
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
     (playCurrentTrack as jest.Mock<Promise<number>>).mockResolvedValue(200);
     const setPlayedSource = jest.fn();
-
+    const player = {
+      activateElement: jest.fn().mockResolvedValue(200),
+    } as unknown as Spotify.Player;
     render(
-      <AppProviders value={{ setPlayedSource }}>
+      <AppProviders value={{ setPlayedSource, player }}>
         <CardTrack
           track={track}
           type="presentation"
@@ -66,6 +68,7 @@ describe("cardTrack", () => {
     );
     const mytest = screen.getByTestId("cardTrack-container");
     fireEvent.doubleClick(mytest);
+    expect(player.activateElement).toHaveBeenCalledTimes(1);
     await waitFor(() => {
       expect(setPlayedSource).toHaveBeenCalledWith(track.uri);
     });
@@ -77,6 +80,7 @@ describe("cardTrack", () => {
     let toasts: IToast[] = [];
     const player = {
       disconnect: jest.fn(),
+      activateElement: jest.fn().mockResolvedValue(200),
     } as unknown as Spotify.Player;
     const setReconnectionError = jest.fn();
     const setToasts = (toastArray: IToast[] | ((toasts: IToast[]) => void)) => {
@@ -134,9 +138,12 @@ describe("cardTrack", () => {
         toasts = toastArray;
       }
     };
+    const player = {
+      activateElement: jest.fn().mockResolvedValue(200),
+    } as unknown as Spotify.Player;
 
     render(
-      <AppProviders value={{ toasts, setToasts, setReconnectionError }}>
+      <AppProviders value={{ toasts, setToasts, setReconnectionError, player }}>
         <CardTrack
           track={track}
           type="presentation"

@@ -49,6 +49,7 @@ export default function PlaylistText({
 
   const onDoubleClick = useCallback(() => {
     if (uri && accessToken && deviceId && isPremium) {
+      (player as Spotify.Player)?.activateElement();
       play(
         accessToken,
         deviceId,

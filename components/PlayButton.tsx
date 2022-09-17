@@ -269,6 +269,9 @@ export function PlayButton({
         aria-label="Play/Pause"
         className="play-Button"
         onClick={(e) => {
+          if (isPremium) {
+            (player as Spotify.Player)?.activateElement();
+          }
           handleClick(e);
         }}
         ref={buttonRef}

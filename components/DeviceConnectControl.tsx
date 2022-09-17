@@ -33,7 +33,10 @@ export default function DeviceConnectControl(): ReactElement {
                   type="button"
                   onClick={() => {
                     if (device.id) {
-                      transferPlayback([device.id], accessToken);
+                      transferPlayback([device.id], {
+                        accessToken,
+                        play: true,
+                      });
                     }
                   }}
                   className={`device ${device.is_active ? "active" : ""}`}

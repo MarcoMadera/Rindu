@@ -17,6 +17,6 @@ export async function callPictureInPicture(
     await video?.play();
     await video?.requestPictureInPicture();
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 }
