@@ -45,6 +45,7 @@ export default function VolumeControl(): ReactElement {
           setVolume(currentPositionPercent / 100);
         }}
         action={() => {
+          if (!player) return;
           player?.setVolume(volume);
           setLastVolume(volume);
           localStorage.setItem(

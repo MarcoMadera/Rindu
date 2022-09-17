@@ -139,6 +139,9 @@ export default function CardTrack({
             });
             return;
           }
+          if (isPremium) {
+            (player as Spotify.Player)?.activateElement();
+          }
           playThisTrack();
         } else {
           addToast({
@@ -202,6 +205,9 @@ export default function CardTrack({
             setPlaylistPlayingId(pageDetails?.id);
           } else {
             if (isPlayable) {
+              if (isPremium) {
+                (player as Spotify.Player)?.activateElement();
+              }
               playThisTrack();
             } else {
               addToast({
@@ -230,6 +236,9 @@ export default function CardTrack({
                 message: "This track is corrupted and cannot be played",
               });
               return;
+            }
+            if (isPremium) {
+              (player as Spotify.Player)?.activateElement();
             }
             playThisTrack();
           } else {

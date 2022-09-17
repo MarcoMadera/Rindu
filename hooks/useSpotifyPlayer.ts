@@ -10,6 +10,7 @@ import useAuth from "./useAuth";
 import useToast from "./useToast";
 import useSpotify from "./useSpotify";
 import { refreshAccessToken } from "utils/spotifyCalls/refreshAccessToken";
+import { transferPlayback } from "utils/spotifyCalls/transferPlayback";
 
 export interface AudioPlayer extends HTMLAudioElement {
   nextTrack: () => void;
@@ -195,10 +196,11 @@ export default function useSpotifyPlayer({
         volume,
       });
 
-      spotifyPlayer.current.addListener(
+      spotifyPlayer.current.on(
         "ready",
         ({ device_id }: { device_id: string }) => {
           setDeviceId(device_id);
+          transferPlayback([device_id], { play: false });
           addToast({
             variant: "info",
             message: "You are now connected to Spotify, enjoy!",
@@ -209,7 +211,7 @@ export default function useSpotifyPlayer({
       spotifyPlayer.current.on(
         "not_ready",
         ({ device_id }: { device_id: string }) => {
-          console.log("Device ID has gone offline", device_id);
+          console.warn("Device ID has gone offline", device_id);
           addToast({
             variant: "error",
             message: "Connection failed, please try again later",
@@ -267,8 +269,14 @@ export default function useSpotifyPlayer({
         });
       });
 
-      spotifyPlayer.current.connect();
-      setPlayer(spotifyPlayer.current);
+      spotifyPlayer.current.connect().then((success) => {
+        if (success) {
+          setPlayer(spotifyPlayer.current);
+          console.info(
+            "The Web Playback SDK successfully connected to Spotify!"
+          );
+        }
+      });
     };
 
     document.addEventListener(

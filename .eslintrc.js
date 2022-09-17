@@ -54,6 +54,9 @@ module.exports = {
       rules: {
         "@typescript-eslint/explicit-module-boundary-types": [1],
       },
+      parserOptions: {
+        project: ["./tsconfig.json"],
+      },
     },
     {
       files: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
