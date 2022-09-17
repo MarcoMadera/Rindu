@@ -178,26 +178,23 @@ export default function SideBar(): ReactElement {
         .sidebarImg-container {
           overflow-y: hidden;
           position: relative;
-          align-self: end;
-          display: flex;
-          position: relative;
           display: ${isShowingSideBarImg ? "block" : "none"};
+          transform: translateY(-100%);
         }
         .animate {
           animation: scale-in-ver-bottom 0.2s linear both;
         }
         @keyframes scale-in-ver-bottom {
           0% {
-            transform: scaleY(0);
-            transform-origin: 0% 100%;
+            transform: translateY(100%);
             opacity: 0.8;
           }
           100% {
-            transform: scaleY(1);
-            transform-origin: 0% 100%;
+            transform: translateY(4px);
             opacity: 1;
           }
         }
+
         img {
           width: 100%;
           aspect-ratio: 1;

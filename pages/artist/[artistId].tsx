@@ -253,7 +253,21 @@ export default function ArtistPage({
                   const day = date[0];
 
                   return (
-                    <div key={set.id} className="set">
+                    <button
+                      key={set.id}
+                      className="set"
+                      onClick={() => {
+                        window.history.pushState(
+                          {
+                            alternativeImage: currentArtist?.images?.[0]?.url,
+                            artistId: currentArtist?.id,
+                          },
+                          "",
+                          `/concert/${set.id}`
+                        );
+                        router.push(`/concert/${set.id}`);
+                      }}
+                    >
                       <div className="set-date">
                         <span className="month">
                           {getMonth(Number(month) - 1)}
@@ -273,7 +287,7 @@ export default function ArtistPage({
                           ])}
                         </span>
                       </div>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
@@ -418,7 +432,13 @@ export default function ArtistPage({
         }
         .set {
           display: flex;
-          margin: 10px 0;
+          padding: 8px;
+          cursor: pointer;
+          width: 100%;
+        }
+        .set:hover {
+          border-radius: 3px;
+          background: #c6ccd317;
         }
         .set-info {
           margin-left: 18px;
@@ -434,6 +454,9 @@ export default function ArtistPage({
           flex-direction: column;
           align-items: center;
           z-index: 999999;
+        }
+        .set-list-content :global(h2) {
+          margin-left: 8px;
         }
         .month {
           text-align: left;
@@ -501,9 +524,12 @@ export default function ArtistPage({
           padding-top: 16px;
           padding-right: 20px;
         }
-        .content button {
+        button {
           background: none;
           border: none;
+        }
+        button.read-more,
+        button.show-more {
           color: rgba(255, 255, 255, 0.7);
           padding: 18px;
           font-weight: bold;

@@ -102,7 +102,11 @@ export default function PageHeader({
               ownerDisplayName && (
                 <Link
                   href={`/${
-                    type === HeaderType.episode ? "show" : "user"
+                    type === HeaderType.episode
+                      ? "show"
+                      : type === HeaderType.concert
+                      ? "artist"
+                      : "user"
                   }/${ownerId}`}
                 >
                   <a className="userLink">{decode(ownerDisplayName)}</a>
@@ -160,7 +164,7 @@ export default function PageHeader({
           }
           div.playlistInfo {
             align-self: flex-end;
-            text-shadow: ${banner ? "0px 0px 20px #00000078" : "none"};
+            text-shadow: ${banner ? "3px 1px 10px #00000078" : "none"};
             margin-right: 50px;
             width: 100%;
           }
