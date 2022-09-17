@@ -104,16 +104,16 @@ export function SpotifyContextProvider({
     const recentlyPlayedFromLocal = localStorage.getItem(
       `${user?.id}:recentlyPlayed`
     );
-    if (playback && player) {
+    if (playback) {
       const playbackObj = JSON.parse(decodeURI(playback));
-      if (isPremium) {
+      setVolume(playbackObj.volume);
+      if (isPremium && player) {
         (player as Spotify.Player).on("ready", () => {
           player?.setVolume(playbackObj.volume);
         });
       } else {
         player?.setVolume(playbackObj.volume);
       }
-      setVolume(playbackObj.volume);
     }
     if (recentlyPlayedFromLocal) {
       const recentlyPlayedObj = JSON.parse(recentlyPlayedFromLocal);

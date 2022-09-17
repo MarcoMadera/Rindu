@@ -142,6 +142,7 @@ export default function PlaylistText({
           justify-content: center;
           width: 16px;
           margin-left: 2px;
+          padding-bottom: 10px;
         }
         .volume :global(svg path) {
           fill: ${volume > 0 ? "#1db954" : "#fff"};

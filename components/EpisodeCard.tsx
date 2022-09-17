@@ -37,6 +37,7 @@ export default function EpisodeCard({
   const { user, accessToken, setAccessToken } = useAuth();
   const { addToast } = useToast();
   const isThisEpisodePlaying = currrentlyPlaying?.uri === item.uri;
+  const isPremium = user?.product === "premium";
 
   return (
     <div className="episodeCard">
@@ -116,6 +117,9 @@ export default function EpisodeCard({
             if (isThisEpisodePlaying) {
               player?.togglePlay();
               return;
+            }
+            if (isPremium) {
+              (player as Spotify.Player)?.activateElement();
             }
             playCurrentTrack(
               {

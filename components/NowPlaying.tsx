@@ -49,7 +49,9 @@ export default function NowPlaying(): ReactElement | null {
 
   return (
     <div
-      className={`${isShowingSideBarImg ? "navBar-left hide" : "navBar-left"}`}
+      className={`${
+        isShowingSideBarImg ? "navBar-left hide" : "navBar-left show"
+      }`}
     >
       <div className="img-container">
         <button
@@ -249,7 +251,7 @@ export default function NowPlaying(): ReactElement | null {
         }
         .navBar-Button.pictureInPicture:hover,
         .navBar-Button:hover {
-          color: #fff;
+          color: ${isPip ? "#1db954" : "#fff"};
         }
         p,
         span,
@@ -293,6 +295,9 @@ export default function NowPlaying(): ReactElement | null {
         .hide {
           animation: slide-out-top 0.1s linear both;
         }
+        .show {
+          animation: slide-in-right 0.1s linear both;
+        }
         @keyframes slide-out-top {
           0% {
             transform: translateX(0);
@@ -304,6 +309,16 @@ export default function NowPlaying(): ReactElement | null {
           }
           100% {
             transform: translateX(-90px);
+            opacity: 1;
+          }
+        }
+        @keyframes slide-in-right {
+          0% {
+            transform: translateX(-40px);
+            opacity: 1;
+          }
+          100% {
+            transform: translateX(0px);
             opacity: 1;
           }
         }

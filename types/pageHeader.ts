@@ -11,6 +11,7 @@ export enum HeaderType {
   single = "SINGLE",
   compilation = "COMPILATION",
   episode = "EPISODE",
+  concert = "CONCERT",
 }
 
 interface IPageHeader {
@@ -75,6 +76,17 @@ interface IPlaylist {
 }
 type Playlist = Modify<IPageHeader, IPlaylist>;
 
+interface IConcert {
+  type: HeaderType.concert;
+  ownerId: string;
+  description: string;
+  ownerDisplayName: string;
+  totalFollowers: number;
+  totalTracks: number;
+}
+
+type Concert = Modify<IPageHeader, IConcert>;
+
 interface IShowLike {
   type: HeaderType.episode | HeaderType.podcast;
   ownerId: string;
@@ -82,4 +94,11 @@ interface IShowLike {
 }
 type Show = Modify<IPageHeader, IShowLike>;
 
-export type HeaderProps = AlbumLike | Profile | Artist | Song | Playlist | Show;
+export type HeaderProps =
+  | AlbumLike
+  | Profile
+  | Artist
+  | Song
+  | Playlist
+  | Show
+  | Concert;

@@ -140,7 +140,11 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
         </Head>
       )}
       <PageHeader
-        type={HeaderType.playlist}
+        type={
+          pageDetails?.type === "concert"
+            ? HeaderType.concert
+            : HeaderType.playlist
+        }
         title={pageDetails?.name ?? ""}
         description={pageDetails?.description ?? ""}
         coverImg={

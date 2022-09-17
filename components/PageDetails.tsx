@@ -59,8 +59,8 @@ export default function PageDetails({
           }
         }}
         style={{
-          boxShadow: `inset 0px -20px 300px 30px rgba(0, 0, 0, ${
-            0.5 - headerOpacity - 0.3
+          boxShadow: `inset 0px -20px 30px 30px rgba(0, 0, 0, ${
+            0.5 - (headerOpacity < 0 ? 0 : headerOpacity) - 0.3
           })`,
         }}
       >
