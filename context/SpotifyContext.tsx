@@ -12,7 +12,6 @@ import {
   useState,
 } from "react";
 import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
-import { callPictureInPicture } from "utils/callPictureInPicture";
 import { removeTracksFromPlaylist } from "utils/spotifyCalls/removeTracksFromPlaylist";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -138,14 +137,6 @@ export function SpotifyContextProvider({
         ),
       });
     }
-
-    if (
-      pictureInPictureCanvas.current &&
-      videoRef.current &&
-      document.pictureInPictureElement
-    ) {
-      callPictureInPicture(pictureInPictureCanvas.current, videoRef.current);
-    }
   }, [currrentlyPlaying]);
 
   useEffect(() => {
@@ -183,7 +174,6 @@ export function SpotifyContextProvider({
 
   useEffect(() => {
     const duration = currrentlyPlaying?.duration_ms;
-    currentlyPlayingDuration;
     if ("setPositionState" in navigator.mediaSession) {
       navigator.mediaSession.setPositionState({
         duration: duration ?? 0,

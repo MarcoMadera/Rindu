@@ -12,9 +12,8 @@ import useToast from "hooks/useToast";
 import { checkEpisodesInLibrary } from "utils/spotifyCalls/checkEpisodesInLibrary";
 import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFromLibrary";
 import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
-import { callPictureInPicture } from "utils/callPictureInPicture";
-import { PictureInPicture } from "components/icons/PictureInPicture";
 import useContextMenu from "hooks/useContextMenu";
+import PictureInPictureButton from "./PictureInPictureButton";
 
 export default function NowPlaying(): ReactElement | null {
   const [isLikedTrack, setIsLikedTrack] = useState(false);
@@ -23,10 +22,6 @@ export default function NowPlaying(): ReactElement | null {
     playedSource,
     isShowingSideBarImg,
     setIsShowingSideBarImg,
-    pictureInPictureCanvas,
-    videoRef,
-    setIsPip,
-    isPip,
     currrentlyPlaying,
   } = useSpotify();
   const { addToast } = useToast();
@@ -184,35 +179,10 @@ export default function NowPlaying(): ReactElement | null {
           }}
         />
       )}
-      {!!document?.pictureInPictureEnabled && (
-        <button
-          type="button"
-          aria-label="Picture in Picture"
-          className="navBar-Button pictureInPicture"
-          onClick={() => {
-            if (pictureInPictureCanvas.current && videoRef.current) {
-              if (isPip && document.pictureInPictureElement) {
-                setIsPip(false);
-                document.exitPictureInPicture();
-              } else {
-                callPictureInPicture(
-                  pictureInPictureCanvas.current,
-                  videoRef.current
-                );
-                setIsPip(true);
-              }
-            }
-          }}
-        >
-          <PictureInPicture />
-        </button>
-      )}
+      {!!document?.pictureInPictureEnabled && <PictureInPictureButton />}
       <style jsx>{`
         section {
           margin-right: 10px;
-        }
-        .navBar-Button.pictureInPicture {
-          color: ${isPip ? "#1db954" : "#ffffffb3"};
         }
         .img-container {
           display: block;
@@ -249,9 +219,8 @@ export default function NowPlaying(): ReactElement | null {
           margin: 0 10px;
           color: #ffffffb3;
         }
-        .navBar-Button.pictureInPicture:hover,
         .navBar-Button:hover {
-          color: ${isPip ? "#1db954" : "#fff"};
+          color: #fff;
         }
         p,
         span,
