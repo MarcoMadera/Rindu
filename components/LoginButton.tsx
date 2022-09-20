@@ -1,4 +1,6 @@
+import { useRouter } from "next/router";
 import { ReactElement } from "react";
+import { spanishCountries } from "utils/getTranslations";
 
 export default function LoginButton(): ReactElement {
   const SPOTIFY_CLIENT_ID = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
@@ -13,9 +15,13 @@ export default function LoginButton(): ReactElement {
     scope: scopes,
   };
   const params = new URLSearchParams(paramsData);
+  const router = useRouter();
+  const isES = spanishCountries.includes(router.query.country as string);
   return (
     <>
-      <a href={API_AUTH_URL + params}>Entra con Spotify</a>
+      <a href={API_AUTH_URL + params}>
+        {isES ? "Entra con Spotify" : "Login with Spotify"}
+      </a>
       <style jsx>{`
         a {
           border-radius: 500px;

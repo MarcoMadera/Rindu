@@ -29,6 +29,7 @@ import ContentContainer from "components/ContentContainer";
 import TopTracks from "components/TopTracks";
 import { isCorruptedTrack } from "utils/isCorruptedTrack";
 import MainTracks from "components/MainTracks";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -253,7 +254,7 @@ export async function getServerSideProps({
 }: {
   res: NextApiResponse;
   req: NextApiRequest;
-  query: { code?: string };
+  query: NextParsedUrlQuery & { code?: string };
 }): Promise<{
   props: DashboardProps;
 }> {
