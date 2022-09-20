@@ -7,12 +7,14 @@ import { useEffect } from "react";
 import { refreshAccessToken } from "../utils/spotifyCalls/refreshAccessToken";
 import useAnalitycs from "../hooks/useAnalytics";
 import { removeTokensFromCookieServer } from "utils/removeTokensFromCookieServer";
+import { getTranslations, Page } from "utils/getTranslations";
 
 interface HomeProps {
   accessToken?: string | null;
+  translations: Record<string, string>;
 }
 
-const Home: NextPage<HomeProps> = () => {
+const Home: NextPage<HomeProps> = ({ translations }) => {
   const { setIsLogin } = useAuth();
 
   const { trackWithGoogleAnalitycs } = useAnalitycs();
@@ -48,15 +50,12 @@ const Home: NextPage<HomeProps> = () => {
           className="hero-image"
         />
         <div className="hero-title">
-          <h1>Todo lo que necesitas para disfrutar de la música</h1>
+          <h1>{translations.heroTitle}</h1>
         </div>
       </section>
       <section className="info">
-        <h2>Ideal para cualquier tipo de situación.</h2>
-        <p>
-          Ya sea si tienes un bot que añade tracks y te ha estado añadiendo
-          repetidos, Rindu elimina esos tracks que están de más y deja solo uno.
-        </p>
+        <h2>{translations.heroInfoTitle}</h2>
+        <p>{translations.heroInfoDescription}</p>
       </section>
       <section
         className="sec-full"
@@ -70,15 +69,12 @@ const Home: NextPage<HomeProps> = () => {
           className="sec-image"
         />
         <div className="sec-desc">
-          <span>HERRAMIENTAS FÁCILES DE USAR</span>
+          <span>{translations.section1Eyebrow}</span>
           <h2 style={{ color: "rgb(210, 64, 230)" }}>
-            Lo mejor para arreglar tus playlists
+            {translations.section1Title}
           </h2>
-          <p>
-            Agregar canciones por cualquier método puede fallar, por lo que
-            queda un espacio guardado sin datos. Esto es una canción corrupta.
-          </p>
-          <a href={API_AUTH_URL + params}>Descubre como</a>
+          <p>{translations.section1Description}</p>
+          <a href={API_AUTH_URL + params}>{translations.cta}</a>
         </div>
       </section>
       <section
@@ -86,16 +82,13 @@ const Home: NextPage<HomeProps> = () => {
         style={{ backgroundColor: "rgb(112, 83, 120)" }}
       >
         <div className="sec-desc">
-          <span style={{ color: "#fff" }}>SIN COMPLICACIONES</span>
+          <span style={{ color: "#fff" }}>{translations.section2Eyebrow}</span>
           <h2 style={{ color: "rgb(255, 205, 210)" }}>
-            Elimina las canciones invisibles
+            {translations.section2Title}
           </h2>
-          <p style={{ color: "#fff" }}>
-            Si el total de canciones de una playlist no concuerda con el último
-            número de la lista, tu playlist está corrupta.
-          </p>
+          <p style={{ color: "#fff" }}>{translations.section2Description}</p>
           <a href={API_AUTH_URL + params} style={{ color: "#fff" }}>
-            Descubre como
+            {translations.cta}
           </a>
         </div>
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -118,13 +111,10 @@ const Home: NextPage<HomeProps> = () => {
           className="sec-image"
         />
         <div className="sec-desc">
-          <span>ELIMINA DISTRACCIONES</span>
-          <h2>No más duplicados en tus playlists</h2>
-          <p>
-            Escucha sin repetir canciones, Rindu elimina los duplicados de tus
-            playlists y lista de favoritos.
-          </p>
-          <a href={API_AUTH_URL + params}>Descubre como</a>
+          <span>{translations.section3Eyebrow}</span>
+          <h2>{translations.section3Title}</h2>
+          <p>{translations.section3Description}</p>
+          <a href={API_AUTH_URL + params}>{translations.cta}</a>
         </div>
       </section>
       <section
@@ -132,12 +122,11 @@ const Home: NextPage<HomeProps> = () => {
         style={{ backgroundColor: "rgb(112, 83, 120)" }}
       >
         <div className="sec-desc">
-          <span style={{ color: "#fff" }}>LAS FUNCIONALIDADES QUE AMAS</span>
-          <h2 style={{ color: "rgb(255, 205, 210)" }}>Explora y escucha</h2>
-          <p style={{ color: "#fff" }}>
-            Rindu te permite explorar y escuchar canciones de manera sencilla.
-            Agrega canciones a tus playlists y listas de favoritos.
-          </p>
+          <span style={{ color: "#fff" }}>{translations.section4Eyebrow}</span>
+          <h2 style={{ color: "rgb(255, 205, 210)" }}>
+            {translations.section4Title}
+          </h2>
+          <p style={{ color: "#fff" }}>{translations.section4Description}</p>
           <a href={API_AUTH_URL + params} style={{ color: "#fff" }}>
             Descubre como
           </a>
@@ -155,15 +144,14 @@ const Home: NextPage<HomeProps> = () => {
         style={{ backgroundColor: "rgb(253, 186, 239)" }}
       >
         <h2 style={{ color: "rgb(210, 64, 230)" }}>
-          ¿Qué esperas para descubrir Rindu?
+          {translations.concludeSectionTitle}
         </h2>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div>
-            <p>
-              Disfruta de la música a tu ritmo, tu pones las reglas y Rindu te
-              lo hace realidad.
-            </p>
-            <a href={API_AUTH_URL + params}>Empieza ahora</a>
+            <p>{translations.concludeSectionDescription}</p>
+            <a href={API_AUTH_URL + params}>
+              {translations.concludeSectionCta}
+            </a>
           </div>
         </div>
       </section>
@@ -359,14 +347,13 @@ const Home: NextPage<HomeProps> = () => {
 
 export default Home;
 
-Home.getInitialProps = async ({
-  res,
-  req,
-}): Promise<{ accessToken: string | null }> => {
+Home.getInitialProps = async ({ res, req, query }): Promise<HomeProps> => {
+  const country = (query.country || "US") as string;
+  const translations = getTranslations(country, Page.Home);
   const cookies = req?.headers?.cookie;
 
   if (!cookies) {
-    return { accessToken: null };
+    return { accessToken: null, translations };
   }
 
   const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE, cookies);
@@ -376,7 +363,7 @@ Home.getInitialProps = async ({
 
     if (!access_token) {
       removeTokensFromCookieServer(res);
-      return { accessToken: null };
+      return { accessToken: null, translations };
     }
 
     const expireCookieDate = new Date();
@@ -395,9 +382,9 @@ Home.getInitialProps = async ({
       Router.replace("/dashboard");
     }
 
-    return { accessToken: access_token };
+    return { accessToken: access_token, translations };
   }
   removeTokensFromCookieServer(res);
 
-  return { accessToken: null };
+  return { accessToken: null, translations };
 };
