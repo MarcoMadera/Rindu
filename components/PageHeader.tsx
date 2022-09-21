@@ -167,8 +167,8 @@ export default function PageHeader({
             ) : null}
             {totalPublicPlaylists ? (
               <span>
-                &nbsp;&middot; {formatNumber(totalPublicPlaylists)} playlists
-                publicas
+                &nbsp;&middot; {formatNumber(totalPublicPlaylists)}{" "}
+                translations.publicPlaylist
               </span>
             ) : null}
           </p>
