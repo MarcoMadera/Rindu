@@ -24,6 +24,8 @@ import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary"
 import useContextMenu from "hooks/useContextMenu";
 import useOnScreen from "hooks/useOnScreen";
 import ExplicitSign from "./ExplicitSign";
+import { useRouter } from "next/router";
+import { spanishCountries } from "utils/getTranslations";
 
 interface CardTrackProps {
   track: ITrack;
@@ -74,6 +76,9 @@ export default function CardTrack({
   const { addToast } = useToast();
   const isPremium = user?.product === "premium";
   const isVisible = useOnScreen(trackRef);
+  const router = useRouter();
+  const country = router.query.country as string;
+  const locale = spanishCountries.includes(country) ? "es" : "en";
 
   const isPlayable =
     track?.type === "episode" ||
@@ -324,7 +329,7 @@ export default function CardTrack({
           <section>
             <p className="trackArtists">
               {track?.added_at
-                ? getTimeAgo(+new Date(track?.added_at), "en")
+                ? getTimeAgo(+new Date(track?.added_at), locale)
                 : null}
             </p>
           </section>

@@ -20,11 +20,14 @@ import useToast from "hooks/useToast";
 import EpisodeCard from "components/EpisodeCard";
 import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { getTranslations, Page } from "utils/getTranslations";
 
 interface PlaylistProps {
   show: SpotifyApi.SingleShowResponse | null;
   accessToken?: string;
   user: SpotifyApi.UserObjectPrivate | null;
+  translations: Record<string, string>;
 }
 
 const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
@@ -221,13 +224,17 @@ export async function getServerSideProps({
   params: { show },
   req,
   res,
+  query,
 }: {
   params: { show: string };
   req: NextApiRequest;
   res: NextApiResponse;
+  query: NextParsedUrlQuery;
 }): Promise<{
   props: PlaylistProps | null;
 }> {
+  const country = (query.country || "US") as string;
+  const translations = getTranslations(country, Page.Episode);
   const cookies = req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(res, "/");
@@ -242,6 +249,7 @@ export async function getServerSideProps({
       show: showData,
       accessToken,
       user: user ?? null,
+      translations,
     },
   };
 }

@@ -26,12 +26,15 @@ import { within } from "utils/whitin";
 import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
 import useToggle from "hooks/useToggle";
+import { getTranslations, Page } from "utils/getTranslations";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 
 interface TrackPageProps {
   track: SpotifyApi.TrackObjectFull | null;
   lyrics: string | null;
   accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
+  translations: Record<string, string>;
 }
 
 export default function TrackPage({
@@ -337,13 +340,17 @@ export async function getServerSideProps({
   params: { id },
   req,
   res,
+  query,
 }: {
   params: { id: string };
   req: NextApiRequest;
   res: NextApiResponse;
+  query: NextParsedUrlQuery;
 }): Promise<{
   props: TrackPageProps | null;
 }> {
+  const country = (query.country || "US") as string;
+  const translations = getTranslations(country, Page.Track);
   const cookies = req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(res, "/");
@@ -369,6 +376,7 @@ export async function getServerSideProps({
       lyrics,
       accessToken: accessToken ?? null,
       user: user ?? null,
+      translations,
     },
   };
 }

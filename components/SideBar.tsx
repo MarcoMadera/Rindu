@@ -14,6 +14,7 @@ import { createPlaylist } from "utils/spotifyCalls/createPlaylist";
 import useToast from "hooks/useToast";
 import { getCurrentUserPlaylists } from "utils/getAllMyPlaylists";
 import PlaylistText from "./PlaylistText";
+import useTranslations from "hooks/useTranslations";
 
 export default function SideBar(): ReactElement {
   const {
@@ -29,6 +30,7 @@ export default function SideBar(): ReactElement {
   const { accessToken, user } = useAuth();
   const router = useRouter();
   const { addToast } = useToast();
+  const { translations } = useTranslations();
 
   useEffect(() => {
     if (!accessToken) return;
@@ -52,19 +54,19 @@ export default function SideBar(): ReactElement {
           <Link href="/dashboard">
             <a>
               <Home fill="#b3b3b3" />
-              Home
+              {translations?.home}
             </a>
           </Link>
           <Link href="/search">
             <a>
               <Search fill="#b3b3b3" />
-              Search
+              {translations?.search}
             </a>
           </Link>
           <Link href="/collection">
             <a>
               <Library fill="#b3b3b3" />
-              Your Library
+              {translations?.collection}
             </a>
           </Link>
         </section>
@@ -89,14 +91,14 @@ export default function SideBar(): ReactElement {
             <div>
               <Add />
             </div>
-            Create Playlist
+            {translations?.createPlaylist}
           </button>
           <Link href="/collection/tracks">
             <a className={playlistPlayingId === "tracks" ? "green" : ""}>
               <div>
                 <Heart active={true} style={{ width: 28, height: 28 }} />
               </div>
-              Liked Songs
+              {translations?.likedSongs}
             </a>
           </Link>
           <hr />
@@ -123,7 +125,7 @@ export default function SideBar(): ReactElement {
             <>
               <button
                 type="button"
-                aria-label="Minimize cover image"
+                aria-label={translations?.minimizeCoverImage}
                 onClick={() => {
                   setIsShowingSideBarImg(false);
                 }}

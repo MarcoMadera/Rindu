@@ -9,10 +9,29 @@ import NavigationTopBarExtraField from "components/NavigationTopBarExtraField";
 import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
 import Grid from "components/Grid";
+import { NextApiResponse, NextApiRequest } from "next";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { getAuth } from "utils/getAuth";
+import { getTranslations, Page } from "utils/getTranslations";
+import { serverRedirect } from "utils/serverRedirect";
+import useAuth from "hooks/useAuth";
+import useAnalitycs from "hooks/useAnalytics";
+import { getCurrentUserPlaylists } from "utils/getAllMyPlaylists";
 
-export default function CollectionPlaylists(): ReactElement {
+interface CollectionPlaylistsrops {
+  accessToken: string | null;
+  user: SpotifyApi.UserObjectPrivate | null;
+  translations: Record<string, string>;
+}
+
+export default function CollectionPlaylists({
+  accessToken,
+  user,
+}: CollectionPlaylistsrops): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
-  const { playlists, isPlaying } = useSpotify();
+  const { setUser, setAccessToken } = useAuth();
+  const { trackWithGoogleAnalitycs } = useAnalitycs();
+  const { playlists, setPlaylists, isPlaying } = useSpotify();
 
   useEffect(() => {
     setElement(() => <NavigationTopBarExtraField selected={1} />);
@@ -23,6 +42,24 @@ export default function CollectionPlaylists(): ReactElement {
       setElement(null);
     };
   }, [setElement, setHeaderColor]);
+
+  useEffect(() => {
+    trackWithGoogleAnalitycs();
+
+    accessToken && setAccessToken(accessToken);
+
+    setUser(user);
+  }, [accessToken, setAccessToken, setUser, trackWithGoogleAnalitycs, user]);
+
+  useEffect(() => {
+    if (!playlists) {
+      getCurrentUserPlaylists(accessToken as string).then((playlists) => {
+        if (playlists) {
+          setPlaylists(playlists.items);
+        }
+      });
+    }
+  }, [accessToken, playlists, setPlaylists]);
 
   return (
     <ContentContainer>
@@ -52,4 +89,34 @@ export default function CollectionPlaylists(): ReactElement {
       </Grid>
     </ContentContainer>
   );
+}
+
+export async function getServerSideProps({
+  res,
+  req,
+  query,
+}: {
+  res: NextApiResponse;
+  req: NextApiRequest;
+  query: NextParsedUrlQuery;
+}): Promise<{
+  props: CollectionPlaylistsrops | null;
+}> {
+  const country = (query.country || "US") as string;
+  const translations = getTranslations(country, Page.CollectionPlaylists);
+  const cookies = req?.headers?.cookie;
+  if (!cookies) {
+    serverRedirect(res, "/");
+    return { props: null };
+  }
+
+  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+
+  return {
+    props: {
+      user: user || null,
+      accessToken: accessToken ?? null,
+      translations,
+    },
+  };
 }

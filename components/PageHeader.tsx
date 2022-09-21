@@ -13,6 +13,7 @@ import { HeaderProps } from "types/pageHeader";
 import Heading from "./Heading";
 import { Eyebrow } from "./Eyebrow";
 import { AsType } from "types/heading";
+import useTranslations from "hooks/useTranslations";
 
 export default function PageHeader({
   type,
@@ -34,11 +35,25 @@ export default function PageHeader({
 }: HeaderProps): ReactElement {
   const { setHeaderColor } = useHeader({ disableOpacityChange });
   const router = useRouter();
+  const { translations } = useTranslations();
 
   const isAlbumVariant =
     type === HeaderType.album ||
     type === HeaderType.single ||
     type === HeaderType.compilation;
+
+  const headerTypeEyebrowText = {
+    [HeaderType.artist]: translations.pageHeaderArtist,
+    [HeaderType.album]: translations.pageHeaderAlbum,
+    [HeaderType.single]: translations.pageHeaderSingle,
+    [HeaderType.compilation]: translations.pageHeaderCompilation,
+    [HeaderType.playlist]: translations.pageHeaderPlaylist,
+    [HeaderType.profile]: translations.pageHeaderProfile,
+    [HeaderType.concert]: translations.pageHeaderConcert,
+    [HeaderType.song]: translations.pageHeaderSong,
+    [HeaderType.podcast]: translations.pageHeaderPodcast,
+    [HeaderType.episode]: translations.pageHeaderEpisode,
+  };
 
   useEffect(() => {
     if (banner) return;
@@ -58,7 +73,7 @@ export default function PageHeader({
         !banner && <div id="cover-image"></div>
       )}
       <div className="playlistInfo">
-        <Eyebrow>{type}</Eyebrow>
+        <Eyebrow>{headerTypeEyebrowText[type]}</Eyebrow>
         <Heading
           number={1}
           fontSize={
@@ -122,7 +137,7 @@ export default function PageHeader({
                 ) : (
                   ""
                 )}{" "}
-                {formatNumber(totalFollowers ?? 0)} followers
+                {formatNumber(totalFollowers ?? 0)} {translations.followers}
               </span>
             ) : null}
             {(type === HeaderType.song || isAlbumVariant) && release_date ? (
@@ -130,7 +145,8 @@ export default function PageHeader({
                 <span>&nbsp;&middot; {getYear(release_date)}</span>
                 {type === HeaderType.song && duration_s ? (
                   <span>
-                    &nbsp;&middot; {formatTime(duration_s ?? 0)} minutos
+                    &nbsp;&middot; {formatTime(duration_s ?? 0)}{" "}
+                    {translations.minutes}
                   </span>
                 ) : null}
               </>
@@ -138,12 +154,15 @@ export default function PageHeader({
             {totalTracks ? (
               <span>
                 &nbsp;&middot; {formatNumber(totalTracks ?? 0)}{" "}
-                {totalTracks === 1 ? "song" : "songs"}
+                {totalTracks === 1
+                  ? translations.song.toLowerCase()
+                  : translations.songs.toLowerCase()}
               </span>
             ) : null}
             {popularity ? (
               <span>
-                &nbsp;&middot; {formatNumber(popularity ?? 0)} popularity
+                &nbsp;&middot; {formatNumber(popularity ?? 0)}{" "}
+                {translations.popularity}
               </span>
             ) : null}
             {totalPublicPlaylists ? (

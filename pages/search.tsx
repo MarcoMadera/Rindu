@@ -17,11 +17,14 @@ import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
 import MainTracks from "components/MainTracks";
 import BrowseCategories from "components/BrowseCategories";
+import { getTranslations, Page } from "utils/getTranslations";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 
 interface SearchPageProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
   accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
+  translations: Record<string, string>;
 }
 
 export default function SearchPage({
@@ -193,12 +196,16 @@ export default function SearchPage({
 export async function getServerSideProps({
   req,
   res,
+  query,
 }: {
   req: NextApiRequest;
   res: NextApiResponse;
+  query: NextParsedUrlQuery;
 }): Promise<{
   props: SearchPageProps | null;
 }> {
+  const country = (query.country || "US") as string;
+  const translations = getTranslations(country, Page.Search);
   const cookies = req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(res, "/");
@@ -217,6 +224,7 @@ export async function getServerSideProps({
       categories,
       accessToken: accessToken ?? null,
       user: user ?? null,
+      translations,
     },
   };
 }

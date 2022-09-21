@@ -4,12 +4,16 @@ import SingleTrackCard from "./SingleTrackCard";
 
 interface TopTracksProps {
   topTracks: SpotifyApi.UsersTopTracksResponse;
+  heading: string;
 }
 
-export default function TopTracks({ topTracks }: TopTracksProps): ReactElement {
+export default function TopTracks({
+  heading,
+  topTracks,
+}: TopTracksProps): ReactElement {
   return (
     <>
-      <Heading number={2}>Esto te encanta</Heading>
+      <Heading number={2}>{heading}</Heading>
       <section>
         {topTracks &&
           topTracks?.items?.map((track, i) => {
