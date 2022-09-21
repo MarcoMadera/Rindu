@@ -1,4 +1,5 @@
 import Clock from "components/icons/Clock";
+import useTranslations from "hooks/useTranslations";
 import {
   Dispatch,
   MutableRefObject,
@@ -18,6 +19,7 @@ export default function TrackListHeader({
   type: "presentation" | "playlist" | "album";
 }): ReactElement {
   const ref = useRef<HTMLDivElement>();
+  const { translations } = useTranslations();
 
   useEffect(() => {
     const cachedRef = ref.current,
@@ -47,11 +49,11 @@ export default function TrackListHeader({
       ref={ref as MutableRefObject<HTMLDivElement>}
     >
       <span>#</span>
-      <span>TITLE</span>
+      <span>{translations.titleListHeader}</span>
       {type === "playlist" ? (
         <>
-          <span className="album">ALBUM</span>
-          <span className="dataAdded">DATE ADDED</span>
+          <span className="album">{translations.albumListHeader}</span>
+          <span className="dataAdded">{translations.dateAddedListHeader}</span>
         </>
       ) : null}
       <span className="clock">

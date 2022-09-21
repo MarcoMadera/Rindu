@@ -6,6 +6,8 @@ import { serverRedirect } from "utils/serverRedirect";
 import { getSetList } from "utils/getSetList";
 import { ITrack } from "types/spotify";
 import { useEffect, useState } from "react";
+import { getTranslations, Page } from "utils/getTranslations";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 
 const Playlist: NextPage<PlaylistProps> = (props) => {
   const [alternativeImage, setAlternativeImage] = useState<string>();
@@ -42,6 +44,7 @@ const Playlist: NextPage<PlaylistProps> = (props) => {
       tracksInLibrary={props.tracksInLibrary}
       user={props.user}
       accessToken={props.accessToken}
+      translations={props.translations}
     />
   );
 };
@@ -52,13 +55,17 @@ export async function getServerSideProps({
   params: { id },
   req,
   res,
+  query,
 }: {
   params: { id: string };
   req: NextApiRequest;
   res: NextApiResponse;
+  query: NextParsedUrlQuery;
 }): Promise<{
   props: PlaylistProps | null;
 }> {
+  const country = (query.country || "US") as string;
+  const translations = getTranslations(country, Page.Concert);
   const cookies = req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(res, "/");
@@ -98,6 +105,7 @@ export async function getServerSideProps({
         },
       },
       tracksInLibrary: [],
+      translations,
     },
   };
 }

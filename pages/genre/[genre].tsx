@@ -13,12 +13,15 @@ import { CardType } from "components/CardContent";
 import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
 import Grid from "components/Grid";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { getTranslations, Page } from "utils/getTranslations";
 
 interface CategoryProps {
   categoryInfo: SpotifyApi.SingleCategoryResponse | null;
   playlists: SpotifyApi.PagingObject<SpotifyApi.PlaylistObjectSimplified> | null;
   accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
+  translations: Record<string, string>;
 }
 
 export default function Category({
@@ -75,13 +78,17 @@ export async function getServerSideProps({
   params: { genre },
   req,
   res,
+  query,
 }: {
   params: { genre: string };
   req: NextApiRequest;
   res: NextApiResponse;
+  query: NextParsedUrlQuery;
 }): Promise<{
   props: CategoryProps | null;
 }> {
+  const country = (query.country || "US") as string;
+  const translations = getTranslations(country, Page.Genre);
   const cookies = req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(res, "/");
@@ -113,6 +120,7 @@ export async function getServerSideProps({
           : null,
       accessToken: accessToken ?? null,
       user: user ?? null,
+      translations,
     },
   };
 }

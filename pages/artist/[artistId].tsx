@@ -27,12 +27,15 @@ import { getSiteUrl } from "utils/enviroment";
 import Carousel from "components/Carousel";
 import SubTitle from "components/SubtTitle";
 import { getSetLists, SetLists } from "utils/getSetLists";
-import { ArtistsInfo, getArtistInfo } from "utils/getArtistInfo";
+import { ArtistsInfo, getArtistInfo, Artist } from "utils/getArtistInfo";
 import { conjuction } from "utils/conjuction";
 import { CardType } from "components/CardContent";
 import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
 import { getMonth } from "utils/getMonth";
+import { getTranslations, Page } from "utils/getTranslations";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import useTranslations from "hooks/useTranslations";
 
 interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
@@ -44,6 +47,7 @@ interface ArtistPageProps {
   user: SpotifyApi.UserObjectPrivate | null;
   setLists: SetLists | null;
   artistInfo: ArtistsInfo | null;
+  translations: Record<string, string>;
 }
 
 export default function ArtistPage({
@@ -74,6 +78,7 @@ export default function ArtistPage({
   const [showMoreTopTracks, setShowMoreTopTracks] = useState(false);
   const [isFollowingThisArtist, setIsFollowingThisArtist] = useState(false);
   const [showMoreAbout, setShowMoreAbout] = useState(false);
+  const { translations } = useTranslations();
 
   useEffect(() => {
     if (!currentArtist) {
@@ -156,6 +161,10 @@ export default function ArtistPage({
     currentArtist?.followers?.total,
   ]);
 
+  const artistBiography =
+    artistInfo?.artists?.[0]?.[translations.strBiography as keyof Artist] ??
+    artistInfo?.artists?.[0]?.strBiographyEN;
+
   return (
     <ContentContainer hasPageHeader>
       <PageHeader
@@ -199,13 +208,15 @@ export default function ArtistPage({
               }
             }}
           >
-            {isFollowingThisArtist ? "Siguiendo" : "Seguir"}
+            {isFollowingThisArtist
+              ? translations.following
+              : translations.follow}
           </button>
         </div>
       </div>
       <div className="content">
         {topTracks?.tracks && topTracks?.tracks?.length > 0 ? (
-          <Heading number={2}>Popular</Heading>
+          <Heading number={2}>{translations.popular}</Heading>
         ) : null}
         <div className="popular-content">
           <div className="topTracks">
@@ -237,13 +248,15 @@ export default function ArtistPage({
                 setShowMoreTopTracks((prev) => !prev);
               }}
             >
-              {showMoreTopTracks ? "MOSTRAR MENOS" : "MOSTRAR MÁS"}
+              {showMoreTopTracks
+                ? translations.showLess
+                : translations.showMore}
             </button>
           </div>
           {setLists?.setlist && setLists?.setlist?.length > 0 ? (
             <div className="set-list">
               <div className="set-list-content">
-                <Heading number={2}>Concerts</Heading>
+                <Heading number={2}>{translations.concerts}</Heading>
                 {setLists?.setlist?.map((set, i) => {
                   if (i > 4) return null;
                   const date = set.eventDate.split("-");
@@ -295,7 +308,7 @@ export default function ArtistPage({
           ) : null}
         </div>
         {singleAlbums && singleAlbums?.items?.length > 0 ? (
-          <Carousel title={"Albums"} gap={24}>
+          <Carousel title={translations.singleAlbumsCarouselTitle} gap={24}>
             {singleAlbums?.items?.map(
               ({ images, name, id, artists, release_date, album_type }) => {
                 return (
@@ -319,7 +332,7 @@ export default function ArtistPage({
           </Carousel>
         ) : null}
         {appearAlbums && appearAlbums?.items?.length > 0 ? (
-          <Carousel title={"Aparece en"} gap={24}>
+          <Carousel title={translations.appearAlbumsCarouselTitle} gap={24}>
             {appearAlbums?.items?.map(
               ({ images, name, id, artists, release_date, album_type }) => {
                 return (
@@ -343,7 +356,7 @@ export default function ArtistPage({
           </Carousel>
         ) : null}
         {relatedArtists && relatedArtists?.artists?.length > 0 ? (
-          <Carousel title={"Te pueden gustar"} gap={24}>
+          <Carousel title={translations.relatedArtistsCarouselTitle} gap={24}>
             {relatedArtists?.artists?.map(({ images, name, id }) => {
               return (
                 <PresentationCard
@@ -351,30 +364,28 @@ export default function ArtistPage({
                   key={id}
                   images={images}
                   title={name}
-                  subTitle={"Artist"}
+                  subTitle={translations.artist}
                   id={id}
                 />
               );
             })}
           </Carousel>
         ) : null}
-        {artistInfo?.artists?.[0]?.strBiographyEN && (
+        {artistBiography && (
           <section className="about">
             <div>
               <Heading number={3} as="h2">
-                About
+                {translations.about}
               </Heading>
               {showMoreAbout ? (
-                <p>{artistInfo?.artists?.[0]?.strBiographyEN}</p>
+                <p>{artistBiography}</p>
               ) : (
                 <p>
-                  {artistInfo?.artists?.[0]?.strBiographyEN.slice(0, 2000)}
-                  {artistInfo?.artists?.[0]?.strBiographyEN.length > 2000
-                    ? "..."
-                    : ""}
+                  {artistBiography?.slice(0, 2000)}
+                  {artistBiography?.length > 2000 ? "..." : ""}
                 </p>
               )}
-              {artistInfo?.artists?.[0]?.strBiographyEN.length > 2000 ? (
+              {artistBiography.length > 2000 ? (
                 <button
                   type="button"
                   className="read-more"
@@ -382,7 +393,9 @@ export default function ArtistPage({
                     setShowMoreAbout((prev) => !prev);
                   }}
                 >
-                  {showMoreAbout ? "Leer menos" : "Leer más"}
+                  {showMoreAbout
+                    ? translations.readLess
+                    : translations.readMore}
                 </button>
               ) : null}
             </div>
@@ -401,7 +414,7 @@ export default function ArtistPage({
         {setLists ? (
           <div className="attribution">
             <p>
-              Concert setlists on{" "}
+              {translations.concertSetlistOn}{" "}
               <a
                 href="https://www.setlist.fm/"
                 target="_blank"
@@ -631,13 +644,17 @@ export async function getServerSideProps({
   params: { artistId },
   req,
   res,
+  query,
 }: {
   params: { artistId: string };
   req: NextApiRequest;
   res: NextApiResponse;
+  query: NextParsedUrlQuery;
 }): Promise<{
   props: ArtistPageProps | null;
 }> {
+  const country = (query.country || "US") as string;
+  const translations = getTranslations(country, Page.Artist);
   const cookies = req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(res, "/");
@@ -707,6 +724,7 @@ export async function getServerSideProps({
       user: user ?? null,
       setLists: setLists.status === "fulfilled" ? setLists.value : null,
       artistInfo: artistInfo.status === "fulfilled" ? artistInfo.value : null,
+      translations,
     },
   };
 }

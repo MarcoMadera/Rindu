@@ -34,6 +34,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
   user,
   tracksInLibrary,
   isLibrary,
+  translations,
 }) => {
   const router = useRouter();
   const { setUser, accessToken } = useAuth();
@@ -166,7 +167,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
                 {isMyPlaylist ? (
                   <button
                     type="button"
-                    aria-label="Clean playlist"
+                    aria-label={translations?.cleanPlaylist}
                     className="broom"
                     onClick={() => {
                       setOpenModal(true);
@@ -183,7 +184,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
                         setIsFollowingThisPlaylist(true);
                         addToast({
                           variant: "success",
-                          message: "Playlist added to your library",
+                          message: translations.playlistAddedToLibrary,
                         });
                         return true;
                       }
@@ -197,7 +198,7 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
                         setIsFollowingThisPlaylist(false);
                         addToast({
                           variant: "success",
-                          message: "Playlist removed from your library",
+                          message: translations.playlistRemovedFromLibrary,
                         });
                         return true;
                       }
@@ -225,13 +226,13 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
         {playListTracks && playListTracks?.length === 0 ? (
           <div className="noTracks">
             <Heading number={3} as="h2" margin="1rem 0">
-              Let&apos;s find something for your playlist
+              {translations.playlistSearchHeading}
             </Heading>
             <SearchInputElement setData={setSearchedData} source="playlist" />
             {searchedData?.tracks && searchedData.tracks.items.length > 0 && (
               <>
                 <Heading number={4} margin="20px 0 0 0">
-                  Songs
+                  {translations.songs}
                 </Heading>
                 {searchedData.tracks?.items?.map((track, i) => {
                   return (

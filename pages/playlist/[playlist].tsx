@@ -7,6 +7,8 @@ import { getpageDetails } from "utils/spotifyCalls/getPlaylistDetails";
 import { getTracksFromPlaylist } from "utils/spotifyCalls/getTracksFromPlayList";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import { mapPlaylistItems } from "utils/mapPlaylistItems";
+import { getTranslations, Page } from "utils/getTranslations";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 
 export interface PlaylistProps {
   pageDetails: ISpotifyContext["pageDetails"] | null;
@@ -14,6 +16,7 @@ export interface PlaylistProps {
   playListTracks: ITrack[] | null;
   accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
+  translations: Record<string, string>;
 }
 
 const Playlist: NextPage<PlaylistProps> = (props) => {
@@ -25,6 +28,7 @@ const Playlist: NextPage<PlaylistProps> = (props) => {
       tracksInLibrary={props.tracksInLibrary}
       user={props.user}
       accessToken={props.accessToken}
+      translations={props.translations}
     />
   );
 };
@@ -35,13 +39,17 @@ export async function getServerSideProps({
   params: { playlist },
   req,
   res,
+  query,
 }: {
   params: { playlist: string };
   req: NextApiRequest;
   res: NextApiResponse;
+  query: NextParsedUrlQuery;
 }): Promise<{
   props: PlaylistProps | null;
 }> {
+  const country = (query.country || "US") as string;
+  const translations = getTranslations(country, Page.Playlist);
   const cookies = req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(res, "/");
@@ -70,6 +78,7 @@ export async function getServerSideProps({
       playListTracks,
       accessToken: accessToken ?? null,
       user: user ?? null,
+      translations,
     },
   };
 }

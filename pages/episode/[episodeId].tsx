@@ -19,11 +19,14 @@ import useSpotify from "hooks/useSpotify";
 import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
 import { ITrack } from "types/spotify";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { getTranslations, Page } from "utils/getTranslations";
 
 interface EpisodePageProps {
   episode: SpotifyApi.EpisodeObject | null;
   accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
+  translations: Record<string, string>;
 }
 
 export default function EpisodePage({
@@ -245,13 +248,17 @@ export async function getServerSideProps({
   params: { episodeId },
   req,
   res,
+  query,
 }: {
   params: { episodeId: string };
   req: NextApiRequest;
   res: NextApiResponse;
+  query: NextParsedUrlQuery;
 }): Promise<{
   props: EpisodePageProps | null;
 }> {
+  const country = (query.country || "US") as string;
+  const translations = getTranslations(country, Page.Episode);
   const cookies = req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(res, "/");
@@ -270,6 +277,7 @@ export async function getServerSideProps({
       episode,
       accessToken: accessToken ?? null,
       user: user ?? null,
+      translations,
     },
   };
 }

@@ -11,12 +11,28 @@ import NavigationTopBarExtraField from "components/NavigationTopBarExtraField";
 import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
 import Grid from "components/Grid";
+import { NextApiRequest, NextApiResponse } from "next";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { getTranslations, Page } from "utils/getTranslations";
+import { getAuth } from "utils/getAuth";
+import { serverRedirect } from "utils/serverRedirect";
+import useAnalitycs from "hooks/useAnalytics";
 
-export default function CollectionAlbums(): ReactElement {
+interface CollectionAlbumProps {
+  accessToken: string | null;
+  user: SpotifyApi.UserObjectPrivate | null;
+  translations: Record<string, string>;
+}
+
+export default function CollectionAlbums({
+  accessToken,
+  user,
+}: CollectionAlbumProps): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
-  const { accessToken } = useAuth();
+  const { setUser, setAccessToken } = useAuth();
   const [albums, setAlbums] = useState<SpotifyApi.SavedAlbumObject[]>([]);
   const { isPlaying } = useSpotify();
+  const { trackWithGoogleAnalitycs } = useAnalitycs();
 
   useEffect(() => {
     setElement(() => <NavigationTopBarExtraField selected={4} />);
@@ -38,6 +54,14 @@ export default function CollectionAlbums(): ReactElement {
     }
     getAlbums();
   }, [accessToken, setAlbums]);
+
+  useEffect(() => {
+    trackWithGoogleAnalitycs();
+
+    accessToken && setAccessToken(accessToken);
+
+    setUser(user);
+  }, [accessToken, setAccessToken, setUser, trackWithGoogleAnalitycs, user]);
 
   return (
     <ContentContainer>
@@ -71,4 +95,34 @@ export default function CollectionAlbums(): ReactElement {
       </Grid>
     </ContentContainer>
   );
+}
+
+export async function getServerSideProps({
+  res,
+  req,
+  query,
+}: {
+  res: NextApiResponse;
+  req: NextApiRequest;
+  query: NextParsedUrlQuery;
+}): Promise<{
+  props: CollectionAlbumProps | null;
+}> {
+  const country = (query.country || "US") as string;
+  const translations = getTranslations(country, Page.CollectionAlbums);
+  const cookies = req?.headers?.cookie;
+  if (!cookies) {
+    serverRedirect(res, "/");
+    return { props: null };
+  }
+
+  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+
+  return {
+    props: {
+      user: user || null,
+      accessToken: accessToken ?? null,
+      translations,
+    },
+  };
 }

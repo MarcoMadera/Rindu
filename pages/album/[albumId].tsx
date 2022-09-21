@@ -24,6 +24,8 @@ import { getSiteUrl } from "utils/enviroment";
 import useToast from "hooks/useToast";
 import ContentContainer from "components/ContentContainer";
 import { isCorruptedTrack } from "utils/isCorruptedTrack";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { getTranslations, Page } from "utils/getTranslations";
 
 interface AlbumPageProps {
   album: SpotifyApi.SingleAlbumResponse | null;
@@ -31,6 +33,7 @@ interface AlbumPageProps {
   user: SpotifyApi.UserObjectPrivate | null;
   tracks: ITrack[] | null;
   tracksInLibrary: boolean[] | null;
+  translations: Record<string, string>;
 }
 
 const AlbumPage: NextPage<AlbumPageProps> = ({
@@ -221,13 +224,17 @@ export async function getServerSideProps({
   params: { albumId },
   req,
   res,
+  query,
 }: {
   params: { albumId: string };
   req: NextApiRequest;
   res: NextApiResponse;
+  query: NextParsedUrlQuery;
 }): Promise<{
   props: AlbumPageProps | null;
 }> {
+  const country = (query.country || "US") as string;
+  const translations = getTranslations(country, Page.Album);
   const cookies = req ? req?.headers?.cookie : undefined;
   if (!cookies) {
     serverRedirect(res, "/");
@@ -264,6 +271,7 @@ export async function getServerSideProps({
       user: user ?? null,
       tracks: tracks ?? null,
       tracksInLibrary,
+      translations,
     },
   };
 }

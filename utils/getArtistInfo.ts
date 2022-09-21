@@ -1,4 +1,4 @@
-interface Artist {
+export interface Artist {
   idArtist: string;
   strArtist: string;
   strArtistStripped: null;

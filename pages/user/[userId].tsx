@@ -11,12 +11,15 @@ import PageHeader from "components/PageHeader";
 import { HeaderType } from "types/pageHeader";
 import ContentContainer from "components/ContentContainer";
 import { getSiteUrl } from "utils/enviroment";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { getTranslations, Page } from "utils/getTranslations";
 
 interface CurrentUserProps {
   currentUser: SpotifyApi.UserObjectPublic | null;
   accessToken?: string;
   user: SpotifyApi.UserObjectPrivate | null;
   currentUserPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse | null;
+  translations: Record<string, string>;
 }
 
 const CurrentUser: NextPage<CurrentUserProps> = ({
@@ -71,13 +74,17 @@ export async function getServerSideProps({
   params: { userId },
   req,
   res,
+  query,
 }: {
   params: { userId: string };
   req: NextApiRequest;
   res: NextApiResponse;
+  query: NextParsedUrlQuery;
 }): Promise<{
   props: CurrentUserProps | null;
 }> {
+  const country = (query.country || "US") as string;
+  const translations = getTranslations(country, Page.User);
   const cookies = req?.headers?.cookie;
 
   if (!cookies) {
@@ -95,6 +102,7 @@ export async function getServerSideProps({
       accessToken,
       user: user ?? null,
       currentUserPlaylists: currentUserPlaylists ?? null,
+      translations,
     },
   };
 }

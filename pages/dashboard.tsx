@@ -30,6 +30,7 @@ import TopTracks from "components/TopTracks";
 import { isCorruptedTrack } from "utils/isCorruptedTrack";
 import MainTracks from "components/MainTracks";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { getTranslations, Page } from "utils/getTranslations";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -41,6 +42,7 @@ interface DashboardProps {
   topArtists: SpotifyApi.UsersTopArtistsResponse | null;
   tracksRecommendations: ITrack[] | null;
   tracksInLibrary: boolean[] | null;
+  translations: Record<string, string>;
 }
 
 const Dashboard: NextPage<DashboardProps> = ({
@@ -53,6 +55,7 @@ const Dashboard: NextPage<DashboardProps> = ({
   tracksRecommendations,
   tracksInLibrary,
   topArtists,
+  translations,
 }) => {
   const { setUser } = useAuth();
   const { setHeaderColor } = useHeader({ alwaysDisplayColor: true });
@@ -111,11 +114,16 @@ const Dashboard: NextPage<DashboardProps> = ({
   return (
     <ContentContainer>
       {topTracks && topTracks?.items.length > 0 ? (
-        <TopTracks topTracks={topTracks} />
+        <TopTracks
+          heading={translations.topTracksHeading}
+          topTracks={topTracks}
+        />
       ) : null}
       {featuredPlaylists && featuredPlaylists?.playlists?.items?.length > 0 ? (
         <Carousel
-          title={featuredPlaylists.message ?? "Disfruta de estás playlists"}
+          title={
+            featuredPlaylists.message ?? translations.featuredPlaylistsHeading
+          }
           gap={24}
         >
           {featuredPlaylists.playlists?.items?.map(
@@ -127,7 +135,8 @@ const Dashboard: NextPage<DashboardProps> = ({
                   images={images}
                   title={name}
                   subTitle={
-                    decode(description) || `De ${owner?.display_name ?? ""}`
+                    decode(description) ||
+                    `${translations.by} ${owner?.display_name ?? ""}`
                   }
                   id={id}
                 />
@@ -137,7 +146,7 @@ const Dashboard: NextPage<DashboardProps> = ({
         </Carousel>
       ) : null}
       {recentlyPlayed && recentlyPlayed?.length > 0 ? (
-        <Carousel title="Recién escuchaste" gap={24}>
+        <Carousel title={translations.recentlyListenedHeading} gap={24}>
           {recentlyPlayed.map((track) => {
             return (
               <PresentationCard
@@ -165,7 +174,10 @@ const Dashboard: NextPage<DashboardProps> = ({
         </Carousel>
       ) : null}
       {newReleases && newReleases.albums?.items?.length > 0 ? (
-        <Carousel title={newReleases.message ?? "Lo más nuevo"} gap={24}>
+        <Carousel
+          title={newReleases.message ?? translations.newReleasesHeading}
+          gap={24}
+        >
           {newReleases.albums?.items?.map(
             ({ images, name, id, artists, album_type }) => {
               return (
@@ -186,14 +198,17 @@ const Dashboard: NextPage<DashboardProps> = ({
       ) : null}
       {tracksRecommendations && tracksRecommendations?.length > 0 && (
         <MainTracks
-          title="Te van a gustar"
+          title={translations.tracksRecommendationsHeading}
           tracksInLibrary={tracksInLibrary}
           tracksRecommendations={tracksRecommendations}
         />
       )}
       {recentListeningRecommendations &&
       recentListeningRecommendations?.length > 0 ? (
-        <Carousel title={"Basado en lo que escuchaste"} gap={24}>
+        <Carousel
+          title={translations.recentListeningRecommendationsHeading}
+          gap={24}
+        >
           {recentListeningRecommendations?.map((track) => {
             return (
               <PresentationCard
@@ -211,7 +226,7 @@ const Dashboard: NextPage<DashboardProps> = ({
         </Carousel>
       ) : null}
       {topArtists && topArtists.items?.length > 0 ? (
-        <Carousel title={"Disfruta de tus artistas favoritos"} gap={24}>
+        <Carousel title={translations.topArtistsHeading} gap={24}>
           {topArtists.items?.map(({ images, name, id }) => {
             return (
               <PresentationCard
@@ -227,7 +242,7 @@ const Dashboard: NextPage<DashboardProps> = ({
         </Carousel>
       ) : null}
       {categories && categories?.items?.length > 0 ? (
-        <Carousel title={"Categorias"} gap={24}>
+        <Carousel title={translations.categories} gap={24}>
           {categories?.items.map(({ name, id, icons }) => {
             return (
               <PresentationCard
@@ -258,6 +273,8 @@ export async function getServerSideProps({
 }): Promise<{
   props: DashboardProps;
 }> {
+  const country = (query.country || "US") as string;
+  const translations = getTranslations(country, Page.Dashboard);
   const cookies = req?.headers?.cookie ?? "";
   let tokens: Record<string, string | null> | AuthorizationResponse = {
     accessToken: takeCookie(ACCESS_TOKEN_COOKIE, cookies),
@@ -371,6 +388,7 @@ export async function getServerSideProps({
       topArtists: topArtists.status === "fulfilled" ? topArtists.value : null,
       tracksRecommendations,
       tracksInLibrary,
+      translations,
     },
   };
 }
