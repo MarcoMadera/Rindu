@@ -86,6 +86,7 @@ const pageHeaderTranslations = {
     songs: "Songs",
     minutes: "minutes",
     popularity: "popularity",
+    publicPlaylist: "public playlists",
   },
   [Language.ES]: {
     pageHeaderArtist: "ARTISTA",
@@ -103,6 +104,7 @@ const pageHeaderTranslations = {
     songs: "Canciones",
     minutes: "minutos",
     popularity: "popularidad",
+    publicPlaylist: "playlist públicas",
   },
 };
 
@@ -151,7 +153,7 @@ export function getTranslations(
         concludeSectionDescription:
           "Enjoy music at your own pace, you set the rules and Rindu makes it happen for you.",
         concludeSectionCta: "Start now",
-        loginButton: "LOGIN WITH",
+        loginButton: "LOGIN WITH SPOTIFY",
       },
       [Page.Dashboard]: {
         ...sideBarTranslations[Language.EN],
