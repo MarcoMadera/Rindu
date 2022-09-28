@@ -426,6 +426,7 @@ export function getTranslations(
       },
       [Page.Concert]: {
         ...sideBarTranslations[Language.ES],
+        ...pageHeaderTranslations[Language.ES],
         ...listHeaderTranslations[Language.ES],
         ...removeTracksModalTranslations[Language.ES],
         title: "Concert",
