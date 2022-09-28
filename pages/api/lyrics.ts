@@ -79,6 +79,10 @@ async function getLyrics(
         .replace(/^Paroles de la chanson.*\n?$/m, "")
         .replace(/^\n/m, "")
         .replace(/(\n\n\n)/g, "\n");
+    })
+    .catch((err) => {
+      console.info("reqParolesNet", err);
+      return Promise.reject();
     });
 
   const reqLyricsMania1 = fetch(
@@ -100,6 +104,10 @@ async function getLyrics(
       }
       const lyrics = textln($(".lyrics-body"));
       return lyrics.replace(/\n\n/g, "\n");
+    })
+    .catch((err) => {
+      console.info("reqLyricsMania1", err);
+      return Promise.reject();
     });
 
   const reqLyricsMania2 = fetch(
@@ -121,6 +129,10 @@ async function getLyrics(
       }
       const lyrics = textln($(".lyrics-body"));
       return lyrics.replace(/\n\n/g, "\n");
+    })
+    .catch((err) => {
+      console.info("LyricsMania2", err);
+      return Promise.reject();
     });
 
   const reqLyricsMania3 = fetch(
@@ -142,6 +154,10 @@ async function getLyrics(
       }
       const lyrics = textln($(".lyrics-body"));
       return lyrics.replace(/\n\n/g, "\n");
+    })
+    .catch((err) => {
+      console.info("LyricsMania3", err);
+      return Promise.reject();
     });
 
   const reqSweetLyrics = fetch("http://www.sweetslyrics.com/search.php", {
@@ -183,6 +199,10 @@ async function getLyrics(
     })
     .then(($) => {
       return textln($(".lyric_full_text"));
+    })
+    .catch((err) => {
+      console.info("reqSweetLyrics", err);
+      return Promise.reject();
     });
 
   if (/\(.*\)/.test(title) || /\[.*\]/.test(title)) {
