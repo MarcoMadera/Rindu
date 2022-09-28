@@ -59,19 +59,24 @@ export async function getArtistInfo(
   artistName?: string
 ): Promise<ArtistsInfo | null> {
   if (!artistName) return null;
-  const res = await fetch(
-    `https://www.theaudiodb.com/api/v1/json/2/search.php?s=${artistName}`,
-    {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-      },
-    }
-  );
+  try {
+    const res = await fetch(
+      `https://www.theaudiodb.com/api/v1/json/2/search.php?s=${artistName}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+        },
+      }
+    );
 
-  if (res.ok) {
-    const data: ArtistsInfo = await res.json();
-    return data;
+    if (res.ok) {
+      const data: ArtistsInfo = await res.json();
+      return data;
+    }
+    return null;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
-  return null;
 }
