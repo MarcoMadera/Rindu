@@ -1,10 +1,12 @@
+import useTranslations from "hooks/useTranslations";
 import { ReactElement } from "react";
 
 export default function Footer(): ReactElement {
+  const { translations } = useTranslations();
   return (
     <footer>
       <p>
-        Hecho por{" "}
+        {translations.madeby}{" "}
         <a
           href="https://marcomadera.com"
           rel="noreferrer noopener"

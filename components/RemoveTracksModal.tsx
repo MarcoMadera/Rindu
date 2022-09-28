@@ -107,12 +107,9 @@ export default function RemoveTracksModal({
       }
       if (event.key === "Tab") {
         if (document.activeElement !== firstElement) {
-          console.log("focus first", document.activeElement, firstElement);
           firstElement?.focus();
           return event.preventDefault();
         } else {
-          console.log("focus last");
-
           lastElement?.focus();
           return event.preventDefault();
         }

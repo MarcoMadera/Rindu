@@ -183,6 +183,7 @@ export function getTranslations(
           "Enjoy music at your own pace, you set the rules and Rindu makes it happen for you.",
         concludeSectionCta: "Start now",
         loginButton: "LOGIN WITH SPOTIFY",
+        madeby: "Made by",
       },
       [Page.Dashboard]: {
         ...sideBarTranslations[Language.EN],
@@ -354,6 +355,7 @@ export function getTranslations(
           "Disfruta de la música a tu ritmo, tu pones las reglas y Rindu te lo hace realidad.",
         concludeSectionCta: "Empieza ahora",
         loginButton: "ENTRA CON SPOTIFY",
+        madeby: "Hecho por",
       },
       [Page.Dashboard]: {
         ...sideBarTranslations[Language.ES],
