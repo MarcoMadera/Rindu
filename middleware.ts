@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest): NextResponse {
   const { nextUrl: url, geo } = request;
-  const country = geo?.country || "MX";
+  const country = geo?.country || "US";
 
   url.searchParams.set("country", country);
 
