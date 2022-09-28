@@ -19,6 +19,7 @@ import MainTracks from "components/MainTracks";
 import BrowseCategories from "components/BrowseCategories";
 import { getTranslations, Page } from "utils/getTranslations";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import useTranslations from "hooks/useTranslations";
 
 interface SearchPageProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
@@ -36,6 +37,7 @@ export default function SearchPage({
   const { setUser, setAccessToken } = useAuth();
   const [data, setData] = useState<SpotifyApi.SearchResponse | null>(null);
   const { isPlaying } = useSpotify();
+  const { translations } = useTranslations();
 
   useEffect(() => {
     setElement(() => <SearchInputElement source="search" setData={setData} />);
@@ -58,7 +60,7 @@ export default function SearchPage({
     <ContentContainer>
       {!isPlaying && (
         <Head>
-          <title>Rindu - Search</title>
+          <title>Rindu - {translations.search}</title>
         </Head>
       )}
       {data ? (
@@ -66,7 +68,7 @@ export default function SearchPage({
           {data?.tracks?.items && data.tracks?.items?.length > 0 ? (
             <>
               <MainTracks
-                title="Canciones"
+                title={translations.songs}
                 tracksRecommendations={data.tracks?.items.slice(0, 5)}
               />
               <Carousel gap={24}>
@@ -88,7 +90,7 @@ export default function SearchPage({
             </>
           ) : null}
           {data.playlists?.items && data.playlists?.items?.length > 0 ? (
-            <Carousel title={"Playlists"} gap={24}>
+            <Carousel title={translations.playlists} gap={24}>
               {data.playlists?.items?.map(
                 ({ images, name, description, id, owner }) => {
                   return (
@@ -108,7 +110,7 @@ export default function SearchPage({
             </Carousel>
           ) : null}
           {data.artists?.items && data.artists?.items?.length > 0 ? (
-            <Carousel title={"Artists"} gap={24}>
+            <Carousel title={translations.artists} gap={24}>
               {data.artists?.items?.map(({ images, name, id }) => {
                 return (
                   <PresentationCard
@@ -116,7 +118,7 @@ export default function SearchPage({
                     key={id}
                     images={images}
                     title={name}
-                    subTitle={"Artist"}
+                    subTitle={translations.artist}
                     id={id}
                   />
                 );
@@ -124,12 +126,12 @@ export default function SearchPage({
             </Carousel>
           ) : null}
           {data.albums?.items && data.albums?.items?.length > 0 ? (
-            <Carousel title={"Albums"} gap={24}>
+            <Carousel title={translations.albums} gap={24}>
               {data.albums?.items?.map(
                 ({ images, name, id, artists, release_date }) => {
                   const artistNames = artists.map((artist) => artist.name);
                   const subTitle = release_date
-                    ? `${getYear(release_date)} · Album`
+                    ? `${getYear(release_date)} · ${translations.album}`
                     : artistNames.join(", ");
                   return (
                     <PresentationCard
@@ -146,7 +148,7 @@ export default function SearchPage({
             </Carousel>
           ) : null}
           {data.shows?.items && data.shows?.items?.length > 0 ? (
-            <Carousel title={"Shows"} gap={24}>
+            <Carousel title={translations.shows} gap={24}>
               {data.shows?.items?.map(({ images, name, id, publisher }) => {
                 return (
                   <PresentationCard
@@ -162,7 +164,7 @@ export default function SearchPage({
             </Carousel>
           ) : null}
           {data.episodes?.items && data.episodes?.items?.length > 0 ? (
-            <Carousel title={"Episodes"} gap={24}>
+            <Carousel title={translations.edpisodes} gap={24}>
               {(
                 data.episodes as SpotifyApi.PagingObject<SpotifyApi.EpisodeObject>
               )?.items?.map(({ images, name, id, description }) => {
@@ -184,7 +186,7 @@ export default function SearchPage({
       ) : (
         <>
           <Heading number={3} as="h1">
-            Browse All
+            {translations.browseAll}
           </Heading>
           <BrowseCategories categories={categories} />
         </>

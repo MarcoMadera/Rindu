@@ -28,6 +28,8 @@ import Heading from "components/Heading";
 import useToggle from "hooks/useToggle";
 import { getTranslations, Page } from "utils/getTranslations";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import useTranslations from "hooks/useTranslations";
+import { templateReplace } from "utils/templateReplace";
 
 interface TrackPageProps {
   track: SpotifyApi.TrackObjectFull | null;
@@ -57,6 +59,7 @@ export default function TrackPage({
     useState<SpotifyApi.SingleArtistResponse | null>(null);
   const [sameTrackIndex, setSameTrackIndex] = useState(-1);
   const { addToast } = useToast();
+  const { translations } = useTranslations();
 
   useEffect(() => {
     if (track) {
@@ -138,7 +141,7 @@ export default function TrackPage({
     <ContentContainer hasPageHeader>
       {!isPlaying && (
         <Head>
-          <title>Rindu - {track?.name ?? "Canciones"}</title>
+          <title>Rindu - {track?.name ?? translations.songs}</title>
         </Head>
       )}
       <PageHeader
@@ -196,7 +199,7 @@ export default function TrackPage({
         {lyrics ? (
           <div className="lyrics-container">
             <Heading number={3} as="h2">
-              Letra
+              {translations.lyrics}
             </Heading>
             <p className="lyrics">{lyrics}</p>
           </div>
@@ -204,7 +207,7 @@ export default function TrackPage({
         {artistInfo && (
           <BigPill
             img={artistInfo?.images?.[0]?.url}
-            title={"ARTIST"}
+            title={translations.artist}
             subTitle={artistInfo.name}
             href={`/artist/${artistInfo.id}`}
           />
@@ -212,10 +215,13 @@ export default function TrackPage({
         {artistTopTracks.length > 0 && (
           <div className="topTracks">
             <div className="topTracks-header">
-              <span>Canciones populares de</span>
-              <Heading number={3} as="h2">
-                {track?.artists[0].name ?? ""}
-              </Heading>
+              <span>
+                {templateReplace(translations.populatTracksBy, [
+                  <Heading number={3} as="h2" key={track?.artists[0].name}>
+                    {track?.artists[0].name ?? ""}
+                  </Heading>,
+                ])}
+              </span>
             </div>
             {artistTopTracks?.map((artistTrack, i) => {
               const maxToShow = showMoreTopTracks ? 10 : 5;
@@ -256,7 +262,9 @@ export default function TrackPage({
                 setShowMoreTopTracks.toggle();
               }}
             >
-              {showMoreTopTracks ? "MOSTRAR MENOS" : "MOSTRAR MÁS"}
+              {showMoreTopTracks
+                ? translations.showLess
+                : translations.showMore}
             </button>
           </div>
         )}

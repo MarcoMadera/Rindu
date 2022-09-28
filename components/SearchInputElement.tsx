@@ -11,6 +11,7 @@ import {
 } from "react";
 import Search from "./icons/Search";
 import { isCorruptedTrack } from "utils/isCorruptedTrack";
+import useTranslations from "hooks/useTranslations";
 
 interface InputElementProps {
   setData: Dispatch<SetStateAction<SpotifyApi.SearchResponse | null>>;
@@ -27,9 +28,7 @@ export function SearchInputElement({
   const [shouldSearch, setShouldSearch] = useState(false);
   const { setAllTracks } = useSpotify();
   const isFromSearch = source === "search";
-  const placeHolder = isFromSearch
-    ? "Artists, songs, or podcasts"
-    : "Search for songs or episodes";
+  const { translations } = useTranslations();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -88,7 +87,7 @@ export function SearchInputElement({
           autoCorrect="off"
           autoCapitalize="off"
           spellCheck="false"
-          placeholder={placeHolder}
+          placeholder={translations.searchPlaceholder}
           defaultValue=""
           onChange={(e) => {
             setQuery(e.target.value);

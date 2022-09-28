@@ -1,6 +1,7 @@
 import { createPortal } from "react-dom";
 import {
   Dispatch,
+  ReactNode,
   ReactPortal,
   SetStateAction,
   useCallback,
@@ -20,6 +21,8 @@ import { LoadingSpinner } from "./LoadingSpinner";
 import useToast from "hooks/useToast";
 import { analyzePlaylist } from "utils/analyzePlaylist";
 import Heading from "./Heading";
+import useTranslations from "hooks/useTranslations";
+import { templateReplace } from "utils/templateReplace";
 
 interface RemoveTracksModalProps {
   openModal: boolean;
@@ -42,6 +45,10 @@ export default function RemoveTracksModal({
   const [duplicateTracksIdx, setDuplicateTracksIdx] = useState<number[]>([]);
   const [corruptedSongsIdx, setCorruptedSongsIdx] = useState<number[]>([]);
   const [tracksToRemove, setTracksToRemove] = useState<ITrack[]>([]);
+  const { translations } = useTranslations();
+  const [title, setTitle] = useState<string | ReactNode[]>(
+    translations.analyzingPlaylist
+  );
 
   useEffect(() => {
     if (!pageDetails || !accessToken) return;
@@ -59,9 +66,37 @@ export default function RemoveTracksModal({
       setDuplicateTracksIdx(res.duplicateTracksIndexes);
       setCorruptedSongsIdx(res.corruptedSongsIndexes);
       setTracksToRemove(res.tracksToRemove);
+      setTitle(() => {
+        return res.duplicateTracksIndexes.length === 0 &&
+          res.corruptedSongsIndexes.length === 0
+          ? translations.noCorruptOrDuplicateSongs
+          : res.duplicateTracksIndexes.length === 1 &&
+            res.corruptedSongsIndexes.length === 1
+          ? translations.oneDuplicateOneCorrupt
+          : res.duplicateTracksIndexes.length === 1 &&
+            res.corruptedSongsIndexes.length === 0
+          ? translations.oneDuplicate
+          : res.duplicateTracksIndexes.length === 0 &&
+            res.corruptedSongsIndexes.length === 1
+          ? translations.oneCorrupt
+          : res.duplicateTracksIndexes.length === 0 &&
+            res.corruptedSongsIndexes.length > 1
+          ? templateReplace(translations.multipleCorrupt, [
+              res.corruptedSongsIndexes.length,
+            ])
+          : res.duplicateTracksIndexes.length > 1 &&
+            res.corruptedSongsIndexes.length === 0
+          ? templateReplace(translations.multipleDuplicate, [
+              res.duplicateTracksIndexes.length,
+            ])
+          : templateReplace(translations.multipleCorruptAndMultipleDuplicate, [
+              res.corruptedSongsIndexes.length,
+              res.duplicateTracksIndexes.length,
+            ]);
+      });
       setIsLoadingComplete(true);
     });
-  }, [accessToken, isLibrary, pageDetails, setAllTracks]);
+  }, [accessToken, isLibrary, pageDetails, setAllTracks, translations]);
 
   const onPressKey = useCallback(
     (event: KeyboardEvent) => {
@@ -70,21 +105,17 @@ export default function RemoveTracksModal({
       if (event.key === "Escape") {
         setOpenModal(false);
       }
-      if (
-        !event.shiftKey &&
-        document.activeElement !== firstElement &&
-        event.key !== "Enter"
-      ) {
-        firstElement?.focus();
-        return event.preventDefault();
-      }
-      if (
-        event.shiftKey &&
-        event.key === "Tab" &&
-        document.activeElement !== lastElement
-      ) {
-        lastElement?.focus();
-        event.preventDefault();
+      if (event.key === "Tab") {
+        if (document.activeElement !== firstElement) {
+          console.log("focus first", document.activeElement, firstElement);
+          firstElement?.focus();
+          return event.preventDefault();
+        } else {
+          console.log("focus last");
+
+          lastElement?.focus();
+          return event.preventDefault();
+        }
       }
       return;
     },
@@ -134,151 +165,152 @@ export default function RemoveTracksModal({
         aria-labelledby="globalModalTitle"
         aria-describedby="globalModaldesc"
       >
+        <button
+          type="button"
+          ref={firstButtonRef}
+          tabIndex={0}
+          onClick={(e) => {
+            e.preventDefault();
+            setOpenModal(false);
+          }}
+          className="exitButton"
+          title={translations.close}
+        ></button>
         {!isLoadingComplete ? (
           <div className="loading-message">
             <LoadingSpinner />
-            <Heading number={2}>Analizando playlist</Heading>
+            <Heading number={2}>{title}</Heading>
           </div>
         ) : (
-          <Heading number={2} textAlign="center">
-            {duplicateTracksIdx.length === 0 && corruptedSongsIdx.length === 0
-              ? "No hay canciones corruptas ni duplicadas"
-              : duplicateTracksIdx.length === 1 &&
-                corruptedSongsIdx.length === 1
-              ? "Hay una canción duplicada y una corrupta"
-              : duplicateTracksIdx.length === 1 &&
-                corruptedSongsIdx.length === 0
-              ? "Hay una canción duplicada"
-              : duplicateTracksIdx.length === 0 &&
-                corruptedSongsIdx.length === 1
-              ? "Hay una canción corrupta"
-              : duplicateTracksIdx.length === 0 && corruptedSongsIdx.length > 1
-              ? "Hay " + corruptedSongsIdx.length + " canciones corruptas"
-              : duplicateTracksIdx.length > 1 && corruptedSongsIdx.length === 0
-              ? "Hay " + duplicateTracksIdx.length + " canciones duplicadas"
-              : `${corruptedSongsIdx.length} canciones corruptas y ${duplicateTracksIdx.length} canciones duplicadas`}
-          </Heading>
+          <div
+            className={
+              isLoadingComplete && !(tracksToRemove.length > 0)
+                ? "loading-message"
+                : ""
+            }
+          >
+            <Heading number={2} textAlign="center">
+              {title}
+            </Heading>
+          </div>
         )}
         <div className="tracks">
           {tracksToRemove.length > 0 ? (
-            <List
-              height={330}
-              width={800}
-              overscanRowCount={2}
-              rowCount={tracksToRemove.length}
-              rowHeight={65}
-              rowRenderer={({ index, style, key }) => {
-                return (
-                  <div style={{ ...style, width: "100%" }} key={key}>
-                    <CardTrack
-                      accessToken={accessToken}
-                      isTrackInLibrary={false}
-                      track={tracksToRemove[index]}
-                      playlistUri={pageDetails?.uri ?? ""}
-                      type="album"
-                      position={tracksToRemove[index].position}
-                    />
-                  </div>
-                );
-              }}
-            />
-          ) : null}
-        </div>
-        <div className="popupContainer_buttons">
-          <button
-            type="button"
-            ref={firstButtonRef}
-            tabIndex={0}
-            onClick={(e) => {
-              e.preventDefault();
-              setOpenModal(false);
-            }}
-          >
-            Cancelar
-          </button>
-          <button
-            type="button"
-            ref={secondButtonRef}
-            onClick={async (e) => {
-              e.preventDefault();
-              if (!isLibrary) {
-                const indexes = [
-                  ...new Set([...corruptedSongsIdx, ...duplicateTracksIdx]),
-                ];
-                const snapshot = await removeTracks(
-                  pageDetails?.id,
-                  indexes,
-                  pageDetails?.snapshot_id
-                );
-                if (snapshot) {
-                  setAllTracks((tracks) => {
-                    return tracks.filter((_, i) => {
-                      if (indexes.includes(i)) {
-                        return false;
+            <>
+              <List
+                height={330}
+                width={800}
+                overscanRowCount={2}
+                rowCount={tracksToRemove.length}
+                rowHeight={65}
+                rowRenderer={({ index, style, key }) => {
+                  return (
+                    <div style={{ ...style, width: "100%" }} key={key}>
+                      <CardTrack
+                        accessToken={accessToken}
+                        isTrackInLibrary={false}
+                        track={tracksToRemove[index]}
+                        playlistUri={pageDetails?.uri ?? ""}
+                        type="album"
+                        position={tracksToRemove[index].position}
+                      />
+                    </div>
+                  );
+                }}
+              />
+              <div className="popupContainer_buttons">
+                <button
+                  type="button"
+                  ref={secondButtonRef}
+                  className="removeButton"
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    if (!isLibrary) {
+                      const indexes = [
+                        ...new Set([
+                          ...corruptedSongsIdx,
+                          ...duplicateTracksIdx,
+                        ]),
+                      ];
+                      const snapshot = await removeTracks(
+                        pageDetails?.id,
+                        indexes,
+                        pageDetails?.snapshot_id
+                      );
+                      if (snapshot) {
+                        setAllTracks((tracks) => {
+                          return tracks.filter((_, i) => {
+                            if (indexes.includes(i)) {
+                              return false;
+                            }
+                            return true;
+                          });
+                        });
+                        setTracksToRemove([]);
+                        setTitle("Tracks removed from playlist");
+                        addToast({
+                          variant: "success",
+                          message: "Tracks removed from playlist",
+                        });
+                      } else {
+                        addToast({
+                          variant: "error",
+                          message: "Error removing tracks from playlist",
+                        });
                       }
-                      return true;
-                    });
-                  });
-                  setTracksToRemove([]);
-                  addToast({
-                    variant: "success",
-                    message: "Tracks removed from playlist",
-                  });
-                } else {
-                  addToast({
-                    variant: "error",
-                    message: "Error removing tracks from playlist",
-                  });
-                }
-              }
+                    }
 
-              if (isLibrary) {
-                const arrays: (string | null)[][] = [];
-                const ids = tracksToRemove.map(({ id }) => id as string);
-                for (let i = 0; i < tracksToRemove.length; i += 50) {
-                  arrays.push(ids.slice(i, i + 50));
-                }
-                const promises = arrays.map((ids) =>
-                  fetch("https://api.spotify.com/v1/me/tracks", {
-                    method: "DELETE",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: `Bearer ${
-                        accessToken
-                          ? accessToken
-                          : takeCookie(ACCESS_TOKEN_COOKIE)
-                      }`,
-                    },
-                    body: JSON.stringify({ ids }),
-                  })
-                );
-                Promise.all(promises)
-                  .then(() => {
-                    setAllTracks((tracks) => {
-                      return tracks.filter((track) => {
-                        if (ids.includes(track.id ?? "")) {
-                          return false;
-                        }
-                        return true;
-                      });
-                    });
-                    setTracksToRemove([]);
-                    addToast({
-                      variant: "success",
-                      message: "Tracks removed from library",
-                    });
-                  })
-                  .catch(() => {
-                    addToast({
-                      variant: "error",
-                      message: "Error removing tracks from library",
-                    });
-                  });
-              }
-            }}
-          >
-            Limpiar
-          </button>
+                    if (isLibrary) {
+                      const arrays: (string | null)[][] = [];
+                      const ids = tracksToRemove.map(({ id }) => id as string);
+                      for (let i = 0; i < tracksToRemove.length; i += 50) {
+                        arrays.push(ids.slice(i, i + 50));
+                      }
+                      const promises = arrays.map((ids) =>
+                        fetch("https://api.spotify.com/v1/me/tracks", {
+                          method: "DELETE",
+                          headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${
+                              accessToken
+                                ? accessToken
+                                : takeCookie(ACCESS_TOKEN_COOKIE)
+                            }`,
+                          },
+                          body: JSON.stringify({ ids }),
+                        })
+                      );
+                      Promise.all(promises)
+                        .then(() => {
+                          setAllTracks((tracks) => {
+                            return tracks.filter((track) => {
+                              if (ids.includes(track.id ?? "")) {
+                                return false;
+                              }
+                              return true;
+                            });
+                          });
+                          setTracksToRemove([]);
+                          setTitle("Tracks removed from library");
+                          addToast({
+                            variant: "success",
+                            message: "Tracks removed from library",
+                          });
+                        })
+                        .catch(() => {
+                          addToast({
+                            variant: "error",
+                            message: "Error removing tracks from library",
+                          });
+                        });
+                    }
+                  }}
+                >
+                  {translations.cleanPlaylist}
+                </button>
+              </div>
+            </>
+          ) : null}
         </div>
       </div>
       <style jsx>{`
@@ -286,16 +318,69 @@ export default function RemoveTracksModal({
           overflow-y: hidden;
           overflow-x: hidden;
           max-height: calc(100vh - 300px);
+          margin-top: 30px;
         }
-        button:nth-of-type(2) {
-          background: rgb(204, 0, 0);
-          border-color: rgb(204, 0, 0);
+        .removeButton {
+          border-radius: 500px;
+          text-decoration: none;
           color: #fff;
-          opacity: 0.7;
+          cursor: pointer;
+          display: inline-block;
+          font-family: Lato, sans-serif;
+          font-size: 16px;
+          font-weight: 600;
+          letter-spacing: -0.5px;
+          line-height: 18px;
+          padding: 8px 20px;
+          text-align: center;
+          transition: all 33ms cubic-bezier(0.3, 0, 0, 1);
+          white-space: nowrap;
+          background-color: #1db954;
+          border: 1px solid #1db954b3;
+          will-change: transform;
+          word-spacing: 3px;
         }
-        button:nth-of-type(1):hover,
-        button:nth-of-type(1):focus {
-          opacity: 1;
+        .removeButton:focus,
+        .removeButton:hover {
+          background-color: #2cc963;
+        }
+        .removeButton:active {
+          transform: scale(1);
+        }
+        .exitButton {
+          position: absolute;
+          top: 10px;
+          right: 20px;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border: none;
+          background: #15151599;
+          width: 40px;
+          height: 40px;
+          cursor: pointer;
+          border: none;
+          z-index: 999999999999999;
+        }
+        .exitButton:after,
+        .exitButton:before {
+          display: block;
+          content: "";
+          width: 20px;
+          height: 2px;
+          background: #fff;
+          border-radius: 2px;
+        }
+        .exitButton:after {
+          transform: translateX(-9.8px) rotate(135deg);
+        }
+        .exitButton:before {
+          transform: translateX(10px) rotate(45deg);
+        }
+        .exitButton:focus,
+        .exitButton:hover {
+          background: rgba(103, 93, 93, 0.388);
         }
       `}</style>
       <style jsx>{`
@@ -320,17 +405,17 @@ export default function RemoveTracksModal({
         }
         .popupContainer {
           display: block;
-          position: fixed;
+          position: absolute;
           width: calc(100% - 20px);
           max-width: 830px;
           padding: 10px 10px 55px 10px;
           border: 1px solid #282828;
           background: linear-gradient(
             -45deg,
-            #212329,
-            #202327,
-            #242527,
-            #464651
+            #191a1d,
+            #121417,
+            #131314,
+            #35353b
           );
           background-size: 400% 400%;
           animation: gradient 15s ease infinite;
@@ -365,27 +450,12 @@ export default function RemoveTracksModal({
         .popupContainer_buttons {
           display: flex;
           margin-top: 10px;
-          justify-content: flex-end;
+          justify-content: center;
           flex-wrap: wrap;
           position: absolute;
-          bottom: 20px;
-          right: 20px;
-        }
-        button {
-          padding: 6px 8px;
-          font-weight: 400;
-          background: transparent;
-          border-radius: 5px;
-          border: 1px solid #cccccc4d;
-          cursor: pointer;
-          color: inherit;
-        }
-        button:nth-of-type(1) {
-          margin-right: 10px;
-        }
-        button:focus,
-        button:hover {
-          border: 1px solid #cccccca1;
+          bottom: 40px;
+          left: 0;
+          right: 0;
         }
       `}</style>
     </div>,
