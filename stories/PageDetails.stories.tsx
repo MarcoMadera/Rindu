@@ -128,7 +128,7 @@ const Template: ComponentStory<typeof PageDetails> = (args) => {
                 deviceId: text("deviceId", ""),
                 playlists: [] as PlaylistItems,
                 allTracks: [] as ITrack[],
-                currrentlyPlaying: boolean("IsPlaying", false)
+                currentlyPlaying: boolean("IsPlaying", false)
                   ? (track as ITrack)
                   : undefined,
                 playlistPlayingId: boolean("IsPlaying", false)

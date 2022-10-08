@@ -56,7 +56,7 @@ export default function CardTrack({
 }: CardTrackProps): ReactElement {
   const {
     deviceId,
-    currrentlyPlaying,
+    currentlyPlaying,
     player,
     isPlaying,
     setIsPlaying,
@@ -66,6 +66,7 @@ export default function CardTrack({
     setPlaylistPlayingId,
     setPlayedSource,
     setReconnectionError,
+    setProgressMs,
   } = useSpotify();
   const [mouseEnter, setMouseEnter] = useState(false);
   const [isFocusing, setIsFocusing] = useState(false);
@@ -86,8 +87,8 @@ export default function CardTrack({
     (isPremium && !(track?.is_playable === false) && !track?.is_local);
 
   const isTheSameAsCurrentlyPlaying =
-    currrentlyPlaying?.name === track?.name &&
-    currrentlyPlaying?.album?.name === track?.album?.name;
+    currentlyPlaying?.name === track?.name &&
+    currentlyPlaying?.album?.name === track?.album?.name;
 
   function playThisTrack() {
     playCurrentTrack(track, {
@@ -103,6 +104,7 @@ export default function CardTrack({
       isSingleTrack,
       position,
       setAccessToken,
+      setProgressMs,
       uri,
     }).then((status) => {
       if (status === 404) {

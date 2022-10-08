@@ -27,6 +27,7 @@ interface SliderProps {
   onDragging?: (isDragging: boolean) => void;
   showDot?: boolean;
   className?: string;
+  currentValueCallback?: (currentValue: number) => void;
 }
 
 export default function Slider({
@@ -41,11 +42,18 @@ export default function Slider({
   initialValuePercent,
   showDot,
   className,
+  currentValueCallback,
 }: SliderProps): ReactElement {
   const [progressPercent, setProgressPercent] = useState(initialValuePercent);
   const [isPressingMouse, setIsPressingMouse] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef<HTMLDivElement>();
+
+  useEffect(() => {
+    if (currentValueCallback) {
+      currentValueCallback(progressPercent);
+    }
+  }, [currentValueCallback, progressPercent]);
 
   useEffect(() => {
     if (typeof updateProgress === "number") {

@@ -26,7 +26,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
     disableBackground,
   } = useHeader();
   const isPremium = user?.product === "premium";
-  const { setShowHamburguerMenu } = useSpotify();
+  const { setShowHamburgerMenu } = useSpotify();
   const [showFixed, setShowFixed] = useState(false);
   const router = useRouter();
   const isLoginPage = router.asPath === "/";
@@ -109,14 +109,14 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
           <button
             type="button"
             onClick={() => {
-              setShowHamburguerMenu((prev) => !prev);
+              setShowHamburgerMenu((prev) => !prev);
             }}
-            className="hamburguerMenu"
-            aria-label="Hamburguer menu"
+            className="HamburgerMenu"
+            aria-label="Hamburger menu"
           >
-            <div className="hamburguerMenu-line"></div>
-            <div className="hamburguerMenu-line"></div>
-            <div className="hamburguerMenu-line"></div>
+            <div className="HamburgerMenu-line"></div>
+            <div className="HamburgerMenu-line"></div>
+            <div className="HamburgerMenu-line"></div>
           </button>
           <RouterButtons />
           <div className="extraElement">
@@ -156,7 +156,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
           background-color: ${headerColor ?? "transparent"};
           transition: background-color 0.3s ease;
         }
-        .hamburguerMenu {
+        .HamburgerMenu {
           width: 50px;
           align-items: center;
           justify-content: center;
@@ -168,11 +168,11 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
           display: none;
         }
         @media (max-width: 1000px) {
-          .hamburguerMenu {
+          .HamburgerMenu {
             display: flex;
           }
         }
-        .hamburguerMenu-line {
+        .HamburgerMenu-line {
           background-color: #fff;
           height: 2px;
           width: 30px;

@@ -21,11 +21,11 @@ export default function SideBar(): ReactElement {
     playlists,
     setPlaylists,
     playlistPlayingId,
-    currrentlyPlaying,
+    currentlyPlaying,
     isShowingSideBarImg,
     setIsShowingSideBarImg,
     playedSource,
-    showHamburguerMenu,
+    showHamburgerMenu,
   } = useSpotify();
   const { accessToken, user } = useAuth();
   const router = useRouter();
@@ -121,7 +121,7 @@ export default function SideBar(): ReactElement {
             isShowingSideBarImg ? "animate" : ""
           }`}
         >
-          {currrentlyPlaying && (
+          {currentlyPlaying && (
             <>
               <button
                 type="button"
@@ -139,10 +139,10 @@ export default function SideBar(): ReactElement {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={
-                        currrentlyPlaying.album?.images[0]?.url ??
-                        currrentlyPlaying.album?.images[1]?.url
+                        currentlyPlaying.album?.images[0]?.url ??
+                        currentlyPlaying.album?.images[1]?.url
                       }
-                      alt={currrentlyPlaying.album?.name}
+                      alt={currentlyPlaying.album?.name}
                     />
                   </a>
                 </Link>
@@ -151,10 +151,10 @@ export default function SideBar(): ReactElement {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={
-                      currrentlyPlaying.album?.images[0]?.url ??
-                      currrentlyPlaying.album?.images[1]?.url
+                      currentlyPlaying.album?.images[0]?.url ??
+                      currentlyPlaying.album?.images[1]?.url
                     }
-                    alt={currrentlyPlaying.album?.name}
+                    alt={currentlyPlaying.album?.name}
                   />
                 </>
               )}
@@ -235,7 +235,7 @@ export default function SideBar(): ReactElement {
         }
         @media (max-width: 1000px) {
           nav {
-            display: ${showHamburguerMenu ? "grid" : "none"};
+            display: ${showHamburgerMenu ? "grid" : "none"};
           }
         }
         .section-2 .green {

@@ -137,7 +137,7 @@ const Template: ComponentStory<typeof NowPlaying> = () => {
                   deviceId: text("deviceId", ""),
                   playlists: [] as PlaylistItems,
                   allTracks: [track] as ITrack[],
-                  currrentlyPlaying: boolean("IsPlaying", false)
+                  currentlyPlaying: boolean("IsPlaying", false)
                     ? (track as ITrack)
                     : undefined,
                   playlistPlayingId: boolean("IsPlaying", false)

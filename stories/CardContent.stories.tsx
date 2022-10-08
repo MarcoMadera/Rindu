@@ -68,7 +68,7 @@ const Template: ComponentStory<typeof PresentationCard> = (args) => (
               {
                 deviceId: text("deviceId", ""),
                 playlists: [] as PlaylistItems,
-                currrentlyPlaying: boolean("IsPlaying", false)
+                currentlyPlaying: boolean("IsPlaying", false)
                   ? ({
                       id: args.id,
                     } as ITrack)

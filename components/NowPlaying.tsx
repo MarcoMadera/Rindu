@@ -22,7 +22,7 @@ export default function NowPlaying(): ReactElement | null {
     playedSource,
     isShowingSideBarImg,
     setIsShowingSideBarImg,
-    currrentlyPlaying,
+    currentlyPlaying,
   } = useSpotify();
   const { addToast } = useToast();
   const { addContextMenu } = useContextMenu();
@@ -30,17 +30,17 @@ export default function NowPlaying(): ReactElement | null {
   const id = playedSource?.split(":")?.[2];
 
   useEffect(() => {
-    if (!currrentlyPlaying?.id) return;
+    if (!currentlyPlaying?.id) return;
     const checkInLibrary =
-      currrentlyPlaying?.type === "episode"
+      currentlyPlaying?.type === "episode"
         ? checkEpisodesInLibrary
         : checkTracksInLibrary;
-    checkInLibrary([currrentlyPlaying?.id], accessToken || "").then((res) => {
+    checkInLibrary([currentlyPlaying?.id], accessToken || "").then((res) => {
       setIsLikedTrack(!!res?.[0]);
     });
-  }, [accessToken, currrentlyPlaying]);
+  }, [accessToken, currentlyPlaying]);
 
-  if (!currrentlyPlaying) return null;
+  if (!currentlyPlaying) return null;
 
   return (
     <div
@@ -65,10 +65,10 @@ export default function NowPlaying(): ReactElement | null {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={
-                  currrentlyPlaying.album?.images[2]?.url ??
-                  currrentlyPlaying.album?.images[1]?.url
+                  currentlyPlaying.album?.images[2]?.url ??
+                  currentlyPlaying.album?.images[1]?.url
                 }
-                alt={currrentlyPlaying.album?.name}
+                alt={currentlyPlaying.album?.name}
                 width={64}
                 height={64}
               />
@@ -79,10 +79,10 @@ export default function NowPlaying(): ReactElement | null {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={
-                currrentlyPlaying.album?.images[2]?.url ??
-                currrentlyPlaying.album?.images[1]?.url
+                currentlyPlaying.album?.images[2]?.url ??
+                currentlyPlaying.album?.images[1]?.url
               }
-              alt={currrentlyPlaying.album?.name}
+              alt={currentlyPlaying.album?.name}
               width={64}
               height={64}
             />
@@ -91,9 +91,7 @@ export default function NowPlaying(): ReactElement | null {
       </div>
       <section>
         <Link
-          href={`/${currrentlyPlaying?.type ?? "track"}/${
-            currrentlyPlaying?.id
-          }`}
+          href={`/${currentlyPlaying?.type ?? "track"}/${currentlyPlaying?.id}`}
         >
           <a
             className="trackName"
@@ -103,16 +101,16 @@ export default function NowPlaying(): ReactElement | null {
               const y = e.pageY;
               addContextMenu({
                 type: "cardTrack",
-                data: currrentlyPlaying,
+                data: currentlyPlaying,
                 position: { x, y },
               });
             }}
           >
-            {currrentlyPlaying.name}
+            {currentlyPlaying.name}
           </a>
         </Link>
         <span className="trackArtists">
-          {currrentlyPlaying.artists?.map((artist, i) => {
+          {currentlyPlaying.artists?.map((artist, i) => {
             return (
               <Fragment key={artist.id ?? getIdFromUri(artist?.uri, "id")}>
                 <Link
@@ -123,8 +121,8 @@ export default function NowPlaying(): ReactElement | null {
                   <a>{artist.name}</a>
                 </Link>
                 {i !==
-                (currrentlyPlaying.artists?.length &&
-                  currrentlyPlaying.artists?.length - 1)
+                (currentlyPlaying.artists?.length &&
+                  currentlyPlaying.artists?.length - 1)
                   ? ", "
                   : null}
               </Fragment>
@@ -132,17 +130,17 @@ export default function NowPlaying(): ReactElement | null {
           })}
         </span>
       </section>
-      {!currrentlyPlaying.is_local && (
+      {!currentlyPlaying.is_local && (
         <Heart
           active={isLikedTrack}
           className="navBar-Button"
           handleDislike={async () => {
             const removeFromLibrary =
-              currrentlyPlaying?.type === "episode"
+              currentlyPlaying?.type === "episode"
                 ? removeEpisodesFromLibrary
                 : removeTracksFromLibrary;
             const res = await removeFromLibrary(
-              [currrentlyPlaying.id ?? ""],
+              [currentlyPlaying.id ?? ""],
               accessToken
             );
 
@@ -150,7 +148,7 @@ export default function NowPlaying(): ReactElement | null {
               addToast({
                 variant: "success",
                 message: `${
-                  currrentlyPlaying.type === "episode" ? "Episode" : "Song"
+                  currentlyPlaying.type === "episode" ? "Episode" : "Song"
                 } removed from library.`,
               });
               return true;
@@ -159,18 +157,18 @@ export default function NowPlaying(): ReactElement | null {
           }}
           handleLike={async () => {
             const saveToLibrary =
-              currrentlyPlaying.type === "episode"
+              currentlyPlaying.type === "episode"
                 ? saveEpisodesToLibrary
                 : saveTracksToLibrary;
             const saveRes = await saveToLibrary(
-              [currrentlyPlaying.id ?? ""],
+              [currentlyPlaying.id ?? ""],
               accessToken
             );
             if (saveRes) {
               addToast({
                 variant: "success",
                 message: `${
-                  currrentlyPlaying.type === "episode" ? "Episode" : "Song"
+                  currentlyPlaying.type === "episode" ? "Episode" : "Song"
                 } added to library`,
               });
               return true;

@@ -76,7 +76,7 @@ export interface ISpotifyContext {
   setIsPip: Dispatch<SetStateAction<boolean>>;
   isShowingSideBarImg: boolean;
   setCurrentlyPlaying: Dispatch<SetStateAction<ITrack | undefined>>;
-  currrentlyPlaying: ITrack | undefined;
+  currentlyPlaying: ITrack | undefined;
   currentlyPlayingPosition: number | undefined;
   currentlyPlayingDuration: number | undefined;
   setCurrentlyPlayingPosition: Dispatch<SetStateAction<number | undefined>>;
@@ -95,8 +95,8 @@ export interface ISpotifyContext {
   setLastVolume: Dispatch<SetStateAction<number>>;
   pictureInPictureCanvas: MutableRefObject<HTMLCanvasElement | undefined>;
   videoRef: MutableRefObject<HTMLVideoElement | undefined>;
-  showHamburguerMenu: boolean;
-  setShowHamburguerMenu: Dispatch<SetStateAction<boolean>>;
+  showHamburgerMenu: boolean;
+  setShowHamburgerMenu: Dispatch<SetStateAction<boolean>>;
   setReconnectionError: Dispatch<SetStateAction<boolean>>;
   recentlyPlayed: ITrack[];
   removeTracks: (
@@ -106,4 +106,6 @@ export interface ISpotifyContext {
   ) => Promise<string | undefined>;
   showLyrics: boolean;
   setShowLyrics: IUseToggleHandlers;
+  progressMs: number | null;
+  setProgressMs: Dispatch<SetStateAction<number | null>>;
 }

@@ -60,7 +60,7 @@ const Template: ComponentStory<typeof PlaybackExtraControls> = () => {
                   deviceId: text("deviceId", ""),
                   playlists: [] as PlaylistItems,
                   allTracks: [] as ITrack[],
-                  currrentlyPlaying: undefined,
+                  currentlyPlaying: undefined,
                   playlistPlayingId: undefined,
                   isPlaying: false,
                   setVolume: (() => console.log("setVolume")) as React.Dispatch<

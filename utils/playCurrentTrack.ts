@@ -16,6 +16,7 @@ interface Config {
   isSingleTrack?: boolean;
   position?: number;
   setAccessToken: Dispatch<SetStateAction<string | undefined>>;
+  setProgressMs: Dispatch<SetStateAction<number | null>>;
   uri?: string | undefined;
 }
 
@@ -34,6 +35,7 @@ export async function playCurrentTrack(
     isSingleTrack,
     position,
     setAccessToken,
+    setProgressMs,
     uri,
   }: Config
 ): Promise<number> {
@@ -69,7 +71,8 @@ export async function playCurrentTrack(
       accessToken,
       deviceId,
       playConfig,
-      setAccessToken
+      setAccessToken,
+      setProgressMs
     ).then((res) => {
       if (res.status === 404) {
         return 404;

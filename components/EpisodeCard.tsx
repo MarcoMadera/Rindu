@@ -26,17 +26,18 @@ export default function EpisodeCard({
 }: EpisodeCardProps): ReactElement {
   const {
     isPlaying,
-    currrentlyPlaying,
+    currentlyPlaying,
     deviceId,
     player,
     allTracks,
     pageDetails,
     setCurrentlyPlaying,
     setPlaylistPlayingId,
+    setProgressMs,
   } = useSpotify();
   const { user, accessToken, setAccessToken } = useAuth();
   const { addToast } = useToast();
-  const isThisEpisodePlaying = currrentlyPlaying?.uri === item.uri;
+  const isThisEpisodePlaying = currentlyPlaying?.uri === item.uri;
   const isPremium = user?.product === "premium";
 
   return (
@@ -158,6 +159,7 @@ export default function EpisodeCard({
                 isSingleTrack: true,
                 position,
                 setAccessToken,
+                setProgressMs,
               }
             );
           }}

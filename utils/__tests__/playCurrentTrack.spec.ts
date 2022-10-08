@@ -42,6 +42,7 @@ describe("playCurrentTrack", () => {
       position: 0,
       setAccessToken,
       uri: "spotify:track:123",
+      setProgressMs: jest.fn(),
     });
 
     expect(result).toBe(200);
@@ -75,6 +76,7 @@ describe("playCurrentTrack", () => {
       position: 0,
       setAccessToken,
       uri: undefined,
+      setProgressMs: jest.fn(),
     });
 
     expect(result).toBe(200);
@@ -108,6 +110,7 @@ describe("playCurrentTrack", () => {
       position: 0,
       setAccessToken,
       uri: "spotify:track:123",
+      setProgressMs: jest.fn(),
     });
 
     expect(result).toBe(200);
@@ -141,6 +144,7 @@ describe("playCurrentTrack", () => {
       position: 0,
       setAccessToken,
       uri: "spotify:track:123",
+      setProgressMs: jest.fn(),
     });
 
     expect(result).toBe(200);
@@ -178,6 +182,7 @@ describe("playCurrentTrack", () => {
       position: 0,
       setAccessToken,
       uri: "spotify:track:123",
+      setProgressMs: jest.fn(),
     });
 
     expect(result).toBe(400);
@@ -214,6 +219,7 @@ describe("playCurrentTrack", () => {
       position: 0,
       setAccessToken,
       uri: "spotify:track:123",
+      setProgressMs: jest.fn(),
     });
 
     expect(result).toBe(404);
@@ -246,6 +252,7 @@ describe("playCurrentTrack", () => {
       position: 0,
       setAccessToken,
       uri: undefined,
+      setProgressMs: jest.fn(),
     });
 
     expect(result).toBe(400);
