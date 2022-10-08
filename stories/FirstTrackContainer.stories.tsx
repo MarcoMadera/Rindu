@@ -57,7 +57,7 @@ const Template: ComponentStory<typeof FirstTrackContainer> = (args) => {
                   deviceId: text("deviceId", ""),
                   playlists: [] as PlaylistItems,
                   allTracks: [{ uri: args.track.uri }] as ITrack[],
-                  currrentlyPlaying: boolean("IsPlaying", false)
+                  currentlyPlaying: boolean("IsPlaying", false)
                     ? ({
                         id: args.track.id,
                       } as ITrack)

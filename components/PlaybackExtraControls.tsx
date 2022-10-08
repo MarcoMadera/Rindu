@@ -5,10 +5,10 @@ import LyricsControl from "./LyricsControl";
 import VolumeControl from "./VolumeControl";
 
 export default function PlaybackExtraControls(): ReactElement {
-  const { currrentlyPlaying } = useSpotify();
+  const { currentlyPlaying } = useSpotify();
   return (
     <div className="extras">
-      {currrentlyPlaying?.type === "track" && <LyricsControl />}
+      {currentlyPlaying?.type === "track" && <LyricsControl />}
       <DeviceConnectControl />
       <VolumeControl />
       <style jsx>{`

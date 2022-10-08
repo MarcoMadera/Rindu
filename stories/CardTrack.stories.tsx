@@ -43,7 +43,7 @@ const Template: ComponentStory<typeof CardTrack> = (args) => (
               deviceId: text("deviceId", ""),
               playlists: [] as PlaylistItems,
               allTracks: [{ uri: args.track.uri }] as ITrack[],
-              currrentlyPlaying: {
+              currentlyPlaying: {
                 uri: boolean("IsPlaying", false) ? args.track.uri : undefined,
               } as ITrack,
               isPlaying: boolean("IsPlaying", false),

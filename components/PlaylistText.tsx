@@ -31,6 +31,7 @@ export default function PlaylistText({
     setPlayedSource,
     playlistPlayingId,
     setReconnectionError,
+    setProgressMs,
   } = useSpotify();
   const router = useRouter();
   const { user, accessToken, setAccessToken } = useAuth();
@@ -56,7 +57,8 @@ export default function PlaylistText({
         {
           context_uri: uri,
         },
-        setAccessToken
+        setAccessToken,
+        setProgressMs
       ).then((res) => {
         if (res.status === 404) {
           (player as Spotify.Player).disconnect();
@@ -86,6 +88,7 @@ export default function PlaylistText({
     id,
     setPlayedSource,
     type,
+    setProgressMs,
   ]);
 
   const onClick = useCallback(() => {

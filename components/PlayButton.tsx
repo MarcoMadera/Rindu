@@ -44,9 +44,10 @@ export function PlayButton({
     setPlaylistPlayingId,
     setCurrentlyPlaying,
     setIsPlaying,
-    currrentlyPlaying,
+    currentlyPlaying,
     setPlayedSource,
     setReconnectionError,
+    setProgressMs,
   } = useSpotify();
   const { accessToken, user, setAccessToken } = useAuth();
   const [isThisTrackPlaying, setIsThisTrackPlaying] = useState(false);
@@ -60,7 +61,7 @@ export function PlayButton({
 
   useEffect(() => {
     if (track?.id) {
-      const isTheSameTrackAsPlaying = track?.id === currrentlyPlaying?.id;
+      const isTheSameTrackAsPlaying = track?.id === currentlyPlaying?.id;
       if (isTheSameTrackAsPlaying && isPlaying) {
         setIsThisTrackPlaying(true);
       } else {
@@ -68,7 +69,7 @@ export function PlayButton({
       }
     }
 
-    const isTheSameArtistPlaying = uri === currrentlyPlaying?.artists?.[0]?.uri;
+    const isTheSameArtistPlaying = uri === currentlyPlaying?.artists?.[0]?.uri;
 
     if (isTheSameArtistPlaying && isPlaying) {
       setIsThisArtistPlaying(true);
@@ -87,9 +88,9 @@ export function PlayButton({
     playlistPlayingId,
     pageDetails?.id,
     track?.id,
-    currrentlyPlaying?.id,
+    currentlyPlaying?.id,
     track?.artists,
-    currrentlyPlaying,
+    currentlyPlaying,
     allTracks,
     isSingle,
     uri,
@@ -152,7 +153,8 @@ export function PlayButton({
               uris: uris,
               offset: position ?? 0,
             },
-            setAccessToken
+            setAccessToken,
+            setProgressMs
           ).then((res) => {
             if (res.status === 404) {
               (player as Spotify.Player).disconnect();
@@ -185,7 +187,8 @@ export function PlayButton({
           {
             context_uri: uri ?? pageDetails?.uri,
           },
-          setAccessToken
+          setAccessToken,
+          setProgressMs
         ).then((res) => {
           if (res.status === 404) {
             (player as Spotify.Player).disconnect();
@@ -255,6 +258,7 @@ export function PlayButton({
       setPlayedSource,
       setPlaylistPlayingId,
       setReconnectionError,
+      setProgressMs,
       track,
       uri,
       uriId,

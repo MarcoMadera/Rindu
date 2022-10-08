@@ -24,11 +24,12 @@ export function SpotifyContextProvider({
 }: PropsWithChildren): ReactElement {
   const [playlists, setPlaylists] = useState<PlaylistItems>([]);
   const [totalPlaylists, setTotalPlaylists] = useState<number>(0);
+  const [progressMs, setProgressMs] = useState<number | null>(null);
   const [allTracks, setAllTracks] = useState<ITrack[]>([]);
   const [deviceId, setDeviceId] = useState<string>();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isShowingSideBarImg, setIsShowingSideBarImg] = useState(false);
-  const [currrentlyPlaying, setCurrentlyPlaying] = useState<ITrack>();
+  const [currentlyPlaying, setCurrentlyPlaying] = useState<ITrack>();
   const [currentlyPlayingPosition, setCurrentlyPlayingPosition] =
     useState<number>();
   const [currentlyPlayingDuration, setCurrentlyPlayingDuration] =
@@ -41,7 +42,7 @@ export function SpotifyContextProvider({
   const [volume, setVolume] = useState<number>(1);
   const [lastVolume, setLastVolume] = useState<number>(1);
   const [isPip, setIsPip] = useState(false);
-  const [showHamburguerMenu, setShowHamburguerMenu] = useState(false);
+  const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
   const [recentlyPlayed, setRecentlyPlayed] = useState<ITrack[]>([]);
   const pictureInPictureCanvas = useRef<HTMLCanvasElement>();
   const videoRef = useRef<HTMLVideoElement>();
@@ -66,9 +67,9 @@ export function SpotifyContextProvider({
   useEffect(() => {
     if (playedSource) {
       const type = playedSource.split(":")[1];
-      if (type === "track" && currrentlyPlaying) {
+      if (type === "track" && currentlyPlaying) {
         setRecentlyPlayed((prev) => {
-          if (prev.some((el) => el.uri === currrentlyPlaying.uri)) {
+          if (prev.some((el) => el.uri === currentlyPlaying.uri)) {
             localStorage.setItem(
               `${user?.id}:recentlyPlayed`,
               JSON.stringify(prev)
@@ -78,7 +79,7 @@ export function SpotifyContextProvider({
 
           if (prev.length === 10) {
             const newRecentlyPlayedwithLimit = [
-              currrentlyPlaying,
+              currentlyPlaying,
               ...prev.slice(0, -1),
             ];
             localStorage.setItem(
@@ -87,7 +88,7 @@ export function SpotifyContextProvider({
             );
             return newRecentlyPlayedwithLimit;
           }
-          const newRecentlyPlayed = [currrentlyPlaying, ...prev];
+          const newRecentlyPlayed = [currentlyPlaying, ...prev];
           localStorage.setItem(
             `${user?.id}:recentlyPlayed`,
             JSON.stringify(newRecentlyPlayed)
@@ -97,7 +98,7 @@ export function SpotifyContextProvider({
         });
       }
     }
-  }, [playedSource, currrentlyPlaying, user?.id]);
+  }, [playedSource, currentlyPlaying, user?.id]);
 
   useEffect(() => {
     const playback = localStorage.getItem("playback");
@@ -122,12 +123,12 @@ export function SpotifyContextProvider({
   }, [isPremium, player, user?.id]);
 
   useEffect(() => {
-    if (currrentlyPlaying && "mediaSession" in navigator) {
+    if (currentlyPlaying && "mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: currrentlyPlaying.name,
-        artist: currrentlyPlaying.artists?.[0]?.name,
-        album: currrentlyPlaying.album?.name,
-        artwork: currrentlyPlaying.album?.images?.map(
+        title: currentlyPlaying.name,
+        artist: currentlyPlaying.artists?.[0]?.name,
+        album: currentlyPlaying.album?.name,
+        artwork: currentlyPlaying.album?.images?.map(
           ({ url, width, height }) => {
             return {
               src: url ?? "",
@@ -146,12 +147,12 @@ export function SpotifyContextProvider({
     ) {
       callPictureInPicture(pictureInPictureCanvas.current, videoRef.current);
     }
-  }, [currrentlyPlaying]);
+  }, [currentlyPlaying]);
 
   useEffect(() => {
     if (
       (videoRef.current || pictureInPictureCanvas.current || !isPlaying,
-      !currrentlyPlaying)
+      !currentlyPlaying)
     ) {
       return;
     }
@@ -179,10 +180,10 @@ export function SpotifyContextProvider({
         setIsPip(true);
       });
     };
-  }, [currrentlyPlaying, isPlaying]);
+  }, [currentlyPlaying, isPlaying]);
 
   useEffect(() => {
-    const duration = currrentlyPlaying?.duration_ms;
+    const duration = currentlyPlaying?.duration_ms;
     if ("setPositionState" in navigator.mediaSession) {
       navigator.mediaSession.setPositionState({
         duration: duration ?? 0,
@@ -197,8 +198,8 @@ export function SpotifyContextProvider({
   }, [
     currentlyPlayingDuration,
     currentlyPlayingPosition,
-    currrentlyPlaying,
-    currrentlyPlaying?.duration_ms,
+    currentlyPlaying,
+    currentlyPlaying?.duration_ms,
   ]);
 
   useEffect(() => {
@@ -255,11 +256,11 @@ export function SpotifyContextProvider({
       if (!isPlaying) {
         navigator.mediaSession.playbackState = "paused";
       }
-      if (!isPlaying && !currrentlyPlaying) {
+      if (!isPlaying && !currentlyPlaying) {
         navigator.mediaSession.playbackState = "none";
       }
     }
-  }, [currrentlyPlaying, isPlaying]);
+  }, [currentlyPlaying, isPlaying]);
 
   const removeTracks = useCallback(
     async (
@@ -299,7 +300,7 @@ export function SpotifyContextProvider({
         setIsPlaying,
         isPlaying,
         setCurrentlyPlaying,
-        currrentlyPlaying,
+        currentlyPlaying,
         currentlyPlayingPosition,
         currentlyPlayingDuration,
         setCurrentlyPlayingPosition,
@@ -322,18 +323,20 @@ export function SpotifyContextProvider({
         videoRef,
         isPip,
         setIsPip,
-        showHamburguerMenu,
-        setShowHamburguerMenu,
+        showHamburgerMenu,
+        setShowHamburgerMenu,
         recentlyPlayed,
         setReconnectionError,
         removeTracks,
         showLyrics,
         setShowLyrics,
+        progressMs,
+        setProgressMs,
       }}
     >
-      {currrentlyPlaying?.name && (
+      {currentlyPlaying?.name && (
         <Head>
-          <title>{`${currrentlyPlaying?.name} - ${currrentlyPlaying?.artists?.[0].name}`}</title>
+          <title>{`${currentlyPlaying?.name} - ${currentlyPlaying?.artists?.[0].name}`}</title>
         </Head>
       )}
       {children}

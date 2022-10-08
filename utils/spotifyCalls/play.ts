@@ -6,6 +6,7 @@ export async function play(
   deviceId: string,
   options: { context_uri?: string; uris?: string[]; offset?: number },
   setAccessToken: Dispatch<SetStateAction<string | undefined>>,
+  setProgressMs: Dispatch<SetStateAction<number | null>>,
   ignore?: boolean
 ): Promise<Response> {
   const { context_uri, offset, uris } = options;
@@ -37,11 +38,22 @@ export async function play(
     }
   );
 
+  if (res.status === 200) {
+    setProgressMs(0);
+  }
+
   if (res.status === 401 && !ignore) {
     const { access_token: newAccessToken } = (await refreshAccessToken()) || {};
     if (newAccessToken) {
       setAccessToken(newAccessToken);
-      await play(newAccessToken, deviceId, options, setAccessToken, true);
+      await play(
+        newAccessToken,
+        deviceId,
+        options,
+        setAccessToken,
+        setProgressMs,
+        true
+      );
     }
   }
   return res;

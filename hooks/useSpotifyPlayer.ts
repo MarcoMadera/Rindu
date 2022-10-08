@@ -42,6 +42,7 @@ export default function useSpotifyPlayer({
     setCurrentlyPlayingDuration,
     setPlayer,
     allTracks,
+    setProgressMs,
   } = useSpotify();
   const spotifyPlayer = useRef<Spotify.Player>();
   const audioPlayer = useRef<AudioPlayer>();
@@ -222,6 +223,7 @@ export default function useSpotifyPlayer({
       spotifyPlayer.current?.on("player_state_changed", (trackWindow) => {
         setCurrentlyPlayingDuration(trackWindow?.duration);
         setCurrentlyPlayingPosition(trackWindow?.position);
+        setProgressMs(trackWindow?.position);
         setCurrentlyPlaying(trackWindow?.track_window?.current_track);
 
         if (trackWindow) {

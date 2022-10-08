@@ -51,7 +51,7 @@ const Template: ComponentStory<typeof RemoveTracksModal> = (args) => {
                 deviceId: text("deviceId", ""),
                 playlists: [] as PlaylistItems,
                 allTracks: [] as ITrack[],
-                currrentlyPlaying: undefined,
+                currentlyPlaying: undefined,
                 playlistPlayingId: undefined,
                 pageDetails: {
                   name: "Собирай меня",

@@ -6,7 +6,7 @@ import useAuth from "hooks/useAuth";
 import { getAuth } from "utils/getAuth";
 import { serverRedirect } from "utils/serverRedirect";
 import { getTrack } from "utils/spotifyCalls/getTrack";
-import { getLyrics } from "utils/getLyrics";
+import { getLyrics, LyricsAction } from "utils/getLyrics";
 import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
 import useSpotify from "hooks/useSpotify";
 import PageHeader from "components/PageHeader";
@@ -370,11 +370,17 @@ export async function getServerSideProps({
 
   if (track?.name && track.artists[0].name) {
     const lyricsResponse = await within(
-      getLyrics(track.artists[0].name, track.name),
+      getLyrics(
+        track.artists[0].name,
+        track.name,
+        id,
+        accessToken,
+        LyricsAction.LoadTrackPage
+      ),
       6000
     );
-    if (lyricsResponse.data) {
-      lyrics = lyricsResponse.data;
+    if (!lyricsResponse.data?.isFullscreen && lyricsResponse.data?.lyrics) {
+      lyrics = lyricsResponse.data.lyrics;
     }
   }
 

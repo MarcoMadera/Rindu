@@ -12,7 +12,8 @@ export function ProgressBar(): ReactElement {
     currentlyPlayingPosition,
     isPlaying,
     player,
-    currrentlyPlaying,
+    currentlyPlaying,
+    setProgressMs,
   } = useSpotify();
   const [progressSeconds, setProgressSeconds] = useState(0);
   const [progressFromSpotify, setProgressFromSpotify] = useState(0);
@@ -82,7 +83,7 @@ export function ProgressBar(): ReactElement {
         )}`}
         initialValuePercent={0}
         action={(progressPercent) => {
-          if (!currrentlyPlaying) {
+          if (!currentlyPlaying) {
             addToast({
               variant: "error",
               message: "No song playing",
@@ -92,6 +93,16 @@ export function ProgressBar(): ReactElement {
           player?.seek(
             (progressPercent * (currentlyPlayingDuration ?? 0)) / 100
           );
+          setProgressMs(
+            (progressPercent * (currentlyPlayingDuration ?? 0)) / 100
+          );
+        }}
+        currentValueCallback={(currentValuePercent) => {
+          setProgressMs(() => {
+            return (
+              (currentValuePercent * (currentlyPlayingDuration ?? 0)) / 100
+            );
+          });
         }}
       />
       <div className="timeTag">{formatTime(durationInSeconds)}</div>

@@ -80,7 +80,7 @@ const Template: ComponentStory<typeof SideBar> = () => {
                   },
                 ] as PlaylistItems,
                 allTracks: [] as ITrack[],
-                currrentlyPlaying: undefined,
+                currentlyPlaying: undefined,
                 playlistPlayingId: undefined,
                 pageDetails: {
                   name: "Собирай меня",

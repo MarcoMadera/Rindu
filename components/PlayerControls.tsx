@@ -9,7 +9,7 @@ import { Suffle, PreviousTrack, Pause, Play, NextTrack, Repeat } from "./icons";
 import { ProgressBar } from "./ProgressBar";
 
 export default function PlayerControls(): ReactElement {
-  const { isPlaying, currrentlyPlaying, player, volume, deviceId } =
+  const { isPlaying, currentlyPlaying, player, volume, deviceId } =
     useSpotify();
   useSpotifyPlayer({ volume, name: "Rindu" });
   const { user, accessToken } = useAuth();
@@ -23,13 +23,13 @@ export default function PlayerControls(): ReactElement {
 
   useEffect(() => {
     const isSameRepeating = repeatTrackUri
-      ? repeatTrackUri === currrentlyPlaying?.uri
+      ? repeatTrackUri === currentlyPlaying?.uri
       : false;
     if (repeatState === "track" && !isSameRepeating) {
       setRepeatState("off");
       setRepeatTrackUri("");
     }
-  }, [currrentlyPlaying?.uri, repeatState, repeatTrackUri]);
+  }, [currentlyPlaying?.uri, repeatState, repeatTrackUri]);
 
   return (
     <>
@@ -77,7 +77,7 @@ export default function PlayerControls(): ReactElement {
           className="button toggle"
           aria-label="Play/pause"
           onClick={() => {
-            if (!currrentlyPlaying) {
+            if (!currentlyPlaying) {
               addToast({
                 variant: "error",
                 message: "No song playing",
@@ -87,7 +87,7 @@ export default function PlayerControls(): ReactElement {
             player?.togglePlay();
           }}
         >
-          {currrentlyPlaying && isPlaying ? <Pause /> : <Play />}
+          {currentlyPlaying && isPlaying ? <Pause /> : <Play />}
         </button>
         <button
           type="button"
@@ -125,7 +125,7 @@ export default function PlayerControls(): ReactElement {
               return;
             }
             if (state === "track") {
-              setRepeatTrackUri(currrentlyPlaying?.uri);
+              setRepeatTrackUri(currentlyPlaying?.uri);
             }
             repeat(state, deviceId, accessToken).then((res) => {
               if (res) {

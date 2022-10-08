@@ -19,8 +19,8 @@ export default function MainLayout({
   const router = useRouter();
   const isLoginPage = router.asPath === "/";
   const appRef = useRef<HTMLDivElement>();
-  const { showLyrics, currrentlyPlaying } = useSpotify();
-  const shouldDisplayLyrics = showLyrics && currrentlyPlaying?.type === "track";
+  const { showLyrics, currentlyPlaying } = useSpotify();
+  const shouldDisplayLyrics = showLyrics && currentlyPlaying?.type === "track";
 
   useRefreshAccessToken();
 

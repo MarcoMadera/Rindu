@@ -68,7 +68,7 @@ export const AppProviders = ({
                   deviceId: "deviceId",
                   playlists: [simplePlaylist],
                   allTracks: [trackFull],
-                  currrentlyPlaying: track,
+                  currentlyPlaying: track,
                   isPlaying: false,
                   currentlyPlayingDuration: 4000,
                   currentlyPlayingPosition: 30,
