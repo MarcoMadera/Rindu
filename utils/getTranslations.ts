@@ -261,6 +261,8 @@ export function getTranslations(
         ...removeTracksModalTranslations[Language.EN],
         title: "Concert",
         searchPlaceholder: "Search for songs or episodes",
+        noTracksFoundForConcert: "No tracks found for this concert",
+        saveConcertToPlaylist: "Save concert to playlist",
       },
       [Page.Episode]: {
         ...sideBarTranslations[Language.EN],
@@ -433,6 +435,9 @@ export function getTranslations(
         ...removeTracksModalTranslations[Language.ES],
         title: "Concert",
         searchPlaceholder: "Busca canciones o episodios",
+        noTracksFoundForConcert:
+          "No se encontraron canciones para este concierto",
+        saveConcertToPlaylist: "Guardar concierto en playlist",
       },
       [Page.Episode]: {
         ...sideBarTranslations[Language.ES],

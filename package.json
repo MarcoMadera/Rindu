@@ -17,6 +17,7 @@
     "@types/react": "^18.0.21"
   },
   "dependencies": {
+    "@vercel/og": "^0.0.18",
     "cheerio": "^1.0.0-rc.12",
     "fast-levenshtein": "^3.0.0",
     "html-entities": "^2.3.3",
