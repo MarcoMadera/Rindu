@@ -1,4 +1,4 @@
-interface SetList {
+export interface SetList {
   artist: {
     mbid: string;
     tmid: number;

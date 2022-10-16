@@ -2,10 +2,16 @@ import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 import { takeCookie } from "utils/cookies";
 
 export async function createPlaylist(
-  user_id: string,
-  accessToken?: string,
-  cookies?: string
+  user_id: string | undefined,
+  options: {
+    accessToken?: string;
+    cookies?: string;
+    name?: string;
+    description?: string;
+  }
 ): Promise<SpotifyApi.CreatePlaylistResponse | null> {
+  if (!user_id) return null;
+  const { name, description, accessToken, cookies } = options || {};
   const res = await fetch(
     `https://api.spotify.com/v1/users/${user_id}/playlists`,
     {
@@ -17,8 +23,8 @@ export async function createPlaylist(
         }`,
       },
       body: JSON.stringify({
-        name: "New Playlist",
-        description: "Your playlist created in Rindu",
+        name: name ?? "New Playlist",
+        description: description ?? "Your playlist created in Rindu",
         public: false,
       }),
     }

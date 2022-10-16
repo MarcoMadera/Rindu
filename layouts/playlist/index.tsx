@@ -27,14 +27,19 @@ import { unfollowPlaylist } from "utils/spotifyCalls/unfollowPlaylist";
 import { HeaderType } from "types/pageHeader";
 import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
+import { createPlaylist } from "utils/spotifyCalls/createPlaylist";
+import { addCustomPlaylistImage } from "utils/spotifyCalls/addCustomPlaylistImage";
 
-const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
+const Playlist: NextPage<
+  PlaylistProps & { isLibrary: boolean; isConcert?: boolean }
+> = ({
   pageDetails,
   playListTracks,
   user,
   tracksInLibrary,
   isLibrary,
   translations,
+  isConcert,
 }) => {
   const router = useRouter();
   const { setUser, accessToken } = useAuth();
@@ -78,15 +83,16 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
     if (!pageDetails) {
       router.push("/");
     }
-
-    setElement(() => <PlaylistTopBarExtraField uri={pageDetails?.uri} />);
-
+    if (!isConcert) {
+      setElement(() => <PlaylistTopBarExtraField uri={pageDetails?.uri} />);
+    }
     setPageDetails(pageDetails);
     trackWithGoogleAnalitycs();
     setAllTracks(tracks);
 
     setUser(user);
   }, [
+    isConcert,
     setElement,
     setPageDetails,
     pageDetails,
@@ -162,52 +168,103 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
         {allTracks.length > 0 ? (
           <>
             <div className="options">
-              <PlayButton uri={pageDetails?.uri} size={56} centerSize={28} />
-              <div className="info">
-                {isMyPlaylist ? (
+              {isConcert && (
+                <div>
                   <button
-                    type="button"
-                    aria-label={translations?.cleanPlaylist}
-                    className="broom"
+                    className="save-concert-to-playlist-button"
                     onClick={() => {
-                      setOpenModal(true);
+                      createPlaylist(user?.id, {
+                        name: pageDetails?.name,
+                      }).then((playlist) => {
+                        if (!playlist) {
+                          addToast({
+                            message: "Error creating playlist",
+                            variant: "error",
+                          });
+                          return;
+                        }
+                        addCustomPlaylistImage(
+                          user?.id,
+                          playlist.id,
+                          accessToken
+                        ).then(() => {
+                          const uris: string[] = [];
+                          allTracks.forEach((track) => {
+                            if (track.uri) {
+                              uris.push(track.uri);
+                            }
+                          });
+                          addItemsToPlaylist(playlist.id, uris).then(() => {
+                            addToast({
+                              message: "Playlist created",
+                              variant: "success",
+                            });
+                            router.push(`/playlist/${playlist.id}`);
+                          });
+                        });
+                      });
                     }}
                   >
-                    <Broom width={32} height={32} />
+                    {translations.saveConcertToPlaylist}
                   </button>
-                ) : (
-                  <Heart
-                    active={isFollowingThisPlaylist}
-                    handleLike={async () => {
-                      const followRes = await followPlaylist(pageDetails?.id);
-                      if (followRes) {
-                        setIsFollowingThisPlaylist(true);
-                        addToast({
-                          variant: "success",
-                          message: translations.playlistAddedToLibrary,
-                        });
-                        return true;
-                      }
-                      return null;
-                    }}
-                    handleDislike={async () => {
-                      const unfollowRes = await unfollowPlaylist(
-                        pageDetails?.id
-                      );
-                      if (unfollowRes) {
-                        setIsFollowingThisPlaylist(false);
-                        addToast({
-                          variant: "success",
-                          message: translations.playlistRemovedFromLibrary,
-                        });
-                        return true;
-                      }
-                      return null;
-                    }}
-                    style={{ width: 80, height: 80 }}
+                </div>
+              )}
+              {!isConcert && (
+                <>
+                  <PlayButton
+                    uri={pageDetails?.uri}
+                    size={56}
+                    centerSize={28}
                   />
-                )}
-              </div>
+                  <div className="info">
+                    {isMyPlaylist ? (
+                      <button
+                        type="button"
+                        aria-label={translations?.cleanPlaylist}
+                        className="broom"
+                        onClick={() => {
+                          setOpenModal(true);
+                        }}
+                      >
+                        <Broom width={32} height={32} />
+                      </button>
+                    ) : (
+                      <Heart
+                        active={isFollowingThisPlaylist}
+                        handleLike={async () => {
+                          const followRes = await followPlaylist(
+                            pageDetails?.id
+                          );
+                          if (followRes) {
+                            setIsFollowingThisPlaylist(true);
+                            addToast({
+                              variant: "success",
+                              message: translations.playlistAddedToLibrary,
+                            });
+                            return true;
+                          }
+                          return null;
+                        }}
+                        handleDislike={async () => {
+                          const unfollowRes = await unfollowPlaylist(
+                            pageDetails?.id
+                          );
+                          if (unfollowRes) {
+                            setIsFollowingThisPlaylist(false);
+                            addToast({
+                              variant: "success",
+                              message: translations.playlistRemovedFromLibrary,
+                            });
+                            return true;
+                          }
+                          return null;
+                        }}
+                        style={{ width: 80, height: 80 }}
+                      />
+                    )}
+                  </div>
+                </>
+              )}
             </div>
             <div className="trc">
               <TrackListHeader
@@ -218,12 +275,13 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
               <VirtualizedList
                 type="playlist"
                 isLibrary={isLibrary}
+                isConcert={isConcert}
                 initialTracksInLibrary={tracksInLibrary}
               />
             </div>
           </>
         ) : null}
-        {playListTracks && playListTracks?.length === 0 ? (
+        {!isConcert && playListTracks && playListTracks?.length === 0 ? (
           <div className="noTracks">
             <Heading number={3} as="h2" margin="1rem 0">
               {translations.playlistSearchHeading}
@@ -323,6 +381,12 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
               </>
             )}
           </div>
+        ) : isConcert && playListTracks && playListTracks?.length === 0 ? (
+          <div className="noTracks">
+            <Heading number={3} as="h2" margin="1rem 0">
+              {translations.noTracksFoundForConcert}
+            </Heading>
+          </div>
         ) : null}
       </div>
       {openModal ? (
@@ -333,6 +397,34 @@ const Playlist: NextPage<PlaylistProps & { isLibrary: boolean }> = ({
         />
       ) : null}
       <style jsx>{`
+        .save-concert-to-playlist-button {
+          border-radius: 500px;
+          text-decoration: none;
+          color: #fff;
+          cursor: pointer;
+          display: inline-block;
+          font-size: 12px;
+          font-weight: 800;
+          letter-spacing: 1.76px;
+          line-height: 18px;
+          padding: 12px 34px;
+          text-align: center;
+          text-transform: uppercase;
+          transition: all 33ms cubic-bezier(0.3, 0, 0, 1);
+          white-space: nowrap;
+          background-color: #000000;
+          border: 1px solid #ffffffb3;
+          will-change: transform;
+        }
+        .save-concert-to-playlist-button:focus,
+        .save-concert-to-playlist-button:hover {
+          transform: scale(1.06);
+          background-color: #000;
+          border: 1px solid #fff;
+        }
+        .save-concert-to-playlist-button:active {
+          transform: scale(1);
+        }
         .info :global(button) {
           margin-left: 12px;
           display: flex;

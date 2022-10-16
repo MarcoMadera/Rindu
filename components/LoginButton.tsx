@@ -6,7 +6,7 @@ export default function LoginButton(): ReactElement {
   const SPOTIFY_REDIRECT_URL = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URL;
   const API_AUTH_URL = "https://accounts.spotify.com/authorize?";
   const scopes =
-    "user-top-read,streaming,user-read-email,user-follow-read,user-follow-modify,playlist-read-private,user-read-private,user-library-read,user-library-modify,user-read-playback-state,user-modify-playback-state,playlist-modify-private,playlist-modify-public";
+    "ugc-image-upload,user-top-read,streaming,user-read-email,user-follow-read,user-follow-modify,playlist-read-private,user-read-private,user-library-read,user-library-modify,user-read-playback-state,user-modify-playback-state,playlist-modify-private,playlist-modify-public";
   const paramsData = {
     client_id: SPOTIFY_CLIENT_ID || "",
     response_type: "code",

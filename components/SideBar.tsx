@@ -75,7 +75,7 @@ export default function SideBar(): ReactElement {
             type="button"
             onClick={() => {
               if (!user?.id) return;
-              createPlaylist(user.id, accessToken).then((res) => {
+              createPlaylist(user.id, { accessToken }).then((res) => {
                 if (!res) {
                   addToast({
                     message: "Error creating playlist",

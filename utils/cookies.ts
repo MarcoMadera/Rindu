@@ -23,7 +23,7 @@ export function takeCookie(
  * @param {Object} params - The params to create a cookie
  * @param {string} params.name - the name of the cookie to set
  * @param {string} params.value - value
- * @param {number} params.age - the expire time in miliseconds string
+ * @param {number} params.age - the expire time in milliseconds string
  */
 export function makeCookie({
   name,

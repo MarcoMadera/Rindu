@@ -80,6 +80,8 @@ export default function CardTrack({
   const router = useRouter();
   const country = router.query.country as string;
   const locale = spanishCountries.includes(country) ? "es" : "en";
+  const date = track?.added_at ? +new Date(track?.added_at) : NaN;
+  const displayDate = isNaN(date) ? track?.added_at : getTimeAgo(date, locale);
 
   const isPlayable =
     track?.type === "episode" ||
@@ -329,11 +331,7 @@ export default function CardTrack({
             </p>
           </section>
           <section>
-            <p className="trackArtists">
-              {track?.added_at
-                ? getTimeAgo(+new Date(track?.added_at), locale)
-                : null}
-            </p>
+            <p className="trackArtists">{displayDate}</p>
           </section>
         </>
       ) : null}

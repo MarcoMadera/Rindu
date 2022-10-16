@@ -36,6 +36,7 @@ import { getMonth } from "utils/getMonth";
 import { getTranslations, Page } from "utils/getTranslations";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import useTranslations from "hooks/useTranslations";
+import Link from "next/link";
 
 interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
@@ -266,41 +267,32 @@ export default function ArtistPage({
                   const day = date[0];
 
                   return (
-                    <button
+                    <Link
+                      href={`/concert/${currentArtist?.id}.${set.id}`}
                       key={set.id}
-                      className="set"
-                      onClick={() => {
-                        window.history.pushState(
-                          {
-                            alternativeImage: currentArtist?.images?.[0]?.url,
-                            artistId: currentArtist?.id,
-                          },
-                          "",
-                          `/concert/${set.id}`
-                        );
-                        router.push(`/concert/${set.id}`);
-                      }}
                     >
-                      <div className="set-date">
-                        <span className="month">
-                          {getMonth(Number(month) - 1)}
-                        </span>
-                        <span className="day">{day}</span>
-                        <span className="year">{year}</span>
-                      </div>
-                      <div className="set-info">
-                        <Heading number={5} as="h4">
-                          {set.venue?.name}
-                        </Heading>
-                        <span>
-                          {conjuction([
-                            set.venue?.city.name,
-                            set.venue?.city.state,
-                            set.venue?.city.country.code,
-                          ])}
-                        </span>
-                      </div>
-                    </button>
+                      <a className="set">
+                        <div className="set-date">
+                          <span className="month">
+                            {getMonth(Number(month) - 1)}
+                          </span>
+                          <span className="day">{day}</span>
+                          <span className="year">{year}</span>
+                        </div>
+                        <div className="set-info">
+                          <Heading number={5} as="h4">
+                            {set.venue?.name}
+                          </Heading>
+                          <span>
+                            {conjuction([
+                              set.venue?.city.name,
+                              set.venue?.city.state,
+                              set.venue?.city.country.code,
+                            ])}
+                          </span>
+                        </div>
+                      </a>
+                    </Link>
                   );
                 })}
               </div>
@@ -448,6 +440,7 @@ export default function ArtistPage({
           padding: 8px;
           cursor: pointer;
           width: 100%;
+          text-decoration: none;
         }
         .set:hover {
           border-radius: 3px;
@@ -455,6 +448,8 @@ export default function ArtistPage({
         }
         .set-info {
           margin-left: 18px;
+          display: flex;
+          flex-direction: column;
         }
         .set-info span {
           margin: 0;
@@ -498,6 +493,7 @@ export default function ArtistPage({
           line-height: 1;
           font-size: 16px;
           width: fit-content;
+          color: #ffffff;
         }
         .content .read-more {
           margin-top: 16px;

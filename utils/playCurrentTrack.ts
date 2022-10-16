@@ -52,15 +52,23 @@ export async function playCurrentTrack(
 
   if (accessToken && track && deviceId) {
     const uris: string[] = [];
-    allTracks.forEach((track) => {
+    const positionOfTracksWithoutUri: number[] = [];
+    allTracks.forEach((track, i) => {
       if (track.uri) {
         uris.push(track.uri);
+      } else {
+        positionOfTracksWithoutUri.push(i);
       }
     });
+    const numberOfTracksWithoutUriLowerThanPosition =
+      positionOfTracksWithoutUri.filter((p) => p < (position || 0)).length;
+    const positionInUrisArray =
+      (position || 0) - numberOfTracksWithoutUriLowerThanPosition;
+
     const playConfig = isSingleTrack
       ? {
           uris: uri ? [uri] : uris,
-          offset: uri ? 0 : position,
+          offset: uri ? 0 : positionInUrisArray,
         }
       : {
           context_uri: playlistUri,
