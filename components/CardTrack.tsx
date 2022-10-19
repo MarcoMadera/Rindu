@@ -230,7 +230,7 @@ export default function CardTrack({
     >
       <button
         type="button"
-        className="playbutton"
+        className="playButton"
         aria-label={isPlaying && isTheSameAsCurrentlyPlaying ? "Pause" : "Play"}
         onClick={() => {
           if (isPlaying && isTheSameAsCurrentlyPlaying && isPlayable) {
@@ -423,7 +423,7 @@ export default function CardTrack({
         </button>
       </section>
       <style jsx>{`
-        .playbutton {
+        .playButton {
           background-image: ${type === "presentation"
             ? `url(${
                 track?.album?.images?.[2]?.url ?? track?.album?.images?.[1]?.url
@@ -469,7 +469,7 @@ export default function CardTrack({
         .threeDots {
           width: 16px;
         }
-        .playbutton {
+        .playButton {
           object-fit: cover;
           object-position: center center;
           background-size: 40px 40px;

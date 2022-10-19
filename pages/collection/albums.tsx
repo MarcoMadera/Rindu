@@ -16,7 +16,7 @@ import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { getTranslations, Page } from "utils/getTranslations";
 import { getAuth } from "utils/getAuth";
 import { serverRedirect } from "utils/serverRedirect";
-import useAnalitycs from "hooks/useAnalytics";
+import useAnalytics from "hooks/useAnalytics";
 
 interface CollectionAlbumProps {
   accessToken: string | null;
@@ -32,7 +32,7 @@ export default function CollectionAlbums({
   const { setUser, setAccessToken } = useAuth();
   const [albums, setAlbums] = useState<SpotifyApi.SavedAlbumObject[]>([]);
   const { isPlaying } = useSpotify();
-  const { trackWithGoogleAnalitycs } = useAnalitycs();
+  const { trackWithGoogleAnalytics } = useAnalytics();
 
   useEffect(() => {
     setElement(() => <NavigationTopBarExtraField selected={4} />);
@@ -56,12 +56,12 @@ export default function CollectionAlbums({
   }, [accessToken, setAlbums]);
 
   useEffect(() => {
-    trackWithGoogleAnalitycs();
+    trackWithGoogleAnalytics();
 
     accessToken && setAccessToken(accessToken);
 
     setUser(user);
-  }, [accessToken, setAccessToken, setUser, trackWithGoogleAnalitycs, user]);
+  }, [accessToken, setAccessToken, setUser, trackWithGoogleAnalytics, user]);
 
   return (
     <ContentContainer>

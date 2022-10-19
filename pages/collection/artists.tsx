@@ -15,9 +15,9 @@ import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { getAuth } from "utils/getAuth";
 import { getTranslations, Page } from "utils/getTranslations";
 import { serverRedirect } from "utils/serverRedirect";
-import useAnalitycs from "hooks/useAnalytics";
+import useAnalytics from "hooks/useAnalytics";
 
-interface CollectionArtistprops {
+interface CollectionArtistProps {
   accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
   translations: Record<string, string>;
@@ -26,12 +26,12 @@ interface CollectionArtistprops {
 export default function CollectionPlaylists({
   accessToken,
   user,
-}: CollectionArtistprops): ReactElement {
+}: CollectionArtistProps): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
   const { setUser, setAccessToken } = useAuth();
   const [artists, setArtists] = useState<SpotifyApi.ArtistObjectFull[]>([]);
   const { isPlaying } = useSpotify();
-  const { trackWithGoogleAnalitycs } = useAnalitycs();
+  const { trackWithGoogleAnalytics } = useAnalytics();
 
   useEffect(() => {
     setElement(() => <NavigationTopBarExtraField selected={3} />);
@@ -56,12 +56,12 @@ export default function CollectionPlaylists({
   }, [accessToken, setArtists]);
 
   useEffect(() => {
-    trackWithGoogleAnalitycs();
+    trackWithGoogleAnalytics();
 
     accessToken && setAccessToken(accessToken);
 
     setUser(user);
-  }, [accessToken, setAccessToken, setUser, trackWithGoogleAnalitycs, user]);
+  }, [accessToken, setAccessToken, setUser, trackWithGoogleAnalytics, user]);
 
   return (
     <ContentContainer>
@@ -102,7 +102,7 @@ export async function getServerSideProps({
   req: NextApiRequest;
   query: NextParsedUrlQuery;
 }): Promise<{
-  props: CollectionArtistprops | null;
+  props: CollectionArtistProps | null;
 }> {
   const country = (query.country || "US") as string;
   const translations = getTranslations(country, Page.CollectionArtists);

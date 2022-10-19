@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 import { ITrack } from "types/spotify";
 import PageHeader from "../../components/PageHeader";
-import useAnalitycs from "../../hooks/useAnalytics";
+import useAnalytics from "../../hooks/useAnalytics";
 import useAuth from "hooks/useAuth";
 import Head from "next/head";
 import useSpotify from "hooks/useSpotify";
@@ -15,7 +15,7 @@ import { Broom } from "components/icons/Broom";
 import RemoveTracksModal from "components/RemoveTracksModal";
 import PlaylistTopBarExtraField from "../../components/PlaylistTopBarExtraField";
 import { Heart } from "components/icons/Heart";
-import { getSiteUrl } from "utils/enviroment";
+import { getSiteUrl } from "utils/environment";
 import { PlaylistProps } from "pages/playlist/[playlist]";
 import { SearchInputElement } from "components/SearchInputElement";
 import { addItemsToPlaylist } from "utils/spotifyCalls/addItemsToPlaylist";
@@ -43,7 +43,7 @@ const Playlist: NextPage<
 }) => {
   const router = useRouter();
   const { setUser, accessToken } = useAuth();
-  const { trackWithGoogleAnalitycs } = useAnalitycs();
+  const { trackWithGoogleAnalytics } = useAnalytics();
   const {
     player,
     isPlaying,
@@ -87,7 +87,7 @@ const Playlist: NextPage<
       setElement(() => <PlaylistTopBarExtraField uri={pageDetails?.uri} />);
     }
     setPageDetails(pageDetails);
-    trackWithGoogleAnalitycs();
+    trackWithGoogleAnalytics();
     setAllTracks(tracks);
 
     setUser(user);
@@ -96,7 +96,7 @@ const Playlist: NextPage<
     setElement,
     setPageDetails,
     pageDetails,
-    trackWithGoogleAnalitycs,
+    trackWithGoogleAnalytics,
     setUser,
     user,
     router,

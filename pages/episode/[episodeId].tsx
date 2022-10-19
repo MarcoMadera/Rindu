@@ -9,7 +9,7 @@ import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
 import PageHeader from "../../components/PageHeader";
 import { PlayButton } from "components/PlayButton";
 import { getEpisodeById } from "utils/spotifyCalls/getEpisodeById";
-import { getSiteUrl } from "utils/enviroment";
+import { getSiteUrl } from "utils/environment";
 import { HeaderType } from "types/pageHeader";
 import Link from "next/link";
 import { checkEpisodesInLibrary } from "utils/spotifyCalls/checkEpisodesInLibrary";

@@ -1,24 +1,13 @@
 import useTranslations from "hooks/useTranslations";
 import { ReactElement } from "react";
+import { getSpotifyLoginURL } from "utils/getSpotifyLoginURL";
 
 export default function LoginButton(): ReactElement {
-  const SPOTIFY_CLIENT_ID = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
-  const SPOTIFY_REDIRECT_URL = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URL;
-  const API_AUTH_URL = "https://accounts.spotify.com/authorize?";
-  const scopes =
-    "ugc-image-upload,user-top-read,streaming,user-read-email,user-follow-read,user-follow-modify,playlist-read-private,user-read-private,user-library-read,user-library-modify,user-read-playback-state,user-modify-playback-state,playlist-modify-private,playlist-modify-public";
-  const paramsData = {
-    client_id: SPOTIFY_CLIENT_ID || "",
-    response_type: "code",
-    redirect_uri: SPOTIFY_REDIRECT_URL || "",
-    scope: scopes,
-  };
-  const params = new URLSearchParams(paramsData);
   const { translations } = useTranslations();
 
   return (
     <>
-      <a href={API_AUTH_URL + params}>{translations.loginButton}</a>
+      <a href={getSpotifyLoginURL()}>{translations.loginButton}</a>
       <style jsx>{`
         a {
           border-radius: 500px;

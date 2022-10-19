@@ -76,6 +76,9 @@ const Template: ComponentStory<typeof ProgressBar> = () => {
                   setPlaylistPlayingId: (() => "") as React.Dispatch<
                     React.SetStateAction<string | undefined>
                   >,
+                  setProgressMs: (() => "") as React.Dispatch<
+                    React.SetStateAction<number | undefined>
+                  >,
                 } as ISpotifyContext
               }
             >

@@ -5,7 +5,7 @@ import { serverRedirect } from "utils/serverRedirect";
 import { getShow } from "utils/spotifyCalls/getShow";
 import { ITrack } from "types/spotify";
 import { HeaderType } from "types/pageHeader";
-import { getSiteUrl } from "utils/enviroment";
+import { getSiteUrl } from "utils/environment";
 import PageHeader from "components/PageHeader";
 import { PlayButton } from "components/PlayButton";
 import { Heart } from "components/icons/Heart";

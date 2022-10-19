@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { useRouter } from "next/router";
 import useAuth from "hooks/useAuth";
-import useAnalitycs from "hooks/useAnalytics";
+import useAnalytics from "hooks/useAnalytics";
 import { useEffect, useState, ReactElement } from "react";
 import { serverRedirect } from "utils/serverRedirect";
 import { getAuth } from "utils/getAuth";
@@ -23,7 +23,7 @@ import { unFollow } from "utils/spotifyCalls/unFollow";
 import { checkIfUserFollowArtistUser } from "utils/spotifyCalls/checkIfUserFollowArtistUser";
 import PageHeader from "../../components/PageHeader";
 import { HeaderType } from "types/pageHeader";
-import { getSiteUrl } from "utils/enviroment";
+import { getSiteUrl } from "utils/environment";
 import Carousel from "components/Carousel";
 import SubTitle from "components/SubtTitle";
 import { getSetLists, SetLists } from "utils/getSetLists";
@@ -63,7 +63,7 @@ export default function ArtistPage({
   artistInfo,
 }: ArtistPageProps): ReactElement {
   const { setUser, setAccessToken } = useAuth();
-  const { trackWithGoogleAnalitycs } = useAnalitycs();
+  const { trackWithGoogleAnalytics } = useAnalytics();
   const banner =
     artistInfo?.artists?.[0]?.strArtistFanart ||
     artistInfo?.artists?.[0]?.strArtistFanart2 ||
@@ -85,7 +85,7 @@ export default function ArtistPage({
     if (!currentArtist) {
       router.push("/");
     }
-    trackWithGoogleAnalitycs();
+    trackWithGoogleAnalytics();
 
     setAccessToken(accessToken);
 
@@ -96,7 +96,7 @@ export default function ArtistPage({
     router,
     setAccessToken,
     setUser,
-    trackWithGoogleAnalitycs,
+    trackWithGoogleAnalytics,
     user,
   ]);
 

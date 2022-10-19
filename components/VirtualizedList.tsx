@@ -10,7 +10,7 @@ import {
   WindowScroller,
 } from "react-virtualized";
 import { ITrack } from "types/spotify";
-import { isServer } from "utils/enviroment";
+import { isServer } from "utils/environment";
 import { getTracksFromLibrary } from "utils/getTracksFromLibrary";
 import { mapPlaylistItems } from "utils/mapPlaylistItems";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";

@@ -1,11 +1,11 @@
 import { IUtilsMocks } from "types/mocks";
-import { isProduction, isServer, getSiteUrl } from "utils/enviroment";
+import { isProduction, isServer, getSiteUrl } from "utils/environment";
 
-const { setupEnviroment } = jest.requireActual<IUtilsMocks>(
+const { setupEnvironment } = jest.requireActual<IUtilsMocks>(
   "./__mocks__/mocks.ts"
 );
 
-describe("enviroment", () => {
+describe("environment", () => {
   describe("isProduction", () => {
     it("should be falsy if is not production", () => {
       expect.assertions(1);
@@ -15,7 +15,7 @@ describe("enviroment", () => {
 
     it("should be truthy if is production", () => {
       expect.assertions(1);
-      setupEnviroment({
+      setupEnvironment({
         NODE_ENV: "production",
       });
 
@@ -44,7 +44,7 @@ describe("enviroment", () => {
   describe("getSiteUrl", () => {
     it("should be equal to the development url", () => {
       expect.assertions(1);
-      setupEnviroment({
+      setupEnvironment({
         NODE_ENV: "development",
         NEXT_PUBLIC_SITE_URL: "http://localhost:3000",
       });
@@ -54,7 +54,7 @@ describe("enviroment", () => {
 
     it("should be equal to the production url", () => {
       expect.assertions(1);
-      setupEnviroment({
+      setupEnvironment({
         NODE_ENV: "production",
         NEXT_PUBLIC_SITE_URL: "https://rindu.marcomadera.com",
       });

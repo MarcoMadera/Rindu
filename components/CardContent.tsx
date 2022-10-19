@@ -3,7 +3,7 @@ import { decode } from "html-entities";
 import { useRouter } from "next/router";
 import { useRef } from "react";
 import { ITrack } from "types/spotify";
-import { getSiteUrl } from "utils/enviroment";
+import { getSiteUrl } from "utils/environment";
 
 export enum CardType {
   PLAYLIST = "playlist",

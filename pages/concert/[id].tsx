@@ -7,7 +7,7 @@ import { getSetList, SetList } from "utils/getSetList";
 import { ITrack } from "types/spotify";
 import { getTranslations, Page } from "utils/getTranslations";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import { getSiteUrl } from "utils/enviroment";
+import { getSiteUrl } from "utils/environment";
 import { getArtistById } from "utils/spotifyCalls/getArtistById";
 
 interface ConcertProps extends PlaylistProps {

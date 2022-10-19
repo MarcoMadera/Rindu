@@ -6,6 +6,16 @@ import useOnScreen from "hooks/useOnScreen";
 import { playCurrentTrack } from "utils/playCurrentTrack";
 import type { IToast } from "types/toast";
 
+jest.mock("next/router", () => ({
+  useRouter: jest.fn().mockImplementation(() => ({
+    asPath: "/",
+    push: jest.fn(),
+    query: {
+      country: "US",
+    },
+  })),
+}));
+
 const { track } = jest.requireActual<IUtilsMocks>(
   "utils/__tests__/__mocks__/mocks.ts"
 );
