@@ -6,7 +6,7 @@ export default function Footer(): ReactElement {
   return (
     <footer>
       <p>
-        {translations.madeby}{" "}
+        {translations.madeBy}{" "}
         <a
           href="https://marcomadera.com"
           rel="noreferrer noopener"

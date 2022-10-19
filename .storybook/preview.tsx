@@ -4,10 +4,27 @@ import "../styles/globals.css";
 import "./preview.css";
 import { addDecorator } from "@storybook/react";
 import { themes } from "@storybook/theming";
+import React from "react";
+import TranslationsContext from "../context/TranslationsContext";
+import { translations } from "../utils/getTranslations";
+
+const allENTranslations: Record<string, string>[] = Object.values(
+  translations.EN
+);
+const allENTranslationsFlat = allENTranslations.reduce(
+  (acc, cur) => ({ ...acc, ...cur }),
+  {}
+);
 
 addDecorator((storyFn) => (
   <>
-    <div>{storyFn()}</div>
+    <TranslationsContext.Provider
+      value={{
+        translations: allENTranslationsFlat,
+      }}
+    >
+      <div>{storyFn()}</div>
+    </TranslationsContext.Provider>
 
     <div id="tracksModal" />
     <div id="toast" />
@@ -36,7 +53,7 @@ export const parameters = {
   nextRouter: {
     Provider: RouterContext.Provider,
     query: {
-      foo: "this-is-a-global-override",
+      country: "US",
     },
   },
 };

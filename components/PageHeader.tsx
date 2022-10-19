@@ -155,8 +155,8 @@ export default function PageHeader({
               <span>
                 &nbsp;&middot; {formatNumber(totalTracks ?? 0)}{" "}
                 {totalTracks === 1
-                  ? translations.song.toLowerCase()
-                  : translations.songs.toLowerCase()}
+                  ? translations.song?.toLowerCase()
+                  : translations.songs?.toLowerCase()}
               </span>
             ) : null}
             {popularity ? (

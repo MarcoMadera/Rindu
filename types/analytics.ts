@@ -96,8 +96,8 @@ export type Fields =
   | Social
   | undefined;
 
-export interface UseAnalitycsParams {
-  trackWithGoogleAnalitycs<T extends hitTypes>(
+export interface UseAnalyticsParams {
+  trackWithGoogleAnalytics<T extends hitTypes>(
     hitType: hitTypes | T,
     fields: T extends "event"
       ? Event
@@ -111,7 +111,7 @@ export interface UseAnalitycsParams {
       ? Timing
       : undefined
   ): void;
-  trackWithGoogleAnalitycs(
+  trackWithGoogleAnalytics(
     hitType?: "pageview" | "item" | "transaction",
     fields?: undefined
   ): void;

@@ -1,4 +1,4 @@
-import { isServer } from "./enviroment";
+import { isServer } from "./environment";
 
 /**
  * Get the value of the cookie

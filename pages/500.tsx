@@ -7,14 +7,14 @@ import { ReactElement, useEffect } from "react";
 
 export default function Custom500(): ReactElement {
   const { pathname } = useRouter();
-  const { trackWithGoogleAnalitycs } = useAnalytics();
+  const { trackWithGoogleAnalytics } = useAnalytics();
 
   useEffect(() => {
-    trackWithGoogleAnalitycs("exception", {
+    trackWithGoogleAnalytics("exception", {
       exDescription: `500 internal server error: ${pathname}`,
       exFatal: "1",
     });
-  }, [pathname, trackWithGoogleAnalitycs]);
+  }, [pathname, trackWithGoogleAnalytics]);
 
   return (
     <ContentContainer id="main">

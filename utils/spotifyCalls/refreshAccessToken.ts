@@ -1,4 +1,4 @@
-import { getSiteUrl } from "../enviroment";
+import { getSiteUrl } from "../environment";
 
 export interface IRefreshAccessTokenResponse {
   access_token: string;

@@ -124,7 +124,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
               <>{element}</>
             ) : null}
           </div>
-          {!isPremium ? (
+          {user && !isPremium ? (
             <a
               href="https://www.spotify.com/premium/"
               target="_blank"

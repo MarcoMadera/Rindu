@@ -18,7 +18,7 @@ export interface IUtilsMocks {
   artistInfo: ArtistsInfo;
   refreshAccessTokenResponse: IRefreshAccessTokenResponse;
   setupCookies: (value?: string) => string;
-  setupEnviroment: (value?: Record<string, string>) => string;
+  setupEnvironment: (value?: Record<string, string>) => string;
   mediaSession: MediaSession;
   setupMediaSession: (value?: MediaSession) => void;
   mockFetchSuccess: <T>(value?: T, ok?: boolean) => T;

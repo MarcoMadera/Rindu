@@ -19,7 +19,7 @@ import CardTrack from "components/CardTrack";
 import { getArtistTopTracks } from "utils/spotifyCalls/getArtistTopTracks";
 import { getArtistById } from "utils/spotifyCalls/getArtistById";
 import { HeaderType } from "types/pageHeader";
-import { getSiteUrl } from "utils/enviroment";
+import { getSiteUrl } from "utils/environment";
 import useToast from "hooks/useToast";
 import BigPill from "components/BigPill";
 import { within } from "utils/whitin";
@@ -216,7 +216,7 @@ export default function TrackPage({
           <div className="topTracks">
             <div className="topTracks-header">
               <span>
-                {templateReplace(translations.populatTracksBy, [
+                {templateReplace(translations.popularTracksBy, [
                   <Heading number={3} as="h2" key={track?.artists[0].name}>
                     {track?.artists[0].name ?? ""}
                   </Heading>,

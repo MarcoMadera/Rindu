@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { makeCookie, takeCookie } from "utils/cookies";
-import { dataToSendType, Fields, UseAnalitycsParams } from "../types/analitycs";
+import { dataToSendType, Fields, UseAnalyticsParams } from "../types/analytics";
 
-export default function useAnalitycs(): UseAnalitycsParams {
-  const trackWithGoogleAnalitycs: UseAnalitycsParams["trackWithGoogleAnalitycs"] =
+export default function useAnalytics(): UseAnalyticsParams {
+  const trackWithGoogleAnalytics: UseAnalyticsParams["trackWithGoogleAnalytics"] =
     useCallback((hitType = "pageview", fields: Fields) => {
       function addAnalyticsCookie() {
         const value = `GA1.2.${~~(2147483648 * Math.random())}.${~~(
@@ -69,6 +69,6 @@ export default function useAnalitycs(): UseAnalitycsParams {
     }, []);
 
   return {
-    trackWithGoogleAnalitycs,
+    trackWithGoogleAnalytics: trackWithGoogleAnalytics,
   };
 }

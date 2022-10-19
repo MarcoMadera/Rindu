@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
 import { useRouter } from "next/router";
 import useAuth from "hooks/useAuth";
-import useAnalitycs from "hooks/useAnalytics";
+import useAnalytics from "hooks/useAnalytics";
 import { useEffect } from "react";
 import { serverRedirect } from "utils/serverRedirect";
 import { getAuth } from "utils/getAuth";
@@ -10,7 +10,7 @@ import { getPlaylistsFromUser } from "utils/spotifyCalls/getPlaylistsFromUser";
 import PageHeader from "components/PageHeader";
 import { HeaderType } from "types/pageHeader";
 import ContentContainer from "components/ContentContainer";
-import { getSiteUrl } from "utils/enviroment";
+import { getSiteUrl } from "utils/environment";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { getTranslations, Page } from "utils/getTranslations";
 
@@ -29,14 +29,14 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
   currentUserPlaylists,
 }) => {
   const { setUser, setAccessToken } = useAuth();
-  const { trackWithGoogleAnalitycs } = useAnalitycs();
+  const { trackWithGoogleAnalytics } = useAnalytics();
   const router = useRouter();
 
   useEffect(() => {
     if (!currentUser) {
       router.push("/");
     }
-    trackWithGoogleAnalitycs();
+    trackWithGoogleAnalytics();
 
     setAccessToken(accessToken);
 
@@ -47,7 +47,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
     router,
     setAccessToken,
     setUser,
-    trackWithGoogleAnalitycs,
+    trackWithGoogleAnalytics,
     user,
   ]);
 

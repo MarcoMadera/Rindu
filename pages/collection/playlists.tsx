@@ -15,10 +15,10 @@ import { getAuth } from "utils/getAuth";
 import { getTranslations, Page } from "utils/getTranslations";
 import { serverRedirect } from "utils/serverRedirect";
 import useAuth from "hooks/useAuth";
-import useAnalitycs from "hooks/useAnalytics";
+import useAnalytics from "hooks/useAnalytics";
 import { getCurrentUserPlaylists } from "utils/getAllMyPlaylists";
 
-interface CollectionPlaylistsrops {
+interface CollectionPlaylistsProps {
   accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
   translations: Record<string, string>;
@@ -27,10 +27,10 @@ interface CollectionPlaylistsrops {
 export default function CollectionPlaylists({
   accessToken,
   user,
-}: CollectionPlaylistsrops): ReactElement {
+}: CollectionPlaylistsProps): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
   const { setUser, setAccessToken } = useAuth();
-  const { trackWithGoogleAnalitycs } = useAnalitycs();
+  const { trackWithGoogleAnalytics } = useAnalytics();
   const { playlists, setPlaylists, isPlaying } = useSpotify();
 
   useEffect(() => {
@@ -44,12 +44,12 @@ export default function CollectionPlaylists({
   }, [setElement, setHeaderColor]);
 
   useEffect(() => {
-    trackWithGoogleAnalitycs();
+    trackWithGoogleAnalytics();
 
     accessToken && setAccessToken(accessToken);
 
     setUser(user);
-  }, [accessToken, setAccessToken, setUser, trackWithGoogleAnalitycs, user]);
+  }, [accessToken, setAccessToken, setUser, trackWithGoogleAnalytics, user]);
 
   useEffect(() => {
     if (!playlists) {
@@ -100,7 +100,7 @@ export async function getServerSideProps({
   req: NextApiRequest;
   query: NextParsedUrlQuery;
 }): Promise<{
-  props: CollectionPlaylistsrops | null;
+  props: CollectionPlaylistsProps | null;
 }> {
   const country = (query.country || "US") as string;
   const translations = getTranslations(country, Page.CollectionPlaylists);

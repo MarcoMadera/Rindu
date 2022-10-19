@@ -3,7 +3,7 @@ import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
 import { useRouter } from "next/router";
 import useAuth from "hooks/useAuth";
-import useAnalitycs from "hooks/useAnalytics";
+import useAnalytics from "hooks/useAnalytics";
 import { useEffect, useState } from "react";
 import VirtualizedList from "components/VirtualizedList";
 import { Heart } from "components/icons/Heart";
@@ -20,7 +20,7 @@ import { checkIfUserFollowAlbums } from "utils/spotifyCalls/checkIfUserFollowAlb
 import { unFollowAlbums } from "utils/spotifyCalls/unFollowAlbums";
 import { followAlbums } from "utils/spotifyCalls/followAlbums";
 import PageHeader from "components/PageHeader";
-import { getSiteUrl } from "utils/enviroment";
+import { getSiteUrl } from "utils/environment";
 import useToast from "hooks/useToast";
 import ContentContainer from "components/ContentContainer";
 import { isCorruptedTrack } from "utils/isCorruptedTrack";
@@ -44,7 +44,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
   tracksInLibrary,
 }) => {
   const { setUser, setAccessToken } = useAuth();
-  const { trackWithGoogleAnalitycs } = useAnalitycs();
+  const { trackWithGoogleAnalytics } = useAnalytics();
   const { setAllTracks, setPageDetails } = useSpotify();
   const router = useRouter();
   const [isPin, setIsPin] = useState(false);
@@ -71,7 +71,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
     }
 
     setElement(() => <PlaylistTopBarExtraField uri={album?.uri} />);
-    trackWithGoogleAnalitycs();
+    trackWithGoogleAnalytics();
 
     setAccessToken(accessToken);
 
@@ -98,7 +98,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
     setAllTracks,
     setPageDetails,
     setUser,
-    trackWithGoogleAnalitycs,
+    trackWithGoogleAnalytics,
     tracks,
     user,
     setElement,

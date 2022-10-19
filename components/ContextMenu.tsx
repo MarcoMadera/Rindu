@@ -83,20 +83,20 @@ export default function ContextMenu(): ReactPortal | null {
     ) {
       return;
     }
-    const contextMenuRectWitdh =
+    const contextMenuRectWidth =
       contextMenuRef.current?.getClientRects()[0]?.width || 0;
     const contextMenuRectHeight =
       contextMenuRef.current?.getClientRects()[0]?.height || 0;
-    const isContextMenuWitdhOffScreen =
+    const isContextMenuWidthOffScreen =
       contextMenuData.position.x &&
-      innerWidth - contextMenuData.position.x < contextMenuRectWitdh;
+      innerWidth - contextMenuData.position.x < contextMenuRectWidth;
     const isContextMenuHeightOffScreen =
       contextMenuData.position.y &&
       innerHeight - contextMenuData.position.y < contextMenuRectHeight;
-    if (isContextMenuWitdhOffScreen) {
+    if (isContextMenuWidthOffScreen) {
       setContextMenuPos((prevState) => ({
         ...prevState,
-        x: innerWidth - contextMenuRectWitdh - 30,
+        x: innerWidth - contextMenuRectWidth - 30,
       }));
       setIsDifferentPosX(true);
     }
@@ -107,7 +107,7 @@ export default function ContextMenu(): ReactPortal | null {
       }));
       setIsDifferentPosY(true);
     }
-    if (!isContextMenuWitdhOffScreen && !isContextMenuHeightOffScreen) {
+    if (!isContextMenuWidthOffScreen && !isContextMenuHeightOffScreen) {
       setIsDifferentPosX(false);
       setIsDifferentPosY(false);
     }
@@ -237,7 +237,7 @@ export default function ContextMenu(): ReactPortal | null {
           <button
             type="button"
             onClick={() => {
-              // TODO: create path station/${type}/${id} where type can be (playlist, show, track, album,episde)
+              // TODO: create path station/${type}/${id} where type can be (playlist, show, track, album,episode)
               // It should use the recommendations API
               // This will be used to push to that page
               addToast({

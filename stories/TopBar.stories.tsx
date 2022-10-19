@@ -239,7 +239,7 @@ LoggedIn.parameters = {
   layout: "fullscreen",
   nextRouter: {
     query: {
-      foo: "this-is-a-global-override",
+      country: "US",
     },
     asPath: "/dashboard",
   },
@@ -248,7 +248,7 @@ LoggedInWithExtraField.parameters = {
   layout: "fullscreen",
   nextRouter: {
     query: {
-      foo: "this-is-a-global-override",
+      country: "US",
     },
     asPath: "/dashboard",
   },

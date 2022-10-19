@@ -24,6 +24,9 @@ describe("cardContent", () => {
     (useRouter as jest.Mock).mockImplementationOnce(() => ({
       asPath: "/",
       push,
+      query: {
+        country: "US",
+      },
     }));
 
     render(
@@ -41,6 +44,9 @@ describe("cardContent", () => {
     (useRouter as jest.Mock).mockImplementationOnce(() => ({
       asPath: "/",
       push,
+      query: {
+        country: "US",
+      },
     }));
 
     render(
@@ -58,6 +64,9 @@ describe("cardContent", () => {
     (useRouter as jest.Mock).mockImplementationOnce(() => ({
       asPath: "/",
       push,
+      query: {
+        country: "US",
+      },
     }));
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
 
@@ -83,6 +92,9 @@ describe("cardContent", () => {
     (useRouter as jest.Mock).mockImplementationOnce(() => ({
       asPath: "/",
       push,
+      query: {
+        country: "US",
+      },
     }));
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
 

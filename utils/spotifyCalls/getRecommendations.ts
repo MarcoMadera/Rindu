@@ -22,7 +22,7 @@ export async function getRecommendations(
     }
   );
   if (res.ok) {
-    const data: SpotifyApi.RecommendationsObject = await res.json();
+    const data = await res.json();
     return data?.tracks as SpotifyApi.TrackObjectFull[];
   }
   return null;

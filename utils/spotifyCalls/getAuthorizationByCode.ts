@@ -1,5 +1,5 @@
 import { AuthorizationResponse } from "types/spotify";
-import { getSiteUrl } from "utils/enviroment";
+import { getSiteUrl } from "utils/environment";
 
 export async function getAuthorizationByCode(
   code: string

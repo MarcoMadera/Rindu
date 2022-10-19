@@ -5,156 +5,82 @@ import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "../utils/constants";
 import useAuth from "../hooks/useAuth";
 import { useEffect } from "react";
 import { refreshAccessToken } from "../utils/spotifyCalls/refreshAccessToken";
-import useAnalitycs from "../hooks/useAnalytics";
+import useAnalytics from "../hooks/useAnalytics";
 import { removeTokensFromCookieServer } from "utils/removeTokensFromCookieServer";
 import { getTranslations, Page } from "utils/getTranslations";
+import { getSpotifyLoginURL } from "utils/getSpotifyLoginURL";
+import { Hero } from "../components/Hero";
+import { FeatureCard } from "../components/FeatureCard";
+import { CardContainer } from "../components/CardContainer";
 
 interface HomeProps {
   accessToken?: string | null;
   translations: Record<string, string>;
 }
 
+interface IFeature {
+  eyeBrowText: string;
+  titleText: string;
+  description: string;
+  imageSrc: string;
+  imageAlt: string;
+  anchorType: string;
+  anchorText: string;
+}
+
 const Home: NextPage<HomeProps> = ({ translations }) => {
   const { setIsLogin } = useAuth();
 
-  const { trackWithGoogleAnalitycs } = useAnalitycs();
+  const { trackWithGoogleAnalytics } = useAnalytics();
   useEffect(() => {
-    trackWithGoogleAnalitycs();
-  }, [trackWithGoogleAnalitycs]);
+    trackWithGoogleAnalytics();
+  }, [trackWithGoogleAnalytics]);
 
   useEffect(() => {
     setIsLogin(false);
   }, [setIsLogin]);
 
-  const SPOTIFY_CLIENT_ID = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
-  const SPOTIFY_REDIRECT_URL = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URL;
-  const API_AUTH_URL = "https://accounts.spotify.com/authorize?";
-  const scopes =
-    "streaming,user-read-email,user-follow-read,user-follow-modify,playlist-read-private,user-read-private,user-library-read,user-library-modify,user-read-playback-state,user-modify-playback-state,playlist-modify-private,playlist-modify-public";
-  const paramsData = {
-    client_id: SPOTIFY_CLIENT_ID || "",
-    response_type: "code",
-    redirect_uri: SPOTIFY_REDIRECT_URL || "",
-    scope: scopes,
-  };
-  const params = new URLSearchParams(paramsData);
+  const spotifyLoginUrl = getSpotifyLoginURL();
+  const features = JSON.parse(translations.features);
 
   return (
     <main>
-      <section className="hero">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://res.cloudinary.com/marcomadera/image/upload/v1645938502/Spotify-Cleaner-App/Mu1_ytmhg5.jpg"
-          alt=""
-          width={500}
-          className="hero-image"
-        />
-        <div className="hero-title">
-          <h1>{translations.heroTitle}</h1>
+      <Hero
+        heroTitle={translations.heroTitle}
+        imgAlt="hero image"
+        imgSrc="https://res.cloudinary.com/marcomadera/image/upload/v1645938502/Spotify-Cleaner-App/Mu1_ytmhg5.jpg"
+      />
+      <CardContainer className="info">
+        <div>
+          <h2>{translations.heroInfoTitle}</h2>
         </div>
-      </section>
-      <section className="info">
-        <h2>{translations.heroInfoTitle}</h2>
-        <p>{translations.heroInfoDescription}</p>
-      </section>
-      <section
-        className="sec-full"
-        style={{ backgroundColor: "rgb(253, 186, 239)" }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://res.cloudinary.com/marcomadera/image/upload/v1645938505/Spotify-Cleaner-App/Mu2_viopob.jpg"
-          alt=""
-          width={500}
-          className="sec-image"
-        />
-        <div className="sec-desc">
-          <span>{translations.section1Eyebrow}</span>
-          <h2 style={{ color: "rgb(210, 64, 230)" }}>
-            {translations.section1Title}
-          </h2>
-          <p>{translations.section1Description}</p>
-          <a href={API_AUTH_URL + params}>{translations.cta}</a>
+        <div>
+          <p>{translations.heroInfoDescription}</p>
         </div>
-      </section>
-      <section
-        className="sec-full"
-        style={{ backgroundColor: "rgb(112, 83, 120)" }}
-      >
-        <div className="sec-desc">
-          <span style={{ color: "#fff" }}>{translations.section2Eyebrow}</span>
-          <h2 style={{ color: "rgb(255, 205, 210)" }}>
-            {translations.section2Title}
-          </h2>
-          <p style={{ color: "#fff" }}>{translations.section2Description}</p>
-          <a href={API_AUTH_URL + params} style={{ color: "#fff" }}>
-            {translations.cta}
-          </a>
+      </CardContainer>
+      {features.map((feature: IFeature) => {
+        return (
+          <FeatureCard
+            key={feature.titleText}
+            titleText={feature.titleText}
+            description={feature.description}
+            eyeBrowText={feature.eyeBrowText}
+            imageSrc={feature.imageSrc}
+            imageAlt={feature.imageAlt}
+            anchorHref={spotifyLoginUrl}
+            anchorText={feature.anchorText}
+          />
+        );
+      })}
+      <CardContainer className="conclude">
+        <div>
+          <h2>{translations.concludeSectionTitle}</h2>
         </div>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://res.cloudinary.com/marcomadera/image/upload/v1645938507/Spotify-Cleaner-App/Mu3_xbb08n.jpg"
-          alt=""
-          width={500}
-          className="sec-image"
-        />
-      </section>
-      <section
-        className="sec-full"
-        style={{ backgroundColor: "rgb(253, 186, 239)" }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://res.cloudinary.com/marcomadera/image/upload/v1645938509/Spotify-Cleaner-App/Mu4_vigcfb.jpg"
-          alt=""
-          width={500}
-          className="sec-image"
-        />
-        <div className="sec-desc">
-          <span>{translations.section3Eyebrow}</span>
-          <h2>{translations.section3Title}</h2>
-          <p>{translations.section3Description}</p>
-          <a href={API_AUTH_URL + params}>{translations.cta}</a>
+        <div>
+          <p>{translations.concludeSectionDescription}</p>
+          <a href={spotifyLoginUrl}>{translations.concludeSectionCta}</a>
         </div>
-      </section>
-      <section
-        className="sec-full"
-        style={{ backgroundColor: "rgb(112, 83, 120)" }}
-      >
-        <div className="sec-desc">
-          <span style={{ color: "#fff" }}>{translations.section4Eyebrow}</span>
-          <h2 style={{ color: "rgb(255, 205, 210)" }}>
-            {translations.section4Title}
-          </h2>
-          <p style={{ color: "#fff" }}>{translations.section4Description}</p>
-          <a href={API_AUTH_URL + params} style={{ color: "#fff" }}>
-            Descubre como
-          </a>
-        </div>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://res.cloudinary.com/marcomadera/image/upload/v1645938516/Spotify-Cleaner-App/Mu5_n7u3cf.jpg"
-          alt=""
-          width={500}
-          className="sec-image"
-        />
-      </section>
-      <section
-        className="sec-full sec-desc"
-        style={{ backgroundColor: "rgb(253, 186, 239)" }}
-      >
-        <h2 style={{ color: "rgb(210, 64, 230)" }}>
-          {translations.concludeSectionTitle}
-        </h2>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <div>
-            <p>{translations.concludeSectionDescription}</p>
-            <a href={API_AUTH_URL + params}>
-              {translations.concludeSectionCta}
-            </a>
-          </div>
-        </div>
-      </section>
+      </CardContainer>
       <style jsx>
         {`
           :global(html, body) {
@@ -170,173 +96,54 @@ const Home: NextPage<HomeProps> = ({ translations }) => {
             display: block;
             margin: 0 auto;
           }
-          .hero-title {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: rgb(112, 83, 120);
-            grid-column-start: 7;
-            grid-column-end: 13;
-            margin-left: -280px;
-            height: 700px;
-          }
-          h1 {
-            font-size: 64px;
-            line-height: 64px;
-            color: rgb(255, 205, 210);
-            margin-left: 24%;
-            max-width: 56.43%;
-            padding: 0px;
-            width: 100%;
-          }
-          h2,
-          p {
+          main :global(.info) {
+            background-color: #fff;
             color: #000;
-            align-self: center;
           }
-          h2 {
-            grid-column-start: 1;
-            grid-column-end: 4;
+          main :global(.info) div {
+            padding: 0;
+          }
+          main :global(.info) h2 {
+            color: #000;
             font-size: 24px;
             font-weight: 800;
             letter-spacing: 0.5px;
           }
-          p {
-            grid-column-start: 5;
-            grid-column-end: 12;
+          main :global(.info) p {
             font-size: 24px;
             font-weight: 600;
             letter-spacing: 0.6px;
             word-spacing: 1.4px;
             line-height: 1.6;
           }
-          .info {
-            max-width: 1568px;
-            padding-left: 64px;
-            padding-right: 64px;
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            position: relative;
-            margin: 64px auto;
+          main :global(.info div:nth-child(1)) {
+            grid-column: 1 / 6;
           }
-          .sec-full {
-            max-width: 1568px;
-            padding: 64px;
-            background-color: rgb(199, 24, 161);
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            position: relative;
-            margin: 0 auto;
+          main :global(.info div:nth-child(2)) {
+            grid-column: 7 / 13;
           }
-          .sec-full > :nth-child(2) {
-            grid-column-start: 7;
-            grid-column-end: 13;
-            padding: 0 32px;
+          main :global(.conclude) div:nth-child(2) {
+            margin: 20px auto;
+            padding: 0;
           }
-          .sec-desc p {
-            font-size: 18px;
-            font-weight: 400;
-          }
-          span {
-            color: #000;
-          }
-          a {
-            color: #000;
-            margin: 32px 0 0 0;
-            font-size: 16px;
-            font-weight: 500;
-            display: block;
-          }
-          .sec-desc h2 {
-            font-size: 48px;
-            letter-spacing: -0.1rem;
-            line-height: 64px;
-            font-weight: 900;
-            color: rgb(210, 64, 230);
-          }
-          .sec-full > :nth-child(1) {
-            grid-column-start: 1;
-            grid-column-end: 6;
-          }
-          .sec-image {
-            margin: 0 auto;
-            left: 0px;
-            top: 50%;
-            transform: translateY(-50%);
-            position: relative;
-          }
-          .hero-image {
-            width: 500px;
-            margin: 0 auto;
-            left: 0px;
-            top: 50%;
-            transform: translateY(-50%);
-            position: relative;
-            width: 100%;
-            height: 80%;
-            grid-column-start: 1;
-            grid-column-end: 7;
-          }
-          .hero {
-            margin-top: 64px;
-            width: 100%;
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            position: relative;
+          main :global(.conclude) div {
+            padding: 0;
           }
           @media screen and (min-width: 0px) and (max-width: 1100px) {
-            .hero,
-            .info,
-            section.sec-full {
+            main :global(.info) {
               display: block;
-            }
-            .sec-full img,
-            .hero img {
-              transform: translateY(0px);
-            }
-            .hero-title {
-              margin: 0;
-            }
-            .hero-title h1 {
-              font-size: 40px;
-              line-height: 40px;
-              max-width: fit-content;
-              margin-left: 0;
               padding: 10px;
             }
-            .hero-title {
-              height: auto;
-              padding: 40px 0;
-              margin-top: -10px;
-            }
-            .info h2 {
+            main :global(.info) h2 {
+              color: #000;
               font-size: 1.4rem;
               line-height: 2.4rem;
             }
-            .info p {
+            main :global(.info) {
+              background-color: #fff;
+            }
+            main :global(.info) p {
               font-size: 20px;
-            }
-            .info {
-              padding: 10px;
-            }
-            section.sec-full {
-              padding: 20px;
-            }
-            section.sec-full img {
-              width: 100%;
-            }
-            div.sec-desc {
-              margin: 20px 0;
-              padding: 0 15px;
-            }
-            .sec-full > :nth-child(2) {
-              margin: 20px 0;
-              padding: 0 15px;
-            }
-          }
-          @media screen and (min-width: 1000px) {
-            .hero {
-              grid-gap: 20px;
             }
           }
         `}

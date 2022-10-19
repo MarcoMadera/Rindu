@@ -191,7 +191,7 @@ export function setupCookies(value?: string): string {
   return preparedValue;
 }
 
-export function setupEnviroment(
+export function setupEnvironment(
   value?: Record<string, string>
 ): Record<string, string> {
   const preparedValue = value ?? {
