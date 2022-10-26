@@ -9,7 +9,7 @@ export default function Footer(): ReactElement {
         {translations.madeBy}{" "}
         <a
           href="https://marcomadera.com"
-          rel="noreferrer noopener"
+          rel="noreferrer noopener me"
           target="_blank"
           translate="no"
         >
