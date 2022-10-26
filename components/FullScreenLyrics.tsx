@@ -27,7 +27,6 @@ export default function FullScreenLyrics({
     setShowLyrics,
     currentlyPlayingDuration,
     isPlaying,
-    progressMs,
     player,
   } = useSpotify();
   const { accessToken, user } = useAuth();
@@ -61,10 +60,19 @@ export default function FullScreenLyrics({
   }, [lyricsProgressMs]);
 
   useEffect(() => {
-    if (progressMs !== null) {
-      setLyricsProgressMs(progressMs);
-    }
-  }, [progressMs]);
+    if (!isPremium) return;
+    (player as Spotify.Player).getCurrentState().then((state) => {
+      if (state) {
+        setLyricsProgressMs(state.position);
+      }
+    });
+
+    (player as Spotify.Player).on("player_state_changed", (state) => {
+      if (state) {
+        setLyricsProgressMs(state.position);
+      }
+    });
+  }, [player, isPremium]);
 
   useLayoutEffect(() => {
     const lyricsBackgroundColor = lyrics?.colors?.background
@@ -147,7 +155,7 @@ export default function FullScreenLyrics({
                   line.startTimeMs &&
                   Number(line.startTimeMs) <= lyricsProgressMs &&
                   lyrics?.lines[i + 1]?.startTimeMs &&
-                  Number(lyrics?.lines[i + 1]?.startTimeMs) > lyricsProgressMs
+                  Number(lyrics?.lines[i + 1]?.startTimeMs) >= lyricsProgressMs
                     ? "-current"
                     : Number(line.startTimeMs) <= lyricsProgressMs
                     ? "-opaque"
