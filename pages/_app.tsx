@@ -11,6 +11,7 @@ import type { AppProps } from "next/app";
 import { ReactElement } from "react";
 import MainLayout from "../layouts/MainLayout";
 import Seo from "../components/Seo";
+import { Analytics } from "@vercel/analytics/react";
 
 const MyApp = ({
   Component,
@@ -33,6 +34,7 @@ const MyApp = ({
                 <Seo />
                 <MainLayout>
                   <Component {...pageProps} />
+                  <Analytics />
                 </MainLayout>
               </ContextMenuContextProvider>
             </SpotifyContextProvider>
