@@ -164,16 +164,16 @@ export default function SideBar(): ReactElement {
       </nav>
       <style jsx>{`
         section:nth-of-type(1) a:nth-of-type(1) {
-          color: ${router.asPath === "/dashboard" ? "#fff" : "inherit"};
-          background: ${router.asPath === "/dashboard" ? "#282828" : "unset"};
+          color: ${router.pathname === "/dashboard" ? "#fff" : "inherit"};
+          background: ${router.pathname === "/dashboard" ? "#282828" : "unset"};
         }
         section:nth-of-type(1) a:nth-of-type(2) {
-          color: ${router.asPath === "/search" ? "#fff" : "inherit"};
-          background: ${router.asPath === "/search" ? "#282828" : "unset"};
+          color: ${router.pathname === "/search" ? "#fff" : "inherit"};
+          background: ${router.pathname === "/search" ? "#282828" : "unset"};
         }
         section:nth-of-type(1) a:nth-of-type(3) {
-          color: ${router.asPath === "/library" ? "#fff" : "inherit"};
-          background: ${router.asPath === "/library" ? "#282828" : "unset"};
+          color: ${router.pathname === "/library" ? "#fff" : "inherit"};
+          background: ${router.pathname === "/library" ? "#282828" : "unset"};
         }
       `}</style>
       <style jsx>{`

@@ -33,7 +33,7 @@ export default function Seo(): ReactElement {
       <link
         rel="canonical"
         href={
-          router.asPath === "/"
+          router.pathname === "/"
             ? getSiteUrl()
             : `${getSiteUrl()}/${router.asPath}`
         }

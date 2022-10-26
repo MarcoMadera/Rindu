@@ -29,7 +29,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
   const { setShowHamburgerMenu } = useSpotify();
   const [showFixed, setShowFixed] = useState(false);
   const router = useRouter();
-  const isLoginPage = router.asPath === "/";
+  const isLoginPage = router.pathname === "/";
 
   useRouterEvents(() => {
     const app = appRef?.current;

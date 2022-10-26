@@ -17,7 +17,7 @@ export default function MainLayout({
   children,
 }: PropsWithChildren): ReactElement {
   const router = useRouter();
-  const isLoginPage = router.asPath === "/";
+  const isLoginPage = router.pathname === "/";
   const appRef = useRef<HTMLDivElement>();
   const { showLyrics, currentlyPlaying } = useSpotify();
   const shouldDisplayLyrics = showLyrics && currentlyPlaying?.type === "track";
