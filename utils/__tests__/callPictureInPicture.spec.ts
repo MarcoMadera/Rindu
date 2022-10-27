@@ -62,9 +62,11 @@ describe("callPictureInPicture", () => {
       value: jest.fn(() => Promise.resolve()),
     });
     const drawImage = jest.fn();
+    const clearRect = jest.fn();
     const canvas = {
       getContext: jest.fn().mockImplementation(() => ({
         drawImage,
+        clearRect,
       })),
     } as unknown as HTMLCanvasElement;
 
