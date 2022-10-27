@@ -48,6 +48,8 @@ export function SpotifyContextProvider({
   const videoRef = useRef<HTMLVideoElement>();
   const [reconnectionError, setReconnectionError] = useState(false);
   const [showLyrics, setShowLyrics] = useToggle();
+  const [isPictureInPictureLyircsCanvas, setIsPictureInPictureLyircsCanvas] =
+    useToggle();
 
   const { user } = useAuth();
   const isPremium = user?.product === "premium";
@@ -143,16 +145,18 @@ export function SpotifyContextProvider({
     if (
       pictureInPictureCanvas.current &&
       videoRef.current &&
-      document.pictureInPictureElement
+      document.pictureInPictureElement &&
+      !isPictureInPictureLyircsCanvas
     ) {
       callPictureInPicture(pictureInPictureCanvas.current, videoRef.current);
     }
-  }, [currentlyPlaying]);
+  }, [currentlyPlaying, isPictureInPictureLyircsCanvas]);
 
   useEffect(() => {
     if (
       (videoRef.current || pictureInPictureCanvas.current || !isPlaying,
-      !currentlyPlaying)
+      !currentlyPlaying) ||
+      isPictureInPictureLyircsCanvas
     ) {
       return;
     }
@@ -180,7 +184,7 @@ export function SpotifyContextProvider({
         setIsPip(true);
       });
     };
-  }, [currentlyPlaying, isPlaying]);
+  }, [currentlyPlaying, isPictureInPictureLyircsCanvas, isPlaying]);
 
   useEffect(() => {
     const duration = currentlyPlaying?.duration_ms;
@@ -332,6 +336,8 @@ export function SpotifyContextProvider({
         setShowLyrics,
         progressMs,
         setProgressMs,
+        isPictureInPictureLyircsCanvas,
+        setIsPictureInPictureLyircsCanvas,
       }}
     >
       {currentlyPlaying?.name && (

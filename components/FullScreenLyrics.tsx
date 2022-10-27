@@ -2,6 +2,7 @@ import useAuth from "hooks/useAuth";
 import useHeader from "hooks/useHeader";
 import useLyrics from "hooks/useLyrics";
 import useSpotify from "hooks/useSpotify";
+import useToast from "hooks/useToast";
 import {
   MutableRefObject,
   ReactElement,
@@ -13,6 +14,7 @@ import { colorCodedToHex, colorCodedToRGB } from "utils/colorCoded";
 import { getRandomColor } from "utils/colors";
 import { hexToHsl } from "utils/hexToHsl";
 import { rgbToHex } from "utils/rgbToHex";
+import { PictureInPicture } from "./icons/PictureInPicture";
 import { LoadingSpinner } from "./LoadingSpinner";
 
 interface FullScreenLyricsProps {
@@ -28,11 +30,18 @@ export default function FullScreenLyrics({
     currentlyPlayingDuration,
     isPlaying,
     player,
+    pictureInPictureCanvas,
+    setIsPictureInPictureLyircsCanvas,
+    isPictureInPictureLyircsCanvas,
+    videoRef,
   } = useSpotify();
   const { accessToken, user } = useAuth();
   const [lyricsProgressMs, setLyricsProgressMs] = useState(0);
   const [lyricLineColor, setLyricLineColor] = useState<string>("#fff");
   const [lyricTextColor, setLyricTextColor] = useState<string>("#fff");
+  const [lyricsBackgroundColor, setLyricsBackgroundColor] = useState<
+    string | undefined
+  >();
   const { lyrics, lyricsError, lyricsLoading } = useLyrics({
     artist: currentlyPlaying?.artists?.[0]?.name,
     title: currentlyPlaying?.name,
@@ -40,6 +49,7 @@ export default function FullScreenLyrics({
     accessToken: accessToken,
   });
   const isPremium = user?.product === "premium";
+  const { addToast } = useToast();
 
   useHeader({
     disableOpacityChange: true,
@@ -94,9 +104,11 @@ export default function FullScreenLyrics({
     const appBackgroundColor: string = app.style.backgroundColor;
 
     app.style.backgroundColor = lyricsBackgroundColor;
+    setLyricsBackgroundColor(lyricsBackgroundColor);
 
     return () => {
       app.style.backgroundColor = appBackgroundColor;
+      setLyricsBackgroundColor(undefined);
     };
   }, [
     appRef,
@@ -122,6 +134,74 @@ export default function FullScreenLyrics({
       clearInterval(playerCallBackInterval);
     };
   }, [setLyricsProgressMs, isPlaying, currentlyPlayingDuration]);
+
+  useEffect(() => {
+    if (!isPictureInPictureLyircsCanvas || !lyrics) return;
+    if (!pictureInPictureCanvas.current) {
+      return;
+    }
+    pictureInPictureCanvas.current.width += 0;
+    const lines = document.querySelectorAll(".line") as NodeListOf<HTMLElement>;
+    const ctx = pictureInPictureCanvas.current.getContext("2d");
+    if (!ctx) {
+      return;
+    }
+    ctx.clearRect(
+      0,
+      0,
+      pictureInPictureCanvas.current.width,
+      pictureInPictureCanvas.current.height
+    );
+    ctx.font = "24px Arial";
+
+    const canvasHeight = pictureInPictureCanvas.current.height;
+    const canvasMiddle = canvasHeight / 2;
+
+    const currentLineIndex = Array.from(lines).findIndex((line) => {
+      return line.classList.contains("line-current");
+    });
+
+    lines.forEach((line, lineNumber) => {
+      const isOpaqueLine = line.classList.contains("line-opaque");
+      const isCurrentLine = line.classList.contains("line-current");
+
+      if (isOpaqueLine) {
+        ctx.fillStyle = "#ccc";
+      }
+      if (isCurrentLine) {
+        ctx.fillStyle = lyricLineColor;
+      }
+      if (!isOpaqueLine && !isCurrentLine) {
+        ctx.fillStyle = lyricTextColor;
+      }
+
+      const lineText = line.textContent;
+      if (!lineText) return;
+      const lineTextHeight = 34;
+      const lineTextY =
+        canvasMiddle + (lineNumber - currentLineIndex) * lineTextHeight;
+      ctx.resetTransform();
+      ctx.fillText(lineText, 10, lineTextY);
+    });
+
+    ctx.globalCompositeOperation = "destination-over";
+    ctx.fillStyle = lyricsBackgroundColor || "#000";
+
+    ctx.fillRect(
+      0,
+      0,
+      pictureInPictureCanvas.current.width,
+      pictureInPictureCanvas.current.height
+    );
+  }, [
+    lyrics,
+    lyricsProgressMs,
+    isPictureInPictureLyircsCanvas,
+    lyricLineColor,
+    lyricTextColor,
+    lyricsBackgroundColor,
+    pictureInPictureCanvas,
+  ]);
 
   return (
     <div className="lyrics-container">
@@ -169,7 +249,90 @@ export default function FullScreenLyrics({
           })}
         </div>
       )}
+      <button
+        className="lyrics-pip-button"
+        onClick={async () => {
+          if (!isPremium) {
+            addToast({
+              variant: "error",
+              message: "Premium Required",
+            });
+          }
+          if (
+            isPictureInPictureLyircsCanvas &&
+            document.pictureInPictureElement
+          ) {
+            await document.exitPictureInPicture();
+            setIsPictureInPictureLyircsCanvas.off();
+            return;
+          }
+          setIsPictureInPictureLyircsCanvas.on();
+          await videoRef.current?.play();
+          await videoRef.current?.requestPictureInPicture();
+        }}
+      >
+        <PictureInPicture />
+      </button>
       <style jsx>{`
+        :global(.app) {
+          position: relative;
+        }
+        .lyrics-pip-button {
+          position: fixed;
+          top: 100px;
+          width: 40px;
+          height: 40px;
+          margin-left: 32px;
+          z-index: 999999999999900;
+          background: transparent;
+          border-radius: 3px;
+          border: 2px solid #fff;
+          color: #fff;
+          padding: 10px;
+          font-size: 16px;
+          cursor: pointer;
+          color: ${isPictureInPictureLyircsCanvas ? "#1db954" : "#ffffffb3"};
+        }
+        .lyrics-pip-button {
+          --border-width: 3px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-family: Lato, sans-serif;
+          font-size: 2.5rem;
+          text-transform: uppercase;
+          background: #222;
+          border-radius: var(--border-width);
+        }
+        .lyrics-pip-button::after {
+          position: absolute;
+          content: "";
+          top: calc(-1 * var(--border-width));
+          left: calc(-1 * var(--border-width));
+          z-index: -1;
+          width: calc(100% + var(--border-width) * 2);
+          height: calc(100% + var(--border-width) * 2);
+          background: linear-gradient(
+            60deg,
+            #5f86f2,
+            #a65ff2,
+            #f25fd0,
+            #f25f61,
+            #f2cb5f,
+            #abf25f,
+            #5ff281,
+            #5ff2f0
+          );
+          background-size: 300% 300%;
+          background-position: 0 50%;
+          border-radius: calc(2 * var(--border-width));
+          animation: moveGradient 4s alternate infinite;
+        }
+        @keyframes moveGradient {
+          50% {
+            background-position: 100% 50%;
+          }
+        }
         .line {
           display: block;
           color: ${lyricTextColor};
@@ -194,6 +357,8 @@ export default function FullScreenLyrics({
           letter-spacing: -0.04em;
           line-height: 42px;
           max-width: max-content;
+          position: sticky;
+          top: 0;
         }
         .line-opaque {
           opacity: 0.5;
