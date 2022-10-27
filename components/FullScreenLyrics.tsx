@@ -12,6 +12,7 @@ import {
 } from "react";
 import { colorCodedToHex, colorCodedToRGB } from "utils/colorCoded";
 import { getRandomColor } from "utils/colors";
+import { getLinesFittingCanvas } from "utils/getLinesFittingCanvas";
 import { hexToHsl } from "utils/hexToHsl";
 import { rgbToHex } from "utils/rgbToHex";
 import { PictureInPicture } from "./icons/PictureInPicture";
@@ -140,7 +141,6 @@ export default function FullScreenLyrics({
     if (!pictureInPictureCanvas.current) {
       return;
     }
-    pictureInPictureCanvas.current.width += 0;
     const lines = document.querySelectorAll(".line") as NodeListOf<HTMLElement>;
     const ctx = pictureInPictureCanvas.current.getContext("2d");
     if (!ctx) {
@@ -157,31 +157,45 @@ export default function FullScreenLyrics({
     const canvasHeight = pictureInPictureCanvas.current.height;
     const canvasMiddle = canvasHeight / 2;
 
-    const currentLineIndex = Array.from(lines).findIndex((line) => {
-      return line.classList.contains("line-current");
-    });
+    const lineHeight = 40;
+    const allLines: {
+      color: string;
+      text: string;
+      type: "opaque" | "current" | "normal";
+    }[] = [];
 
-    lines.forEach((line, lineNumber) => {
+    lines.forEach((line) => {
       const isOpaqueLine = line.classList.contains("line-opaque");
       const isCurrentLine = line.classList.contains("line-current");
+      const color = isOpaqueLine
+        ? "#ccc"
+        : isCurrentLine
+        ? lyricLineColor
+        : lyricTextColor;
 
-      if (isOpaqueLine) {
-        ctx.fillStyle = "#ccc";
-      }
-      if (isCurrentLine) {
-        ctx.fillStyle = lyricLineColor;
-      }
-      if (!isOpaqueLine && !isCurrentLine) {
-        ctx.fillStyle = lyricTextColor;
-      }
+      const linesText = getLinesFittingCanvas(
+        ctx,
+        line.textContent || "",
+        (pictureInPictureCanvas.current?.width || 10) - 20
+      );
+      linesText.forEach((lineText) => {
+        allLines.push({
+          color,
+          text: lineText,
+          type: isOpaqueLine ? "opaque" : isCurrentLine ? "current" : "normal",
+        });
+      });
+    });
 
-      const lineText = line.textContent;
-      if (!lineText) return;
-      const lineTextHeight = 34;
-      const lineTextY =
-        canvasMiddle + (lineNumber - currentLineIndex) * lineTextHeight;
-      ctx.resetTransform();
-      ctx.fillText(lineText, 10, lineTextY);
+    const currentLineIndex = allLines.findIndex(
+      (line) => line.type === "current"
+    );
+
+    allLines.forEach((line, index) => {
+      const lineY = canvasMiddle + lineHeight * (index - currentLineIndex);
+
+      ctx.fillStyle = line.color;
+      ctx.fillText(line.text, 10, lineY);
     });
 
     ctx.globalCompositeOperation = "destination-over";
@@ -249,51 +263,55 @@ export default function FullScreenLyrics({
           })}
         </div>
       )}
-      <button
-        className="lyrics-pip-button"
-        onClick={async () => {
-          if (!isPremium) {
-            addToast({
-              variant: "error",
-              message: "Premium Required",
-            });
-          }
-          if (
-            isPictureInPictureLyircsCanvas &&
-            document.pictureInPictureElement
-          ) {
-            await document.exitPictureInPicture();
-            setIsPictureInPictureLyircsCanvas.off();
-            return;
-          }
-          setIsPictureInPictureLyircsCanvas.on();
-          await videoRef.current?.play();
-          await videoRef.current?.requestPictureInPicture();
-        }}
-      >
-        <PictureInPicture />
-      </button>
+      {!!document?.pictureInPictureEnabled && (
+        <button
+          className="lyrics-pip-button"
+          onClick={async () => {
+            if (!isPremium) {
+              addToast({
+                variant: "error",
+                message: "Premium Required",
+              });
+            }
+            if (!lyrics) {
+              addToast({
+                variant: "error",
+                message: "No lyrics to show",
+              });
+              return;
+            }
+            if (
+              isPictureInPictureLyircsCanvas &&
+              document.pictureInPictureElement
+            ) {
+              await document.exitPictureInPicture();
+              setIsPictureInPictureLyircsCanvas.off();
+              return;
+            }
+            setIsPictureInPictureLyircsCanvas.on();
+            await videoRef.current?.play();
+            await videoRef.current?.requestPictureInPicture();
+          }}
+        >
+          <PictureInPicture />
+        </button>
+      )}
       <style jsx>{`
         :global(.app) {
           position: relative;
         }
         .lyrics-pip-button {
           position: fixed;
-          top: 100px;
+          top: 50%;
+          transform: translateY(-50%);
+          right: 30px;
           width: 40px;
           height: 40px;
-          margin-left: 32px;
+          margin: 0 32px;
           z-index: 999999999999900;
-          background: transparent;
-          border-radius: 3px;
-          border: 2px solid #fff;
-          color: #fff;
           padding: 10px;
-          font-size: 16px;
           cursor: pointer;
           color: ${isPictureInPictureLyircsCanvas ? "#1db954" : "#ffffffb3"};
-        }
-        .lyrics-pip-button {
           --border-width: 3px;
           display: flex;
           justify-content: center;
@@ -301,8 +319,11 @@ export default function FullScreenLyrics({
           font-family: Lato, sans-serif;
           font-size: 2.5rem;
           text-transform: uppercase;
-          background: #222;
-          border-radius: var(--border-width);
+          background: ${lyricsBackgroundColor};
+          border: none;
+        }
+        .lyrics-pip-button:hover {
+          filter: brightness(1.2);
         }
         .lyrics-pip-button::after {
           position: absolute;
@@ -314,14 +335,9 @@ export default function FullScreenLyrics({
           height: calc(100% + var(--border-width) * 2);
           background: linear-gradient(
             60deg,
-            #5f86f2,
-            #a65ff2,
-            #f25fd0,
-            #f25f61,
-            #f2cb5f,
-            #abf25f,
-            #5ff281,
-            #5ff2f0
+            ${lyricsBackgroundColor} 0%,
+            #ffffff80 50%,
+            ${lyricsBackgroundColor} 100%
           );
           background-size: 300% 300%;
           background-position: 0 50%;
