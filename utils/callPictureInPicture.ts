@@ -12,7 +12,14 @@ export async function callPictureInPicture(
     if (!imgSrc) return;
     image.src = imgSrc;
     await image.decode();
-    pictureInPictureCanvas?.getContext("2d")?.drawImage(image, 0, 0, 512, 512);
+    const ctx = pictureInPictureCanvas?.getContext("2d");
+    ctx?.clearRect(
+      0,
+      0,
+      pictureInPictureCanvas.width,
+      pictureInPictureCanvas.height
+    );
+    ctx?.drawImage(image, 0, 0, 512, 512);
 
     await video?.play();
     await video?.requestPictureInPicture();

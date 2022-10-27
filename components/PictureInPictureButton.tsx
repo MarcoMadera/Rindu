@@ -4,23 +4,36 @@ import { callPictureInPicture } from "utils/callPictureInPicture";
 import { PictureInPicture } from "./icons/PictureInPicture";
 
 export default function PictureInPictureButton(): ReactElement {
-  const { pictureInPictureCanvas, videoRef, setIsPip, isPip } = useSpotify();
+  const {
+    pictureInPictureCanvas,
+    videoRef,
+    setIsPip,
+    isPip,
+    isPictureInPictureLyircsCanvas,
+    setIsPictureInPictureLyircsCanvas,
+  } = useSpotify();
   return (
     <button
       type="button"
       aria-label="Picture in Picture"
       className="navBar-Button pictureInPicture"
-      onClick={() => {
+      onClick={async () => {
         if (pictureInPictureCanvas.current && videoRef.current) {
-          if (isPip && document.pictureInPictureElement) {
+          if (
+            isPip &&
+            document.pictureInPictureElement &&
+            !isPictureInPictureLyircsCanvas
+          ) {
             setIsPip(false);
-            document.exitPictureInPicture();
+            setIsPictureInPictureLyircsCanvas.off();
+            await document.exitPictureInPicture();
           } else {
+            setIsPictureInPictureLyircsCanvas.off();
+            setIsPip(true);
             callPictureInPicture(
               pictureInPictureCanvas.current,
               videoRef.current
             );
-            setIsPip(true);
           }
         }
       }}
@@ -35,10 +48,14 @@ export default function PictureInPictureButton(): ReactElement {
           color: #ffffffb3;
         }
         .navBar-Button.pictureInPicture {
-          color: ${isPip ? "#1db954" : "#ffffffb3"};
+          color: ${isPip && !isPictureInPictureLyircsCanvas
+            ? "#1db954"
+            : "#ffffffb3"};
         }
         .navBar-Button.pictureInPicture:hover {
-          color: ${isPip ? "#1db954" : "#fff"};
+          color: ${isPip && !isPictureInPictureLyircsCanvas
+            ? "#1db954"
+            : "#fff"};
         }
       `}</style>
     </button>

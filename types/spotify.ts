@@ -106,6 +106,8 @@ export interface ISpotifyContext {
   ) => Promise<string | undefined>;
   showLyrics: boolean;
   setShowLyrics: IUseToggleHandlers;
+  isPictureInPictureLyircsCanvas: boolean;
+  setIsPictureInPictureLyircsCanvas: IUseToggleHandlers;
   progressMs: number | null;
   setProgressMs: Dispatch<SetStateAction<number | null>>;
 }
