@@ -51,6 +51,10 @@ export default function FullScreenLyrics({
   });
   const isPremium = user?.product === "premium";
   const { addToast } = useToast();
+  const title = currentlyPlaying?.name || "";
+  const artist = currentlyPlaying?.artists?.[0]?.name || "";
+  const album = currentlyPlaying?.album?.name || "";
+  const cover = currentlyPlaying?.album?.images?.[0]?.url || "";
 
   useHeader({
     disableOpacityChange: true,
@@ -137,7 +141,7 @@ export default function FullScreenLyrics({
   }, [setLyricsProgressMs, isPlaying, currentlyPlayingDuration]);
 
   useEffect(() => {
-    if (!isPictureInPictureLyircsCanvas || !lyrics) return;
+    if (!isPictureInPictureLyircsCanvas) return;
     if (!pictureInPictureCanvas.current) {
       return;
     }
@@ -146,16 +150,16 @@ export default function FullScreenLyrics({
     if (!ctx) {
       return;
     }
-    ctx.clearRect(
-      0,
-      0,
-      pictureInPictureCanvas.current.width,
-      pictureInPictureCanvas.current.height
-    );
+    const canvasHeight = pictureInPictureCanvas.current.height - 100;
+
+    ctx.clearRect(0, 100, pictureInPictureCanvas.current.width, canvasHeight);
     ctx.font = "24px Arial";
 
-    const canvasHeight = pictureInPictureCanvas.current.height;
     const canvasMiddle = canvasHeight / 2;
+    if (lyricsError) {
+      ctx.fillStyle = lyricTextColor;
+      ctx.fillText(lyricsError, 10, canvasMiddle);
+    }
 
     const lineHeight = 40;
     const allLines: {
@@ -168,7 +172,7 @@ export default function FullScreenLyrics({
       const isOpaqueLine = line.classList.contains("line-opaque");
       const isCurrentLine = line.classList.contains("line-current");
       const color = isOpaqueLine
-        ? "#ccc"
+        ? lyricTextColor + "80" // 50% opacity
         : isCurrentLine
         ? lyricLineColor
         : lyricTextColor;
@@ -192,9 +196,12 @@ export default function FullScreenLyrics({
     );
 
     allLines.forEach((line, index) => {
-      const lineY = canvasMiddle + lineHeight * (index - currentLineIndex);
-
+      const lineY =
+        100 + canvasMiddle + lineHeight * (index - currentLineIndex);
       ctx.fillStyle = line.color;
+      const limit = lineHeight + 100;
+      const isOutsideCanvas = lineY < limit || lineY > canvasHeight + limit;
+      if (isOutsideCanvas) return;
       ctx.fillText(line.text, 10, lineY);
     });
 
@@ -208,13 +215,64 @@ export default function FullScreenLyrics({
       pictureInPictureCanvas.current.height
     );
   }, [
-    lyrics,
+    lyricsError,
     lyricsProgressMs,
     isPictureInPictureLyircsCanvas,
     lyricLineColor,
     lyricTextColor,
     lyricsBackgroundColor,
     pictureInPictureCanvas,
+  ]);
+
+  useEffect(() => {
+    if (!isPictureInPictureLyircsCanvas || !pictureInPictureCanvas.current)
+      return;
+    const ctx = pictureInPictureCanvas.current.getContext("2d");
+    if (!ctx) {
+      return;
+    }
+    const drawImage = async (url: string) => {
+      const image = new Image();
+      image.crossOrigin = "Anonymous";
+      image.src = url;
+      await image.decode();
+      ctx?.clearRect(10, 10, 80, 80);
+      ctx?.drawImage(image, 10, 10, 80, 80);
+    };
+    ctx?.clearRect(0, 0, pictureInPictureCanvas.current.width, 100);
+
+    ctx.font = "22px Arial";
+    ctx.fillStyle = lyricTextColor;
+    ctx.fillText(title, 100, 30);
+    ctx.font = "18px Arial";
+    ctx.fillText(artist, 100, 60);
+    ctx.font = "16px Arial";
+    ctx.fillText(album, 100, 90);
+    if (cover) {
+      drawImage(cover);
+    } else {
+      ctx.clearRect(10, 10, 80, 80);
+    }
+
+    ctx.globalCompositeOperation = "destination-over";
+    ctx.fillStyle = lyricsBackgroundColor || "#000";
+
+    ctx.fillRect(
+      0,
+      0,
+      pictureInPictureCanvas.current.width,
+      pictureInPictureCanvas.current.height
+    );
+  }, [
+    lyricsBackgroundColor,
+    title,
+    artist,
+    album,
+    cover,
+    isPictureInPictureLyircsCanvas,
+    lyrics,
+    pictureInPictureCanvas,
+    lyricTextColor,
   ]);
 
   return (

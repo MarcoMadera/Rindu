@@ -198,7 +198,7 @@ export default function Slider({
         <div className="barBackground">
           <div className="lineContainer">
             <div
-              className="line"
+              className="slider-line"
               style={{
                 transform: `translateX(calc(-100% + ${progressPercent}%))`,
               }}
@@ -252,7 +252,7 @@ export default function Slider({
           z-index: 900;
           position: relative;
         }
-        .line {
+        .slider-line {
           border-radius: 2px;
           height: 4px;
           width: 100%;
@@ -289,7 +289,7 @@ export default function Slider({
         .transformation .dot {
           display: ${isPressingMouse || showDot ? "block" : "none"};
         }
-        .line {
+        .slider-line {
           background-color: ${isPressingMouse || showDot
             ? "#1db954"
             : "#b3b3b3"};
