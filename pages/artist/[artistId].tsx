@@ -27,7 +27,7 @@ import { getSiteUrl } from "utils/environment";
 import Carousel from "components/Carousel";
 import SubTitle from "components/SubtTitle";
 import { getSetLists, SetLists } from "utils/getSetLists";
-import { ArtistsInfo, getArtistInfo, Artist } from "utils/getArtistInfo";
+import { getArtistInfo, Artist } from "utils/getArtistInfo";
 import { conjuction } from "utils/conjuction";
 import { CardType } from "components/CardContent";
 import ContentContainer from "components/ContentContainer";
@@ -47,7 +47,7 @@ interface ArtistPageProps {
   accessToken?: string;
   user: SpotifyApi.UserObjectPrivate | null;
   setLists: SetLists | null;
-  artistInfo: ArtistsInfo | null;
+  artistInfo: Artist | null;
   translations: Record<string, string>;
 }
 
@@ -64,11 +64,7 @@ export default function ArtistPage({
 }: ArtistPageProps): ReactElement {
   const { setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
-  const banner =
-    artistInfo?.artists?.[0]?.strArtistFanart ||
-    artistInfo?.artists?.[0]?.strArtistFanart2 ||
-    artistInfo?.artists?.[0]?.strArtistFanart3 ||
-    artistInfo?.artists?.[0]?.strArtistFanart4;
+  const banner = artistInfo?.banner;
   const { setElement } = useHeader({
     alwaysDisplayColor: false,
     disableOpacityChange: !!banner,
@@ -162,9 +158,7 @@ export default function ArtistPage({
     currentArtist?.followers?.total,
   ]);
 
-  const artistBiography =
-    artistInfo?.artists?.[0]?.[translations.strBiography as keyof Artist] ??
-    artistInfo?.artists?.[0]?.strBiographyEN;
+  const artistBiography = artistInfo?.bio?.content;
 
   return (
     <ContentContainer hasPageHeader>
@@ -370,33 +364,30 @@ export default function ArtistPage({
                 {translations.about}
               </Heading>
               {showMoreAbout ? (
-                <p>{artistBiography}</p>
+                <p
+                  dangerouslySetInnerHTML={{ __html: artistInfo?.bio?.content }}
+                ></p>
               ) : (
-                <p>
-                  {artistBiography?.slice(0, 2000)}
-                  {artistBiography?.length > 2000 ? "..." : ""}
-                </p>
+                <p
+                  dangerouslySetInnerHTML={{ __html: artistInfo?.bio?.summary }}
+                ></p>
               )}
-              {artistBiography.length > 2000 ? (
-                <button
-                  type="button"
-                  className="read-more"
-                  onClick={() => {
-                    setShowMoreAbout((prev) => !prev);
-                  }}
-                >
-                  {showMoreAbout
-                    ? translations.readLess
-                    : translations.readMore}
-                </button>
-              ) : null}
+              <button
+                type="button"
+                className="read-more"
+                onClick={() => {
+                  setShowMoreAbout((prev) => !prev);
+                }}
+              >
+                {showMoreAbout ? translations.readLess : translations.readMore}
+              </button>
             </div>
             <div className="artist-about-img-container">
-              {artistInfo?.artists?.[0]?.strArtistThumb && (
+              {artistInfo?.thumb && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   className="artist-about-img"
-                  src={artistInfo?.artists?.[0]?.strArtistThumb}
+                  src={artistInfo?.thumb}
                   alt={currentArtist?.name}
                 />
               )}
@@ -432,7 +423,8 @@ export default function ArtistPage({
           color: #b3b3b3;
           margin: 0;
         }
-        a {
+        a,
+        .about :global(a) {
           color: #b3b3b3;
         }
         .set {
@@ -660,8 +652,9 @@ export async function getServerSideProps({
 
   const currentArtist = await getArtistById(artistId, accessToken, cookies);
   const setListAPIKey = process.env.SETLIST_FM_API_KEY;
+  const lastFMAPIKey = process.env.LAST_FM_API_KEY;
   const setListsProm = await getSetLists(currentArtist?.name, setListAPIKey);
-  const artistInfoProm = await getArtistInfo(currentArtist?.name);
+  const artistInfoProm = await getArtistInfo(currentArtist?.name, lastFMAPIKey);
 
   const topTracksProm = await getArtistTopTracks(
     artistId,

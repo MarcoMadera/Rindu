@@ -1,4 +1,4 @@
-import { ArtistsInfo } from "utils/getArtistInfo";
+import { Artist } from "utils/getArtistInfo";
 import { IRefreshAccessTokenResponse } from "utils/spotifyCalls/refreshAccessToken";
 import { ITrack } from "./spotify";
 
@@ -15,7 +15,7 @@ export interface IUtilsMocks {
   trackFull: SpotifyApi.TrackObjectFull;
   track: ITrack;
   playlistTrackResponse: SpotifyApi.PlaylistTrackObject;
-  artistInfo: ArtistsInfo;
+  artistInfo: Artist;
   refreshAccessTokenResponse: IRefreshAccessTokenResponse;
   setupCookies: (value?: string) => string;
   setupEnvironment: (value?: Record<string, string>) => string;

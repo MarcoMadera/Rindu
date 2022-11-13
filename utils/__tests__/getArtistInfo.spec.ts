@@ -15,10 +15,10 @@ describe("getArtistInfo", () => {
 
   it("should call fetch", async () => {
     expect.assertions(1);
-    mockFetchSuccess({ artists: [artistInfo] }, true);
+    mockFetchSuccess({ artist: artistInfo }, true);
 
     const result = await getArtistInfo("artistName");
-    expect(result).toStrictEqual({ artists: [artistInfo] });
+    expect(result).toStrictEqual(artistInfo);
   });
 
   it("should return null if response is not ok", async () => {
