@@ -1,67 +1,76 @@
 export interface Artist {
-  idArtist: string;
-  strArtist: string;
-  strArtistStripped: null;
-  strArtistAlternate: string;
-  strLabel: string;
-  idLabel: string;
-  intFormedYear: string;
-  intBornYear: string;
-  intDiedYear: null;
-  strDisbanded: null;
-  strStyle: string;
-  strGenre: string;
-  strMood: string;
-  strWebsite: string;
-  strFacebook: string;
-  strTwitter: string;
-  strGender: string;
-  intMembers: string;
-  strCountry: string;
-  strCountryCode: string;
-  strArtistThumb: string;
-  strArtistLogo: string;
-  strArtistCutout: string;
-  strArtistClearart: string;
-  strArtistWideThumb: string;
-  strArtistFanart: string;
-  strArtistFanart2: string;
-  strArtistFanart3: string;
-  strArtistFanart4: string;
-  strArtistBanner: string;
-  strMusicBrainzID: string;
-  strISNIcode: null;
-  strLastFMChart: string;
-  intCharted: string;
-  strLocked: string;
-  strBiographyEN: string | null;
-  strBiographyDE: string | null;
-  strBiographyFR: string | null;
-  strBiographyCN: string | null;
-  strBiographyIT: string | null;
-  strBiographyJP: string | null;
-  strBiographyRU: string | null;
-  strBiographyES: string | null;
-  strBiographyPT: string | null;
-  strBiographySE: string | null;
-  strBiographyNL: string | null;
-  strBiographyHU: string | null;
-  strBiographyNO: string | null;
-  strBiographyIL: string | null;
-  strBiographyPL: string | null;
+  name: string;
+  mbid?: string;
+  url: string;
+  image: {
+    "#text": string;
+    size: string;
+  }[];
+  streamable: string;
+  ontour: string;
+  stats: {
+    listeners: string;
+    playcount: string;
+  };
+  similar: {
+    artist: Artist[];
+  };
+  tags: {
+    tag: {
+      name: string;
+      url: string;
+    }[];
+  };
+  bio: {
+    links: {
+      link: {
+        "#text": string;
+        rel: string;
+        href: string;
+      };
+    };
+    published: string;
+    summary: string;
+    content: string;
+  };
+  banner?: string;
+  thumb?: string;
 }
 
-export interface ArtistsInfo {
-  artists: Artist[];
+interface FanArtData {
+  name: string;
+  mbid_id: string;
+  artistbackground: {
+    id: string;
+    url: string;
+    likes: string;
+  }[];
+  artistthumb: {
+    id: string;
+    url: string;
+    likes: string;
+  }[];
+  albums: Record<string, unknown>[];
+  musiclogo: {
+    id: string;
+    url: string;
+    likes: string;
+  }[];
+  musicbanner: {
+    id: string;
+    url: string;
+    likes: string;
+  }[];
 }
 
 export async function getArtistInfo(
-  artistName?: string
-): Promise<ArtistsInfo | null> {
+  artistName?: string,
+  api?: string
+): Promise<Artist | null> {
   if (!artistName) return null;
   try {
     const res = await fetch(
-      `https://www.theaudiodb.com/api/v1/json/2/search.php?s=${artistName}`,
+      `http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${artistName}&api_key=${api}&format=json`,
       {
         method: "GET",
         headers: {
@@ -71,8 +80,22 @@ export async function getArtistInfo(
     );
 
     if (res.ok) {
-      const data: ArtistsInfo = await res.json();
-      return data;
+      const data: { artist: Artist } = await res.json();
+      if (data?.artist?.mbid) {
+        const fanArtRes = await fetch(
+          `http://webservice.fanart.tv/v3/music/${data.artist.mbid}?api_key=${process.env.FAN_ART_TV_API_KEY}`
+        );
+        if (fanArtRes.ok) {
+          const fanArtData: FanArtData = await fanArtRes.json();
+          const artist = {
+            ...data.artist,
+            banner: fanArtData?.artistbackground?.[0]?.url,
+            thumb: fanArtData?.artistthumb?.[0]?.url,
+          };
+          return artist;
+        }
+      }
+      return data.artist;
     }
     return null;
   } catch (error) {

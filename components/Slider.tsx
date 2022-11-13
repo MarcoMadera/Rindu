@@ -258,7 +258,7 @@ export default function Slider({
           width: 100%;
           user-select: none;
         }
-        .transformation:hover .line {
+        .transformation:hover .slider-line {
           background-color: #1db954;
           user-select: none;
         }

@@ -4,7 +4,7 @@ import {
   EXPIRE_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
 } from "utils/constants";
-import { ArtistsInfo } from "utils/getArtistInfo";
+import { Artist } from "utils/getArtistInfo";
 
 export const accessToken = "accessToken";
 export const refreshToken = "refreshToken";
@@ -119,61 +119,27 @@ export const playlistTrackResponse: SpotifyApi.PlaylistTrackObject = {
   track: trackFull,
 };
 
-export const artistInfo: ArtistsInfo = {
-  artists: [
-    {
-      idArtist: "",
-      strArtist: "",
-      strArtistStripped: null,
-      strArtistAlternate: "",
-      strLabel: "",
-      idLabel: "",
-      intFormedYear: "",
-      intBornYear: "",
-      intDiedYear: null,
-      strDisbanded: null,
-      strStyle: "",
-      strGenre: "",
-      strMood: "",
-      strWebsite: "",
-      strFacebook: "",
-      strTwitter: "",
-      strGender: "",
-      intMembers: "",
-      strCountry: "",
-      strCountryCode: "",
-      strArtistThumb: "",
-      strArtistLogo: "",
-      strArtistCutout: "",
-      strArtistClearart: "",
-      strArtistWideThumb: "",
-      strArtistFanart: "",
-      strArtistFanart2: "",
-      strArtistFanart3: "",
-      strArtistFanart4: "",
-      strArtistBanner: "",
-      strMusicBrainzID: "",
-      strISNIcode: null,
-      strLastFMChart: "",
-      intCharted: "",
-      strLocked: "",
-      strBiographyEN: "",
-      strBiographyDE: "",
-      strBiographyFR: "",
-      strBiographyCN: "",
-      strBiographyIT: "",
-      strBiographyJP: "",
-      strBiographyRU: "",
-      strBiographyES: "",
-      strBiographyPT: "",
-      strBiographySE: "",
-      strBiographyNL: "",
-      strBiographyHU: "",
-      strBiographyNO: "",
-      strBiographyIL: "",
-      strBiographyPL: "",
+export const artistInfo: Artist = {
+  name: "artist",
+  image: [{ "#text": "url", size: "large" }],
+  tags: { tag: [{ name: "tag", url: "url" }] },
+  bio: {
+    links: {
+      link: {
+        "#text": "text",
+        href: "href",
+        rel: "rel",
+      },
     },
-  ],
+    published: "published",
+    summary: "summary",
+    content: "content",
+  },
+  similar: { artist: [] },
+  ontour: "0",
+  stats: { listeners: "0", playcount: "0" },
+  url: "url",
+  streamable: "0",
 };
 
 export const refreshAccessTokenResponse = {
