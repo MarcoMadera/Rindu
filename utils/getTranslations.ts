@@ -87,6 +87,8 @@ const pageHeaderTranslations = {
     minutes: "minutes",
     popularity: "popularity",
     publicPlaylist: "public playlists",
+    listeners: "listeners",
+    plays: "plays",
   },
   [Language.ES]: {
     pageHeaderArtist: "ARTISTA",
@@ -105,6 +107,8 @@ const pageHeaderTranslations = {
     minutes: "minutos",
     popularity: "popularidad",
     publicPlaylist: "playlist públicas",
+    listeners: "escuchas",
+    plays: "reproducciones",
   },
 };
 

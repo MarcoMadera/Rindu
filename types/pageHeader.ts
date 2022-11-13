@@ -31,6 +31,7 @@ interface IPageHeader {
   disableOpacityChange?: never;
   ownerId?: never;
   ownerDisplayName?: never;
+  stats?: never;
 }
 
 interface IAlbumLike {
@@ -54,6 +55,10 @@ interface IArtist {
   totalFollowers: number;
   banner?: string;
   disableOpacityChange?: boolean;
+  stats?: {
+    listeners: string;
+    playcount: string;
+  };
 }
 type Artist = Modify<IPageHeader, IArtist>;
 
