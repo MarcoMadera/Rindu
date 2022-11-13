@@ -174,6 +174,7 @@ export default function ArtistPage({
         popularity={currentArtist?.popularity ?? 0}
         banner={banner ?? ""}
         disableOpacityChange={!!banner}
+        stats={artistInfo?.stats}
       />
       <div className="options">
         <PlayButton uri={currentArtist?.uri} size={56} centerSize={28} />

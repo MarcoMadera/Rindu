@@ -32,6 +32,7 @@ export default function PageHeader({
   data,
   banner,
   disableOpacityChange,
+  stats,
 }: HeaderProps): ReactElement {
   const { setHeaderColor } = useHeader({ disableOpacityChange });
   const router = useRouter();
@@ -127,6 +128,24 @@ export default function PageHeader({
                   <a className="userLink">{decode(ownerDisplayName)}</a>
                 </Link>
               )
+            )}
+            {type === HeaderType.artist && (
+              <span className="stats">
+                {stats?.listeners && (
+                  <span className="stat">
+                    {formatNumber(Number(stats?.listeners))}{" "}
+                    {translations.listeners}
+                    <>&nbsp;&middot;</>&nbsp;
+                  </span>
+                )}
+                {stats?.playcount && (
+                  <span className="stat">
+                    {formatNumber(Number(stats?.playcount))}{" "}
+                    {translations.plays}
+                    <>&nbsp;&middot;</>&nbsp;
+                  </span>
+                )}
+              </span>
             )}
             {(totalFollowers ?? 0) > 0 ? (
               <span>
