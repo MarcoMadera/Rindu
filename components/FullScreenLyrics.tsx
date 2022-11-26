@@ -35,6 +35,7 @@ export default function FullScreenLyrics({
     setIsPictureInPictureLyircsCanvas,
     isPictureInPictureLyircsCanvas,
     videoRef,
+    isPip,
   } = useSpotify();
   const { accessToken, user } = useAuth();
   const [lyricsProgressMs, setLyricsProgressMs] = useState(0);
@@ -90,33 +91,33 @@ export default function FullScreenLyrics({
   }, [player, isPremium]);
 
   useLayoutEffect(() => {
-    const lyricsBackgroundColor = lyrics?.colors?.background
+    const app = appRef?.current;
+    const newLyricsBackgroundColor = lyrics?.colors?.background
       ? rgbToHex(colorCodedToRGB(lyrics.colors.background))
-      : getRandomColor();
-    const [h, s, l] = hexToHsl(lyricsBackgroundColor, true) || [];
+      : lyricsBackgroundColor ?? getRandomColor();
+    const [h, s, l] = hexToHsl(newLyricsBackgroundColor, true) || [];
     setLyricLineColor(
       lyrics?.colors?.highlightText
         ? colorCodedToHex(lyrics.colors.highlightText)
-        : `hsl(${h}, ${s}%, ${l - 20}%)`
+        : lyricLineColor ?? `hsl(${h}, ${s}%, ${l - 20}%)`
     );
     setLyricTextColor(
       lyrics?.colors?.text
         ? rgbToHex(colorCodedToRGB(lyrics.colors.text))
-        : `hsl(${h}, ${s}%, ${l - 20}%)`
+        : lyricTextColor ?? `hsl(${h}, ${s}%, ${l - 20}%)`
     );
-    const app = appRef?.current;
+
     if (currentlyPlaying?.type !== "track" || !app) return setShowLyrics.off();
-    const appBackgroundColor: string = app.style.backgroundColor;
-
-    app.style.backgroundColor = lyricsBackgroundColor;
-    setLyricsBackgroundColor(lyricsBackgroundColor);
-
+    app.style.backgroundColor = newLyricsBackgroundColor;
+    setLyricsBackgroundColor(newLyricsBackgroundColor);
     return () => {
-      app.style.backgroundColor = appBackgroundColor;
-      setLyricsBackgroundColor(undefined);
+      app.style.backgroundColor = "inherit";
     };
   }, [
     appRef,
+    lyricsBackgroundColor,
+    lyricLineColor,
+    lyricTextColor,
     currentlyPlaying?.type,
     lyrics?.colors?.background,
     lyrics?.colors?.highlightText,
@@ -239,7 +240,10 @@ export default function FullScreenLyrics({
       ctx?.clearRect(10, 10, 80, 80);
       ctx?.drawImage(image, 10, 10, 80, 80);
     };
-    ctx?.clearRect(0, 0, pictureInPictureCanvas.current.width, 100);
+    ctx?.clearRect(0, 0, 10, 100);
+    ctx?.clearRect(10, 90, pictureInPictureCanvas.current.width, 10);
+    ctx?.clearRect(0, 0, pictureInPictureCanvas.current.width, 10);
+    ctx?.clearRect(90, 0, pictureInPictureCanvas.current.width - 90, 100);
 
     ctx.font = "22px Arial";
     ctx.fillStyle = lyricTextColor;
@@ -369,7 +373,9 @@ export default function FullScreenLyrics({
           z-index: 999999999999900;
           padding: 10px;
           cursor: pointer;
-          color: ${isPictureInPictureLyircsCanvas ? "#1db954" : "#ffffffb3"};
+          color: ${isPip && isPictureInPictureLyircsCanvas
+            ? "#1db954"
+            : "#ffffffb3"};
           --border-width: 3px;
           display: flex;
           justify-content: center;
