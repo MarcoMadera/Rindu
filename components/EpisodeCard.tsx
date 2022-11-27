@@ -5,6 +5,7 @@ import useToast from "hooks/useToast";
 import Link from "next/link";
 import { ReactElement, useEffect, useState } from "react";
 import { AsType } from "types/heading";
+import { getSiteUrl } from "utils/environment";
 import { formatTime } from "utils/formatTime";
 import { getTimeAgo } from "utils/getTimeAgo";
 import { playCurrentTrack } from "utils/playCurrentTrack";
@@ -146,7 +147,7 @@ export default function EpisodeCard({
             aria-label="Share"
             onClick={() => {
               navigator.clipboard.writeText(
-                `https://rindu.app/episode/${item.id}`
+                `${getSiteUrl()}/episode/${item.id}`
               );
               addToast({
                 message: "Link copied to clipboard",
