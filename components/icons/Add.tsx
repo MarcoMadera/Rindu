@@ -4,6 +4,7 @@ import AddAnimation from "animations/add-circle.json";
 export default function Add(
   props: SVGProps<SVGSVGElement> & {
     handleClick?: () => Promise<boolean>;
+    isAdded?: boolean;
   }
 ): ReactElement {
   const { View, playSegments } = useLottie(
@@ -11,7 +12,7 @@ export default function Add(
       animationData: AddAnimation,
       loop: false,
       autoplay: false,
-      initialSegment: [0, 1],
+      initialSegment: props.isAdded ? [0, 1] : [60, 90],
     },
     {
       width: 24,

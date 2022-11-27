@@ -95,6 +95,7 @@ export default function EpisodeCard({
         <div className="actions">
           <Add
             fill="#b3b3b3"
+            isAdded={isEpisodeInLibrary}
             handleClick={async () => {
               setIsEpisodeInLibrary(!isEpisodeInLibrary);
               if (isEpisodeInLibrary) {
