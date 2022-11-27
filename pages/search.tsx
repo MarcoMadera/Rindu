@@ -164,7 +164,7 @@ export default function SearchPage({
             </Carousel>
           ) : null}
           {data.episodes?.items && data.episodes?.items?.length > 0 ? (
-            <Carousel title={translations.edpisodes} gap={24}>
+            <Carousel title={translations.episodes} gap={24}>
               {(
                 data.episodes as SpotifyApi.PagingObject<SpotifyApi.EpisodeObject>
               )?.items?.map(({ images, name, id, description }) => {

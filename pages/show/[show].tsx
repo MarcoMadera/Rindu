@@ -22,6 +22,7 @@ import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { getTranslations, Page } from "utils/getTranslations";
+import { AsType } from "types/heading";
 
 interface PlaylistProps {
   show: SpotifyApi.SingleShowResponse | null;
@@ -30,7 +31,12 @@ interface PlaylistProps {
   translations: Record<string, string>;
 }
 
-const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
+const Shows: NextPage<PlaylistProps> = ({
+  show,
+  accessToken,
+  user,
+  translations,
+}) => {
   const [isShowInLibrary, setIsShowInLibrary] = useState(false);
   const { setAccessToken, setUser } = useAuth();
   const { setPageDetails, setAllTracks } = useSpotify();
@@ -154,20 +160,25 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
         </div>
         <div className="content">
           <div className="episodes">
-            {show?.episodes.items.map((item, i) => {
-              return (
-                <EpisodeCard
-                  key={item.id}
-                  item={item}
-                  show={show}
-                  position={i}
-                />
-              );
-            })}
+            <Heading number={3} as={AsType.H3}>
+              {translations.allEpisodes}
+            </Heading>
+            <div>
+              {show?.episodes.items.map((item, i) => {
+                return (
+                  <EpisodeCard
+                    key={item.id}
+                    item={item}
+                    show={show}
+                    position={i}
+                  />
+                );
+              })}
+            </div>
           </div>
           <div className="description">
             <Heading number={3} as="h2">
-              About
+              {translations.about}
             </Heading>
             <p>{show?.description}</p>
           </div>
@@ -177,6 +188,11 @@ const Shows: NextPage<PlaylistProps> = ({ show, accessToken, user }) => {
         .content {
           display: grid;
           grid-template-columns: 700px 1fr;
+        }
+        .episodes {
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
         }
         section {
           margin: 0 32px;
