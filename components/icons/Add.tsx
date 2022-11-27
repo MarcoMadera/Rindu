@@ -1,24 +1,48 @@
 import { useLottie } from "lottie-react";
-import { ReactElement, SVGProps } from "react";
+import { ReactElement, SVGProps, useEffect, useState } from "react";
 import AddAnimation from "animations/add-circle.json";
 export default function Add(
   props: SVGProps<SVGSVGElement> & {
     handleClick?: () => Promise<boolean>;
     isAdded?: boolean;
+    shouldUpdateList?: boolean;
   }
 ): ReactElement {
-  const { View, playSegments } = useLottie(
+  const [isPlaying, setIsPlaying] = useState(false);
+  const { View, goToAndPlay, animationItem, pause, goToAndStop } = useLottie(
     {
       animationData: AddAnimation,
-      loop: false,
+      loop: 0,
       autoplay: false,
-      initialSegment: props.isAdded ? [0, 1] : [60, 90],
+      onSegmentStart: () => {
+        setIsPlaying(true);
+      },
+      onComplete: () => {
+        setIsPlaying(false);
+      },
     },
     {
       width: 24,
       height: 24,
     }
   );
+  useEffect(() => {
+    if (props.isAdded && props.shouldUpdateList && !isPlaying) {
+      goToAndStop(50, true);
+    }
+  }, [goToAndStop, isPlaying, props.isAdded, props.shouldUpdateList]);
+
+  useEffect(() => {
+    animationItem?.addEventListener("enterFrame", () => {
+      if (
+        animationItem?.currentFrame > 50 &&
+        animationItem?.currentFrame < 60
+      ) {
+        pause();
+        setIsPlaying(false);
+      }
+    });
+  }, [animationItem, pause]);
 
   if (!props.handleClick) {
     return (
@@ -34,13 +58,13 @@ export default function Add(
       type="button"
       aria-label="Add"
       onClick={async () => {
+        if (isPlaying) return;
         if (props.handleClick) {
           const res = await props.handleClick();
           if (res) {
-            playSegments([0, 60]);
-          }
-          if (!res) {
-            playSegments([60, 90]);
+            goToAndPlay(0);
+          } else {
+            goToAndPlay(60, true);
           }
         }
       }}

@@ -3,7 +3,7 @@ import useContextMenu from "hooks/useContextMenu";
 import useSpotify from "hooks/useSpotify";
 import useToast from "hooks/useToast";
 import Link from "next/link";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { AsType } from "types/heading";
 import { formatTime } from "utils/formatTime";
 import { getTimeAgo } from "utils/getTimeAgo";
@@ -21,12 +21,14 @@ interface EpisodeCardProps {
   item: SpotifyApi.EpisodeObjectSimplified;
   position: number;
   show: SpotifyApi.ShowObject;
+  savedEpisode: boolean;
 }
 
 export default function EpisodeCard({
   item,
   position,
   show,
+  savedEpisode,
 }: EpisodeCardProps): ReactElement {
   const {
     isPlaying,
@@ -44,9 +46,21 @@ export default function EpisodeCard({
   const { addContextMenu } = useContextMenu();
   const isThisEpisodePlaying = currentlyPlaying?.uri === item.uri;
   const isPremium = user?.product === "premium";
-  const [isEpisodeInLibrary, setIsEpisodeInLibrary] = useState<
-    boolean | undefined
-  >();
+  const [isEpisodeInLibrary, setIsEpisodeInLibrary] = useState<boolean>(
+    savedEpisode ?? false
+  );
+  const [shouldUpdateList, setShouldUpdateList] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsEpisodeInLibrary(savedEpisode);
+    setShouldUpdateList(true);
+  }, [savedEpisode]);
+
+  useEffect(() => {
+    if (shouldUpdateList) {
+      setShouldUpdateList(false);
+    }
+  }, [shouldUpdateList]);
 
   return (
     <div
@@ -96,8 +110,8 @@ export default function EpisodeCard({
           <Add
             fill="#b3b3b3"
             isAdded={isEpisodeInLibrary}
+            shouldUpdateList={shouldUpdateList}
             handleClick={async () => {
-              setIsEpisodeInLibrary(!isEpisodeInLibrary);
               if (isEpisodeInLibrary) {
                 const removeEpisodeRes = await removeEpisodesFromLibrary([
                   item.id,
@@ -107,8 +121,10 @@ export default function EpisodeCard({
                     message: "Episode removed from library",
                     variant: "success",
                   });
+                  setIsEpisodeInLibrary(false);
+                  return false;
                 }
-                return false;
+                return true;
               } else {
                 const saveEpisodesToLibraryRes = await saveEpisodesToLibrary([
                   item.id,
@@ -118,8 +134,10 @@ export default function EpisodeCard({
                     message: "Episode added to library",
                     variant: "success",
                   });
+                  setIsEpisodeInLibrary(true);
+                  return true;
                 }
-                return true;
+                return false;
               }
             }}
           />

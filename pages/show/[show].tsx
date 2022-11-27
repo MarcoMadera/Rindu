@@ -23,6 +23,7 @@ import Heading from "components/Heading";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { getTranslations, Page } from "utils/getTranslations";
 import { AsType } from "types/heading";
+import { checkEpisodesInLibrary } from "utils/spotifyCalls/checkEpisodesInLibrary";
 
 interface PlaylistProps {
   show: SpotifyApi.SingleShowResponse | null;
@@ -44,6 +45,7 @@ const Shows: NextPage<PlaylistProps> = ({
   const { setElement } = useHeader({
     showOnFixed: false,
   });
+  const [savedEpisodes, setSavedEpisodes] = useState<boolean[]>([]);
   useEffect(() => {
     setElement(() => <PlaylistTopBarExtraField uri={show?.uri} />);
 
@@ -62,6 +64,16 @@ const Shows: NextPage<PlaylistProps> = ({
     }
     fetchData();
   }, [accessToken, show?.id]);
+
+  useEffect(() => {
+    if (!show?.episodes.items) return;
+    const episodeIds = show.episodes.items?.map((episode) => episode.id);
+    checkEpisodesInLibrary(episodeIds).then((res) => {
+      if (res) {
+        setSavedEpisodes(res);
+      }
+    });
+  }, [show?.episodes.items]);
 
   const allTracks: ITrack[] | undefined = useMemo(
     () =>
@@ -171,6 +183,7 @@ const Shows: NextPage<PlaylistProps> = ({
                     item={item}
                     show={show}
                     position={i}
+                    savedEpisode={savedEpisodes[i]}
                   />
                 );
               })}
