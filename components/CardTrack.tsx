@@ -289,7 +289,9 @@ export default function CardTrack({
           )
         ) : null}
         <div className="trackArtistsContainer">
-          <p className="trackName">{`${track?.name ?? ""}`}</p>
+          <Link href={`/${track?.type ?? "track"}/${track?.id}`}>
+            <a className="trackName">{`${track?.name ?? ""}`}</a>
+          </Link>
           <span className="trackArtists">
             {track?.explicit && <ExplicitSign />}
             {track?.artists?.map((artist, i) => {
@@ -443,7 +445,7 @@ export default function CardTrack({
           width: ${type !== "presentation" ? "32" : "40"}px;
           height: ${type !== "presentation" ? "32" : "40"}px;
         }
-        p.trackName {
+        a.trackName {
           color: ${isTheSameAsCurrentlyPlaying ? "#1db954" : "#fff"};
         }
         section:nth-of-type(2) {
@@ -518,6 +520,7 @@ export default function CardTrack({
           color: #ffffff;
         }
         p,
+        a.trackName,
         span {
           margin: 0px;
           overflow: hidden;
@@ -548,7 +551,7 @@ export default function CardTrack({
           border: none;
           margin: 0 15px 0 15px;
         }
-        p.trackName {
+        a.trackName {
           margin: 0;
           padding: 0;
         }
