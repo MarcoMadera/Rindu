@@ -348,6 +348,8 @@ export const translations: Record<
       ...sideBarTranslations[Language.EN],
       ...pageHeaderTranslations[Language.EN],
       title: "Episode",
+      about: "About",
+      allEpisodes: "All Episodes",
     },
     [Page.Podcast]: {
       ...sideBarTranslations[Language.EN],
@@ -507,6 +509,8 @@ export const translations: Record<
       ...sideBarTranslations[Language.ES],
       ...pageHeaderTranslations[Language.ES],
       title: "Episode",
+      about: "Sobre",
+      allEpisodes: "Todos los episodios",
     },
     [Page.Podcast]: {
       ...sideBarTranslations[Language.ES],

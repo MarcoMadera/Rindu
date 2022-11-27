@@ -1,16 +1,20 @@
 import useAuth from "hooks/useAuth";
+import useContextMenu from "hooks/useContextMenu";
 import useSpotify from "hooks/useSpotify";
 import useToast from "hooks/useToast";
 import Link from "next/link";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import { AsType } from "types/heading";
 import { formatTime } from "utils/formatTime";
 import { getTimeAgo } from "utils/getTimeAgo";
 import { playCurrentTrack } from "utils/playCurrentTrack";
+import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFromLibrary";
+import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
 import ExplicitSign from "./ExplicitSign";
 import Heading from "./Heading";
 import { Pause, Play } from "./icons";
 import Add from "./icons/Add";
+import { Share } from "./icons/Share";
 import ThreeDots from "./icons/ThreeDots";
 
 interface EpisodeCardProps {
@@ -37,135 +41,176 @@ export default function EpisodeCard({
   } = useSpotify();
   const { user, accessToken, setAccessToken } = useAuth();
   const { addToast } = useToast();
+  const { addContextMenu } = useContextMenu();
   const isThisEpisodePlaying = currentlyPlaying?.uri === item.uri;
   const isPremium = user?.product === "premium";
+  const [isEpisodeInLibrary, setIsEpisodeInLibrary] = useState<
+    boolean | undefined
+  >();
 
   return (
-    <div className="episodeCard">
-      <div className="coverImage">
-        <div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={item?.images?.[1]?.url} alt={item?.name} />
+    <div
+      onContextMenu={(e) => {
+        e.preventDefault();
+        const x = e.pageX;
+        const y = e.pageY;
+        addContextMenu({
+          type: "cardTrack",
+          data: item,
+          position: { x, y },
+        });
+      }}
+    >
+      <hr />
+      <div className="episodeCard">
+        <div className="coverImage">
+          <div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={item?.images?.[1]?.url} alt={item?.name} />
+          </div>
         </div>
-      </div>
-      <div className="header">
-        <Link href={`/episode/${item.id}`}>
-          <a>
-            <Heading number={5} as={AsType.SPAN}>
-              {item.name}
-            </Heading>
-          </a>
-        </Link>
-      </div>
-      <div className="description">
-        <p>{item.description}</p>
-      </div>
-      <div className="metadata">
-        <div>
-          <p>
-            {item.explicit ? <ExplicitSign /> : null}{" "}
-            {getTimeAgo(+new Date(item.release_date), "en")}
-          </p>
-          <p>
-            <span>{formatTime(item.duration_ms / 1000)}</span>
-          </p>
+        <div className="header">
+          <Link href={`/episode/${item.id}`}>
+            <a>
+              <Heading number={5} as={AsType.SPAN}>
+                {item.name}
+              </Heading>
+            </a>
+          </Link>
         </div>
-      </div>
-      <div className="topActions">
-        <button
-          type="button"
-          aria-label="More options"
-          onClick={() => {
-            addToast({
-              message: "Coming soon",
-              variant: "info",
-            });
-          }}
-        >
-          <ThreeDots fill="#b3b3b3" width={24} height={24} />
-        </button>
-      </div>
-      <div className="actions">
-        <button
-          type="button"
-          aria-label="Add"
-          onClick={() => {
-            addToast({
-              message: "Coming soon",
-              variant: "info",
-            });
-          }}
-        >
-          <Add fill="#b3b3b3" />
-        </button>
-        <button
-          type="button"
-          aria-label="Add"
-          onClick={() => {
-            addToast({
-              message: "Coming soon",
-              variant: "info",
-            });
-          }}
-        >
-          <Add fill="#b3b3b3" />
-        </button>
-      </div>
-      <div className="play">
-        <button
-          type="button"
-          onClick={() => {
-            if (isThisEpisodePlaying) {
-              player?.togglePlay();
-              return;
-            }
-            if (isPremium) {
-              (player as Spotify.Player)?.activateElement();
-            }
-            playCurrentTrack(
-              {
-                album: {
-                  id: show?.id,
-                  images: item?.images ?? [],
-                  name: show?.name,
-                  release_date: item?.release_date,
-                  type: "album",
-                  uri: show?.uri,
-                },
-                artists: [
-                  {
-                    name: show.name,
-                    id: show.id,
-                    type: "artist",
-                    uri: `spotify:show:${show?.id}`,
-                  },
-                ],
-                id: item?.id,
-                name: item?.name,
-                explicit: item?.explicit ?? false,
-                type: "track",
-                uri: item?.uri,
-              },
-              {
-                player,
-                user,
-                allTracks,
-                accessToken,
-                deviceId,
-                playlistUri: pageDetails?.uri,
-                playlistId: pageDetails?.id,
-                setCurrentlyPlaying,
-                setPlaylistPlayingId,
-                isSingleTrack: true,
-                position,
-                setAccessToken,
-                setProgressMs,
+        <div className="description">
+          <p>{item.description}</p>
+        </div>
+        <div className="metadata">
+          <div>
+            <p>
+              {item.explicit ? <ExplicitSign /> : null}{" "}
+              {getTimeAgo(+new Date(item.release_date), "en")}
+            </p>
+            <p>
+              <span>{formatTime(item.duration_ms / 1000)}</span>
+            </p>
+          </div>
+        </div>
+        <div className="actions">
+          <Add
+            fill="#b3b3b3"
+            handleClick={async () => {
+              setIsEpisodeInLibrary(!isEpisodeInLibrary);
+              if (isEpisodeInLibrary) {
+                const removeEpisodeRes = await removeEpisodesFromLibrary([
+                  item.id,
+                ]);
+                if (removeEpisodeRes) {
+                  addToast({
+                    message: "Episode removed from library",
+                    variant: "success",
+                  });
+                }
+                return false;
+              } else {
+                const saveEpisodesToLibraryRes = await saveEpisodesToLibrary([
+                  item.id,
+                ]);
+                if (saveEpisodesToLibraryRes) {
+                  addToast({
+                    message: "Episode added to library",
+                    variant: "success",
+                  });
+                }
+                return true;
               }
-            );
-          }}
-        >
-          {isThisEpisodePlaying && isPlaying ? <Pause /> : <Play />}
-        </button>
+            }}
+          />
+          <button
+            type="button"
+            aria-label="Share"
+            onClick={() => {
+              navigator.clipboard.writeText(
+                `https://rindu.app/episode/${item.id}`
+              );
+              addToast({
+                message: "Link copied to clipboard",
+                variant: "success",
+              });
+            }}
+          >
+            <Share fill="#b3b3b3" />
+          </button>
+          <button
+            type="button"
+            aria-label="More options"
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              const x = e.pageX;
+              const y = e.pageY;
+              addContextMenu({
+                type: "cardTrack",
+                data: item,
+                position: { x, y },
+              });
+            }}
+          >
+            <ThreeDots fill="#b3b3b3" width={24} height={24} />
+          </button>
+        </div>
+        <div className="play">
+          <button
+            type="button"
+            onClick={() => {
+              if (isThisEpisodePlaying) {
+                player?.togglePlay();
+                return;
+              }
+              if (isPremium) {
+                (player as Spotify.Player)?.activateElement();
+              }
+              playCurrentTrack(
+                {
+                  album: {
+                    id: show?.id,
+                    images: item?.images ?? [],
+                    name: show?.name,
+                    release_date: item?.release_date,
+                    type: "album",
+                    uri: show?.uri,
+                  },
+                  artists: [
+                    {
+                      name: show.name,
+                      id: show.id,
+                      type: "artist",
+                      uri: `spotify:show:${show?.id}`,
+                    },
+                  ],
+                  id: item?.id,
+                  name: item?.name,
+                  explicit: item?.explicit ?? false,
+                  type: "track",
+                  uri: item?.uri,
+                },
+                {
+                  player,
+                  user,
+                  allTracks,
+                  accessToken,
+                  deviceId,
+                  playlistUri: pageDetails?.uri,
+                  playlistId: pageDetails?.id,
+                  setCurrentlyPlaying,
+                  setPlaylistPlayingId,
+                  isSingleTrack: true,
+                  position,
+                  setAccessToken,
+                  setProgressMs,
+                }
+              );
+            }}
+          >
+            {isThisEpisodePlaying && isPlaying ? <Pause /> : <Play />}
+          </button>
+        </div>
       </div>
       <style jsx>{`
         .episodeCard {
@@ -187,6 +232,10 @@ export default function EpisodeCard({
         .episodeCard:hover,
         .episodeCard:focus-within {
           background-color: rgba(255, 255, 255, 0.1);
+        }
+        hr {
+          border-color: hsla(0, 0%, 100%, 0.1);
+          max-width: calc(100% - 32px);
         }
         .coverImage {
           grid-area: coverImage;
@@ -215,6 +264,9 @@ export default function EpisodeCard({
         .header a {
           color: #fff;
           text-decoration: none;
+        }
+        .header a:hover {
+          text-decoration: underline;
         }
         .description {
           grid-area: description;
@@ -262,18 +314,6 @@ export default function EpisodeCard({
           color: rgba(255, 255, 255, 0.7);
           white-space: nowrap;
         }
-        .topActions {
-          grid-area: topActions;
-          display: flex;
-          justify-content: flex-end;
-        }
-        .topActions button {
-          opacity: 0;
-          background: transparent;
-          border: 0;
-          padding: 0;
-          font-family: "Lato";
-        }
         .episodeCard:hover .topActions button {
           opacity: 1;
         }
@@ -282,8 +322,9 @@ export default function EpisodeCard({
           display: flex;
           justify-content: flex-end;
           align-items: center;
+          gap: 1.2rem;
         }
-        .actions button {
+        .actions :global(button) {
           background-color: transparent;
           border: 0;
           color: rgba(255, 255, 255, 0.7);
@@ -291,25 +332,15 @@ export default function EpisodeCard({
           padding: 0;
           opacity: 0;
           font-family: "Lato";
+          transition: opacity 0.2s ease-in-out;
+          display: flex;
+          align-items: center;
         }
-        .episodeCard:hover .actions button {
+        .actions :global(button:hover) {
+          color: #fff;
+        }
+        .episodeCard:hover .actions :global(button) {
           opacity: 1;
-        }
-        .actions button:nth-of-type(1) {
-          margin: 0px 24px 0px 0px;
-          font-weight: 700;
-          border-radius: 500px;
-          display: inline-block;
-          position: relative;
-          text-align: center;
-          text-decoration: none;
-          box-sizing: border-box;
-          transition-property: background-color, border-color, color, box-shadow,
-            filter, transform;
-          user-select: none;
-          vertical-align: middle;
-          transform: translate3d(0px, 0px, 0px);
-          color: #575757;
         }
         .play {
           grid-area: play;
