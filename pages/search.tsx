@@ -73,6 +73,7 @@ export default function SearchPage({
               />
               <Carousel gap={24}>
                 {data.tracks?.items.slice(5)?.map((track) => {
+                  if (!track) return null;
                   return (
                     <PresentationCard
                       type={CardType.TRACK}
@@ -91,27 +92,27 @@ export default function SearchPage({
           ) : null}
           {data.playlists?.items && data.playlists?.items?.length > 0 ? (
             <Carousel title={translations.playlists} gap={24}>
-              {data.playlists?.items?.map(
-                ({ images, name, description, id, owner }) => {
-                  return (
-                    <PresentationCard
-                      type={CardType.PLAYLIST}
-                      key={id}
-                      images={images}
-                      title={name}
-                      subTitle={
-                        decode(description) || `De ${owner.display_name}`
-                      }
-                      id={id}
-                    />
-                  );
-                }
-              )}
+              {data.playlists?.items?.map((item) => {
+                if (!item) return null;
+                const { images, name, description, id, owner } = item;
+                return (
+                  <PresentationCard
+                    type={CardType.PLAYLIST}
+                    key={id}
+                    images={images}
+                    title={name}
+                    subTitle={decode(description) || `De ${owner.display_name}`}
+                    id={id}
+                  />
+                );
+              })}
             </Carousel>
           ) : null}
           {data.artists?.items && data.artists?.items?.length > 0 ? (
             <Carousel title={translations.artists} gap={24}>
-              {data.artists?.items?.map(({ images, name, id }) => {
+              {data.artists?.items?.map((item) => {
+                if (!item) return null;
+                const { images, name, id } = item;
                 return (
                   <PresentationCard
                     type={CardType.ARTIST}
@@ -127,29 +128,31 @@ export default function SearchPage({
           ) : null}
           {data.albums?.items && data.albums?.items?.length > 0 ? (
             <Carousel title={translations.albums} gap={24}>
-              {data.albums?.items?.map(
-                ({ images, name, id, artists, release_date }) => {
-                  const artistNames = artists.map((artist) => artist.name);
-                  const subTitle = release_date
-                    ? `${getYear(release_date)} · ${translations.album}`
-                    : artistNames.join(", ");
-                  return (
-                    <PresentationCard
-                      type={CardType.ALBUM}
-                      key={id}
-                      images={images}
-                      title={name}
-                      subTitle={subTitle}
-                      id={id}
-                    />
-                  );
-                }
-              )}
+              {data.albums?.items?.map((item) => {
+                if (!item) return null;
+                const { images, name, id, artists, release_date } = item;
+                const artistNames = artists.map((artist) => artist.name);
+                const subTitle = release_date
+                  ? `${getYear(release_date)} · ${translations.album}`
+                  : artistNames.join(", ");
+                return (
+                  <PresentationCard
+                    type={CardType.ALBUM}
+                    key={id}
+                    images={images}
+                    title={name}
+                    subTitle={subTitle}
+                    id={id}
+                  />
+                );
+              })}
             </Carousel>
           ) : null}
           {data.shows?.items && data.shows?.items?.length > 0 ? (
             <Carousel title={translations.shows} gap={24}>
-              {data.shows?.items?.map(({ images, name, id, publisher }) => {
+              {data.shows?.items?.map((item) => {
+                if (!item) return null;
+                const { images, name, id, publisher } = item;
                 return (
                   <PresentationCard
                     type={CardType.SHOW}
@@ -167,7 +170,9 @@ export default function SearchPage({
             <Carousel title={translations.episodes} gap={24}>
               {(
                 data.episodes as SpotifyApi.PagingObject<SpotifyApi.EpisodeObject>
-              )?.items?.map(({ images, name, id, description }) => {
+              )?.items?.map((item) => {
+                if (!item) return null;
+                const { images, name, id, description } = item;
                 return (
                   <PresentationCard
                     type={CardType.EPISODE}

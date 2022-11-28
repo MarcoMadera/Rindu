@@ -33,6 +33,7 @@ export default function Category({
   const { setAccessToken, setUser } = useAuth();
   const { setHeaderColor } = useHeader();
   const { isPlaying } = useSpotify();
+
   useEffect(() => {
     setHeaderColor("#242424");
   }, [setHeaderColor]);
@@ -54,15 +55,16 @@ export default function Category({
       {categoryInfo && <Heading number={1}>{categoryInfo?.name}</Heading>}
       {playlists && playlists?.items?.length > 0 ? (
         <Grid>
-          {playlists?.items?.map(({ images, name, description, id }) => {
+          {playlists?.items?.map((item) => {
+            if (!item) return null;
             return (
               <PresentationCard
-                key={id}
+                key={item.id}
                 type={CardType.PLAYLIST}
-                images={images}
-                title={name}
-                subTitle={description ?? ""}
-                id={id}
+                images={item.images}
+                title={item.name}
+                subTitle={item.description ?? ""}
+                id={item.id}
               />
             );
           })}

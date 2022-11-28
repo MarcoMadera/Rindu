@@ -296,26 +296,27 @@ export default function ArtistPage({
         </div>
         {singleAlbums && singleAlbums?.items?.length > 0 ? (
           <Carousel title={translations.singleAlbumsCarouselTitle} gap={24}>
-            {singleAlbums?.items?.map(
-              ({ images, name, id, artists, release_date, album_type }) => {
-                return (
-                  <PresentationCard
-                    type={CardType.ALBUM}
-                    key={id}
-                    images={images}
-                    title={name}
-                    subTitle={
-                      <SubTitle
-                        artists={artists}
-                        albumType={album_type}
-                        releaseYear={release_date}
-                      />
-                    }
-                    id={id}
-                  />
-                );
-              }
-            )}
+            {singleAlbums?.items?.map((item) => {
+              if (!item) return null;
+              const { images, name, id, artists, release_date, album_type } =
+                item;
+              return (
+                <PresentationCard
+                  type={CardType.ALBUM}
+                  key={id}
+                  images={images}
+                  title={name}
+                  subTitle={
+                    <SubTitle
+                      artists={artists}
+                      albumType={album_type}
+                      releaseYear={release_date}
+                    />
+                  }
+                  id={id}
+                />
+              );
+            })}
           </Carousel>
         ) : null}
         {appearAlbums && appearAlbums?.items?.length > 0 ? (
@@ -344,7 +345,9 @@ export default function ArtistPage({
         ) : null}
         {relatedArtists && relatedArtists?.artists?.length > 0 ? (
           <Carousel title={translations.relatedArtistsCarouselTitle} gap={24}>
-            {relatedArtists?.artists?.map(({ images, name, id }) => {
+            {relatedArtists?.artists?.map((item) => {
+              if (!item) return null;
+              const { images, name, id } = item;
               return (
                 <PresentationCard
                   type={CardType.ARTIST}

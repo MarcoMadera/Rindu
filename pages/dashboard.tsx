@@ -126,23 +126,23 @@ const Dashboard: NextPage<DashboardProps> = ({
           }
           gap={24}
         >
-          {featuredPlaylists.playlists?.items?.map(
-            ({ images, name, description, id, owner }) => {
-              return (
-                <PresentationCard
-                  type={CardType.PLAYLIST}
-                  key={id}
-                  images={images}
-                  title={name}
-                  subTitle={
-                    decode(description) ||
-                    `${translations.by} ${owner?.display_name ?? ""}`
-                  }
-                  id={id}
-                />
-              );
-            }
-          )}
+          {featuredPlaylists.playlists?.items?.map((item) => {
+            if (!item) return null;
+            const { images, name, description, id, owner } = item;
+            return (
+              <PresentationCard
+                type={CardType.PLAYLIST}
+                key={id}
+                images={images}
+                title={name}
+                subTitle={
+                  decode(description) ||
+                  `${translations.by} ${owner?.display_name ?? ""}`
+                }
+                id={id}
+              />
+            );
+          })}
         </Carousel>
       ) : null}
       {recentlyPlayed && recentlyPlayed?.length > 0 ? (
@@ -178,22 +178,20 @@ const Dashboard: NextPage<DashboardProps> = ({
           title={newReleases.message ?? translations.newReleasesHeading}
           gap={24}
         >
-          {newReleases.albums?.items?.map(
-            ({ images, name, id, artists, album_type }) => {
-              return (
-                <PresentationCard
-                  type={CardType.ALBUM}
-                  key={id}
-                  images={images}
-                  title={name}
-                  subTitle={
-                    <SubTitle artists={artists} albumType={album_type} />
-                  }
-                  id={id}
-                />
-              );
-            }
-          )}
+          {newReleases.albums?.items?.map((item) => {
+            if (!item) return null;
+            const { images, name, id, artists, album_type } = item;
+            return (
+              <PresentationCard
+                type={CardType.ALBUM}
+                key={id}
+                images={images}
+                title={name}
+                subTitle={<SubTitle artists={artists} albumType={album_type} />}
+                id={id}
+              />
+            );
+          })}
         </Carousel>
       ) : null}
       {tracksRecommendations && tracksRecommendations?.length > 0 && (
@@ -227,7 +225,9 @@ const Dashboard: NextPage<DashboardProps> = ({
       ) : null}
       {topArtists && topArtists.items?.length > 0 ? (
         <Carousel title={translations.topArtistsHeading} gap={24}>
-          {topArtists.items?.map(({ images, name, id }) => {
+          {topArtists.items?.map((item) => {
+            if (!item) return null;
+            const { images, name, id } = item;
             return (
               <PresentationCard
                 type={CardType.ARTIST}
@@ -243,7 +243,9 @@ const Dashboard: NextPage<DashboardProps> = ({
       ) : null}
       {categories && categories?.items?.length > 0 ? (
         <Carousel title={translations.categories} gap={24}>
-          {categories?.items.map(({ name, id, icons }) => {
+          {categories?.items.map((item) => {
+            if (!item) return null;
+            const { name, id, icons } = item;
             return (
               <PresentationCard
                 type={CardType.GENRE}
