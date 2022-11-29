@@ -52,8 +52,8 @@ export default function MainLayout({
             <style jsx>{`
               div.container {
                 height: calc(100vh - 90px);
-                display: grid;
-                grid-template-columns: 245px 1fr;
+                display: flex;
+                width: calc(100vw + 1px);
               }
               .app {
                 overflow-y: overlay;
