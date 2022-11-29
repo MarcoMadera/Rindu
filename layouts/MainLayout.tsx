@@ -52,13 +52,14 @@ export default function MainLayout({
             <style jsx>{`
               div.container {
                 height: calc(100vh - 90px);
-                display: flex;
+                display: grid;
+                grid-template-columns: 245px 1fr;
               }
               .app {
                 overflow-y: overlay;
                 height: calc(100vh - 90px);
                 overflow-x: hidden;
-                width: calc(100vw - 245px);
+                width: calc(100vw - 244px);
                 position: relative;
               }
               @media (max-width: 685px) {
