@@ -1,5 +1,6 @@
 import { Dispatch, MutableRefObject, SetStateAction, useEffect } from "react";
 import { ITrack } from "types/spotify";
+import { callPictureInPicture } from "utils/callPictureInPicture";
 import useAuth from "./useAuth";
 import { AudioPlayer } from "./useSpotifyPlayer";
 
@@ -10,6 +11,8 @@ export default function useMediaSession({
   isPlaying,
   setIsPlaying,
   videoRef,
+  pictureInPictureCanvas,
+  isPictureInPictureLyircsCanvas,
 }: {
   currentlyPlaying: ITrack | undefined;
   currentlyPlayingPosition: number | undefined;
@@ -17,6 +20,8 @@ export default function useMediaSession({
   isPlaying: boolean;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
   videoRef: MutableRefObject<HTMLVideoElement | undefined>;
+  pictureInPictureCanvas: MutableRefObject<HTMLCanvasElement | undefined>;
+  isPictureInPictureLyircsCanvas: boolean;
 }): void {
   const { user } = useAuth();
   const isPremium = user?.product === "premium";
@@ -116,5 +121,15 @@ export default function useMediaSession({
         ),
       });
     }
-  }, [currentlyPlaying, videoRef]);
+
+    if (
+      pictureInPictureCanvas.current &&
+      videoRef.current &&
+      document.pictureInPictureElement &&
+      !isPictureInPictureLyircsCanvas
+    ) {
+      callPictureInPicture(pictureInPictureCanvas.current, videoRef.current);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentlyPlaying, isPictureInPictureLyircsCanvas]);
 }
