@@ -169,7 +169,7 @@ export default function PageHeader({
             ) : null}
             {popularity ? (
               <span>
-                &nbsp;&middot; {formatNumber(popularity ?? 0)}{" "}
+                &nbsp;&middot; {formatNumber(popularity)}{" "}
                 {translations.popularity}
               </span>
             ) : null}

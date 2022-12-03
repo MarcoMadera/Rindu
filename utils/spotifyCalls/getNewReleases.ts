@@ -7,9 +7,6 @@ export async function getNewReleases(
   accessToken?: string | null,
   cookies?: string | undefined
 ): Promise<SpotifyApi.ListOfNewReleasesResponse | null> {
-  if (!accessToken) {
-    return null;
-  }
   const res = await fetch(
     `https://api.spotify.com/v1/browse/new-releases?country=${country}&limit=${
       limit ?? 10
@@ -19,7 +16,7 @@ export async function getNewReleases(
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          accessToken ?? takeCookie(ACCESS_TOKEN_COOKIE, cookies)
+          accessToken ?? (takeCookie(ACCESS_TOKEN_COOKIE, cookies) || "")
         }`,
       },
     }

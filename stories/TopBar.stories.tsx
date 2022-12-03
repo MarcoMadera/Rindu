@@ -231,7 +231,7 @@ const LoggedInWithExtraFieldTemplate: ComponentStory<typeof TopBar> = () => (
   </ToastContextProvider>
 );
 
-export const Default = Template;
+export const Default = Template.bind({});
 export const LoggedIn = LoggedInTemplate;
 export const LoggedInWithExtraField = LoggedInWithExtraFieldTemplate;
 

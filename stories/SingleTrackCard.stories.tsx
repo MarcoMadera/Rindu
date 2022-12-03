@@ -36,7 +36,7 @@ const Template: ComponentStory<typeof SingleTrackCard> = (args) => (
   </ToastContextProvider>
 );
 
-export const Default = Template;
+export const Default = Template.bind({});
 Default.args = {
   track: {
     album: {

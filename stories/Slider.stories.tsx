@@ -23,7 +23,7 @@ const Template: ComponentStory<typeof Slider> = (args) => {
   );
 };
 
-export const WithUpdate = Template;
+export const WithUpdate = Template.bind({});
 WithUpdate.args = {
   title: "Interval slider",
   updateProgress: 1,
@@ -49,7 +49,7 @@ WithUpdate.args = {
   },
 };
 
-export const Static = Template;
+export const Static = Template.bind({});
 Static.args = {
   title: "Static Slider",
   setLabelValue: (value) => {

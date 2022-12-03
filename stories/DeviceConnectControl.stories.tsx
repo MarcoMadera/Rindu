@@ -65,4 +65,4 @@ const Template: ComponentStory<typeof DeviceConnectControl> = () => (
   </ToastContextProvider>
 );
 
-export const Default = Template;
+export const Default = Template.bind({});

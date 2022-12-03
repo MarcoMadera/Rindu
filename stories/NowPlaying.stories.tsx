@@ -175,4 +175,4 @@ const Template: ComponentStory<typeof NowPlaying> = () => {
   );
 };
 
-export const Default = Template;
+export const Default = Template.bind({});

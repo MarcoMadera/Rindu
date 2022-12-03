@@ -35,7 +35,7 @@ const Template: ComponentStory<typeof PlayButton> = (args) => (
   </ToastContextProvider>
 );
 
-export const Default = Template;
+export const Default = Template.bind({});
 Default.args = {
   size: 40,
   centerSize: 20,

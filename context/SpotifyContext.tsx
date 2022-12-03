@@ -154,8 +154,10 @@ export function SpotifyContextProvider({
 
   useEffect(() => {
     if (
-      (videoRef.current || pictureInPictureCanvas.current || !isPlaying,
-      !currentlyPlaying) ||
+      videoRef.current ||
+      pictureInPictureCanvas.current ||
+      !isPlaying ||
+      !currentlyPlaying ||
       isPictureInPictureLyircsCanvas
     ) {
       return;

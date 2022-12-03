@@ -32,10 +32,10 @@ export default function NowPlaying(): ReactElement | null {
   useEffect(() => {
     if (!currentlyPlaying?.id) return;
     const checkInLibrary =
-      currentlyPlaying?.type === "episode"
+      currentlyPlaying.type === "episode"
         ? checkEpisodesInLibrary
         : checkTracksInLibrary;
-    checkInLibrary([currentlyPlaying?.id], accessToken || "").then((res) => {
+    checkInLibrary([currentlyPlaying.id], accessToken || "").then((res) => {
       setIsLikedTrack(!!res?.[0]);
     });
   }, [accessToken, currentlyPlaying]);
@@ -123,7 +123,7 @@ export default function NowPlaying(): ReactElement | null {
           className="navBar-Button"
           handleDislike={async () => {
             const removeFromLibrary =
-              currentlyPlaying?.type === "episode"
+              currentlyPlaying.type === "episode"
                 ? removeEpisodesFromLibrary
                 : removeTracksFromLibrary;
             const res = await removeFromLibrary(

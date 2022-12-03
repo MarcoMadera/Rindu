@@ -16,7 +16,7 @@ export default function TopTracks({
       <Heading number={2}>{heading}</Heading>
       <section>
         {topTracks &&
-          topTracks?.items?.map((track, i) => {
+          topTracks.items?.map((track, i) => {
             if (i >= 9) return null;
             return <SingleTrackCard key={track.id} track={track} />;
           })}
