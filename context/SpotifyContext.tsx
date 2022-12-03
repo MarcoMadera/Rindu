@@ -10,10 +10,12 @@ import {
   PropsWithChildren,
   ReactElement,
   useCallback,
+  useEffect,
   useRef,
   useState,
 } from "react";
 import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
+import { callPictureInPicture } from "utils/callPictureInPicture";
 import { removeTracksFromPlaylist } from "utils/spotifyCalls/removeTracksFromPlaylist";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -78,6 +80,17 @@ export function SpotifyContextProvider({
     setIsPlaying,
     videoRef,
   });
+
+  useEffect(() => {
+    if (
+      pictureInPictureCanvas.current &&
+      videoRef.current &&
+      document.pictureInPictureElement &&
+      !isPictureInPictureLyircsCanvas
+    ) {
+      callPictureInPicture(pictureInPictureCanvas.current, videoRef.current);
+    }
+  }, [isPictureInPictureLyircsCanvas, currentlyPlaying]);
 
   const removeTracks = useCallback(
     async (

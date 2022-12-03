@@ -1,11 +1,9 @@
 import { Dispatch, MutableRefObject, SetStateAction, useEffect } from "react";
-import { callPictureInPicture } from "utils/callPictureInPicture";
 
 export default function usePictureInPicture({
   setIsPip,
   videoRef,
   pictureInPictureCanvas,
-  isPictureInPictureLyircsCanvas,
 }: {
   setIsPip: Dispatch<SetStateAction<boolean>>;
   videoRef: MutableRefObject<HTMLVideoElement | undefined>;
@@ -39,15 +37,4 @@ export default function usePictureInPicture({
     pictureInPictureCanvas.current = canvas;
     videoRef.current = video;
   }, [pictureInPictureCanvas, setIsPip, videoRef]);
-
-  useEffect(() => {
-    if (
-      pictureInPictureCanvas.current &&
-      videoRef.current &&
-      document.pictureInPictureElement &&
-      !isPictureInPictureLyircsCanvas
-    ) {
-      callPictureInPicture(pictureInPictureCanvas.current, videoRef.current);
-    }
-  }, [isPictureInPictureLyircsCanvas, pictureInPictureCanvas, videoRef]);
 }
