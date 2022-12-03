@@ -21,6 +21,7 @@ export default async function refresh(
     SPOTIFY_CLIENT_SECRET: client_secret = "",
   } = process.env;
   const cookies = req.headers.cookie;
+
   const refreshTokenFromCookie = takeCookie(REFRESH_TOKEN_COOKIE, cookies);
   const body = req.body as IRefreshBody;
   try {

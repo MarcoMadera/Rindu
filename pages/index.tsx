@@ -167,7 +167,6 @@ Home.getInitialProps = async ({ res, req, query }): Promise<HomeProps> => {
   if (!cookies) {
     return { accessToken: null, translations };
   }
-
   const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE, cookies);
 
   if (refreshToken) {

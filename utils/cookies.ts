@@ -8,14 +8,10 @@ import { isServer } from "./environment";
  */
 export function takeCookie(
   cookieName: string | undefined,
-  cookiesJar?: string
+  cookiesJar?: string | undefined
 ): string | null {
-  if (isServer() && !cookiesJar) {
-    throw new Error("cookiesJar must be provided");
-  }
-  const allCookies = `; ${
-    isServer() ? (cookiesJar as string) : document.cookie
-  }`;
+  const isServerSide = isServer();
+  const allCookies = `; ${isServerSide ? cookiesJar || "" : document.cookie}`;
   const parts = allCookies.split(`; ${cookieName || ""}=`);
   if (parts.length === 2) {
     return parts.pop()?.split(";").shift() || null;
