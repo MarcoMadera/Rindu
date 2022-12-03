@@ -99,7 +99,7 @@ export function PlayButton({
 
   const getCurrentState = useCallback(async () => {
     if (!player) return;
-    if (!(player as Spotify.Player)?.getCurrentState) {
+    if (!(player as Spotify.Player).getCurrentState) {
       addToast({
         variant: "error",
         message: "Not ready to play, if the issue persist refresh the page",

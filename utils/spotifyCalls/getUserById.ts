@@ -5,7 +5,7 @@ export async function getUserById(
   id: string,
   accessToken?: string
 ): Promise<SpotifyApi.UserObjectPublic | null> {
-  if (!accessToken || !id) {
+  if (!id) {
     return null;
   }
   const res = await fetch(`https://api.spotify.com/v1/users/${id}`, {

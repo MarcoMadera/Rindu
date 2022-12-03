@@ -23,4 +23,4 @@ const Template: ComponentStory<typeof ExplicitSign> = () => {
   );
 };
 
-export const Default = Template;
+export const Default = Template.bind({});

@@ -116,4 +116,4 @@ const Template: ComponentStory<typeof SideBar> = () => {
   );
 };
 
-export const Default = Template;
+export const Default = Template.bind({});

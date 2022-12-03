@@ -17,9 +17,6 @@ export async function getMyTop<T extends TopType>(
     ? SpotifyApi.UsersTopTracksResponse | null
     : SpotifyApi.UsersTopArtistsResponse | null
 > {
-  if (!accessToken) {
-    return null;
-  }
   const res = await fetch(
     `https://api.spotify.com/v1/me/top/${type}?time_range=${
       time_range ?? "short_term"
@@ -29,7 +26,7 @@ export async function getMyTop<T extends TopType>(
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          accessToken ?? takeCookie(ACCESS_TOKEN_COOKIE, cookies)
+          accessToken ?? (takeCookie(ACCESS_TOKEN_COOKIE, cookies) || "")
         }`,
       },
     }

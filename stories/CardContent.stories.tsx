@@ -96,7 +96,7 @@ const Template: ComponentStory<typeof PresentationCard> = (args) => (
   </div>
 );
 
-export const Playlist = Template;
+export const Playlist = Template.bind({});
 Playlist.args = {
   id: "37i9dQZF1DX5KARSfd7WcM",
   type: CardType.PLAYLIST,
@@ -111,7 +111,7 @@ Playlist.args = {
   subTitle: "The official playlist for Heartstopper. Watch now on Netflix!",
 };
 
-export const Track = Template;
+export const Track = Template.bind({});
 Track.args = {
   id: "0gYXw7aPoybWFfB7btQ0eM",
   type: CardType.TRACK,
@@ -164,7 +164,7 @@ Track.args = {
   isSingle: true,
 };
 
-export const Artist = Template;
+export const Artist = Template.bind({});
 Artist.args = {
   id: "6qqNVTkY8uBg9cP3Jd7DAH",
   type: CardType.ARTIST,

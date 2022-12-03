@@ -5,7 +5,7 @@ export async function getPlaylistsFromUser(
   userId: string,
   accessToken?: string
 ): Promise<SpotifyApi.ListOfUsersPlaylistsResponse | null> {
-  if (!accessToken || !userId) {
+  if (!userId) {
     return null;
   }
   const res = await fetch(

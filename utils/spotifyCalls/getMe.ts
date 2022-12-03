@@ -5,10 +5,6 @@ export async function getMe(
   accessToken?: string | null,
   cookies?: string
 ): Promise<SpotifyApi.CurrentUsersProfileResponse | null> {
-  if (!accessToken) {
-    return null;
-  }
-
   const res = await fetch("https://api.spotify.com/v1/me", {
     method: "GET",
     headers: {

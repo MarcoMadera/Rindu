@@ -14,4 +14,4 @@ const Template: ComponentStory<typeof Footer> = () => {
   return <Footer />;
 };
 
-export const Default = Template;
+export const Default = Template.bind({});

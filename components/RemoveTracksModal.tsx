@@ -121,7 +121,7 @@ export default function RemoveTracksModal({
 
   useEffect(() => {
     setTargetNode(document.querySelector("#tracksModal") as Element);
-    document.addEventListener("keydown", (e) => onPressKey(e), false);
+    document.addEventListener("keydown", onPressKey, false);
 
     return () => {
       document.removeEventListener("keydown", onPressKey, false);

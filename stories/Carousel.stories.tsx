@@ -52,7 +52,7 @@ const Template: ComponentStory<typeof Carousel> = (args) => {
   );
 };
 
-export const Boxes = Template;
+export const Boxes = Template.bind({});
 Boxes.args = {
   title: "The best carousel",
   gap: 24,

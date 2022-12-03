@@ -29,7 +29,7 @@ const Template: ComponentStory<typeof BigPill> = (args) => (
   </div>
 );
 
-export const Artist = Template;
+export const Artist = Template.bind({});
 Artist.args = {
   img: "https://studiosol-a.akamaihd.net/uploadfile/letras/fotos/6/1/c/a/61ca1dcbc2cdda2af430927f4fe4b98c.jpg",
   title: "Artist",

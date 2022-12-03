@@ -29,7 +29,7 @@ const Template: ComponentStory<typeof Logo> = (args) => {
   );
 };
 
-export const Default = Template;
+export const Default = Template.bind({});
 Default.args = {
   color: "#000",
 };
