@@ -1,4 +1,7 @@
-import useAuth from "hooks/useAuth";
+import useMediaSession from "hooks/useMediaSession";
+import usePictureInPicture from "hooks/usePictureInPicture";
+import useRecentlyPlayed from "hooks/useRecentlyPlayed";
+import useReconnectSpotifyPlayer from "hooks/useReconnectSpotifyPlayer";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import useToggle from "hooks/useToggle";
 import Head from "next/head";
@@ -7,12 +10,10 @@ import {
   PropsWithChildren,
   ReactElement,
   useCallback,
-  useEffect,
   useRef,
   useState,
 } from "react";
 import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
-import { callPictureInPicture } from "utils/callPictureInPicture";
 import { removeTracksFromPlaylist } from "utils/spotifyCalls/removeTracksFromPlaylist";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -51,230 +52,32 @@ export function SpotifyContextProvider({
   const [isPictureInPictureLyircsCanvas, setIsPictureInPictureLyircsCanvas] =
     useToggle();
 
-  const { user } = useAuth();
-  const isPremium = user?.product === "premium";
-
-  useEffect(() => {
-    if (!reconnectionError || !isPremium) return;
-    const timer = setTimeout(() => {
-      (player as Spotify.Player).connect();
-      setReconnectionError(false);
-    }, 2000);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [isPremium, player, reconnectionError]);
-
-  useEffect(() => {
-    if (!playedSource || !user?.id) return;
-    const type = playedSource.split(":")[1];
-    if (type === "track" && currentlyPlaying) {
-      setRecentlyPlayed((prev) => {
-        if (prev.some((el) => el.uri === currentlyPlaying.uri)) {
-          localStorage.setItem(
-            `${user.id}:recentlyPlayed`,
-            JSON.stringify(prev)
-          );
-          return prev;
-        }
-
-        if (prev.length === 10) {
-          const newRecentlyPlayedwithLimit = [
-            currentlyPlaying,
-            ...prev.slice(0, -1),
-          ];
-          localStorage.setItem(
-            `${user.id}:recentlyPlayed`,
-            JSON.stringify(newRecentlyPlayedwithLimit)
-          );
-          return newRecentlyPlayedwithLimit;
-        }
-        const newRecentlyPlayed = [currentlyPlaying, ...prev];
-        localStorage.setItem(
-          `${user.id}:recentlyPlayed`,
-          JSON.stringify(newRecentlyPlayed)
-        );
-
-        return newRecentlyPlayed;
-      });
-    }
-  }, [playedSource, currentlyPlaying, user?.id]);
-
-  useEffect(() => {
-    if (!user?.id) return;
-    const playback = localStorage.getItem("playback");
-    const recentlyPlayedFromLocal = localStorage.getItem(
-      `${user.id}:recentlyPlayed`
-    );
-    if (playback) {
-      const playbackObj = JSON.parse(decodeURI(playback)) as { volume: number };
-      setVolume(playbackObj.volume);
-      if (isPremium && player) {
-        (player as Spotify.Player).on("ready", () => {
-          player?.setVolume(playbackObj.volume);
-        });
-      } else {
-        player?.setVolume(playbackObj.volume);
-      }
-    }
-    if (recentlyPlayedFromLocal) {
-      const recentlyPlayedObj = JSON.parse(recentlyPlayedFromLocal) as ITrack[];
-      setRecentlyPlayed(recentlyPlayedObj);
-    }
-  }, [isPremium, player, user?.id]);
-
-  useEffect(() => {
-    if (currentlyPlaying && "mediaSession" in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: currentlyPlaying.name,
-        artist: currentlyPlaying.artists?.[0]?.name,
-        album: currentlyPlaying.album?.name,
-        artwork: currentlyPlaying.album?.images?.map(
-          ({ url, width, height }) => {
-            return {
-              src: url ?? "",
-              sizes: `${width || 0}x${height || 0}`,
-              type: "",
-            };
-          }
-        ),
-      });
-    }
-
-    if (
-      pictureInPictureCanvas.current &&
-      videoRef.current &&
-      document.pictureInPictureElement &&
-      !isPictureInPictureLyircsCanvas
-    ) {
-      callPictureInPicture(pictureInPictureCanvas.current, videoRef.current);
-    }
-  }, [currentlyPlaying, isPictureInPictureLyircsCanvas]);
-
-  useEffect(() => {
-    if (
-      videoRef.current ||
-      pictureInPictureCanvas.current ||
-      !isPlaying ||
-      !currentlyPlaying ||
-      isPictureInPictureLyircsCanvas
-    ) {
-      return;
-    }
-    const canvas = document.createElement("canvas");
-    canvas.width = canvas.height = 512;
-    const video = document.createElement("video");
-
-    function handleLeavePictureInPicture() {
-      setIsPip(false);
-    }
-    function handlEnterPictureInPicture() {
-      setIsPip(false);
-    }
-    video.addEventListener(
-      "leavepictureinpicture",
-      handleLeavePictureInPicture
-    );
-    video.addEventListener("enterpictureinpicture", handlEnterPictureInPicture);
-
-    video.muted = true;
-    canvas.getContext("2d");
-    video.srcObject = canvas.captureStream();
-    pictureInPictureCanvas.current = canvas;
-    videoRef.current = video;
-
-    return () => {
-      video.removeEventListener(
-        "leavepictureinpicture",
-        handleLeavePictureInPicture
-      );
-      video.removeEventListener(
-        "enterpictureinpicture",
-        handlEnterPictureInPicture
-      );
-    };
-  }, [currentlyPlaying, isPictureInPictureLyircsCanvas, isPlaying]);
-
-  useEffect(() => {
-    const duration = currentlyPlaying?.duration_ms;
-    if ("setPositionState" in navigator.mediaSession) {
-      navigator.mediaSession.setPositionState({
-        duration: duration ?? 0,
-        playbackRate: 1,
-        position:
-          currentlyPlayingPosition &&
-          currentlyPlayingPosition <= (duration ?? 0)
-            ? currentlyPlayingPosition
-            : 0,
-      });
-    }
-  }, [
-    currentlyPlayingDuration,
-    currentlyPlayingPosition,
+  useReconnectSpotifyPlayer({
+    reconnect: reconnectionError,
+    player,
+    setReconnectionError,
+  });
+  useRecentlyPlayed({
+    setRecentlyPlayed,
     currentlyPlaying,
-    currentlyPlaying?.duration_ms,
-  ]);
-
-  useEffect(() => {
-    if (player && "mediaSession" in navigator) {
-      try {
-        navigator.mediaSession.setActionHandler("play", function () {
-          if (!isPremium) {
-            player?.togglePlay();
-            return;
-          }
-          (player as Spotify.Player)?.resume();
-          setIsPlaying(true);
-        });
-        navigator.mediaSession.setActionHandler("pause", function () {
-          player?.pause();
-          setIsPlaying(false);
-        });
-        navigator.mediaSession.setActionHandler("stop", function () {
-          player.pause();
-          setIsPlaying(false);
-        });
-        navigator.mediaSession.setActionHandler("seekbackward", function () {
-          player.seek(
-            !currentlyPlayingPosition || currentlyPlayingPosition <= 10
-              ? 0
-              : currentlyPlayingPosition - 10
-          );
-        });
-        navigator.mediaSession.setActionHandler("seekforward", function () {
-          player.seek(
-            !currentlyPlayingPosition ? 10 : currentlyPlayingPosition + 10
-          );
-        });
-        navigator.mediaSession.setActionHandler("seekto", function (e) {
-          e.seekTime && player.seek(e.seekTime);
-        });
-        navigator.mediaSession.setActionHandler("previoustrack", function () {
-          player.previousTrack();
-        });
-        navigator.mediaSession.setActionHandler("nexttrack", function () {
-          player.nextTrack();
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }, [currentlyPlayingPosition, isPremium, player, user]);
-
-  useEffect(() => {
-    if ("mediaSession" in navigator) {
-      if (isPlaying) {
-        navigator.mediaSession.playbackState = "playing";
-      }
-      if (!isPlaying) {
-        navigator.mediaSession.playbackState = "paused";
-      }
-      if (!isPlaying && !currentlyPlaying) {
-        navigator.mediaSession.playbackState = "none";
-      }
-    }
-  }, [currentlyPlaying, isPlaying]);
+    playedSource,
+    player,
+    setVolume,
+  });
+  usePictureInPicture({
+    setIsPip,
+    videoRef,
+    pictureInPictureCanvas,
+    isPictureInPictureLyircsCanvas,
+  });
+  useMediaSession({
+    currentlyPlaying,
+    currentlyPlayingPosition,
+    player,
+    isPlaying,
+    setIsPlaying,
+    videoRef,
+  });
 
   const removeTracks = useCallback(
     async (
