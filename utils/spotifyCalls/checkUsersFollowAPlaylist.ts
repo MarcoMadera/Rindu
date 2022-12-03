@@ -17,11 +17,11 @@ export async function checkUsersFollowAPlaylist(
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
+          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
         }`,
       },
     }
   );
-  const data: boolean[] = await res.json();
+  const data = (await res.json()) as boolean[];
   return data;
 }

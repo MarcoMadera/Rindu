@@ -80,7 +80,7 @@ const Template: ComponentStory<typeof EpisodeCard> = (args) => (
   </ToastContextProvider>
 );
 
-export const Default = Template.bind({});
+export const Default = Template;
 Default.args = {
   item: {
     audio_preview_url:

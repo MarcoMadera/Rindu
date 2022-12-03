@@ -146,7 +146,7 @@ export default function FullScreenLyrics({
     if (!pictureInPictureCanvas.current) {
       return;
     }
-    const lines = document.querySelectorAll(".line") as NodeListOf<HTMLElement>;
+    const lines = document.querySelectorAll(".line");
     const ctx = pictureInPictureCanvas.current.getContext("2d");
     if (!ctx) {
       return;
@@ -383,7 +383,7 @@ export default function FullScreenLyrics({
           font-family: Lato, sans-serif;
           font-size: 2.5rem;
           text-transform: uppercase;
-          background: ${lyricsBackgroundColor};
+          background: ${lyricsBackgroundColor || "transparent"};
           border: none;
         }
         .lyrics-pip-button:hover {
@@ -399,9 +399,9 @@ export default function FullScreenLyrics({
           height: calc(100% + var(--border-width) * 2);
           background: linear-gradient(
             60deg,
-            ${lyricsBackgroundColor} 0%,
+            ${lyricsBackgroundColor || "transparent"} 0%,
             #ffffff80 50%,
-            ${lyricsBackgroundColor} 100%
+            ${lyricsBackgroundColor || "transparent"} 100%
           );
           background-size: 300% 300%;
           background-position: 0 50%;

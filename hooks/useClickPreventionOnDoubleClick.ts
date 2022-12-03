@@ -1,6 +1,11 @@
 import { wait } from "utils/wait";
 import useCancellablePromises from "./useCancellablePromises";
 
+interface IRejectedPromiseInfo {
+  error: Error;
+  isCanceled: boolean;
+}
+
 export const cancellablePromise = (
   promise: Promise<unknown>
 ): { promise: Promise<unknown>; cancel: () => boolean } => {
@@ -9,7 +14,7 @@ export const cancellablePromise = (
   const wrappedPromise = new Promise((resolve, reject) => {
     promise.then(
       (value) => (isCanceled ? reject({ isCanceled, value }) : resolve(value)),
-      (error) => reject({ isCanceled, error })
+      (error) => reject({ isCanceled, error: error as Error })
     );
   });
 
@@ -35,7 +40,7 @@ const useClickPreventionOnDoubleClick = (
         api.removePendingPromise(waitForClick);
         onClick();
       })
-      .catch((errorInfo) => {
+      .catch((errorInfo: IRejectedPromiseInfo) => {
         api.removePendingPromise(waitForClick);
         if (!errorInfo.isCanceled) {
           throw errorInfo.error;

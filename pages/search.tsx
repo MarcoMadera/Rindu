@@ -65,7 +65,7 @@ export default function SearchPage({
       )}
       {data ? (
         <div>
-          {data?.tracks?.items && data.tracks?.items?.length > 0 ? (
+          {data.tracks?.items && data.tracks?.items?.length > 0 ? (
             <>
               <MainTracks
                 title={translations.songs}
@@ -101,7 +101,10 @@ export default function SearchPage({
                     key={id}
                     images={images}
                     title={name}
-                    subTitle={decode(description) || `De ${owner.display_name}`}
+                    subTitle={
+                      decode(description) ||
+                      `${translations.by} ${owner.display_name || ""}`
+                    }
                     id={id}
                   />
                 );

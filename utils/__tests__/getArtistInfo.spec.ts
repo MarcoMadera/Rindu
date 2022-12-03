@@ -17,7 +17,7 @@ describe("getArtistInfo", () => {
     expect.assertions(1);
     mockFetchSuccess({ artist: artistInfo }, true);
 
-    const result = await getArtistInfo("artistName");
+    const result = await getArtistInfo("artistName", "api");
     expect(result).toStrictEqual(artistInfo);
   });
 

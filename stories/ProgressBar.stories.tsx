@@ -93,4 +93,4 @@ const Template: ComponentStory<typeof ProgressBar> = () => {
   );
 };
 
-export const Default = Template.bind({});
+export const Default = Template;

@@ -84,14 +84,14 @@ const Shows: NextPage<PlaylistProps> = ({
           images: show.images,
           release_date: episode?.release_date,
           type: "album",
-          uri: show?.uri,
+          uri: show.uri,
         },
         artists: [
           {
             name: show.publisher ?? "",
             id: show.id ?? "",
             type: "artist",
-            uri: `spotify:show:${show?.id}`,
+            uri: `spotify:show:${show.id}`,
           },
         ],
         id: episode?.id,

@@ -14,12 +14,14 @@ export async function getArtistById(
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${
-        accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE, cookies)
+        accessToken
+          ? accessToken
+          : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
       }`,
     },
   });
   if (res.ok) {
-    const data: SpotifyApi.SingleArtistResponse = await res.json();
+    const data = (await res.json()) as SpotifyApi.SingleArtistResponse;
     return data;
   }
   return null;

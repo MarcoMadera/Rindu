@@ -14,13 +14,16 @@ export async function getEpisodeById(
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE, cookies)
+          accessToken
+            ? accessToken
+            : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
         }`,
       },
     }
   );
   if (res.ok) {
-    const data: SpotifyApi.SingleEpisodeResponse = await res.json();
+    const data: SpotifyApi.SingleEpisodeResponse =
+      (await res.json()) as SpotifyApi.SingleEpisodeResponse;
     return data;
   }
   return null;

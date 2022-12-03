@@ -18,9 +18,10 @@ export enum Page {
   CollectionArtists = "collectionArtists",
   CollectionPlaylists = "collectionPlaylists",
   CollectionPodcasts = "collectionPodcasts",
+  Collection = "collection",
 }
 
-enum Language {
+export enum Language {
   EN = "EN",
   ES = "ES",
 }
@@ -154,7 +155,17 @@ const removeTracksModalTranslations = {
   },
 };
 
-const featuresTranslationsEN = [
+export interface IFeaturesTranslations {
+  eyeBrowText: string;
+  titleText: string;
+  description: string;
+  imageSrc: string;
+  imageAlt: string;
+  anchorType: string;
+  anchorText: string;
+}
+
+const featuresTranslationsEN: IFeaturesTranslations[] = [
   {
     eyeBrowText: "EASY TO USE TOOLS",
     titleText: "The best to fix your playlists",
@@ -200,7 +211,7 @@ const featuresTranslationsEN = [
     anchorText: "Find out how",
   },
 ];
-const featuresTranslationsES = [
+const featuresTranslationsES: IFeaturesTranslations[] = [
   {
     eyeBrowText: "HERRAMIENTAS FÁCILES DE USAR",
     titleText: "Lo mejor para arreglar tus playlists",
@@ -247,10 +258,7 @@ const featuresTranslationsES = [
   },
 ];
 
-export const translations: Record<
-  Language,
-  Record<Page, Record<string, string>>
-> = {
+export const translations = {
   [Language.EN]: {
     [Page.Home]: {
       heroTitle: "Everything you need to enjoy music",
@@ -333,6 +341,7 @@ export const translations: Record<
       album: "Album",
       shows: "Shows",
       episodes: "Episodes",
+      by: "By",
     },
     [Page.Concert]: {
       ...sideBarTranslations[Language.EN],
@@ -396,19 +405,28 @@ export const translations: Record<
     },
     [Page.CollectionAlbums]: {
       ...sideBarTranslations[Language.EN],
-      title: "User",
+      title: "Collection Albums",
+      album: "Album",
+      albums: "Albums",
     },
     [Page.CollectionArtists]: {
       ...sideBarTranslations[Language.EN],
-      title: "User",
+      title: "Collection Artists",
+      artist: "Artist",
+      artists: "Artists",
     },
     [Page.CollectionPlaylists]: {
       ...sideBarTranslations[Language.EN],
-      title: "User",
+      title: "Collection Playlists",
+      by: "By",
     },
     [Page.CollectionPodcasts]: {
       ...sideBarTranslations[Language.EN],
-      title: "User",
+      title: "Collection Podcasts",
+    },
+    [Page.Collection]: {
+      ...sideBarTranslations[Language.EN],
+      title: "Collection",
     },
   },
   [Language.ES]: {
@@ -493,6 +511,7 @@ export const translations: Record<
       album: "Álbum",
       shows: "Shows",
       episodes: "Episodios",
+      by: "De",
     },
     [Page.Concert]: {
       ...sideBarTranslations[Language.ES],
@@ -549,7 +568,7 @@ export const translations: Record<
       ...pageHeaderTranslations[Language.ES],
       ...listHeaderTranslations[Language.ES],
       ...removeTracksModalTranslations[Language.ES],
-      title: "Track",
+      title: "Tus canciones",
       playlistAddedToLibrary: "Playlist añadida a tu biblioteca",
       playlistRemovedFromLibrary: "Playlist removida de tu biblioteca",
       playlistSearchHeading: "Busquemos algo para tu playlist",
@@ -558,29 +577,41 @@ export const translations: Record<
     },
     [Page.CollectionAlbums]: {
       ...sideBarTranslations[Language.ES],
-      title: "CollectionAlbums",
+      title: "Tus álbumes",
+      album: "Álbum",
+      albums: "Álbumes",
     },
     [Page.CollectionArtists]: {
       ...sideBarTranslations[Language.ES],
-      title: "CollectionArtists",
+      title: "Tus artistas",
+      artist: "Artista",
+      artists: "Artistas",
     },
     [Page.CollectionPlaylists]: {
       ...sideBarTranslations[Language.ES],
-      title: "CollectionPlaylists",
+      title: "Tus playlists",
+      by: "De",
     },
     [Page.CollectionPodcasts]: {
       ...sideBarTranslations[Language.ES],
-      title: "CollectionPodcasts",
+      title: "Tus podcasts",
+    },
+    [Page.Collection]: {
+      ...sideBarTranslations[Language.ES],
+      title: "Colección",
     },
   },
 };
 
-export function getTranslations(
+export type Translations = typeof translations[Language];
+
+export function getTranslations<T extends Page>(
   country: string,
-  page: Page
-): Record<string, string> {
+  page: T
+): Translations[T] {
   const language = spanishCountries.includes(country)
     ? Language.ES
     : Language.EN;
+
   return translations[language][page];
 }

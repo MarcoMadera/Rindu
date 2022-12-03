@@ -9,7 +9,7 @@ export default function concertCover(req: NextRequest): ImageResponse | void {
   try {
     const { searchParams } = new URL(req.url);
     const { artist, venue, date, img, width, height } =
-      Object.fromEntries(searchParams) || {};
+      Object.fromEntries(searchParams);
 
     return new ImageResponse(
       (

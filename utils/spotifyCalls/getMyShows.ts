@@ -12,7 +12,7 @@ export async function getMyShows(
     }
   );
   if (res.ok) {
-    const data = await res.json();
+    const data = (await res.json()) as SpotifyApi.UsersSavedShowsResponse;
     return data;
   }
   return null;

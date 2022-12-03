@@ -1,4 +1,4 @@
-import React, { Fragment, ReactElement, useEffect } from "react";
+import React, { ReactElement, useEffect } from "react";
 import { decode } from "html-entities";
 import Link from "next/link";
 import formatNumber from "utils/formatNumber";
@@ -14,6 +14,7 @@ import Heading from "./Heading";
 import { Eyebrow } from "./Eyebrow";
 import { AsType } from "types/heading";
 import useTranslations from "hooks/useTranslations";
+import ArtistList from "./ArtistList";
 
 export default function PageHeader({
   type,
@@ -96,19 +97,7 @@ export default function PageHeader({
           <p>
             {type === HeaderType.song || isAlbumVariant ? (
               <span className="trackArtists">
-                {artists &&
-                  artists?.map((artist, i) => {
-                    return (
-                      <Fragment key={artist.id}>
-                        <Link href={`/artist/${artist.id}`}>
-                          <a className="userLink">{artist.name}</a>
-                        </Link>
-                        {i !== (artists?.length && artists?.length - 1)
-                          ? ", "
-                          : null}
-                      </Fragment>
-                    );
-                  })}
+                <ArtistList artists={artists} />
               </span>
             ) : type === HeaderType.podcast ? (
               <Heading number={3} as={AsType.SPAN}>

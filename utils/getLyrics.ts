@@ -58,7 +58,7 @@ export async function getLyrics(
       body: JSON.stringify({ trackId, accessToken }),
     });
     if (resSyncedLyrics.ok) {
-      const data: ISyncedLyricsResponse = await resSyncedLyrics.json();
+      const data = (await resSyncedLyrics.json()) as ISyncedLyricsResponse;
       if (data) {
         return { ...data, isFullscreen: true };
       }
@@ -73,7 +73,7 @@ export async function getLyrics(
   });
 
   if (res.ok) {
-    const lyrics: string | null = await res.json();
+    const lyrics = (await res.json()) as string | null;
     return { lyrics, isFullscreen: false };
   }
   return null;

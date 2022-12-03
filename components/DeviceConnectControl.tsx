@@ -61,7 +61,7 @@ export default function DeviceConnectControl(): ReactElement {
                       if (!accessToken) return;
                       const transferPlaybackResponse = await transferPlayback(
                         [device.id],
-                        { accessToken: accessToken as string }
+                        { accessToken }
                       );
                       if (transferPlaybackResponse) {
                         addToast({

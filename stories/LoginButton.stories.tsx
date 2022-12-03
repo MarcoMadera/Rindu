@@ -23,4 +23,4 @@ const Template: ComponentStory<typeof LoginButton> = () => {
   );
 };
 
-export const Default = Template.bind({});
+export const Default = Template;

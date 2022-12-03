@@ -12,7 +12,7 @@ export async function getAuthorizationByCode(
     body: JSON.stringify({ code }),
   });
   if (res.ok) {
-    const data: AuthorizationResponse = await res.json();
+    const data = (await res.json()) as AuthorizationResponse;
     return data;
   }
   return null;

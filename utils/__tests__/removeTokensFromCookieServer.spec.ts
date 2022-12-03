@@ -11,8 +11,10 @@ describe("removeTokensFromCookieServer", () => {
     expect.assertions(1);
     const serverResponse = {
       setHeader: jest.fn(),
-    } as unknown as NextPageContext["res"];
-    removeTokensFromCookieServer(serverResponse);
+    };
+    removeTokensFromCookieServer(
+      serverResponse as unknown as NextPageContext["res"]
+    );
     expect(serverResponse?.setHeader).toHaveBeenCalledWith("Set-Cookie", [
       `${ACCESS_TOKEN_COOKIE}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax;`,
       `${REFRESH_TOKEN_COOKIE}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax;`,

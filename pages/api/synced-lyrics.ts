@@ -22,7 +22,7 @@ async function getToken(): Promise<string | null> {
     }
   );
   if (res.ok) {
-    const data = await res.json();
+    const data = (await res.json()) as { accessToken: string };
     return data.accessToken;
   }
 
@@ -45,10 +45,14 @@ async function getLyrics(trackId: string) {
     }
   );
   if (res.ok) {
-    const data: ISyncedLyricsResponse = await res.json();
+    const data = (await res.json()) as ISyncedLyricsResponse;
     return data;
   }
   return null;
+}
+
+interface ISyncedLyricsBody {
+  trackId?: string;
 }
 
 export default async function syncedLyrics(
@@ -56,6 +60,8 @@ export default async function syncedLyrics(
   res: NextApiResponse
 ): Promise<void> {
   const thisUrl = getSiteUrl();
+  const body = req.body as ISyncedLyricsBody;
+
   if (
     thisUrl &&
     req.headers.referer &&
@@ -64,11 +70,11 @@ export default async function syncedLyrics(
     res.status(401).end();
     return;
   }
-  if (!req.body.trackId) {
+  if (!body.trackId) {
     return res.status(400).json({ error: "Missing trackId" });
   }
   try {
-    const lyrics = await getLyrics(req.body.trackId);
+    const lyrics = await getLyrics(body.trackId);
     if (!lyrics) {
       return res.status(404).json({ error: "No lyrics found" });
     }

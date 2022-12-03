@@ -16,7 +16,7 @@ export async function removeTracksFromPlaylist(
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
+          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
         }`,
       },
       body: JSON.stringify({
@@ -26,7 +26,8 @@ export async function removeTracksFromPlaylist(
     }
   );
   if (res.ok) {
-    const data: SpotifyApi.RemoveTracksFromPlaylistResponse = await res.json();
+    const data =
+      (await res.json()) as SpotifyApi.RemoveTracksFromPlaylistResponse;
     return data;
   }
   return null;

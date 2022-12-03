@@ -14,7 +14,7 @@ const Template: ComponentStory<typeof TrackListHeader> = (args) => {
   return <TrackListHeader {...args} />;
 };
 
-export const Album = Template.bind({});
+export const Album = Template;
 Album.args = {
   type: "album",
   isPin: true,
@@ -23,7 +23,7 @@ Album.args = {
   },
 };
 
-export const Playlist = Template.bind({});
+export const Playlist = Template;
 Playlist.args = {
   type: "playlist",
   isPin: true,
@@ -32,7 +32,7 @@ Playlist.args = {
   },
 };
 
-export const Presentation = Template.bind({});
+export const Presentation = Template;
 Presentation.args = {
   type: "presentation",
   isPin: true,

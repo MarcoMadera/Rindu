@@ -1,11 +1,10 @@
-import { Fragment, ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import Link from "next/link";
 import { Heart } from "components/icons/Heart";
 import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibrary";
 import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
 import useAuth from "hooks/useAuth";
 import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
-import { getIdFromUri } from "utils/getIdFromUri";
 import useSpotify from "hooks/useSpotify";
 import { Chevron } from "components/icons/Chevron";
 import useToast from "hooks/useToast";
@@ -14,6 +13,7 @@ import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFrom
 import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
 import useContextMenu from "hooks/useContextMenu";
 import PictureInPictureButton from "./PictureInPictureButton";
+import ArtistList from "./ArtistList";
 
 export default function NowPlaying(): ReactElement | null {
   const [isLikedTrack, setIsLikedTrack] = useState(false);
@@ -59,7 +59,7 @@ export default function NowPlaying(): ReactElement | null {
         >
           <Chevron rotation={"90deg"} />
         </button>
-        {playedSource ? (
+        {playedSource && type && id ? (
           <Link href={`/${type}/${id}`}>
             <a>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -90,44 +90,31 @@ export default function NowPlaying(): ReactElement | null {
         )}
       </div>
       <section>
-        <Link
-          href={`/${currentlyPlaying?.type ?? "track"}/${currentlyPlaying?.id}`}
-        >
-          <a
-            className="trackName"
-            onContextMenu={(e) => {
-              e.preventDefault();
-              const x = e.pageX;
-              const y = e.pageY;
-              addContextMenu({
-                type: "cardTrack",
-                data: currentlyPlaying,
-                position: { x, y },
-              });
-            }}
+        {currentlyPlaying.id ? (
+          <Link
+            href={`/${currentlyPlaying.type ?? "track"}/${currentlyPlaying.id}`}
           >
-            {currentlyPlaying.name}
-          </a>
-        </Link>
+            <a
+              className="trackName"
+              onContextMenu={(e) => {
+                e.preventDefault();
+                const x = e.pageX;
+                const y = e.pageY;
+                addContextMenu({
+                  type: "cardTrack",
+                  data: currentlyPlaying,
+                  position: { x, y },
+                });
+              }}
+            >
+              {currentlyPlaying.name}
+            </a>
+          </Link>
+        ) : (
+          <span>{currentlyPlaying.name}</span>
+        )}
         <span className="trackArtists">
-          {currentlyPlaying.artists?.map((artist, i) => {
-            return (
-              <Fragment key={artist.id ?? getIdFromUri(artist?.uri, "id")}>
-                <Link
-                  href={`/${getIdFromUri(artist?.uri, "type") ?? "artist"}/${
-                    artist.id ?? getIdFromUri(artist?.uri, "id")
-                  }`}
-                >
-                  <a>{artist.name}</a>
-                </Link>
-                {i !==
-                (currentlyPlaying.artists?.length &&
-                  currentlyPlaying.artists?.length - 1)
-                  ? ", "
-                  : null}
-              </Fragment>
-            );
-          })}
+          <ArtistList artists={currentlyPlaying.artists} />
         </span>
       </section>
       {!currentlyPlaying.is_local && (

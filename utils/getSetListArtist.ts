@@ -31,7 +31,7 @@ export async function getSetListArtist(
   );
 
   if (res.ok) {
-    const data: SetListArtistResponse = await res.json();
+    const data = (await res.json()) as SetListArtistResponse;
     if (data.artist.length > 0) {
       return data.artist[0];
     }

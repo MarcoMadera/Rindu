@@ -83,7 +83,7 @@ const Template: ComponentStory<typeof RemoveTracksModal> = (args) => {
   );
 };
 
-export const Default = Template.bind({});
+export const Default = Template;
 Default.args = {
   openModal: true,
   isLibrary: true,

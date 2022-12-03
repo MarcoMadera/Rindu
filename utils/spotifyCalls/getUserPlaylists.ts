@@ -13,8 +13,8 @@ export async function getUserPlaylists(
     }
   );
   if (res.ok) {
-    const data: SpotifyApi.ListOfCurrentUsersPlaylistsResponse =
-      await res.json();
+    const data =
+      (await res.json()) as SpotifyApi.ListOfCurrentUsersPlaylistsResponse;
     return data;
   }
   return null;

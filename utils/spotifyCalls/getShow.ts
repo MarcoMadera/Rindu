@@ -10,12 +10,12 @@ export async function getShow(
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${
-        accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
+        accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
       }`,
     },
   });
   if (res.ok) {
-    const data: SpotifyApi.ShowObject = await res.json();
+    const data = (await res.json()) as SpotifyApi.ShowObject;
     return data;
   }
   return null;

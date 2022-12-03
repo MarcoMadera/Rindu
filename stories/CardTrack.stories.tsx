@@ -148,8 +148,8 @@ const track = {
   uri: "spotify:track:1pCblJqsFVRNc9Xmg0oQz8",
 } as ITrack;
 
-export const Default = Template.bind({});
-Default.args = {
+export const Default = Template;
+Template.args = {
   track,
   position: 0,
   accessToken: "",
@@ -162,7 +162,7 @@ Default.args = {
   onClickAdd: undefined,
 };
 
-export const WithAddButton = Template.bind({});
+export const WithAddButton = Template;
 WithAddButton.args = {
   track,
   position: 0,

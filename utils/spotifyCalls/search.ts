@@ -12,11 +12,11 @@ export async function search(
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
+          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
         }`,
       },
     }
   );
-  const data: SpotifyApi.SearchResponse = await res.json();
+  const data = (await res.json()) as SpotifyApi.SearchResponse;
   return data;
 }

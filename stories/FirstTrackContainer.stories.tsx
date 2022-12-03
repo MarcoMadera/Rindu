@@ -86,7 +86,7 @@ const Template: ComponentStory<typeof FirstTrackContainer> = (args) => {
   );
 };
 
-export const Default = Template.bind({});
+export const Default = Template;
 Default.args = {
   track: {
     album: {

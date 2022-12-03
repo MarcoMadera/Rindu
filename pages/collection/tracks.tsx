@@ -92,7 +92,7 @@ export async function getServerSideProps({
       total: playListTracks.total,
     },
     type: "collection",
-    uri: `spotify:user:${user?.id}:collection`,
+    uri: user?.id ? `spotify:user:${user.id}:collection` : "",
   };
   return {
     props: {

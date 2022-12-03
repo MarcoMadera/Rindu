@@ -38,7 +38,9 @@ export async function addCustomPlaylistImage(
       headers: {
         "Content-Type": "image/jpeg",
         Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE, cookies)
+          accessToken
+            ? accessToken
+            : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
         }`,
       },
       body: coverData,

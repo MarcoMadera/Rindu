@@ -46,6 +46,8 @@ module.exports = {
     semi: ["error", "always"],
     "no-unneeded-ternary": 1,
     "react/react-in-jsx-scope": 0,
+    "no-implied-eval": "off",
+    "require-await": "off",
   },
   overrides: [
     {
@@ -53,6 +55,18 @@ module.exports = {
       files: ["*.ts", "*.tsx"],
       rules: {
         "@typescript-eslint/explicit-module-boundary-types": [1],
+        "@typescript-eslint/await-thenable": "error",
+        "@typescript-eslint/no-implied-eval": "error",
+        "@typescript-eslint/no-unnecessary-type-assertion": "error",
+        "@typescript-eslint/no-unsafe-argument": "error",
+        "@typescript-eslint/no-unsafe-assignment": "error",
+        "@typescript-eslint/no-unsafe-call": "error",
+        "@typescript-eslint/no-unsafe-member-access": "error",
+        "@typescript-eslint/no-unsafe-return": "error",
+        "@typescript-eslint/require-await": "error",
+        "@typescript-eslint/restrict-plus-operands": "error",
+        "@typescript-eslint/restrict-template-expressions": "error",
+        "@typescript-eslint/no-for-in-array": "error",
       },
       parserOptions: {
         project: ["./tsconfig.json"],

@@ -158,13 +158,13 @@ const Template: ComponentStory<typeof PageDetails> = (args) => {
   );
 };
 
-export const Default = Template.bind({});
-export const WithBanner = Template.bind({});
+export const Default = Template;
+export const WithBanner = Template;
 WithBanner.args = {
   banner:
     "https://www.theaudiodb.com/images/media/artist/fanart/qqwxxp1542730121.jpg",
 };
-export const WithData = Template.bind({});
+export const WithData = Template;
 WithData.args = {
   data: track as ITrack,
 };

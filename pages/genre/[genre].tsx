@@ -15,6 +15,7 @@ import Heading from "components/Heading";
 import Grid from "components/Grid";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { getTranslations, Page } from "utils/getTranslations";
+import { fullFilledValue } from "utils/fullFilledValue";
 
 interface CategoryProps {
   categoryInfo: SpotifyApi.SingleCategoryResponse | null;
@@ -52,10 +53,10 @@ export default function Category({
           <title>Rindu - {categoryInfo?.name || "Generos"}</title>
         </Head>
       )}
-      {categoryInfo && <Heading number={1}>{categoryInfo?.name}</Heading>}
-      {playlists && playlists?.items?.length > 0 ? (
+      {categoryInfo && <Heading number={1}>{categoryInfo.name}</Heading>}
+      {playlists && playlists.items?.length > 0 ? (
         <Grid>
-          {playlists?.items?.map((item) => {
+          {playlists.items?.map((item) => {
             if (!item) return null;
             return (
               <PresentationCard
@@ -114,12 +115,8 @@ export async function getServerSideProps({
 
   return {
     props: {
-      categoryInfo:
-        categoryInfo.status === "fulfilled" ? categoryInfo.value ?? null : null,
-      playlists:
-        categories.status === "fulfilled"
-          ? categories.value?.playlists ?? null
-          : null,
+      categoryInfo: fullFilledValue(categoryInfo),
+      playlists: fullFilledValue(categories)?.playlists ?? null,
       accessToken: accessToken ?? null,
       user: user ?? null,
       translations,

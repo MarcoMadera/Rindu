@@ -69,7 +69,7 @@ export async function getSetLists(
   );
 
   if (res.ok) {
-    const data: SetLists = await res.json();
+    const data = (await res.json()) as SetLists;
     return data;
   }
   return null;

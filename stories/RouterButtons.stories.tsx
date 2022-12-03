@@ -24,4 +24,4 @@ const Template: ComponentStory<typeof RouterButtons> = () => {
   );
 };
 
-export const Default = Template.bind({});
+export const Default = Template;

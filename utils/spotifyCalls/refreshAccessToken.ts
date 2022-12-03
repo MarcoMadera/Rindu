@@ -17,7 +17,7 @@ export async function refreshAccessToken(
     body: JSON.stringify({ refreshToken }),
   });
   if (res.ok) {
-    const data = await res.json();
+    const data = (await res.json()) as IRefreshAccessTokenResponse;
     return data;
   }
 

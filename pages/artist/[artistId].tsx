@@ -37,6 +37,7 @@ import { getTranslations, Page } from "utils/getTranslations";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import useTranslations from "hooks/useTranslations";
 import Link from "next/link";
+import { fullFilledValue } from "utils/fullFilledValue";
 
 interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
@@ -249,7 +250,9 @@ export default function ArtistPage({
                 : translations.showMore}
             </button>
           </div>
-          {setLists?.setlist && setLists?.setlist?.length > 0 ? (
+          {currentArtist?.id &&
+          setLists?.setlist &&
+          setLists?.setlist?.length > 0 ? (
             <div className="set-list">
               <div className="set-list-content">
                 <Heading number={2}>{translations.concerts}</Heading>
@@ -263,7 +266,7 @@ export default function ArtistPage({
 
                   return (
                     <Link
-                      href={`/concert/${currentArtist?.id}.${set.id}`}
+                      href={`/concert/${currentArtist.id}.${set.id}`}
                       key={set.id}
                     >
                       <a className="set">
@@ -294,9 +297,9 @@ export default function ArtistPage({
             </div>
           ) : null}
         </div>
-        {singleAlbums && singleAlbums?.items?.length > 0 ? (
+        {singleAlbums && singleAlbums.items?.length > 0 ? (
           <Carousel title={translations.singleAlbumsCarouselTitle} gap={24}>
-            {singleAlbums?.items?.map((item) => {
+            {singleAlbums.items?.map((item) => {
               if (!item) return null;
               const { images, name, id, artists, release_date, album_type } =
                 item;
@@ -319,9 +322,9 @@ export default function ArtistPage({
             })}
           </Carousel>
         ) : null}
-        {appearAlbums && appearAlbums?.items?.length > 0 ? (
+        {appearAlbums && appearAlbums.items?.length > 0 ? (
           <Carousel title={translations.appearAlbumsCarouselTitle} gap={24}>
-            {appearAlbums?.items?.map(
+            {appearAlbums.items?.map(
               ({ images, name, id, artists, release_date, album_type }) => {
                 return (
                   <PresentationCard
@@ -343,9 +346,9 @@ export default function ArtistPage({
             )}
           </Carousel>
         ) : null}
-        {relatedArtists && relatedArtists?.artists?.length > 0 ? (
+        {relatedArtists && relatedArtists.artists?.length > 0 ? (
           <Carousel title={translations.relatedArtistsCarouselTitle} gap={24}>
-            {relatedArtists?.artists?.map((item) => {
+            {relatedArtists.artists?.map((item) => {
               if (!item) return null;
               const { images, name, id } = item;
               return (
@@ -706,17 +709,14 @@ export async function getServerSideProps({
   return {
     props: {
       currentArtist,
-      singleAlbums:
-        singleAlbums.status === "fulfilled" ? singleAlbums.value : null,
-      appearAlbums:
-        appearAlbums.status === "fulfilled" ? appearAlbums.value : null,
-      topTracks: topTracks.status === "fulfilled" ? topTracks.value : null,
-      relatedArtists:
-        relatedArtists.status === "fulfilled" ? relatedArtists.value : null,
+      singleAlbums: fullFilledValue(singleAlbums),
+      appearAlbums: fullFilledValue(appearAlbums),
+      topTracks: fullFilledValue(topTracks),
+      relatedArtists: fullFilledValue(relatedArtists),
       accessToken,
       user: user ?? null,
-      setLists: setLists.status === "fulfilled" ? setLists.value : null,
-      artistInfo: artistInfo.status === "fulfilled" ? artistInfo.value : null,
+      setLists: fullFilledValue(setLists),
+      artistInfo: fullFilledValue(artistInfo),
       translations,
     },
   };

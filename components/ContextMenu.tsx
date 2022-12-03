@@ -251,9 +251,10 @@ export default function ContextMenu(): ReactPortal | null {
           </button>
         </li>
         {contextMenuData.data?.artists &&
-          contextMenuData.data.artists?.length > 0 && (
+          contextMenuData.data.artists?.length > 0 &&
+          contextMenuData.data.artists?.[0].id && (
             <li>
-              <Link href={`/artist/${contextMenuData.data.artists?.[0].id}`}>
+              <Link href={`/artist/${contextMenuData.data.artists[0].id}`}>
                 <a
                   tabIndex={0}
                   onKeyDown={(e) => {

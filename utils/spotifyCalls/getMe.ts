@@ -14,13 +14,15 @@ export async function getMe(
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${
-        accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE, cookies)
+        accessToken
+          ? accessToken
+          : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
       }`,
     },
   });
 
   if (res.ok) {
-    const data: SpotifyApi.CurrentUsersProfileResponse = await res.json();
+    const data = (await res.json()) as SpotifyApi.CurrentUsersProfileResponse;
     return data;
   }
   return null;

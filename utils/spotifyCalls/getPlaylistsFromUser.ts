@@ -15,13 +15,13 @@ export async function getPlaylistsFromUser(
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
+          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
         }`,
       },
     }
   );
   if (res.ok) {
-    const data: SpotifyApi.ListOfUsersPlaylistsResponse = await res.json();
+    const data = (await res.json()) as SpotifyApi.ListOfUsersPlaylistsResponse;
     return data;
   }
   return null;

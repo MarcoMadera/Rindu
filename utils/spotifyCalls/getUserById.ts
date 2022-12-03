@@ -13,12 +13,12 @@ export async function getUserById(
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${
-        accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
+        accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
       }`,
     },
   });
   if (res.ok) {
-    const data: SpotifyApi.UserObjectPublic = await res.json();
+    const data = (await res.json()) as SpotifyApi.UserObjectPublic;
     return data;
   }
   return null;

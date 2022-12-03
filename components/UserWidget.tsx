@@ -78,11 +78,13 @@ export default function UserWidget({
           </a>
         </div>
         <div role="presentation">
-          <Link href={`/user/${user?.id}`}>
-            <a role="menuitem" tabIndex={-1} className="option">
-              Profile
-            </a>
-          </Link>
+          {user?.id ? (
+            <Link href={`/user/${user.id}`}>
+              <a role="menuitem" tabIndex={-1} className="option">
+                Profile
+              </a>
+            </Link>
+          ) : null}
         </div>
         {!isPremium ? (
           <div role="presentation">

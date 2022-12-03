@@ -16,15 +16,17 @@ export async function getCategories(
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE, cookies)
+          accessToken
+            ? accessToken
+            : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
         }`,
       },
     }
   );
 
   if (res.ok) {
-    const data: SpotifyApi.MultipleCategoriesResponse = await res.json();
-    return data.categories as SpotifyApi.PagingObject<SpotifyApi.CategoryObject>;
+    const data = (await res.json()) as SpotifyApi.MultipleCategoriesResponse;
+    return data.categories;
   }
   return null;
 }

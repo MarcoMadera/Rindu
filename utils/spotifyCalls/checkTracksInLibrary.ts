@@ -15,14 +15,14 @@ export async function checkTracksInLibrary(
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          accessToken ?? takeCookie(ACCESS_TOKEN_COOKIE, cookies)
+          accessToken ?? takeCookie(ACCESS_TOKEN_COOKIE, cookies) ?? ""
         }`,
       },
     }
   );
 
   if (res.ok) {
-    const data: boolean[] = await res.json();
+    const data = (await res.json()) as boolean[];
     return data;
   }
 

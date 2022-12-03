@@ -1,8 +1,7 @@
-import useOnScreen from "hooks/useOnScreen";
-import Link from "next/link";
-import { Fragment, ReactElement, useRef } from "react";
+import { ReactElement, useRef } from "react";
 import { capitalizeFirstLetter } from "utils/capitalizeFirstLetter";
 import { getYear } from "utils/getYear";
+import ArtistList from "./ArtistList";
 
 export default function SubTitle({
   artists,
@@ -14,41 +13,22 @@ export default function SubTitle({
   releaseYear?: string;
 }): ReactElement {
   const spanRef = useRef<HTMLSpanElement>(null);
-  const isVisible = useOnScreen(spanRef, "-150px");
   return (
     <span ref={spanRef} className="subTitle">
       {releaseYear && <>{getYear(releaseYear)} · </>}
       {albumType && <>{capitalizeFirstLetter(albumType)} · </>}
-      {artists?.map((artist, i) => {
-        const idFromUri = artist.uri.split(":")[2];
-        if (i > 2) return null;
-        return (
-          <Fragment key={artist.id ?? idFromUri}>
-            <Link href={`/artist/${artist.id ?? idFromUri}`}>
-              <a
-                className="link"
-                aria-hidden={isVisible ? "false" : "true"}
-                // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-                tabIndex={isVisible ? 0 : -1}
-              >
-                {artist.name}
-              </a>
-            </Link>
-            {i !== (artists?.length && artists?.length - 1) ? ", " : null}
-          </Fragment>
-        );
-      })}
+      <ArtistList artists={artists} maxArtistsToShow={2} />
       {artists.length > 2 ? " y más..." : null}
       <style jsx>
         {`
-          .link {
+          span :global(a) {
             text-decoration: none;
             color: #b3b3b3;
             z-index: 3;
             position: relative;
           }
-          .link:hover,
-          .link:focus {
+          span :global(a:hover),
+          span :global(a:focus) {
             text-decoration: 1px solid underline;
             text-underline-offset: 1px;
           }

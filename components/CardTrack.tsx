@@ -7,7 +7,6 @@ import {
   MutableRefObject,
   useRef,
   useState,
-  Fragment,
   CSSProperties,
   ReactElement,
 } from "react";
@@ -26,6 +25,8 @@ import useOnScreen from "hooks/useOnScreen";
 import ExplicitSign from "./ExplicitSign";
 import { useRouter } from "next/router";
 import { spanishCountries } from "utils/getTranslations";
+import { getSiteUrl } from "utils/environment";
+import ArtistList from "./ArtistList";
 
 interface CardTrackProps {
   track: ITrack;
@@ -86,7 +87,7 @@ export default function CardTrack({
   const isPlayable =
     track?.type === "episode" ||
     (!isPremium && track?.preview_url) ||
-    (isPremium && !(track?.is_playable === false) && !track?.is_local);
+    (isPremium && track?.is_playable !== false && !track?.is_local);
 
   const isTheSameAsCurrentlyPlaying =
     currentlyPlaying?.name === track?.name &&
@@ -121,8 +122,8 @@ export default function CardTrack({
         const source = pageDetails?.uri;
         const isCollection = source?.split(":")?.[3];
         setPlayedSource(
-          isCollection && pageDetails
-            ? `spotify:${pageDetails?.type}:${pageDetails?.id}`
+          isCollection && pageDetails?.type && pageDetails?.id
+            ? `spotify:${pageDetails.type}:${pageDetails.id}`
             : source ?? track.uri
         );
       }
@@ -289,45 +290,28 @@ export default function CardTrack({
           )
         ) : null}
         <div className="trackArtistsContainer">
-          <Link href={`/${track?.type ?? "track"}/${track?.id}`}>
-            <a className="trackName">{`${track?.name ?? ""}`}</a>
-          </Link>
+          {track?.id ? (
+            <Link href={`/${track?.type ?? "track"}/${track?.id}`}>
+              <a className="trackName">{`${track?.name ?? ""}`}</a>
+            </Link>
+          ) : null}
           <span className="trackArtists">
             {track?.explicit && <ExplicitSign />}
-            {track?.artists?.map((artist, i) => {
-              return (
-                <Fragment key={artist?.id}>
-                  <Link href={`/${artist?.type ?? "artist"}/${artist?.id}`}>
-                    <a
-                      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-                      tabIndex={isVisible ? 0 : -1}
-                      aria-hidden={isVisible ? "false" : "true"}
-                    >
-                      {artist?.name}
-                    </a>
-                  </Link>
-                  {i !== (track?.artists?.length && track?.artists?.length - 1)
-                    ? ", "
-                    : null}
-                </Fragment>
-              );
-            })}
+            <ArtistList artists={track?.artists} />
           </span>
         </div>
       </section>
-      {type === "playlist" ? (
+      {type === "playlist" && track.album && track.album.id ? (
         <>
           <section>
             <p className="trackArtists">
-              <Link
-                href={`/${track?.album?.type ?? "album"}/${track?.album?.id}`}
-              >
+              <Link href={`/${track.album.type ?? "album"}/${track.album.id}`}>
                 <a
                   // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
                   tabIndex={isVisible ? 0 : -1}
                   aria-hidden={isVisible ? "false" : "true"}
                 >
-                  {track?.album?.name}
+                  {track.album.name}
                 </a>
               </Link>
             </p>
@@ -428,13 +412,16 @@ export default function CardTrack({
         .playButton {
           background-image: ${type === "presentation"
             ? `url(${
-                track?.album?.images?.[2]?.url ?? track?.album?.images?.[1]?.url
+                track?.album?.images?.[2]?.url ??
+                track?.album?.images?.[1]?.url ??
+                `${getSiteUrl()}/defaultSongCover.jpeg`
               })`
             : "unset"};
         }
         .trackItem :global(.trackHeart) {
           opacity: ${isLikedTrack || isFocusing || mouseEnter ? "1" : "0"};
         }
+        .trackArtists :global(a),
         a {
           color: ${mouseEnter || isFocusing ? "#fff" : "inherit"};
         }
