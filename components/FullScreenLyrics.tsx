@@ -349,6 +349,7 @@ export default function FullScreenLyrics({
             ) {
               await document.exitPictureInPicture();
               setIsPictureInPictureLyircsCanvas.off();
+              setIsPip(false);
               return;
             }
             setIsPictureInPictureLyircsCanvas.on();
