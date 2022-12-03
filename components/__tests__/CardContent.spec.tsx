@@ -121,7 +121,7 @@ describe("cardContent", () => {
     render(
       <CardContent
         id="id"
-        subTitle={<span data-testId="subcomponent">Heey</span>}
+        subTitle={<span data-testid="subcomponent">Heey</span>}
         title="title"
         type="track"
         images={[{}] as SpotifyApi.ImageObject[]}
@@ -137,7 +137,7 @@ describe("cardContent", () => {
     render(
       <CardContent
         id="id"
-        subTitle={<span data-testId="subcomponent">Heey</span>}
+        subTitle={<span data-testid="subcomponent">Heey</span>}
         title="title"
         type={CardType.ARTIST}
         images={[{ url: "eer" }] as SpotifyApi.ImageObject[]}

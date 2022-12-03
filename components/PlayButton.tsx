@@ -106,7 +106,7 @@ export function PlayButton({
       });
       return;
     }
-    const data = await (player as Spotify.Player)?.getCurrentState();
+    const data = await (player as Spotify.Player).getCurrentState();
     return data;
   }, [addToast, player]);
 
@@ -227,10 +227,10 @@ export function PlayButton({
         if (track?.preview_url || allTracks[0]?.preview_url) {
           const audio = track?.preview_url || allTracks[0].preview_url;
           (player as AudioPlayer).src = audio as string;
-          (player as AudioPlayer)?.play();
+          (player as AudioPlayer).play();
           setCurrentlyPlaying(track || allTracks[0]);
         } else {
-          (player as AudioPlayer)?.nextTrack();
+          (player as AudioPlayer).nextTrack();
         }
         if (pageDetails) {
           setPlaylistPlayingId(pageDetails.id);

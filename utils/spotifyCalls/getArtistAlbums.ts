@@ -14,7 +14,7 @@ export async function getArtistAlbums(
   accessToken?: string,
   cookies?: string
 ): Promise<SpotifyApi.ArtistsAlbumsResponse | null> {
-  if (!accessToken || !id) {
+  if (!id) {
     return null;
   }
   const res = await fetch(

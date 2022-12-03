@@ -30,7 +30,7 @@ export default function EpisodeCard({
   position,
   show,
   savedEpisode,
-}: EpisodeCardProps): ReactElement {
+}: EpisodeCardProps): ReactElement | null {
   const {
     isPlaying,
     currentlyPlaying,
@@ -45,7 +45,7 @@ export default function EpisodeCard({
   const { user, accessToken, setAccessToken } = useAuth();
   const { addToast } = useToast();
   const { addContextMenu } = useContextMenu();
-  const isThisEpisodePlaying = currentlyPlaying?.uri === item.uri;
+  const isThisEpisodePlaying = currentlyPlaying?.uri === item?.uri;
   const isPremium = user?.product === "premium";
   const [isEpisodeInLibrary, setIsEpisodeInLibrary] = useState<boolean>(
     savedEpisode ?? false
@@ -62,6 +62,8 @@ export default function EpisodeCard({
       setShouldUpdateList(false);
     }
   }, [shouldUpdateList]);
+
+  if (!item) return null;
 
   return (
     <div
@@ -81,7 +83,7 @@ export default function EpisodeCard({
         <div className="coverImage">
           <div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={item?.images?.[1]?.url} alt={item?.name} />
+            <img src={item.images?.[1]?.url} alt={item.name} />
           </div>
         </div>
         <div className="header">
@@ -189,26 +191,26 @@ export default function EpisodeCard({
               playCurrentTrack(
                 {
                   album: {
-                    id: show?.id,
-                    images: item?.images ?? [],
-                    name: show?.name,
-                    release_date: item?.release_date,
+                    id: show.id,
+                    images: item.images ?? [],
+                    name: show.name,
+                    release_date: item.release_date,
                     type: "album",
-                    uri: show?.uri,
+                    uri: show.uri,
                   },
                   artists: [
                     {
                       name: show.name,
                       id: show.id,
                       type: "artist",
-                      uri: `spotify:show:${show?.id}`,
+                      uri: `spotify:show:${show.id}`,
                     },
                   ],
-                  id: item?.id,
-                  name: item?.name,
-                  explicit: item?.explicit ?? false,
+                  id: item.id,
+                  name: item.name,
+                  explicit: item.explicit ?? false,
                   type: "track",
-                  uri: item?.uri,
+                  uri: item.uri,
                 },
                 {
                   player,

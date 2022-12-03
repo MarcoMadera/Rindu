@@ -46,7 +46,7 @@ export default function VolumeControl(): ReactElement {
         }}
         action={() => {
           if (!player) return;
-          player?.setVolume(volume);
+          player.setVolume(volume);
           setLastVolume(volume);
           localStorage.setItem(
             "playback",

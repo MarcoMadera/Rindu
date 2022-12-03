@@ -29,7 +29,7 @@ import { getSiteUrl } from "utils/environment";
 import ArtistList from "./ArtistList";
 
 interface CardTrackProps {
-  track: ITrack;
+  track: ITrack | undefined;
   accessToken: string | undefined;
   playlistUri: string;
   style?: CSSProperties;
@@ -54,7 +54,7 @@ export default function CardTrack({
   onClickAdd,
   uri,
   visualPosition,
-}: CardTrackProps): ReactElement {
+}: CardTrackProps): ReactElement | null {
   const {
     deviceId,
     currentlyPlaying,
@@ -124,7 +124,7 @@ export default function CardTrack({
         setPlayedSource(
           isCollection && pageDetails?.type && pageDetails?.id
             ? `spotify:${pageDetails.type}:${pageDetails.id}`
-            : source ?? track.uri
+            : source ?? track?.uri
         );
       }
       if (status === 400) {
@@ -136,13 +136,15 @@ export default function CardTrack({
     });
   }
 
+  if (!track) return null;
+
   return (
     <div
       style={style}
       className="trackItem"
       onDoubleClick={() => {
         if (isPlayable) {
-          if (track?.corruptedTrack) {
+          if (track.corruptedTrack) {
             addToast({
               variant: "error",
               message: "This track is corrupted and cannot be played",
@@ -201,7 +203,7 @@ export default function CardTrack({
           }
         }
         if (e.key === "Enter") {
-          if (track?.corruptedTrack) {
+          if (track.corruptedTrack) {
             addToast({
               variant: "error",
               message: "This track is corrupted and cannot be played",
@@ -240,7 +242,7 @@ export default function CardTrack({
             return;
           }
           if (isPlayable) {
-            if (track?.corruptedTrack) {
+            if (track.corruptedTrack) {
               addToast({
                 variant: "error",
                 message: "This track is corrupted and cannot be played",
@@ -275,11 +277,11 @@ export default function CardTrack({
       </button>
       <section>
         {type !== "presentation" ? (
-          track?.album?.images?.length ? (
+          track.album?.images?.length ? (
             //  eslint-disable-next-line @next/next/no-img-element
             <img
               loading="lazy"
-              src={track?.album?.images[2]?.url ?? track?.album?.images[1]?.url}
+              src={track.album?.images[2]?.url ?? track.album?.images[1]?.url}
               alt=""
               className="img"
               width="48"
@@ -290,14 +292,14 @@ export default function CardTrack({
           )
         ) : null}
         <div className="trackArtistsContainer">
-          {track?.id ? (
-            <Link href={`/${track?.type ?? "track"}/${track?.id}`}>
-              <a className="trackName">{`${track?.name ?? ""}`}</a>
+          {track.id ? (
+            <Link href={`/${track.type ?? "track"}/${track.id}`}>
+              <a className="trackName">{`${track.name ?? ""}`}</a>
             </Link>
           ) : null}
           <span className="trackArtists">
-            {track?.explicit && <ExplicitSign />}
-            <ArtistList artists={track?.artists} />
+            {track.explicit && <ExplicitSign />}
+            <ArtistList artists={track.artists} />
           </span>
         </div>
       </section>
@@ -329,7 +331,7 @@ export default function CardTrack({
           aria-hidden={isVisible ? "false" : "true"}
           handleLike={async () => {
             const saveToLibrary =
-              track?.type === "episode"
+              track.type === "episode"
                 ? saveEpisodesToLibrary
                 : saveTracksToLibrary;
             const saveRes = await saveToLibrary([track.id ?? ""], accessToken);
@@ -338,7 +340,7 @@ export default function CardTrack({
               addToast({
                 variant: "success",
                 message: `${
-                  track?.type === "episode" ? "Episode" : "Song"
+                  track.type === "episode" ? "Episode" : "Song"
                 } added to library`,
               });
               return true;
@@ -347,11 +349,11 @@ export default function CardTrack({
           }}
           handleDislike={async () => {
             const removeFromLibrary =
-              track?.type === "episode"
+              track.type === "episode"
                 ? removeEpisodesFromLibrary
                 : removeTracksFromLibrary;
             const removeRes = await removeFromLibrary(
-              [track?.id ?? ""],
+              [track.id ?? ""],
               accessToken
             );
             if (removeRes) {
@@ -359,7 +361,7 @@ export default function CardTrack({
               addToast({
                 variant: "success",
                 message: `${
-                  track?.type === "episode" ? "Episode" : "Song"
+                  track.type === "episode" ? "Episode" : "Song"
                 } removed from library.`,
               });
               return true;
@@ -368,9 +370,7 @@ export default function CardTrack({
           }}
         />
         <p className="trackArtists time">
-          {track?.duration_ms
-            ? formatTime((track?.duration_ms || 0) / 1000)
-            : ""}
+          {track.duration_ms ? formatTime(track.duration_ms / 1000) : ""}
         </p>
         {onClickAdd && (
           <button
@@ -412,8 +412,8 @@ export default function CardTrack({
         .playButton {
           background-image: ${type === "presentation"
             ? `url(${
-                track?.album?.images?.[2]?.url ??
-                track?.album?.images?.[1]?.url ??
+                track.album?.images?.[2]?.url ??
+                track.album?.images?.[1]?.url ??
                 `${getSiteUrl()}/defaultSongCover.jpeg`
               })`
             : "unset"};

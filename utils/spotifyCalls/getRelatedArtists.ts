@@ -6,7 +6,7 @@ export async function getRelatedArtists(
   accessToken?: string,
   cookies?: string
 ): Promise<SpotifyApi.ArtistsRelatedArtistsResponse | null> {
-  if (!accessToken || !id) {
+  if (!id) {
     return null;
   }
   const res = await fetch(

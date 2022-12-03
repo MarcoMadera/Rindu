@@ -6,7 +6,7 @@ export function mapPlaylistItems(
   startIndex: number
 ): ITrack[] {
   if (!items) return [];
-  return items?.map(({ track, added_at, is_local, added_by }, i) => {
+  return items.map(({ track, added_at, is_local, added_by }, i) => {
     return {
       ...track,
       is_local,

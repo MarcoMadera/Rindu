@@ -7,9 +7,6 @@ export async function getFeaturedPlaylists(
   accessToken?: string,
   cookies?: string
 ): Promise<SpotifyApi.ListOfFeaturedPlaylistsResponse | null> {
-  if (!accessToken) {
-    return null;
-  }
   const res = await fetch(
     `https://api.spotify.com/v1/browse/featured-playlists?country=${country}&limit=${limit}`,
     {

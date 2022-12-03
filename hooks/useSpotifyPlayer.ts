@@ -51,7 +51,7 @@ export default function useSpotifyPlayer({
 
   useEffect(() => {
     if (!user) return;
-    const isPremium = user?.product === "premium";
+    const isPremium = user.product === "premium";
 
     if (!isPremium) {
       audioPlayer.current = new Audio() as AudioPlayer;
@@ -116,7 +116,7 @@ export default function useSpotifyPlayer({
 
         if (nextTrack?.audio && player) {
           player.src = nextTrack.audio;
-          player?.play();
+          player.play();
           setIsPlaying(true);
           setCurrentlyPlaying(nextTrack.track);
         }
@@ -151,7 +151,7 @@ export default function useSpotifyPlayer({
 
         if (previousTrack?.audio && player) {
           player.src = previousTrack.audio;
-          player?.play();
+          player.play();
           setCurrentlyPlaying(previousTrack.track);
         }
       };
@@ -180,7 +180,7 @@ export default function useSpotifyPlayer({
       setPlayer(audioPlayer.current);
     }
 
-    if (!user?.uri || !isPremium) {
+    if (!user.uri || !isPremium) {
       return;
     }
 
@@ -281,31 +281,20 @@ export default function useSpotifyPlayer({
       });
     };
 
-    document.addEventListener(
-      "keydown",
-      (event) => {
-        if (event.key === " ") {
-          event.preventDefault();
-          spotifyPlayer.current?.togglePlay();
-        }
-      },
-      false
-    );
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === " ") {
+        event.preventDefault();
+        spotifyPlayer.current?.togglePlay();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown, false);
 
     return () => {
       spotifyPlayer.current?.removeListener("not_ready");
       spotifyPlayer.current?.removeListener("ready");
       spotifyPlayer.current?.disconnect();
-      document.removeEventListener(
-        "keydown",
-        (event) => {
-          if (event.key === " ") {
-            event.preventDefault();
-            spotifyPlayer.current?.togglePlay();
-          }
-        },
-        false
-      );
+      document.removeEventListener("keydown", handleKeyDown, false);
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

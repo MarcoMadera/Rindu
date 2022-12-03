@@ -163,12 +163,18 @@ export function SpotifyContextProvider({
     const canvas = document.createElement("canvas");
     canvas.width = canvas.height = 512;
     const video = document.createElement("video");
-    video.addEventListener("leavepictureinpicture", () => {
+
+    function handleLeavePictureInPicture() {
       setIsPip(false);
-    });
-    video.addEventListener("enterpictureinpicture", () => {
-      setIsPip(true);
-    });
+    }
+    function handlEnterPictureInPicture() {
+      setIsPip(false);
+    }
+    video.addEventListener(
+      "leavepictureinpicture",
+      handleLeavePictureInPicture
+    );
+    video.addEventListener("enterpictureinpicture", handlEnterPictureInPicture);
 
     video.muted = true;
     canvas.getContext("2d");
@@ -177,12 +183,14 @@ export function SpotifyContextProvider({
     videoRef.current = video;
 
     return () => {
-      video.removeEventListener("leavepictureinpicture", () => {
-        setIsPip(false);
-      });
-      video.removeEventListener("enterpictureinpicture", () => {
-        setIsPip(true);
-      });
+      video.removeEventListener(
+        "leavepictureinpicture",
+        handleLeavePictureInPicture
+      );
+      video.removeEventListener(
+        "enterpictureinpicture",
+        handlEnterPictureInPicture
+      );
     };
   }, [currentlyPlaying, isPictureInPictureLyircsCanvas, isPlaying]);
 

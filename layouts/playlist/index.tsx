@@ -296,7 +296,7 @@ const Playlist: NextPage<
               {translations.playlistSearchHeading}
             </Heading>
             <SearchInputElement setData={setSearchedData} source="playlist" />
-            {searchedData?.tracks && searchedData.tracks.items?.length > 0 && (
+            {searchedData?.tracks && searchedData.tracks?.items?.length > 0 && (
               <>
                 <Heading number={4} margin="20px 0 0 0">
                   {translations.songs}

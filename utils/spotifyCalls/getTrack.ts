@@ -7,7 +7,7 @@ export async function getTrack(
   accessToken?: string,
   cookies?: string
 ): Promise<SpotifyApi.TrackObjectFull | null> {
-  if (!accessToken || !id) {
+  if (!id) {
     return null;
   }
   const res = await fetch(

@@ -55,8 +55,8 @@ export default function RemoveTracksModal({
     setIsLoadingComplete(false);
 
     analyzePlaylist(
-      pageDetails?.id,
-      pageDetails?.tracks?.total,
+      pageDetails.id,
+      pageDetails.tracks?.total,
       isLibrary,
       accessToken
     ).then((res) => {

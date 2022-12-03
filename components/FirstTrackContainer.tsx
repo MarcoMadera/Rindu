@@ -22,7 +22,7 @@ export default function FirstTrackContainer({
   track,
   backgroundColor,
   position,
-}: FirstTrackContainerProps): ReactElement {
+}: FirstTrackContainerProps): ReactElement | null {
   const [containerColor, setContainerColor] = useState<string>(
     backgroundColor ?? ""
   );
@@ -39,7 +39,9 @@ export default function FirstTrackContainer({
   useEffect(() => {
     if (backgroundColor || !track.id) return;
     getMainColorFromImage(`cover-image-${track.id}`, setContainerColor);
-  }, [backgroundColor, router.asPath, track.id]);
+  }, [backgroundColor, router.asPath, track?.id]);
+
+  if (!track) return null;
 
   return (
     <div

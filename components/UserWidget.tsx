@@ -25,20 +25,17 @@ export default function UserWidget({
   const isPremium = user?.product === "premium";
 
   useEffect(() => {
+    function handleClick() {
+      setOpenSettings(false);
+    }
     if (openSettings) {
-      document.body.addEventListener("click", () => {
-        setOpenSettings(false);
-      });
+      document.body.addEventListener("click", handleClick);
     } else {
-      document.body.removeEventListener("click", () => {
-        setOpenSettings(false);
-      });
+      document.body.removeEventListener("click", handleClick);
     }
 
     return () => {
-      document.body.removeEventListener("click", () => {
-        setOpenSettings(false);
-      });
+      document.body.removeEventListener("click", handleClick);
     };
   }, [openSettings]);
 

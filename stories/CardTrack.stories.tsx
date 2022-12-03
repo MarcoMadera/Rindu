@@ -42,9 +42,9 @@ const Template: ComponentStory<typeof CardTrack> = (args) => (
             {
               deviceId: text("deviceId", ""),
               playlists: [] as PlaylistItems,
-              allTracks: [{ uri: args.track.uri }] as ITrack[],
+              allTracks: [{ uri: args.track?.uri }] as ITrack[],
               currentlyPlaying: {
-                uri: boolean("IsPlaying", false) ? args.track.uri : undefined,
+                uri: boolean("IsPlaying", false) ? args.track?.uri : undefined,
               } as ITrack,
               isPlaying: boolean("IsPlaying", false),
               setPlayedSource: (() => "") as React.Dispatch<

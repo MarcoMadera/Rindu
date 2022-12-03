@@ -77,7 +77,7 @@ export default function VirtualizedList({
       const items = data?.items;
       const tracks = mapPlaylistItems(items, startIndex);
       if (!tracks) return;
-      const trackIds = tracks?.map((track) => track.id ?? "");
+      const trackIds = tracks.map((track) => track.id ?? "");
       const tracksInLibrary = await checkTracksInLibrary(
         trackIds,
         accessToken || ""

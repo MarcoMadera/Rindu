@@ -7,7 +7,7 @@ export async function getAlbumById(
   accessToken?: string,
   cookies?: string
 ): Promise<SpotifyApi.SingleAlbumResponse | null> {
-  if (!accessToken || !id) {
+  if (!id) {
     return null;
   }
   const res = await fetch(
