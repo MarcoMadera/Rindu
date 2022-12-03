@@ -185,7 +185,7 @@ export const mediaSession: MediaSession = {
     handler;
   },
   setPositionState: (state) => {
-    state;
+    console.log("setPositionState: ", state);
   },
 };
 

@@ -4,9 +4,10 @@ import useContextMenu from "hooks/useContextMenu";
 import useOnScreen from "hooks/useOnScreen";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Fragment, ReactElement, useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import { ITrack } from "types/spotify";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
+import ArtistList from "./ArtistList";
 import Heading from "./Heading";
 
 interface FirstTrackContainerProps {
@@ -30,13 +31,13 @@ export default function FirstTrackContainer({
   const isPremium = user?.product === "premium";
   const isPlayable =
     (!isPremium && preview) ||
-    (isPremium && !(track?.is_playable === false) && !track.is_local);
+    (isPremium && track?.is_playable !== false && !track.is_local);
   const router = useRouter();
   const cardRef = useRef<HTMLAnchorElement>(null);
   const isVisible = useOnScreen(cardRef, "-60px");
 
   useEffect(() => {
-    if (backgroundColor) return;
+    if (backgroundColor || !track.id) return;
     getMainColorFromImage(`cover-image-${track.id}`, setContainerColor);
   }, [backgroundColor, router.asPath, track.id]);
 
@@ -55,21 +56,43 @@ export default function FirstTrackContainer({
       }}
     >
       <div className="bg-12"></div>
-      <Link href={`/track/${track.id}`}>
-        <a
-          className="firstTrack"
-          ref={cardRef}
-          aria-hidden={isVisible ? "false" : "true"}
-          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-          tabIndex={isVisible ? 0 : -1}
-        >
+      {track.id ? (
+        <Link href={`/track/${track.id}`}>
+          <a
+            className="firstTrack"
+            ref={cardRef}
+            aria-hidden={isVisible ? "false" : "true"}
+            // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+            tabIndex={isVisible ? 0 : -1}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={track.album?.images[1].url}
+              width={100}
+              height={100}
+              alt=""
+              id={`cover-image-${track.id}`}
+            />
+            <Heading
+              number={2}
+              as="h3"
+              fontSize="32px"
+              margin="1rem 0"
+              multiline={1}
+            >
+              {track.name}
+            </Heading>
+          </a>
+        </Link>
+      ) : (
+        <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={track.album?.images[1].url}
             width={100}
             height={100}
             alt=""
-            id={`cover-image-${track.id}`}
+            id={"cover-image-"}
           />
           <Heading
             number={2}
@@ -80,8 +103,8 @@ export default function FirstTrackContainer({
           >
             {track.name}
           </Heading>
-        </a>
-      </Link>
+        </>
+      )}
       {isPlayable ? (
         <PlayButton
           size={60}
@@ -92,25 +115,7 @@ export default function FirstTrackContainer({
       ) : null}
       <div className="artists">
         <span>
-          {track.artists?.map((artist, i) => {
-            return (
-              <Fragment key={artist.id}>
-                <Link href={`/artist/${artist.id}`}>
-                  <a
-                    className="link"
-                    aria-hidden={isVisible ? "false" : "true"}
-                    // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-                    tabIndex={isVisible ? 0 : -1}
-                  >
-                    {artist.name}
-                  </a>
-                </Link>
-                {i !== (track.artists?.length && track.artists?.length - 1)
-                  ? ", "
-                  : null}
-              </Fragment>
-            );
-          })}
+          <ArtistList artists={track.artists} />
         </span>
       </div>
       <style jsx>{`

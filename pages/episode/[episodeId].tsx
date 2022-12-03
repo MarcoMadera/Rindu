@@ -55,7 +55,7 @@ export default function EpisodePage({
           name: episode?.show.publisher ?? "",
           id: episode?.show.id ?? "",
           type: "artist",
-          uri: `spotify:show:${episode?.show?.id}`,
+          uri: episode?.show?.id ? `spotify:show:${episode.show.id}` : "",
         },
       ],
       id: episode?.id ?? "",
@@ -71,7 +71,7 @@ export default function EpisodePage({
 
   useEffect(() => {
     setElement(() => (
-      <PlaylistTopBarExtraField isSingle track={episodeTrack ?? undefined} />
+      <PlaylistTopBarExtraField isSingle track={episodeTrack} />
     ));
 
     return () => {
@@ -125,12 +125,7 @@ export default function EpisodePage({
       />
       <div className="container">
         <div className="options">
-          <PlayButton
-            size={56}
-            centerSize={28}
-            isSingle
-            track={episodeTrack ?? undefined}
-          />
+          <PlayButton size={56} centerSize={28} isSingle track={episodeTrack} />
           <div className="info">
             <button
               type="button"
@@ -160,9 +155,11 @@ export default function EpisodePage({
           Episode description
         </Heading>
         <p>{episode?.description}</p>
-        <Link href={`/show/${episode?.show?.id}`}>
-          <a>SEE ALL EPISODES</a>
-        </Link>
+        {episode?.show?.id ? (
+          <Link href={`/show/${episode.show.id}`}>
+            <a>SEE ALL EPISODES</a>
+          </Link>
+        ) : null}
       </div>
       <style jsx>{`
         .container {

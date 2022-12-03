@@ -55,14 +55,13 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
   const { addToast } = useToast();
 
   useEffect(() => {
-    async function fetchData() {
+    (async () => {
       const userFollowThisAlbum = await checkIfUserFollowAlbums(
         [album?.id || ""],
         accessToken
       );
       setIsFollowingThisAlbum(!!userFollowThisAlbum?.[0]);
-    }
-    fetchData();
+    })();
   }, [accessToken, album?.id, user?.id]);
 
   useEffect(() => {
@@ -235,7 +234,7 @@ export async function getServerSideProps({
 }> {
   const country = (query.country || "US") as string;
   const translations = getTranslations(country, Page.Album);
-  const cookies = req ? req?.headers?.cookie : undefined;
+  const cookies = req ? req.headers?.cookie : undefined;
   if (!cookies) {
     serverRedirect(res, "/");
     return { props: null };

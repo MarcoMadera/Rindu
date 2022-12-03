@@ -90,4 +90,4 @@ const Template: ComponentStory<typeof PlaybackExtraControls> = () => {
   );
 };
 
-export const Default = Template.bind({});
+export const Default = Template;

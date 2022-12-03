@@ -125,7 +125,7 @@ export default function TrackPage({
       user?.country ?? "US",
       accessToken
     ).then((res) => {
-      if (res) {
+      if (res && Array.isArray(res.tracks)) {
         setArtistTopTracks(res.tracks);
       }
     });
@@ -206,7 +206,7 @@ export default function TrackPage({
         ) : null}
         {artistInfo && (
           <BigPill
-            img={artistInfo?.images?.[0]?.url}
+            img={artistInfo.images?.[0]?.url}
             title={translations.artist}
             subTitle={artistInfo.name}
             href={`/artist/${artistInfo.id}`}
@@ -223,7 +223,7 @@ export default function TrackPage({
                 ])}
               </span>
             </div>
-            {artistTopTracks?.map((artistTrack, i) => {
+            {artistTopTracks.map((artistTrack, i) => {
               const maxToShow = showMoreTopTracks ? 10 : 5;
               if (i >= maxToShow) {
                 return null;

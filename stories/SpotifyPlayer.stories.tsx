@@ -35,4 +35,4 @@ const Template: ComponentStory<typeof SpotifyPlayer> = () => (
   </ToastContextProvider>
 );
 
-export const Default = Template.bind({});
+export const Default = Template;

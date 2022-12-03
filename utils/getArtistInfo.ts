@@ -67,7 +67,7 @@ export async function getArtistInfo(
   artistName?: string,
   api?: string
 ): Promise<Artist | null> {
-  if (!artistName) return null;
+  if (!artistName || !api) return null;
   try {
     const res = await fetch(
       `http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${artistName}&api_key=${api}&format=json`,
@@ -80,13 +80,15 @@ export async function getArtistInfo(
     );
 
     if (res.ok) {
-      const data: { artist: Artist } = await res.json();
+      const data = (await res.json()) as { artist: Artist };
       if (data?.artist?.mbid) {
         const fanArtRes = await fetch(
-          `http://webservice.fanart.tv/v3/music/${data.artist.mbid}?api_key=${process.env.FAN_ART_TV_API_KEY}`
+          `http://webservice.fanart.tv/v3/music/${data.artist.mbid}?api_key=${
+            process.env.FAN_ART_TV_API_KEY || ""
+          }`
         );
         if (fanArtRes.ok) {
-          const fanArtData: FanArtData = await fanArtRes.json();
+          const fanArtData = (await fanArtRes.json()) as FanArtData;
           const artist = {
             ...data.artist,
             banner: fanArtData?.artistbackground?.[0]?.url,

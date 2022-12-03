@@ -150,7 +150,7 @@ export default function Slider({
   ]);
 
   return (
-    <div className={`barContainer ${className ?? null}`}>
+    <div className={`barContainer ${className ?? ""}`}>
       <div
         className="transformation"
         role="slider"

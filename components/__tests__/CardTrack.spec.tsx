@@ -128,8 +128,8 @@ describe("cardTrack", () => {
       {
         message: "Unable to play, trying to reconnect, please wait...",
         displayTime: 10000,
-        id: expect.any(String),
-        timeOut: expect.any(Number),
+        id: expect.any(String) as string,
+        timeOut: expect.any(Number) as number,
         variant: "error",
       },
     ]);
@@ -175,14 +175,14 @@ describe("cardTrack", () => {
         {
           message: "Error playing this track",
           displayTime: 10000,
-          id: expect.any(String),
-          timeOut: expect.any(Number),
+          id: expect.any(String) as string,
+          timeOut: expect.any(Number) as number,
           variant: "error",
         },
       ]);
     });
   });
-  it("should add toast with error if is corrupted track", async () => {
+  it("should add toast with error if is corrupted track", () => {
     expect.assertions(1);
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
     let toasts: IToast[] = [];
@@ -218,13 +218,13 @@ describe("cardTrack", () => {
       {
         message: "This track is corrupted and cannot be played",
         displayTime: 10000,
-        id: expect.any(String),
-        timeOut: expect.any(Number),
+        id: expect.any(String) as string,
+        timeOut: expect.any(Number) as number,
         variant: "error",
       },
     ]);
   });
-  it("should add toast with info no content available", async () => {
+  it("should add toast with info no content available", () => {
     expect.assertions(1);
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
     let toasts: IToast[] = [];
@@ -260,13 +260,13 @@ describe("cardTrack", () => {
       {
         message: "This content is not available",
         displayTime: 10000,
-        id: expect.any(String),
-        timeOut: expect.any(Number),
+        id: expect.any(String) as string,
+        timeOut: expect.any(Number) as number,
         variant: "info",
       },
     ]);
   });
-  it("should change artists styles on mouse enter", async () => {
+  it("should change artists styles on mouse enter", () => {
     expect.assertions(1);
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
 

@@ -43,10 +43,12 @@ export const CardContent: React.FC<CardContentProps> = ({
         aria-hidden="true"
         className="handler"
         onClick={() => {
+          if (!type) return;
           router.push(`/${type}/${encodeURIComponent(id)}`);
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
+            if (!type) return;
             router.push(`/${type}/${encodeURIComponent(id)}`);
           }
         }}

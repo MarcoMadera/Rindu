@@ -16,9 +16,9 @@ interface ConcertProps extends PlaylistProps {
 }
 
 const Playlist: NextPage<ConcertProps> = (props) => {
-  const artistName = props.setList?.artist.name;
-  const concertDate = props.setList?.eventDate;
-  const venue = props.setList?.venue.name;
+  const artistName = props.setList?.artist.name || props.artist?.name || "";
+  const concertDate = props.setList?.eventDate || "";
+  const venue = props.setList?.venue.name || "";
   return (
     <PlaylistLayout
       isLibrary={false}
@@ -27,7 +27,7 @@ const Playlist: NextPage<ConcertProps> = (props) => {
         images: [
           {
             url: `${getSiteUrl()}/api/concert-cover?artist=${artistName}&date=${concertDate}&venue=${venue}&img=${
-              props.artist?.images[0].url
+              props.artist?.images[0].url || ""
             }`,
           },
         ],
@@ -79,7 +79,7 @@ export async function getServerSideProps({
 
   setList?.sets.set?.forEach((set) => {
     set.song?.forEach((song, i) => {
-      trackList?.push({
+      trackList.push({
         name: song.name,
         type: "track",
         is_playable: false,
@@ -92,16 +92,17 @@ export async function getServerSideProps({
 
   const playListTracks = await Promise.all(
     trackList.map(async (track, position) => {
+      if (!track.name || !track.artists?.[0].name || !accessToken) return null;
       const searchResult = await fetch(
-        `https://api.spotify.com/v1/search?q=track: ${track.name} artist: ${track?.artists?.[0].name}&type=track&limit=1`,
+        `https://api.spotify.com/v1/search?q=track: ${track.name} artist: ${track.artists[0].name}&type=track&limit=1`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         }
       );
-      const searchResultJson: SpotifyApi.SearchResponse =
-        await searchResult.json();
+      const searchResultJson =
+        (await searchResult.json()) as SpotifyApi.SearchResponse;
       const trackResult = searchResultJson.tracks?.items[0];
       return trackResult
         ? { ...trackResult, position, added_at: setList?.eventDate || "" }
@@ -113,7 +114,7 @@ export async function getServerSideProps({
     props: {
       accessToken: accessToken || null,
       user: user ?? null,
-      playListTracks: playListTracks || [],
+      playListTracks: playListTracks.filter((track) => track) as ITrack[],
       pageDetails: {
         id,
         type: "concert",

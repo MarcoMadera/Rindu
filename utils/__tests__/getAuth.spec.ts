@@ -4,19 +4,31 @@ import { getAuth } from "utils/getAuth";
 import { getMe } from "utils/spotifyCalls/getMe";
 import { refreshAccessToken } from "utils/spotifyCalls/refreshAccessToken";
 
-jest.mock("utils/spotifyCalls/getMe", () => ({
-  ...jest.requireActual("utils/spotifyCalls/getMe"),
-  getMe: jest.fn(),
-}));
-jest.mock("utils/serverRedirect", () => ({
-  ...jest.requireActual("utils/serverRedirect"),
-  serverRedirect: jest.fn(),
-}));
+jest.mock(
+  "utils/spotifyCalls/getMe",
+  () =>
+    ({
+      ...jest.requireActual("utils/spotifyCalls/getMe"),
+      getMe: jest.fn(),
+    } as IUtilsMocks)
+);
+jest.mock(
+  "utils/serverRedirect",
+  () =>
+    ({
+      ...jest.requireActual("utils/serverRedirect"),
+      serverRedirect: jest.fn(),
+    } as IUtilsMocks)
+);
 
-jest.mock("utils/spotifyCalls/refreshAccessToken", () => ({
-  ...jest.requireActual("utils/spotifyCalls/refreshAccessToken"),
-  refreshAccessToken: jest.fn(),
-}));
+jest.mock(
+  "utils/spotifyCalls/refreshAccessToken",
+  () =>
+    ({
+      ...jest.requireActual("utils/spotifyCalls/refreshAccessToken"),
+      refreshAccessToken: jest.fn(),
+    } as IUtilsMocks)
+);
 
 const { user, refreshAccessTokenResponse, accessToken, setupCookies } =
   jest.requireActual<IUtilsMocks>("./__mocks__/mocks.ts");

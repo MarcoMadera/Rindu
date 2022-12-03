@@ -174,7 +174,7 @@ async function getLyrics(
       return load(body);
     })
     .then(($) => {
-      let closestLink,
+      let closestLink: string | undefined,
         closestScore = -1;
       _.forEach($(".search_results_row_color"), (e) => {
         const artist = $(e)
@@ -189,7 +189,7 @@ async function getLyrics(
       if (!closestLink) {
         return Promise.reject();
       }
-      return fetch("http://www.sweetslyrics.com/" + closestLink)
+      return fetch(`http://www.sweetslyrics.com/${closestLink}`)
         .then((res) => {
           return res.text();
         })
@@ -228,6 +228,7 @@ export default async function lyrics(
   res: NextApiResponse
 ): Promise<void> {
   const thisUrl = getSiteUrl();
+  const body = req.body as { title: string; artistName: string };
   if (
     thisUrl &&
     req.headers.referer &&
@@ -236,11 +237,11 @@ export default async function lyrics(
     res.status(401).end();
     return;
   }
-  if (!req.body.artistName || !req.body.title) {
+  if (!body.artistName || !body.title) {
     return res.status(400).json({ error: "Missing artistName or title" });
   }
   try {
-    const lyrics = await getLyrics(req.body.artistName, req.body.title);
+    const lyrics = await getLyrics(body.artistName, body.title);
 
     return res.json(lyrics);
   } catch (err) {

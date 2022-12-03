@@ -169,7 +169,7 @@ export function PlayButton({
 
               const isCollection = source?.split(":")?.[3];
               setPlayedSource(
-                isCollection && pageDetails
+                isCollection && pageDetails?.type && pageDetails?.id
                   ? `spotify:${pageDetails?.type}:${pageDetails?.id}`
                   : source
               );
@@ -203,7 +203,7 @@ export function PlayButton({
             const source = uri ?? pageDetails?.uri;
             const isCollection = source?.split(":")?.[3];
             setPlayedSource(
-              isCollection
+              isCollection && pageDetails?.type && pageDetails?.id
                 ? `spotify:${pageDetails?.type}:${pageDetails?.id}`
                 : source
             );

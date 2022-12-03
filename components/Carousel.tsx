@@ -8,6 +8,7 @@ import {
   cloneElement,
   useId,
   PropsWithChildren,
+  HTMLAttributes,
 } from "react";
 import Heading from "./Heading";
 import { Chevron } from "./icons/Chevron";
@@ -118,7 +119,7 @@ export default function Carousel({
               ...child.props,
               tabIndex: shouldFocus ? 0 : -1,
               "aria-hidden": shouldFocus ? "false" : "true",
-            });
+            } as Partial<unknown> & HTMLAttributes<HTMLElement>);
           }
           return <>{child}</>;
         })}

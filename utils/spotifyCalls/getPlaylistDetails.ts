@@ -22,7 +22,7 @@ export async function getpageDetails(
     }
   );
   if (res.ok) {
-    const data: SpotifyApi.SinglePlaylistResponse = await res.json();
+    const data = (await res.json()) as SpotifyApi.SinglePlaylistResponse;
     return data;
   }
   return null;

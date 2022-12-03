@@ -14,15 +14,17 @@ export async function addItemsToPlaylist(
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE, cookies)
+          accessToken
+            ? accessToken
+            : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
         }`,
       },
       body: JSON.stringify(uris),
     }
   );
-  window.navigator.mediaSession;
+
   if (res.ok) {
-    const data: SpotifyApi.AddTracksToPlaylistResponse = await res.json();
+    const data = (await res.json()) as SpotifyApi.AddTracksToPlaylistResponse;
     return data;
   }
   return null;

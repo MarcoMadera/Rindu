@@ -14,7 +14,7 @@ export async function getAllTracksFromPlaylist(
   for (let i = 0; i < max; i++) {
     const res = await fetch(
       `https://api.spotify.com/v1/${
-        !isLibrary ? `playlists/${id}` : "me"
+        !isLibrary ? `playlists/${id || ""}` : "me"
       }/tracks?limit=${limit}&offset=${limit * i}`,
       {
         method: "GET",
@@ -24,7 +24,9 @@ export async function getAllTracksFromPlaylist(
       }
     );
 
-    const data: SpotifyApi.PlaylistTrackResponse | undefined = await res.json();
+    const data = (await res.json()) as
+      | SpotifyApi.PlaylistTrackResponse
+      | undefined;
     const newTracks: ITrack[] | undefined = data?.items?.map(
       ({ track, added_at, is_local }, index) => {
         return {

@@ -180,11 +180,7 @@ export default function RemoveTracksModal({
           </div>
         ) : (
           <div
-            className={
-              isLoadingComplete && !(tracksToRemove.length > 0)
-                ? "loading-message"
-                : ""
-            }
+            className={!(tracksToRemove.length > 0) ? "loading-message" : ""}
           >
             <Heading number={2} textAlign="center">
               {title}
@@ -271,7 +267,7 @@ export default function RemoveTracksModal({
                             Authorization: `Bearer ${
                               accessToken
                                 ? accessToken
-                                : takeCookie(ACCESS_TOKEN_COOKIE)
+                                : takeCookie(ACCESS_TOKEN_COOKIE) ?? ""
                             }`,
                           },
                           body: JSON.stringify({ ids }),

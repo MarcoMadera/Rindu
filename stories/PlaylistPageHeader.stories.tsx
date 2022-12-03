@@ -40,7 +40,7 @@ const Template: ComponentStory<typeof PageHeader> = (args) => (
   </ToastContextProvider>
 );
 
-export const Playlist = Template.bind({});
+export const Playlist = Template;
 Playlist.args = {
   type: HeaderType.playlist,
   title: "Heartstopper: Official Mixtape",
@@ -53,7 +53,7 @@ Playlist.args = {
   totalTracks: 10,
 };
 
-export const Artist = Template.bind({});
+export const Artist = Template;
 Artist.args = {
   type: HeaderType.artist,
   title: "Billie Eilish",
@@ -64,7 +64,7 @@ Artist.args = {
   disableOpacityChange: true,
 };
 
-export const ArtistWithBanner = Template.bind({});
+export const ArtistWithBanner = Template;
 ArtistWithBanner.args = {
   type: HeaderType.artist,
   title: "Billie Eilish",
@@ -77,7 +77,7 @@ ArtistWithBanner.args = {
   disableOpacityChange: true,
 };
 
-export const Episode = Template.bind({});
+export const Episode = Template;
 Episode.args = {
   type: HeaderType.episode,
   title: "Shadow Work Demystified",

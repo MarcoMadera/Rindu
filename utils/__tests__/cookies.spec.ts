@@ -35,7 +35,9 @@ describe("cookies", () => {
     expect.assertions(1);
     Object.defineProperty(window, "document", {
       writable: true,
-      value: undefined,
+      value: {
+        cookie: "foo=bar",
+      },
     });
     const cookie = takeCookie(EXPIRE_TOKEN_COOKIE);
     expect(cookie).toBeNull();

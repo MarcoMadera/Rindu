@@ -67,48 +67,48 @@ export function SpotifyContextProvider({
   }, [isPremium, player, reconnectionError]);
 
   useEffect(() => {
-    if (playedSource) {
-      const type = playedSource.split(":")[1];
-      if (type === "track" && currentlyPlaying) {
-        setRecentlyPlayed((prev) => {
-          if (prev.some((el) => el.uri === currentlyPlaying.uri)) {
-            localStorage.setItem(
-              `${user?.id}:recentlyPlayed`,
-              JSON.stringify(prev)
-            );
-            return prev;
-          }
-
-          if (prev.length === 10) {
-            const newRecentlyPlayedwithLimit = [
-              currentlyPlaying,
-              ...prev.slice(0, -1),
-            ];
-            localStorage.setItem(
-              `${user?.id}:recentlyPlayed`,
-              JSON.stringify(newRecentlyPlayedwithLimit)
-            );
-            return newRecentlyPlayedwithLimit;
-          }
-          const newRecentlyPlayed = [currentlyPlaying, ...prev];
+    if (!playedSource || !user?.id) return;
+    const type = playedSource.split(":")[1];
+    if (type === "track" && currentlyPlaying) {
+      setRecentlyPlayed((prev) => {
+        if (prev.some((el) => el.uri === currentlyPlaying.uri)) {
           localStorage.setItem(
-            `${user?.id}:recentlyPlayed`,
-            JSON.stringify(newRecentlyPlayed)
+            `${user.id}:recentlyPlayed`,
+            JSON.stringify(prev)
           );
+          return prev;
+        }
 
-          return newRecentlyPlayed;
-        });
-      }
+        if (prev.length === 10) {
+          const newRecentlyPlayedwithLimit = [
+            currentlyPlaying,
+            ...prev.slice(0, -1),
+          ];
+          localStorage.setItem(
+            `${user.id}:recentlyPlayed`,
+            JSON.stringify(newRecentlyPlayedwithLimit)
+          );
+          return newRecentlyPlayedwithLimit;
+        }
+        const newRecentlyPlayed = [currentlyPlaying, ...prev];
+        localStorage.setItem(
+          `${user.id}:recentlyPlayed`,
+          JSON.stringify(newRecentlyPlayed)
+        );
+
+        return newRecentlyPlayed;
+      });
     }
   }, [playedSource, currentlyPlaying, user?.id]);
 
   useEffect(() => {
+    if (!user?.id) return;
     const playback = localStorage.getItem("playback");
     const recentlyPlayedFromLocal = localStorage.getItem(
-      `${user?.id}:recentlyPlayed`
+      `${user.id}:recentlyPlayed`
     );
     if (playback) {
-      const playbackObj = JSON.parse(decodeURI(playback));
+      const playbackObj = JSON.parse(decodeURI(playback)) as { volume: number };
       setVolume(playbackObj.volume);
       if (isPremium && player) {
         (player as Spotify.Player).on("ready", () => {
@@ -119,7 +119,7 @@ export function SpotifyContextProvider({
       }
     }
     if (recentlyPlayedFromLocal) {
-      const recentlyPlayedObj = JSON.parse(recentlyPlayedFromLocal);
+      const recentlyPlayedObj = JSON.parse(recentlyPlayedFromLocal) as ITrack[];
       setRecentlyPlayed(recentlyPlayedObj);
     }
   }, [isPremium, player, user?.id]);
@@ -134,7 +134,7 @@ export function SpotifyContextProvider({
           ({ url, width, height }) => {
             return {
               src: url ?? "",
-              sizes: `${width}x${height}`,
+              sizes: `${width || 0}x${height || 0}`,
               type: "",
             };
           }
@@ -342,7 +342,9 @@ export function SpotifyContextProvider({
     >
       {currentlyPlaying?.name && (
         <Head>
-          <title>{`${currentlyPlaying?.name} - ${currentlyPlaying?.artists?.[0].name}`}</title>
+          <title>{`${currentlyPlaying?.name} - ${
+            currentlyPlaying?.artists?.[0].name || "Rindu"
+          }`}</title>
         </Head>
       )}
       {children}

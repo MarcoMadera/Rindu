@@ -36,7 +36,9 @@ export async function getMyTop<T extends TopType>(
   );
 
   if (res.ok) {
-    const data = await res.json();
+    const data = (await res.json()) as T extends TopType.TRACKS
+      ? SpotifyApi.UsersTopTracksResponse
+      : SpotifyApi.UsersTopArtistsResponse;
     return data;
   }
   return null;

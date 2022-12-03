@@ -13,7 +13,9 @@ export async function transferPlayback(
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${
-        accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE, cookies)
+        accessToken
+          ? accessToken
+          : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
       }`,
     },
     body: JSON.stringify({

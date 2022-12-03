@@ -231,9 +231,9 @@ const LoggedInWithExtraFieldTemplate: ComponentStory<typeof TopBar> = () => (
   </ToastContextProvider>
 );
 
-export const Default = Template.bind({});
-export const LoggedIn = LoggedInTemplate.bind({});
-export const LoggedInWithExtraField = LoggedInWithExtraFieldTemplate.bind({});
+export const Default = Template;
+export const LoggedIn = LoggedInTemplate;
+export const LoggedInWithExtraField = LoggedInWithExtraFieldTemplate;
 
 LoggedIn.parameters = {
   layout: "fullscreen",

@@ -43,7 +43,7 @@ const Playlist: NextPage<
 }) => {
   const router = useRouter();
   const { setUser, accessToken } = useAuth();
-  const { trackWithGoogleAnalytics } = useAnalytics();
+  const analytics = useAnalytics();
   const {
     player,
     isPlaying,
@@ -87,7 +87,7 @@ const Playlist: NextPage<
       setElement(() => <PlaylistTopBarExtraField uri={pageDetails?.uri} />);
     }
     setPageDetails(pageDetails);
-    trackWithGoogleAnalytics();
+    analytics.trackWithGoogleAnalytics();
     setAllTracks(tracks);
 
     setUser(user);
@@ -96,7 +96,7 @@ const Playlist: NextPage<
     setElement,
     setPageDetails,
     pageDetails,
-    trackWithGoogleAnalytics,
+    analytics,
     setUser,
     user,
     router,
@@ -106,12 +106,17 @@ const Playlist: NextPage<
 
   useEffect(() => {
     if (deviceId && isPlaying && user?.product === "premium") {
-      (player as Spotify.Player)?.getCurrentState().then((e) => {
-        if (e?.context.uri === pageDetails?.uri) {
-          setPlaylistPlayingId(pageDetails?.id);
-          return;
-        }
-      });
+      (player as Spotify.Player)
+        ?.getCurrentState()
+        .then((e) => {
+          if (e?.context.uri === pageDetails?.uri) {
+            setPlaylistPlayingId(pageDetails?.id);
+            return;
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
   }, [
     isPlaying,
@@ -130,9 +135,11 @@ const Playlist: NextPage<
       type: "track",
     };
 
-    const restTrackItems = new Array(
-      (pageDetails?.tracks?.total ?? tracks.length) - tracks.length
-    ).fill(emptyTrackItem);
+    const totalTracks = pageDetails?.tracks?.total ?? tracks.length;
+
+    const restTrackItems = new Array(totalTracks - tracks.length).fill(
+      emptyTrackItem
+    ) as ITrack[];
 
     setAllTracks([...tracks, ...restTrackItems]);
 
@@ -143,7 +150,7 @@ const Playlist: NextPage<
     <ContentContainer hasPageHeader>
       {!isPlaying && (
         <Head>
-          <title>{`Rindu: ${pageDetails?.name}`}</title>
+          <title>{`Rindu: ${pageDetails?.name || ""}`}</title>
         </Head>
       )}
       <PageHeader
@@ -172,10 +179,11 @@ const Playlist: NextPage<
                 <div>
                   <button
                     className="save-concert-to-playlist-button"
-                    onClick={() => {
-                      createPlaylist(user?.id, {
-                        name: pageDetails?.name,
-                      }).then((playlist) => {
+                    onClick={async () => {
+                      try {
+                        const playlist = await createPlaylist(user?.id, {
+                          name: pageDetails?.name,
+                        });
                         if (!playlist) {
                           addToast({
                             message: "Error creating playlist",
@@ -183,26 +191,27 @@ const Playlist: NextPage<
                           });
                           return;
                         }
-                        addCustomPlaylistImage(
+                        await addCustomPlaylistImage(
                           user?.id,
                           playlist.id,
                           accessToken
-                        ).then(() => {
-                          const uris: string[] = [];
-                          allTracks.forEach((track) => {
-                            if (track.uri) {
-                              uris.push(track.uri);
-                            }
-                          });
-                          addItemsToPlaylist(playlist.id, uris).then(() => {
-                            addToast({
-                              message: "Playlist created",
-                              variant: "success",
-                            });
-                            router.push(`/playlist/${playlist.id}`);
-                          });
+                        );
+                        const uris = allTracks
+                          .map((track) => track.uri)
+                          .filter((uri) => uri) as string[];
+                        await addItemsToPlaylist(playlist.id, uris);
+                        addToast({
+                          message: "Playlist created",
+                          variant: "success",
                         });
-                      });
+                        await router.push(`/playlist/${playlist.id}`);
+                      } catch (e) {
+                        console.error(e);
+                        addToast({
+                          message: "Error creating playlist",
+                          variant: "error",
+                        });
+                      }
                     }}
                   >
                     {translations.saveConcertToPlaylist}
@@ -281,13 +290,13 @@ const Playlist: NextPage<
             </div>
           </>
         ) : null}
-        {!isConcert && playListTracks && playListTracks?.length === 0 ? (
+        {!isConcert && playListTracks && playListTracks.length === 0 ? (
           <div className="noTracks">
             <Heading number={3} as="h2" margin="1rem 0">
               {translations.playlistSearchHeading}
             </Heading>
             <SearchInputElement setData={setSearchedData} source="playlist" />
-            {searchedData?.tracks && searchedData.tracks.items.length > 0 && (
+            {searchedData?.tracks && searchedData.tracks.items?.length > 0 && (
               <>
                 <Heading number={4} margin="20px 0 0 0">
                   {translations.songs}
@@ -330,58 +339,59 @@ const Playlist: NextPage<
                 })}
               </>
             )}
-            {searchedData?.episodes && searchedData.episodes.items.length > 0 && (
-              <>
-                <Heading number={4} margin="20px 0 0 0">
-                  Episodes
-                </Heading>
-                {searchedData.episodes?.items?.map((track, i) => {
-                  return (
-                    <CardTrack
-                      accessToken={accessToken ?? ""}
-                      isTrackInLibrary={tracksInLibrary?.[i] ?? false}
-                      playlistUri=""
-                      track={track}
-                      onClickAdd={() => {
-                        if (!pageDetails?.id) return;
-                        addItemsToPlaylist(pageDetails.id, [track.uri]).then(
-                          (res) => {
-                            if (res?.snapshot_id) {
-                              setAllTracks((prev) => {
-                                return [
-                                  ...prev,
-                                  {
-                                    ...track,
-                                    position: prev.length,
-                                    images: track.images,
-                                    duration: track.duration_ms,
-                                    added_at: Date.now(),
-                                    album: {
+            {searchedData?.episodes &&
+              searchedData.episodes?.items?.length > 0 && (
+                <>
+                  <Heading number={4} margin="20px 0 0 0">
+                    Episodes
+                  </Heading>
+                  {searchedData.episodes.items?.map((track, i) => {
+                    return (
+                      <CardTrack
+                        accessToken={accessToken ?? ""}
+                        isTrackInLibrary={tracksInLibrary?.[i] ?? false}
+                        playlistUri=""
+                        track={track}
+                        onClickAdd={() => {
+                          if (!pageDetails?.id) return;
+                          addItemsToPlaylist(pageDetails.id, [track.uri]).then(
+                            (res) => {
+                              if (res?.snapshot_id) {
+                                setAllTracks((prev) => {
+                                  return [
+                                    ...prev,
+                                    {
+                                      ...track,
+                                      position: prev.length,
                                       images: track.images,
-                                      name: track.name,
-                                      uri: track.uri,
-                                      id: track.id,
-                                      type: "episode",
+                                      duration: track.duration_ms,
+                                      added_at: Date.now(),
+                                      album: {
+                                        images: track.images,
+                                        name: track.name,
+                                        uri: track.uri,
+                                        id: track.id,
+                                        type: "episode",
+                                      },
                                     },
-                                  },
-                                ];
-                              });
+                                  ];
+                                });
+                              }
                             }
-                          }
-                        );
-                      }}
-                      key={track.id}
-                      type="presentation"
-                      position={i}
-                      isSingleTrack
-                      uri={track.uri}
-                    />
-                  );
-                })}
-              </>
-            )}
+                          );
+                        }}
+                        key={track.id}
+                        type="presentation"
+                        position={i}
+                        isSingleTrack
+                        uri={track.uri}
+                      />
+                    );
+                  })}
+                </>
+              )}
           </div>
-        ) : isConcert && playListTracks && playListTracks?.length === 0 ? (
+        ) : isConcert && playListTracks && playListTracks.length === 0 ? (
           <div className="noTracks">
             <Heading number={3} as="h2" margin="1rem 0">
               {translations.noTracksFoundForConcert}

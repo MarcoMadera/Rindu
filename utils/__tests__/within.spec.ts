@@ -13,7 +13,7 @@ describe("whiting", () => {
     const end = Date.now();
     expect(error).toBeNull();
     expect(data).toBe(1);
-    expect(end - start).toBeGreaterThanOrEqual(100);
+    expect(end - start).toBeLessThanOrEqual(550);
   });
 
   it("should reject a promise whitin time", async () => {

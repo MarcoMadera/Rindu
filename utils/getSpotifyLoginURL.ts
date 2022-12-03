@@ -15,5 +15,5 @@ export function getSpotifyLoginURL(): string {
   };
   const params = new URLSearchParams(paramsData);
 
-  return API_AUTH_URL + params;
+  return `${API_AUTH_URL}${params.toString()}`;
 }

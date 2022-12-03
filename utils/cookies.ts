@@ -10,8 +10,13 @@ export function takeCookie(
   cookieName: string | undefined,
   cookiesJar?: string
 ): string | null {
-  const allCookies = `; ${isServer() ? cookiesJar : document.cookie}`;
-  const parts = allCookies.split(`; ${cookieName}=`);
+  if (isServer() && !cookiesJar) {
+    throw new Error("cookiesJar must be provided");
+  }
+  const allCookies = `; ${
+    isServer() ? (cookiesJar as string) : document.cookie
+  }`;
+  const parts = allCookies.split(`; ${cookieName || ""}=`);
   if (parts.length === 2) {
     return parts.pop()?.split(";").shift() || null;
   }

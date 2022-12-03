@@ -2,6 +2,10 @@ import { useRouter } from "next/router";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import { AngleBrackect } from "./icons";
 
+interface HistoryState {
+  key: string;
+}
+
 export default function RouterButtons(): ReactElement {
   const router = useRouter();
   const [disableForwardButton, setDisableForwardButton] = useState(true);
@@ -14,10 +18,10 @@ export default function RouterButtons(): ReactElement {
   }, []);
 
   useEffect(() => {
-    const historyValue: string = history.state.key;
+    const historyValue = (history.state as HistoryState).key;
     const historyFromSessionStorage = sessionStorage.getItem("history");
-    const prevValue: string[] = historyFromSessionStorage
-      ? JSON.parse(historyFromSessionStorage)
+    const prevValue = historyFromSessionStorage
+      ? (JSON.parse(historyFromSessionStorage) as string[])
       : [];
 
     if (

@@ -72,4 +72,4 @@ const Template: ComponentStory<typeof UserWidget> = () => (
   </ToastContextProvider>
 );
 
-export const Default = Template.bind({});
+export const Default = Template;

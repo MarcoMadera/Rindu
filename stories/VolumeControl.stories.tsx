@@ -37,4 +37,4 @@ const Template: ComponentStory<typeof VolumeControl> = () => (
   </ToastContextProvider>
 );
 
-export const Default = Template.bind({});
+export const Default = Template;

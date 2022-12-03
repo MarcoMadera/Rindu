@@ -7,7 +7,12 @@ import { useEffect } from "react";
 import { refreshAccessToken } from "../utils/spotifyCalls/refreshAccessToken";
 import useAnalytics from "../hooks/useAnalytics";
 import { removeTokensFromCookieServer } from "utils/removeTokensFromCookieServer";
-import { getTranslations, Page } from "utils/getTranslations";
+import {
+  getTranslations,
+  IFeaturesTranslations,
+  Page,
+  Translations,
+} from "utils/getTranslations";
 import { getSpotifyLoginURL } from "utils/getSpotifyLoginURL";
 import { Hero } from "../components/Hero";
 import { FeatureCard } from "../components/FeatureCard";
@@ -15,7 +20,7 @@ import { CardContainer } from "../components/CardContainer";
 
 interface HomeProps {
   accessToken?: string | null;
-  translations: Record<string, string>;
+  translations: Translations["home"];
 }
 
 interface IFeature {
@@ -41,7 +46,7 @@ const Home: NextPage<HomeProps> = ({ translations }) => {
   }, [setIsLogin]);
 
   const spotifyLoginUrl = getSpotifyLoginURL();
-  const features = JSON.parse(translations.features);
+  const features = JSON.parse(translations.features) as IFeaturesTranslations[];
 
   return (
     <main>

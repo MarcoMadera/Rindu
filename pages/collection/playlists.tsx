@@ -12,21 +12,21 @@ import Grid from "components/Grid";
 import { NextApiResponse, NextApiRequest } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { getAuth } from "utils/getAuth";
-import { getTranslations, Page } from "utils/getTranslations";
+import { getTranslations, Page, Translations } from "utils/getTranslations";
 import { serverRedirect } from "utils/serverRedirect";
 import useAuth from "hooks/useAuth";
 import useAnalytics from "hooks/useAnalytics";
 import { getCurrentUserPlaylists } from "utils/getAllMyPlaylists";
-
 interface CollectionPlaylistsProps {
   accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
-  translations: Record<string, string>;
+  translations: Translations["collectionPlaylists"];
 }
 
 export default function CollectionPlaylists({
   accessToken,
   user,
+  translations,
 }: CollectionPlaylistsProps): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
   const { setUser, setAccessToken } = useAuth();
@@ -65,7 +65,7 @@ export default function CollectionPlaylists({
     <ContentContainer>
       {!isPlaying && (
         <Head>
-          <title>Rindu - Library</title>
+          <title>Rindu - {translations.title}</title>
         </Head>
       )}
       <Heading number={3} as="h2">
@@ -80,7 +80,10 @@ export default function CollectionPlaylists({
                   key={id}
                   images={images}
                   title={name}
-                  subTitle={decode(description) || `De ${owner.display_name}`}
+                  subTitle={
+                    decode(description) ||
+                    `${translations.by} ${owner.display_name || owner.id}`
+                  }
                   id={id}
                 />
               );

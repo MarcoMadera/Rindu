@@ -11,7 +11,7 @@ export async function getMyArtists(
     }
   );
   if (res.ok) {
-    const data: SpotifyApi.UsersFollowedArtistsResponse = await res.json();
+    const data = (await res.json()) as SpotifyApi.UsersFollowedArtistsResponse;
     return data;
   }
   return null;

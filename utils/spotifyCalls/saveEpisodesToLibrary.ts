@@ -11,7 +11,7 @@ export async function saveEpisodesToLibrary(
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${
-        accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE)
+        accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
       }`,
     },
   });

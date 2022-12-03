@@ -12,7 +12,7 @@ export async function getMyAlbums(
     }
   );
   if (res.ok) {
-    const data: SpotifyApi.UsersSavedAlbumsResponse = await res.json();
+    const data = (await res.json()) as SpotifyApi.UsersSavedAlbumsResponse;
     return data;
   }
   return null;

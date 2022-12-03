@@ -13,19 +13,20 @@ import Grid from "components/Grid";
 import { NextApiResponse, NextApiRequest } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { getAuth } from "utils/getAuth";
-import { getTranslations, Page } from "utils/getTranslations";
+import { getTranslations, Page, Translations } from "utils/getTranslations";
 import { serverRedirect } from "utils/serverRedirect";
 import useAnalytics from "hooks/useAnalytics";
 
 interface CollectionArtistProps {
   accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
-  translations: Record<string, string>;
+  translations: Translations["collectionArtists"];
 }
 
 export default function CollectionPlaylists({
   accessToken,
   user,
+  translations,
 }: CollectionArtistProps): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
   const { setUser, setAccessToken } = useAuth();
@@ -67,11 +68,11 @@ export default function CollectionPlaylists({
     <ContentContainer>
       {!isPlaying && (
         <Head>
-          <title>Rindu - Library</title>
+          <title>Rindu - {translations.title}</title>
         </Head>
       )}
       <Heading number={3} as="h2">
-        Artists
+        {translations.artists}
       </Heading>
       <Grid>
         {artists?.length > 0
@@ -82,7 +83,7 @@ export default function CollectionPlaylists({
                   key={id}
                   images={images}
                   title={name}
-                  subTitle={"Artist"}
+                  subTitle={translations.artist}
                   id={id}
                 />
               );

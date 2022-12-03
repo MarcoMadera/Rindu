@@ -51,7 +51,11 @@ describe("getLyrics", () => {
       lyricsError = error;
     }
     expect(lyricsError).toStrictEqual({
-      json: expect.any(Function),
+      json: expect.any(Function) as () => Promise<
+        () => {
+          error: string;
+        }
+      >,
       ok: false,
     });
   });

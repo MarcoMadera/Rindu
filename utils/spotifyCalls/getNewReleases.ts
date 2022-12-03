@@ -25,7 +25,7 @@ export async function getNewReleases(
     }
   );
   if (res.ok) {
-    const data: SpotifyApi.ListOfNewReleasesResponse = await res.json();
+    const data = (await res.json()) as SpotifyApi.ListOfNewReleasesResponse;
     return data;
   }
   return null;

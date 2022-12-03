@@ -133,7 +133,7 @@ export default function SideBar(): ReactElement {
               >
                 <Chevron rotation={"270deg"} />
               </button>
-              {playedSource ? (
+              {playedSource && type && id ? (
                 <Link href={`/${type}/${id}`}>
                   <a>
                     {/* eslint-disable-next-line @next/next/no-img-element */}

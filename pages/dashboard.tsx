@@ -31,6 +31,7 @@ import { isCorruptedTrack } from "utils/isCorruptedTrack";
 import MainTracks from "components/MainTracks";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { getTranslations, Page } from "utils/getTranslations";
+import { fullFilledValue } from "utils/fullFilledValue";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -76,7 +77,7 @@ const Dashboard: NextPage<DashboardProps> = ({
       });
       getRecommendations(seeds.slice(0, 5), user?.country, accessToken).then(
         (tracks) => {
-          if (tracks) setRecentListeningRecommendations(tracks);
+          if (Array.isArray(tracks)) setRecentListeningRecommendations(tracks);
         }
       );
     }
@@ -113,13 +114,13 @@ const Dashboard: NextPage<DashboardProps> = ({
 
   return (
     <ContentContainer>
-      {topTracks && topTracks?.items.length > 0 ? (
+      {topTracks && topTracks.items.length > 0 ? (
         <TopTracks
           heading={translations.topTracksHeading}
           topTracks={topTracks}
         />
       ) : null}
-      {featuredPlaylists && featuredPlaylists?.playlists?.items?.length > 0 ? (
+      {featuredPlaylists && featuredPlaylists.playlists?.items?.length > 0 ? (
         <Carousel
           title={
             featuredPlaylists.message ?? translations.featuredPlaylistsHeading
@@ -145,7 +146,7 @@ const Dashboard: NextPage<DashboardProps> = ({
           })}
         </Carousel>
       ) : null}
-      {recentlyPlayed && recentlyPlayed?.length > 0 ? (
+      {recentlyPlayed && recentlyPlayed.length > 0 ? (
         <Carousel title={translations.recentlyListenedHeading} gap={24}>
           {recentlyPlayed.map((track) => {
             return (
@@ -194,20 +195,19 @@ const Dashboard: NextPage<DashboardProps> = ({
           })}
         </Carousel>
       ) : null}
-      {tracksRecommendations && tracksRecommendations?.length > 0 && (
+      {tracksRecommendations && tracksRecommendations.length > 0 && (
         <MainTracks
           title={translations.tracksRecommendationsHeading}
           tracksInLibrary={tracksInLibrary}
           tracksRecommendations={tracksRecommendations}
         />
       )}
-      {recentListeningRecommendations &&
-      recentListeningRecommendations?.length > 0 ? (
+      {recentListeningRecommendations.length > 0 ? (
         <Carousel
           title={translations.recentListeningRecommendationsHeading}
           gap={24}
         >
-          {recentListeningRecommendations?.map((track) => {
+          {recentListeningRecommendations.map((track) => {
             return (
               <PresentationCard
                 type={CardType.TRACK}
@@ -241,9 +241,9 @@ const Dashboard: NextPage<DashboardProps> = ({
           })}
         </Carousel>
       ) : null}
-      {categories && categories?.items?.length > 0 ? (
+      {categories && categories.items?.length > 0 ? (
         <Carousel title={translations.categories} gap={24}>
-          {categories?.items.map((item) => {
+          {categories.items.map((item) => {
             if (!item) return null;
             const { name, id, icons } = item;
             return (
@@ -299,13 +299,13 @@ export async function getServerSideProps({
     );
     res.setHeader("Set-Cookie", [
       `${ACCESS_TOKEN_COOKIE}=${
-        tokens.access_token
+        tokens.access_token ?? ""
       }; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax; Secure;`,
       `${REFRESH_TOKEN_COOKIE}=${
-        tokens.refresh_token
+        tokens.refresh_token ?? ""
       }; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax; Secure;`,
       `${EXPIRE_TOKEN_COOKIE}=${
-        tokens.expires_in
+        tokens.expires_in ?? ""
       }; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax; Secure;`,
     ]);
   }
@@ -356,9 +356,7 @@ export async function getServerSideProps({
     ]);
 
   const seed_tracks =
-    topTracks.status === "fulfilled"
-      ? topTracks.value?.items?.map((item) => item.id) ?? []
-      : [];
+    fullFilledValue(topTracks)?.items?.map((item) => item.id) ?? [];
 
   const tracksRecommendations = await getRecommendations(
     seed_tracks.slice(0, 5),
@@ -379,15 +377,11 @@ export async function getServerSideProps({
     props: {
       user: user || null,
       accessToken: accessToken ?? null,
-      featuredPlaylists:
-        featuredPlaylists.status === "fulfilled"
-          ? featuredPlaylists.value
-          : null,
-      newReleases:
-        newReleases.status === "fulfilled" ? newReleases.value : null,
-      categories: categories.status === "fulfilled" ? categories.value : null,
-      topTracks: topTracks.status === "fulfilled" ? topTracks.value : null,
-      topArtists: topArtists.status === "fulfilled" ? topArtists.value : null,
+      featuredPlaylists: fullFilledValue(featuredPlaylists),
+      newReleases: fullFilledValue(newReleases),
+      categories: fullFilledValue(categories),
+      topTracks: fullFilledValue(topTracks),
+      topArtists: fullFilledValue(topArtists),
       tracksRecommendations,
       tracksInLibrary,
       translations,

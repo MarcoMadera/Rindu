@@ -62,7 +62,7 @@ export function Heart({
     [getDuration, play]
   );
 
-  if (props && handleLike && handleDislike) {
+  if (handleLike && handleDislike) {
     return (
       <button
         aria-label={defaultActiveValue ? "Dislike" : "Like"}

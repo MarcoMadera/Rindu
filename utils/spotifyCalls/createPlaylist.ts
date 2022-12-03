@@ -19,7 +19,9 @@ export async function createPlaylist(
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE, cookies)
+          accessToken
+            ? accessToken
+            : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
         }`,
       },
       body: JSON.stringify({
@@ -31,7 +33,7 @@ export async function createPlaylist(
   );
 
   if (res.ok) {
-    const data: SpotifyApi.CreatePlaylistResponse = await res.json();
+    const data = (await res.json()) as SpotifyApi.CreatePlaylistResponse;
     return data;
   }
   return null;
