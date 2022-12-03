@@ -36,6 +36,7 @@ export default function FullScreenLyrics({
     isPictureInPictureLyircsCanvas,
     videoRef,
     isPip,
+    setIsPip,
   } = useSpotify();
   const { accessToken, user } = useAuth();
   const [lyricsProgressMs, setLyricsProgressMs] = useState(0);
@@ -351,6 +352,7 @@ export default function FullScreenLyrics({
               return;
             }
             setIsPictureInPictureLyircsCanvas.on();
+            setIsPip(true);
             await videoRef.current?.play();
             await videoRef.current?.requestPictureInPicture();
           }}
