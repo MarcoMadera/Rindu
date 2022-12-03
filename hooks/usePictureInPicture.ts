@@ -1,17 +1,29 @@
 import { Dispatch, MutableRefObject, SetStateAction, useEffect } from "react";
+import { ITrack } from "types/spotify";
 
 export default function usePictureInPicture({
   setIsPip,
   videoRef,
   pictureInPictureCanvas,
+  currentlyPlaying,
+  isPlaying,
+  isPictureInPictureLyircsCanvas,
 }: {
   setIsPip: Dispatch<SetStateAction<boolean>>;
   videoRef: MutableRefObject<HTMLVideoElement | undefined>;
   pictureInPictureCanvas: MutableRefObject<HTMLCanvasElement | undefined>;
   isPictureInPictureLyircsCanvas: boolean;
+  currentlyPlaying: ITrack | undefined;
+  isPlaying: boolean;
 }): void {
   useEffect(() => {
-    if (videoRef.current || pictureInPictureCanvas.current) {
+    if (
+      videoRef.current ||
+      pictureInPictureCanvas.current ||
+      !isPlaying ||
+      !currentlyPlaying ||
+      isPictureInPictureLyircsCanvas
+    ) {
       return;
     }
     const canvas = document.createElement("canvas");
@@ -36,5 +48,12 @@ export default function usePictureInPicture({
     video.srcObject = canvas.captureStream();
     pictureInPictureCanvas.current = canvas;
     videoRef.current = video;
-  }, [pictureInPictureCanvas, setIsPip, videoRef]);
+  }, [
+    currentlyPlaying,
+    isPlaying,
+    isPictureInPictureLyircsCanvas,
+    pictureInPictureCanvas,
+    setIsPip,
+    videoRef,
+  ]);
 }

@@ -69,6 +69,8 @@ export function SpotifyContextProvider({
     videoRef,
     pictureInPictureCanvas,
     isPictureInPictureLyircsCanvas,
+    isPlaying,
+    currentlyPlaying,
   });
   useMediaSession({
     currentlyPlaying,
