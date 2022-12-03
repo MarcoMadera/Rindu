@@ -43,7 +43,7 @@ const Playlist: NextPage<
 }) => {
   const router = useRouter();
   const { setUser, accessToken } = useAuth();
-  const analytics = useAnalytics();
+  const { trackWithGoogleAnalytics } = useAnalytics();
   const {
     player,
     isPlaying,
@@ -87,7 +87,7 @@ const Playlist: NextPage<
       setElement(() => <PlaylistTopBarExtraField uri={pageDetails?.uri} />);
     }
     setPageDetails(pageDetails);
-    analytics.trackWithGoogleAnalytics();
+    trackWithGoogleAnalytics();
     setAllTracks(tracks);
 
     setUser(user);
@@ -96,7 +96,7 @@ const Playlist: NextPage<
     setElement,
     setPageDetails,
     pageDetails,
-    analytics,
+    trackWithGoogleAnalytics,
     setUser,
     user,
     router,
