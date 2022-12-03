@@ -36,19 +36,23 @@ export default function ContextMenu(): ReactPortal | null {
   const userPlaylists = playlists.filter(
     (playlist) => playlist.owner.id === user?.id
   );
+  const calculatedTopRef = useRef<number | undefined>();
 
   useLayoutEffect(() => {
     if (!showAddPlaylistPopup) return;
-    const playlistsCount = userPlaylists.length ?? 0;
+    const playlistsCount = userPlaylists.length;
     const playlistsContainerHeight = playlistsCount * 44;
     const playlistsContainer = playlistsRef.current;
     const screenHeight = window.innerHeight;
 
     if (playlistsContainer) {
       const playlistsRefPosition = playlistsContainer.getBoundingClientRect();
+      calculatedTopRef.current = -(playlistsRefPosition.top - 50);
       if (playlistsContainerHeight > screenHeight) {
         playlistsContainer.style.height = `${screenHeight - 100}px`;
-        playlistsContainer.style.top = `${-playlistsRefPosition.top + 50}px`;
+        if (calculatedTopRef.current) {
+          playlistsContainer.style.top = `${calculatedTopRef.current}px`;
+        }
       }
     }
   }, [userPlaylists, showAddPlaylistPopup, contextMenuData]);
@@ -71,12 +75,12 @@ export default function ContextMenu(): ReactPortal | null {
   }, [contextMenuData, removeContextMenu]);
 
   useLayoutEffect(() => {
-    setIsDifferentPosX(false);
-    setIsDifferentPosY(false);
     if (
       (!contextMenuData?.position.x && !contextMenuData?.position.y) ||
       !contextMenuRef.current
     ) {
+      setIsDifferentPosX(false);
+      setIsDifferentPosY(false);
       return;
     }
     const contextMenuRectWidth =
@@ -107,6 +111,11 @@ export default function ContextMenu(): ReactPortal | null {
       setIsDifferentPosX(false);
       setIsDifferentPosY(false);
     }
+
+    return () => {
+      setIsDifferentPosX(false);
+      setIsDifferentPosY(false);
+    };
   }, [contextMenuData?.position?.x, contextMenuData?.position?.y]);
 
   if (targetNode === null) {
