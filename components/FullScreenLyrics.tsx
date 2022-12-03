@@ -240,10 +240,10 @@ export default function FullScreenLyrics({
       ctx?.clearRect(10, 10, 80, 80);
       ctx?.drawImage(image, 10, 10, 80, 80);
     };
-    ctx?.clearRect(0, 0, 10, 100);
-    ctx?.clearRect(10, 90, pictureInPictureCanvas.current.width, 10);
-    ctx?.clearRect(0, 0, pictureInPictureCanvas.current.width, 10);
-    ctx?.clearRect(90, 0, pictureInPictureCanvas.current.width - 90, 100);
+    ctx.clearRect(0, 0, 10, 100);
+    ctx.clearRect(10, 90, pictureInPictureCanvas.current.width, 10);
+    ctx.clearRect(0, 0, pictureInPictureCanvas.current.width, 10);
+    ctx.clearRect(90, 0, pictureInPictureCanvas.current.width - 90, 100);
 
     ctx.font = "22px Arial";
     ctx.fillStyle = lyricTextColor;
@@ -291,7 +291,7 @@ export default function FullScreenLyrics({
           )}
         </div>
       ) : null}
-      {lyrics && lyrics?.lines.length > 0 && (
+      {lyrics && lyrics.lines.length > 0 && (
         <div className="lyrics">
           {lyrics.lines.map((line, i) => {
             return (

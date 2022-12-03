@@ -136,10 +136,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
             </a>
           ) : null}
           {user ? (
-            <UserWidget
-              name={user?.display_name}
-              img={user?.images?.[0]?.url}
-            />
+            <UserWidget name={user.display_name} img={user.images?.[0]?.url} />
           ) : (
             <div className="userWidget"></div>
           )}

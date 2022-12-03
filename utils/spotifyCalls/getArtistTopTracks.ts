@@ -7,7 +7,7 @@ export async function getArtistTopTracks(
   accessToken?: string,
   cookies?: string
 ): Promise<SpotifyApi.ArtistsTopTracksResponse | null> {
-  if (!accessToken || !id) {
+  if (!id) {
     return null;
   }
   const res = await fetch(

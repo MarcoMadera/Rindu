@@ -153,7 +153,7 @@ export default function PageHeader({
                 <span>&nbsp;&middot; {getYear(release_date)}</span>
                 {type === HeaderType.song && duration_s ? (
                   <span>
-                    &nbsp;&middot; {formatTime(duration_s ?? 0)}{" "}
+                    &nbsp;&middot; {formatTime(duration_s)}{" "}
                     {translations.minutes}
                   </span>
                 ) : null}
@@ -161,7 +161,7 @@ export default function PageHeader({
             ) : null}
             {totalTracks ? (
               <span>
-                &nbsp;&middot; {formatNumber(totalTracks ?? 0)}{" "}
+                &nbsp;&middot; {formatNumber(totalTracks)}{" "}
                 {totalTracks === 1
                   ? translations.song?.toLowerCase()
                   : translations.songs?.toLowerCase()}

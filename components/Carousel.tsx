@@ -48,7 +48,6 @@ export default function Carousel({
       if (timesMoveCarousel > maximumMoves) {
         setTimesMoveCarousel(maximumMoves);
       }
-      if (!carousel) return;
       carousel.style.transform = `translateX(-${spaceToMove}px)`;
       if (shouldMove) {
         carouselRef.current.style.transform = `translateX(-${spaceToMove}px)`;

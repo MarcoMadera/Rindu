@@ -12,7 +12,7 @@ export async function follow(
   accessToken?: string,
   cookies?: string
 ): Promise<boolean> {
-  if (!accessToken || !id) {
+  if (!id) {
     return false;
   }
   const res = await fetch(

@@ -83,14 +83,14 @@ export async function getArtistInfo(
       const data = (await res.json()) as { artist: Artist };
       if (data?.artist?.mbid) {
         const fanArtRes = await fetch(
-          `http://webservice.fanart.tv/v3/music/${data.artist.mbid}?api_key=${
+          `http://webservice.fanart.tv/v3/music/${data?.artist?.mbid}?api_key=${
             process.env.FAN_ART_TV_API_KEY || ""
           }`
         );
         if (fanArtRes.ok) {
           const fanArtData = (await fanArtRes.json()) as FanArtData;
           const artist = {
-            ...data.artist,
+            ...data?.artist,
             banner: fanArtData?.artistbackground?.[0]?.url,
             thumb: fanArtData?.artistthumb?.[0]?.url,
           };

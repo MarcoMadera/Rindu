@@ -60,17 +60,13 @@ export default function ContextMenu(): ReactPortal | null {
   useEffect(() => {
     if (!contextMenuData) return;
 
-    document.querySelector("#__next")?.addEventListener(
-      "click",
-      () => {
-        removeContextMenu();
-      },
-      { once: true }
-    );
+    document
+      .querySelector("#__next")
+      ?.addEventListener("click", removeContextMenu, { once: true });
     return () => {
-      document.querySelector("#__next")?.removeEventListener("click", () => {
-        removeContextMenu();
-      });
+      document
+        .querySelector("#__next")
+        ?.removeEventListener("click", removeContextMenu);
     };
   }, [contextMenuData, removeContextMenu]);
 
@@ -84,9 +80,9 @@ export default function ContextMenu(): ReactPortal | null {
       return;
     }
     const contextMenuRectWidth =
-      contextMenuRef.current?.getClientRects()[0]?.width || 0;
+      contextMenuRef.current.getClientRects()[0]?.width || 0;
     const contextMenuRectHeight =
-      contextMenuRef.current?.getClientRects()[0]?.height || 0;
+      contextMenuRef.current.getClientRects()[0]?.height || 0;
     const isContextMenuWidthOffScreen =
       contextMenuData.position.x &&
       innerWidth - contextMenuData.position.x < contextMenuRectWidth;
@@ -274,9 +270,9 @@ export default function ContextMenu(): ReactPortal | null {
               </Link>
             </li>
           )}
-        {contextMenuData?.data?.album?.id && (
+        {contextMenuData.data?.album?.id && (
           <li>
-            <Link href={`/album/${contextMenuData.data.album.id}`}>
+            <Link href={`/album/${contextMenuData.data?.album?.id}`}>
               <a
                 tabIndex={0}
                 onKeyDown={(e) => {

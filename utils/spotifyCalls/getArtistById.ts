@@ -6,7 +6,7 @@ export async function getArtistById(
   accessToken?: string,
   cookies?: string
 ): Promise<SpotifyApi.SingleArtistResponse | null> {
-  if (!accessToken || !id) {
+  if (!id) {
     return null;
   }
   const res = await fetch(`https://api.spotify.com/v1/artists/${id}`, {

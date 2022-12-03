@@ -43,7 +43,7 @@ export async function playCurrentTrack(
   if (!isPremium && track?.preview_url) {
     (player as AudioPlayer).currentTime = 0;
     (player as AudioPlayer).src = track.preview_url;
-    (player as AudioPlayer)?.play();
+    (player as AudioPlayer).play();
     (player as AudioPlayer).allTracks = allTracks;
     setCurrentlyPlaying(track);
     setPlaylistPlayingId(playlistId);
