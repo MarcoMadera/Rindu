@@ -5,8 +5,8 @@ Project running at <https://rindu.marcomadera.com>
 ## **Running Locally**
 
 ```bash
-git clone https://github.com/MarcoMadera/spotify-playlists-cleaner.git
-cd spotify-playlists-cleaner
+git clone https://github.com/MarcoMadera/Rindu.git
+cd Rindu
 npm install
 npm run dev
 ```
