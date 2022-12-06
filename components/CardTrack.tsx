@@ -55,7 +55,6 @@ export default function CardTrack({
   uri,
   visualPosition,
 }: CardTrackProps): ReactElement | null {
-  console.log(type);
   const {
     deviceId,
     currentlyPlaying,
@@ -70,7 +69,6 @@ export default function CardTrack({
     setReconnectionError,
     setProgressMs,
   } = useSpotify();
-  console.log(track);
   const [mouseEnter, setMouseEnter] = useState(false);
   const [isFocusing, setIsFocusing] = useState(false);
   const [isLikedTrack, setIsLikedTrack] = useState(isTrackInLibrary);
@@ -459,10 +457,10 @@ export default function CardTrack({
             ? "#2020204d"
             : "transparent"};
           grid-template-columns: ${type === "playlist"
-            ? "[index] 48px [first] 6fr [var1] 4fr [var2] 3fr [popularity] 1fr [last] minmax(160px,2fr)"
+            ? "[index] 48px [first] 14fr [var1] 8fr [var2] 3fr [popularity] 1fr [last] minmax(160px,1fr)"
             : type === "album"
-            ? "[index] 48px [first] 6fr [popularity] 1fr [last] minmax(180px,2fr)"
-            : "[index] 55px [first] 4fr [popularity] 1fr [last] minmax(180px,2fr)"};
+            ? "[index] 48px [first] 14fr [popularity] 1fr [last] minmax(160px,1fr)"
+            : "[index] 55px [first] 14fr [popularity] 1fr [last] minmax(160px,1fr)"};
         }
       `}</style>
       <style jsx>{`
