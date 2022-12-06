@@ -660,23 +660,23 @@ export async function getServerSideProps({
   const currentArtist = await getArtistById(artistId, accessToken, cookies);
   const setListAPIKey = process.env.SETLIST_FM_API_KEY;
   const lastFMAPIKey = process.env.LAST_FM_API_KEY;
-  const setListsProm = await getSetLists(currentArtist?.name, setListAPIKey);
-  const artistInfoProm = await getArtistInfo(currentArtist?.name, lastFMAPIKey);
+  const setListsProm = getSetLists(currentArtist?.name, setListAPIKey);
+  const artistInfoProm = getArtistInfo(currentArtist?.name, lastFMAPIKey);
 
-  const topTracksProm = await getArtistTopTracks(
+  const topTracksProm = getArtistTopTracks(
     artistId,
     user?.country ?? "US",
     accessToken,
     cookies
   );
-  const singleAlbumsProm = await getArtistAlbums(
+  const singleAlbumsProm = getArtistAlbums(
     artistId,
     user?.country ?? "US",
     Include_groups.single,
     accessToken,
     cookies
   );
-  const appearAlbumsProm = await getArtistAlbums(
+  const appearAlbumsProm = getArtistAlbums(
     artistId,
     user?.country ?? "US",
     Include_groups.appears_on,
@@ -684,11 +684,7 @@ export async function getServerSideProps({
     cookies
   );
 
-  const relatedArtistsProm = await getRelatedArtists(
-    artistId,
-    accessToken,
-    cookies
-  );
+  const relatedArtistsProm = getRelatedArtists(artistId, accessToken, cookies);
 
   const [
     setLists,
