@@ -2,9 +2,10 @@ import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 import { takeCookie } from "utils/cookies";
 
 export enum Include_groups {
+  album = "album",
   single = "single",
   appears_on = "appears_on",
-  both = "single%2Cappears_on",
+  compilation = "compilation",
 }
 
 export async function getArtistAlbums(
