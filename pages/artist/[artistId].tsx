@@ -50,6 +50,8 @@ interface ArtistPageProps {
   setLists: SetLists | null;
   artistInfo: Artist | null;
   translations: Record<string, string>;
+  albums: SpotifyApi.ArtistsAlbumsResponse | null;
+  compilations: SpotifyApi.ArtistsAlbumsResponse | null;
 }
 
 export default function ArtistPage({
@@ -62,6 +64,8 @@ export default function ArtistPage({
   accessToken,
   setLists,
   artistInfo,
+  albums,
+  compilations,
 }: ArtistPageProps): ReactElement {
   const { setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
@@ -297,6 +301,31 @@ export default function ArtistPage({
             </div>
           ) : null}
         </div>
+        {albums && albums.items?.length > 0 ? (
+          <Carousel title={translations.albumsCarouselTitle} gap={24}>
+            {albums.items?.map((item) => {
+              if (!item) return null;
+              const { images, name, id, artists, release_date, album_type } =
+                item;
+              return (
+                <PresentationCard
+                  type={CardType.ALBUM}
+                  key={id}
+                  images={images}
+                  title={name}
+                  subTitle={
+                    <SubTitle
+                      artists={artists}
+                      albumType={album_type}
+                      releaseYear={release_date}
+                    />
+                  }
+                  id={id}
+                />
+              );
+            })}
+          </Carousel>
+        ) : null}
         {singleAlbums && singleAlbums.items?.length > 0 ? (
           <Carousel title={translations.singleAlbumsCarouselTitle} gap={24}>
             {singleAlbums.items?.map((item) => {
@@ -325,6 +354,30 @@ export default function ArtistPage({
         {appearAlbums && appearAlbums.items?.length > 0 ? (
           <Carousel title={translations.appearAlbumsCarouselTitle} gap={24}>
             {appearAlbums.items?.map(
+              ({ images, name, id, artists, release_date, album_type }) => {
+                return (
+                  <PresentationCard
+                    type={CardType.ALBUM}
+                    key={id}
+                    images={images}
+                    title={name}
+                    subTitle={
+                      <SubTitle
+                        artists={artists}
+                        albumType={album_type}
+                        releaseYear={release_date}
+                      />
+                    }
+                    id={id}
+                  />
+                );
+              }
+            )}
+          </Carousel>
+        ) : null}
+        {compilations && compilations.items?.length > 0 ? (
+          <Carousel title={translations.compilationsCarouselTitle} gap={24}>
+            {compilations.items?.map(
               ({ images, name, id, artists, release_date, album_type }) => {
                 return (
                   <PresentationCard
@@ -683,6 +736,20 @@ export async function getServerSideProps({
     accessToken,
     cookies
   );
+  const albumsProm = getArtistAlbums(
+    artistId,
+    user?.country ?? "US",
+    Include_groups.album,
+    accessToken,
+    cookies
+  );
+  const compilationsProm = getArtistAlbums(
+    artistId,
+    user?.country ?? "US",
+    Include_groups.compilation,
+    accessToken,
+    cookies
+  );
 
   const relatedArtistsProm = getRelatedArtists(artistId, accessToken, cookies);
 
@@ -693,6 +760,8 @@ export async function getServerSideProps({
     singleAlbums,
     appearAlbums,
     relatedArtists,
+    albums,
+    compilations,
   ] = await Promise.allSettled([
     setListsProm,
     artistInfoProm,
@@ -700,6 +769,8 @@ export async function getServerSideProps({
     singleAlbumsProm,
     appearAlbumsProm,
     relatedArtistsProm,
+    albumsProm,
+    compilationsProm,
   ]);
 
   return {
@@ -713,6 +784,8 @@ export async function getServerSideProps({
       user: user ?? null,
       setLists: fullFilledValue(setLists),
       artistInfo: fullFilledValue(artistInfo),
+      albums: fullFilledValue(albums),
+      compilations: fullFilledValue(compilations),
       translations,
     },
   };
