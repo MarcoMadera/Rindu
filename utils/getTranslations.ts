@@ -289,6 +289,7 @@ export const translations = {
     [Page.Album]: {
       ...sideBarTranslations[Language.EN],
       ...pageHeaderTranslations[Language.EN],
+      ...listHeaderTranslations[Language.EN],
       title: "Album",
     },
     [Page.NotFound]: {
