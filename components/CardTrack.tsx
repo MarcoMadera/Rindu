@@ -457,10 +457,10 @@ export default function CardTrack({
             ? "#2020204d"
             : "transparent"};
           grid-template-columns: ${type === "playlist"
-            ? "[index] 48px [first] 14fr [var1] 8fr [var2] 3fr [popularity] 1fr [last] minmax(160px,1fr)"
+            ? "[index] 48px [first] 14fr [var1] 8fr [var2] 3fr [popularity] 1fr [last] minmax(180px,1fr)"
             : type === "album"
-            ? "[index] 48px [first] 14fr [popularity] 1fr [last] minmax(160px,1fr)"
-            : "[index] 55px [first] 14fr [popularity] 1fr [last] minmax(160px,1fr)"};
+            ? "[index] 48px [first] 14fr [popularity] 1fr [last] minmax(180px,1fr)"
+            : "[index] 55px [first] 14fr [popularity] 1fr [last] minmax(180px,1fr)"};
         }
       `}</style>
       <style jsx>{`
