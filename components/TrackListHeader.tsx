@@ -56,6 +56,7 @@ export default function TrackListHeader({
           <span className="dataAdded">{translations.dateAddedListHeader}</span>
         </>
       ) : null}
+      <span className="emptynow"></span>
       <span className="clock">
         <Clock />
       </span>
@@ -74,10 +75,10 @@ export default function TrackListHeader({
           background-color: ${isPin ? "#181818" : "transparent"};
           border-bottom: 1px solid #ffffff1a;
           grid-template-columns: ${type === "playlist"
-            ? "[index] 48px [first] 6fr [var1] 4fr [var2] 3fr [last] minmax(160px,1fr)"
+            ? "[index] 48px [first] 6fr [var1] 4fr [var2] 3fr [popularity] 1fr [last] minmax(160px,2fr)"
             : type === "album"
-            ? "[index] 48px [first] 6fr [last] minmax(160px,1fr)"
-            : "[index] 55px [first] 4fr [last] minmax(160px,1fr)"};
+            ? "[index] 48px [first] 6fr [popularity] 1fr [last] minmax(160px,2fr)"
+            : "[index] 55px [first] 4fr [popularity] 1fr [last] minmax(160px,2fr)"};
         }
         .trackListHeader span {
           display: flex;

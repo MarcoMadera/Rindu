@@ -58,6 +58,7 @@ export interface ITrack {
   corruptedTrack?: boolean;
   explicit?: boolean;
   added_at?: string | number;
+  popularity?: number;
 }
 
 export interface ISpotifyContext {
