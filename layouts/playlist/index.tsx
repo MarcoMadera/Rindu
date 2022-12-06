@@ -485,7 +485,7 @@ const Playlist: NextPage<
           grid-gap: 16px;
           background-color: ${isPin ? "#181818" : "transparent"};
           border-bottom: 1px solid #ffffff1a;
-          grid-template-columns: [index] 48px [first] 6fr [var1] 4fr [var2] 3fr [last] minmax(
+          grid-template-columns: [index] 48px [first] 6fr [var1] 4fr [var2] 3fr [popularity] 1fr [last] minmax(
               160px,
               1fr
             );

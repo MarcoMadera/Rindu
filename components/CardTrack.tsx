@@ -55,6 +55,7 @@ export default function CardTrack({
   uri,
   visualPosition,
 }: CardTrackProps): ReactElement | null {
+  console.log(type);
   const {
     deviceId,
     currentlyPlaying,
@@ -69,6 +70,7 @@ export default function CardTrack({
     setReconnectionError,
     setProgressMs,
   } = useSpotify();
+  console.log(track);
   const [mouseEnter, setMouseEnter] = useState(false);
   const [isFocusing, setIsFocusing] = useState(false);
   const [isLikedTrack, setIsLikedTrack] = useState(isTrackInLibrary);
@@ -324,6 +326,19 @@ export default function CardTrack({
         </>
       ) : null}
       <section>
+        {track.popularity ? (
+          <div className="pop-meter">
+            <div className="pop-meter-bar"></div>
+            <div
+              className="pop-meter-overlay"
+              style={{
+                width: track.popularity ? `${track.popularity}%` : undefined,
+              }}
+            ></div>
+          </div>
+        ) : null}
+      </section>
+      <section className="extras">
         <Heart
           className="trackHeart"
           active={!!isTrackInLibrary}
@@ -444,16 +459,22 @@ export default function CardTrack({
             ? "#2020204d"
             : "transparent"};
           grid-template-columns: ${type === "playlist"
-            ? "[index] 48px [first] 6fr [var1] 4fr [var2] 3fr [last] minmax(160px,1fr)"
+            ? "[index] 48px [first] 6fr [var1] 4fr [var2] 3fr [popularity] 1fr [last] minmax(160px,2fr)"
             : type === "album"
-            ? "[index] 48px [first] 6fr [last] minmax(180px,1fr)"
-            : "[index] 55px [first] 4fr [last] minmax(180px,1fr)"};
+            ? "[index] 48px [first] 6fr [popularity] 1fr [last] minmax(180px,2fr)"
+            : "[index] 55px [first] 4fr [popularity] 1fr [last] minmax(180px,2fr)"};
         }
       `}</style>
       <style jsx>{`
         :global(.trackHeart:focus),
         :global(.trackHeart:hover) {
           transform: scale(1.06);
+        }
+        .extras {
+          justify-content: center;
+        }
+        .extras button {
+          margin: 0;
         }
         .threeDots {
           width: 16px;
@@ -498,8 +519,6 @@ export default function CardTrack({
           align-items: center;
         }
         .options {
-          margin-right: 20px;
-          margin-left: 0;
           color: #ffffffb3;
         }
         .options:hover,
@@ -522,6 +541,41 @@ export default function CardTrack({
           overflow: unset;
           min-width: 50px;
           text-align: center;
+        }
+        .pop-meter {
+          width: 30px;
+          height: 9px;
+          position: relative;
+          margin: 0 auto;
+        }
+        .pop-meter-bar,
+        .pop-meter-overlay {
+          width: 100%;
+          position: absolute;
+          top: -1px;
+          height: 9px;
+          overflow-x: hidden;
+        }
+        .pop-meter-bar:after,
+        .pop-meter-overlay:after {
+          content: " ";
+          display: block;
+          transform: translate(0, 0.5px);
+          position: absolute;
+          left: -4px;
+          width: 2px;
+          height: 8px;
+          top: 0;
+        }
+        .pop-meter-bar:after {
+          box-shadow: 4px 0 0 0 #3e3e40, 8px 0 0 0 #3e3e40, 12px 0 0 0 #3e3e40,
+            16px 0 0 0 #3e3e40, 20px 0 0 0 #3e3e40, 24px 0 0 0 #3e3e40,
+            28px 0 0 0 #3e3e40, 32px 0 0 0 #3e3e40;
+        }
+        .pop-meter-overlay:after {
+          box-shadow: 4px 0 0 0 #88898c, 8px 0 0 0 #88898c, 12px 0 0 0 #88898c,
+            16px 0 0 0 #88898c, 20px 0 0 0 #88898c, 24px 0 0 0 #88898c,
+            28px 0 0 0 #88898c, 32px 0 0 0 #88898c;
         }
         a {
           text-decoration: none;
