@@ -27,7 +27,9 @@ async function getToken(): Promise<string | null> {
       return data.accessToken;
     }
     console.warn(
-      "Warning: https://open.spotify.com/get_access_token null token "
+      `Warning: https://open.spotify.com/get_access_token null token with status: ${
+        res.status
+      } and cookie: ${process.env.SPOTIFY_ACCESS_COOKIE || "no cookie"}`
     );
     return null;
   } catch (err) {
