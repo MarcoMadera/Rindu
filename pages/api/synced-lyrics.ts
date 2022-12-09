@@ -80,6 +80,7 @@ export default async function syncedLyrics(
     }
     return res.json(lyrics);
   } catch (err) {
+    console.log(err);
     return res.status(404).json({ error: "No lyrics found" });
   }
 }
