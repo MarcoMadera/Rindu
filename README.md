@@ -1,4 +1,4 @@
-# Spotify playlist Cleaner
+# Rindu
 
 Project running at <https://rindu.marcomadera.com>
 
@@ -44,9 +44,11 @@ It has been taking shape similar to what a clone of Spotify is. It is intended t
 
 ## Video
 
-<video width="360" height="240" controls>
-  <source src="https://res.cloudinary.com/marcomadera/video/upload/v1670725015/Spotify-Cleaner-App/Rindu_un_clon_de_Spotify_nm8bwf.mp4" type="video/mp4">
-</video>
+
+
+https://user-images.githubusercontent.com/17222523/206883606-1c9ef3e7-21f7-421c-b9cc-b2e43c0d53f5.mp4
+
+
 
 ## Images
 
