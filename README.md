@@ -42,6 +42,12 @@ Built with ReactJs/NextJs. It started as a simple script to clean spotify playli
 
 It has been taking shape similar to what a clone of Spotify is. It is intended to add features such as creating dynamic playlists, advanced search, and background noises.
 
+## Video
+
+<video width="360" height="240" controls>
+  <source src="https://res.cloudinary.com/marcomadera/video/upload/v1670725015/Spotify-Cleaner-App/Rindu_un_clon_de_Spotify_nm8bwf.mp4" type="video/mp4">
+</video>
+
 ## Images
 
 ![Home](./public/Home.png)
