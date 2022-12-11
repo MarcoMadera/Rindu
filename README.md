@@ -1,4 +1,4 @@
-# Spotify playlist Cleaner
+# Rindu
 
 Project running at <https://rindu.marcomadera.com>
 
@@ -41,6 +41,14 @@ For a better understanding of the components used in this project, please visit 
 Built with ReactJs/NextJs. It started as a simple script to clean spotify playlists. It served as a way to clean my playlists and to learn how to use the [Spotify API](https://developer.spotify.com/documentation/web-api/).
 
 It has been taking shape similar to what a clone of Spotify is. It is intended to add features such as creating dynamic playlists, advanced search, and background noises.
+
+## Video
+
+
+
+https://user-images.githubusercontent.com/17222523/206883606-1c9ef3e7-21f7-421c-b9cc-b2e43c0d53f5.mp4
+
+
 
 ## Images
 
