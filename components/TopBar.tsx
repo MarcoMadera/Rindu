@@ -142,16 +142,17 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
           )}
         </header>
       </div>
-      {alwaysDisplayColor && <div className="bg-12"></div>}
+      {!disableBackground && <div className="bg-12"></div>}
       <style jsx>{`
         .bg-12 {
           background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0, #121212 100%),
             url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
-          height: 232px;
+          height: 293px;
           position: absolute;
           width: 100%;
           background-color: ${headerColor ?? "transparent"};
           transition: background-color 0.3s ease;
+          margin-top: -61px;
         }
         .HamburgerMenu {
           width: 50px;
