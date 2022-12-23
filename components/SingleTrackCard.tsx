@@ -1,5 +1,6 @@
 import useContextMenu from "hooks/useContextMenu";
 import useHeader from "hooks/useHeader";
+import useSpotify from "hooks/useSpotify";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
@@ -17,6 +18,7 @@ export default function SingleTrackCard({
   const [mainTrackColor, setMainTrackColor] = useState<string>("");
   const { addContextMenu } = useContextMenu();
   const router = useRouter();
+  const { allTracks } = useSpotify();
 
   useEffect(() => {
     getMainColorFromImage(`cover-image-${track.id}`, setMainTrackColor);
@@ -50,7 +52,13 @@ export default function SingleTrackCard({
         <div>
           <p>{track.name}</p>
           <span>
-            <PlayButton isSingle track={track} centerSize={24} size={48} />
+            <PlayButton
+              isSingle
+              track={track}
+              centerSize={24}
+              size={48}
+              allTracks={allTracks}
+            />
           </span>
         </div>
         <style jsx>

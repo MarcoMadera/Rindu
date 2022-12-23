@@ -39,7 +39,7 @@ export default function EpisodePage({
   });
   const { setUser, setAccessToken } = useAuth();
   const [isEpisodeInLibrary, setIsEpisodeInLibrary] = useState(false);
-  const { setPageDetails, isPlaying } = useSpotify();
+  const { setPageDetails, isPlaying, allTracks } = useSpotify();
   const episodeTrack: ITrack = useMemo(
     (): ITrack => ({
       album: {
@@ -125,7 +125,13 @@ export default function EpisodePage({
       />
       <div className="container">
         <div className="options">
-          <PlayButton size={56} centerSize={28} isSingle track={episodeTrack} />
+          <PlayButton
+            size={56}
+            centerSize={28}
+            isSingle
+            track={episodeTrack}
+            allTracks={allTracks}
+          />
           <div className="info">
             <button
               type="button"

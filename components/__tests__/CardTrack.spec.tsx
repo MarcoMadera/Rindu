@@ -45,6 +45,7 @@ describe("cardTrack", () => {
           playlistUri=""
           uri=""
           onClickAdd={onClickAdd}
+          allTracks={[cardTrackName]}
         />
       </AppProviders>
     );
@@ -73,6 +74,7 @@ describe("cardTrack", () => {
           playlistUri=""
           uri=""
           onClickAdd={onClickAdd}
+          allTracks={[track]}
         />
       </AppProviders>
     );
@@ -115,6 +117,7 @@ describe("cardTrack", () => {
           playlistUri=""
           uri=""
           onClickAdd={onClickAdd}
+          allTracks={[track]}
         />
       </AppProviders>
     );
@@ -165,6 +168,7 @@ describe("cardTrack", () => {
           playlistUri=""
           uri=""
           onClickAdd={onClickAdd}
+          allTracks={[track]}
         />
       </AppProviders>
     );
@@ -209,6 +213,7 @@ describe("cardTrack", () => {
           playlistUri=""
           uri=""
           onClickAdd={onClickAdd}
+          allTracks={[track]}
         />
       </AppProviders>
     );
@@ -251,6 +256,7 @@ describe("cardTrack", () => {
           playlistUri=""
           uri=""
           onClickAdd={onClickAdd}
+          allTracks={[track]}
         />
       </AppProviders>
     );
@@ -286,6 +292,7 @@ describe("cardTrack", () => {
           playlistUri=""
           uri=""
           onClickAdd={onClickAdd}
+          allTracks={[track]}
         />
       </AppProviders>
     );

@@ -54,7 +54,7 @@ export default function TrackPage({
   const [artistTopTracks, setArtistTopTracks] = useState<
     SpotifyApi.TrackObjectFull[]
   >([]);
-  const { setPageDetails, setAllTracks, isPlaying } = useSpotify();
+  const { setPageDetails, setAllTracks, isPlaying, allTracks } = useSpotify();
   const [artistInfo, setArtistInfo] =
     useState<SpotifyApi.SingleArtistResponse | null>(null);
   const [sameTrackIndex, setSameTrackIndex] = useState(-1);
@@ -164,6 +164,7 @@ export default function TrackPage({
             centerSize={28}
             isSingle
             track={track ?? undefined}
+            allTracks={allTracks}
           />
           <div className="info">
             <Heart
@@ -252,6 +253,7 @@ export default function TrackPage({
                   position={position}
                   visualPosition={i + 1}
                   isSingleTrack
+                  allTracks={allTracks}
                 />
               );
             })}

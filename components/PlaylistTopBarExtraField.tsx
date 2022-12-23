@@ -14,7 +14,7 @@ export default function PlaylistTopBarExtraField({
   track,
   uri,
 }: PlaylistTopBarExtraFieldProps): ReactElement {
-  const { pageDetails } = useSpotify();
+  const { pageDetails, allTracks } = useSpotify();
   return (
     <div>
       <PlayButton
@@ -23,6 +23,7 @@ export default function PlaylistTopBarExtraField({
         centerSize={16}
         isSingle={isSingle}
         track={track}
+        allTracks={allTracks}
       />
       <span>{pageDetails?.name}</span>
       <style jsx>{`

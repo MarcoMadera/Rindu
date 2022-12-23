@@ -10,7 +10,7 @@ export async function getNewReleases(
   const res = await fetch(
     `https://api.spotify.com/v1/browse/new-releases?country=${country}&limit=${
       limit ?? 10
-    }`,
+    }&market=from_token`,
     {
       method: "GET",
       headers: {

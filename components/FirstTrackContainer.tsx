@@ -15,6 +15,7 @@ interface FirstTrackContainerProps {
   track: ITrack;
   backgroundColor?: string;
   position?: number;
+  allTracks: ITrack[];
 }
 
 export default function FirstTrackContainer({
@@ -22,6 +23,7 @@ export default function FirstTrackContainer({
   track,
   backgroundColor,
   position,
+  allTracks,
 }: FirstTrackContainerProps): ReactElement | null {
   const [containerColor, setContainerColor] = useState<string>(
     backgroundColor ?? ""
@@ -31,13 +33,13 @@ export default function FirstTrackContainer({
   const isPremium = user?.product === "premium";
   const isPlayable =
     (!isPremium && preview) ||
-    (isPremium && track?.is_playable !== false && !track.is_local);
+    (isPremium && track?.is_playable !== false && !track?.is_local);
   const router = useRouter();
   const cardRef = useRef<HTMLAnchorElement>(null);
   const isVisible = useOnScreen(cardRef, "-60px");
 
   useEffect(() => {
-    if (backgroundColor || !track.id) return;
+    if (backgroundColor || !track?.id) return;
     getMainColorFromImage(`cover-image-${track.id}`, setContainerColor);
   }, [backgroundColor, router.asPath, track?.id]);
 
@@ -113,6 +115,7 @@ export default function FirstTrackContainer({
           centerSize={28}
           track={track}
           position={position}
+          allTracks={allTracks}
         />
       ) : null}
       <div className="artists">

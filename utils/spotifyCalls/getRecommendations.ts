@@ -7,7 +7,9 @@ export async function getRecommendations(
   accessToken?: string | null
 ): Promise<SpotifyApi.TrackObjectFull[] | null> {
   const res = await fetch(
-    `https://api.spotify.com/v1/recommendations?seed_tracks=${seed_tracks.join()}&market=${market}`,
+    `https://api.spotify.com/v1/recommendations?seed_tracks=${seed_tracks.join()}&market=${
+      market || "from_token"
+    }`,
     {
       method: "GET",
       headers: {

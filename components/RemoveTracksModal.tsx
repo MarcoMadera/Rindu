@@ -38,7 +38,7 @@ export default function RemoveTracksModal({
   const [targetNode, setTargetNode] = useState<Element>();
   const firstButtonRef = useRef<HTMLButtonElement | null>(null);
   const secondButtonRef = useRef<HTMLButtonElement | null>(null);
-  const { removeTracks, pageDetails, setAllTracks } = useSpotify();
+  const { removeTracks, pageDetails, setAllTracks, allTracks } = useSpotify();
   const { accessToken } = useAuth();
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const { addToast } = useToast();
@@ -206,6 +206,7 @@ export default function RemoveTracksModal({
                         playlistUri={pageDetails?.uri ?? ""}
                         type="album"
                         position={tracksToRemove[index].position}
+                        allTracks={allTracks}
                       />
                     </div>
                   );

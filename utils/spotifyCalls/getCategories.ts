@@ -10,7 +10,7 @@ export async function getCategories(
   const res = await fetch(
     `https://api.spotify.com/v1/browse/categories?country=${country}&limit=${
       limit ?? 5
-    }`,
+    }&market=from_token`,
     {
       method: "GET",
       headers: {

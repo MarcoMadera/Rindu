@@ -27,11 +27,11 @@ import SubTitle from "components/SubtTitle";
 import { CardType } from "components/CardContent";
 import ContentContainer from "components/ContentContainer";
 import TopTracks from "components/TopTracks";
-import { isCorruptedTrack } from "utils/isCorruptedTrack";
 import MainTracks from "components/MainTracks";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { getTranslations, Page } from "utils/getTranslations";
 import { fullFilledValue } from "utils/fullFilledValue";
+import { searchArtist, searchTrack } from "utils/spotifyCalls/search";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -44,6 +44,8 @@ interface DashboardProps {
   tracksRecommendations: ITrack[] | null;
   tracksInLibrary: boolean[] | null;
   translations: Record<string, string>;
+  artistOfTheWeek: SpotifyApi.ArtistObjectFull[] | null;
+  tracksOfTheWeek: SpotifyApi.TrackObjectFull[] | null;
 }
 
 const Dashboard: NextPage<DashboardProps> = ({
@@ -57,6 +59,8 @@ const Dashboard: NextPage<DashboardProps> = ({
   tracksInLibrary,
   topArtists,
   translations,
+  artistOfTheWeek,
+  tracksOfTheWeek,
 }) => {
   const { setUser } = useAuth();
   const { setHeaderColor } = useHeader({
@@ -64,7 +68,7 @@ const Dashboard: NextPage<DashboardProps> = ({
     alwaysDisplayColor: false,
   });
   const router = useRouter();
-  const { setAllTracks, recentlyPlayed } = useSpotify();
+  const { recentlyPlayed } = useSpotify();
   const [recentListeningRecommendations, setRecentListeningRecommendations] =
     useState<SpotifyApi.TrackObjectFull[]>([]);
 
@@ -96,20 +100,6 @@ const Dashboard: NextPage<DashboardProps> = ({
 
     setUser(user);
   }, [setUser, user]);
-
-  useEffect(() => {
-    if (!tracksRecommendations) return;
-    setAllTracks(() => {
-      return tracksRecommendations?.map((track) => {
-        return {
-          ...track,
-          audio: track.preview_url,
-          corruptedTrack: isCorruptedTrack(track),
-        };
-      });
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     setHeaderColor("#242424");
@@ -149,6 +139,30 @@ const Dashboard: NextPage<DashboardProps> = ({
           })}
         </Carousel>
       ) : null}
+      {artistOfTheWeek && artistOfTheWeek.length > 0 ? (
+        <Carousel title={translations.artistOfTheWeekHeading} gap={24}>
+          {artistOfTheWeek.map((artist) => {
+            if (!artist) return null;
+            return (
+              <PresentationCard
+                type={CardType.ARTIST}
+                key={artist.id}
+                images={artist.images}
+                title={artist.name}
+                subTitle={"Artist"}
+                id={artist.id}
+              />
+            );
+          })}
+        </Carousel>
+      ) : null}
+      {tracksOfTheWeek && tracksOfTheWeek.length > 0 && (
+        <MainTracks
+          title={translations.tracksOfTheWeekHeading}
+          tracksInLibrary={[]}
+          tracksRecommendations={tracksOfTheWeek}
+        />
+      )}
       {recentlyPlayed && recentlyPlayed.length > 0 ? (
         <Carousel title={translations.recentlyListenedHeading} gap={24}>
           {recentlyPlayed.map((track) => {
@@ -267,6 +281,39 @@ const Dashboard: NextPage<DashboardProps> = ({
 };
 export default Dashboard;
 
+interface IArtistOfTheWeek {
+  artists: {
+    artist: {
+      name: string;
+    }[];
+  };
+}
+async function getArtistsOfTheWeek(apiKey: string): Promise<IArtistOfTheWeek> {
+  const artistsOfTheWeekRes = await fetch(
+    `https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=${apiKey}&format=json`
+  );
+  const artistsOfTheWeek =
+    (await artistsOfTheWeekRes.json()) as IArtistOfTheWeek;
+  return artistsOfTheWeek;
+}
+interface ITracksOfTheWeek {
+  tracks: {
+    track: {
+      name: string;
+      artist: {
+        name: string;
+      };
+    }[];
+  };
+}
+async function getTracksOfTheWeek(apiKey: string): Promise<ITracksOfTheWeek> {
+  const tracksOfTheWeekRes = await fetch(
+    `https://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=${apiKey}&format=json`
+  );
+  const tracksOfTheWeek = (await tracksOfTheWeekRes.json()) as ITracksOfTheWeek;
+  return tracksOfTheWeek;
+}
+
 export async function getServerSideProps({
   res,
   req,
@@ -281,6 +328,7 @@ export async function getServerSideProps({
   const country = (query.country || "US") as string;
   const translations = getTranslations(country, Page.Dashboard);
   const cookies = req?.headers?.cookie ?? "";
+  const lastFMAPIKey = process.env.LAST_FM_API_KEY as string;
   let tokens: Record<string, string | null> | AuthorizationResponse = {
     accessToken: takeCookie(ACCESS_TOKEN_COOKIE, cookies),
     refreshToken: takeCookie(REFRESH_TOKEN_COOKIE, cookies),
@@ -314,6 +362,8 @@ export async function getServerSideProps({
   }
 
   const { accessToken, user } = (await getAuth(res, cookies, tokens)) || {};
+  const artistsOfTheWeekProm = getArtistsOfTheWeek(lastFMAPIKey);
+  const tracksOfTheWeekProm = getTracksOfTheWeek(lastFMAPIKey);
 
   const featuredPlaylistsProm = getFeaturedPlaylists(
     user?.country ?? "US",
@@ -349,23 +399,92 @@ export async function getServerSideProps({
     cookies
   );
 
-  const [featuredPlaylists, newReleases, categories, topTracks, topArtists] =
-    await Promise.allSettled([
-      featuredPlaylistsProm,
-      newReleasesProm,
-      categoriesProm,
-      topTracksProm,
-      topArtistsProm,
-    ]);
+  const [
+    featuredPlaylists,
+    newReleases,
+    categories,
+    topTracks,
+    topArtists,
+    artistsOfTheWeek,
+    tracksOfTheWeek,
+  ] = await Promise.allSettled([
+    featuredPlaylistsProm,
+    newReleasesProm,
+    categoriesProm,
+    topTracksProm,
+    topArtistsProm,
+    artistsOfTheWeekProm,
+    tracksOfTheWeekProm,
+  ]);
 
   const seed_tracks =
     fullFilledValue(topTracks)?.items?.map((item) => item.id) ?? [];
 
-  const tracksRecommendations = await getRecommendations(
+  const tracksRecommendationsProm = getRecommendations(
     seed_tracks.slice(0, 5),
     user?.country ?? "US",
     accessToken
   );
+
+  const artistsOfTheWeekSettled = fullFilledValue(artistsOfTheWeek);
+  const tracksOfTheWeekSettled = fullFilledValue(tracksOfTheWeek);
+  const artistResult: SpotifyApi.ArtistObjectFull[] = [];
+  const tracksResult: SpotifyApi.TrackObjectFull[] = [];
+  let tracksRecommendations: SpotifyApi.TrackObjectFull[] | null = [];
+
+  const searchedArtistsPromises: Promise<
+    SpotifyApi.ArtistObjectFull[] | null
+  >[] = [];
+  const searchedTracksPromises: Promise<SpotifyApi.TrackObjectFull[] | null>[] =
+    [];
+
+  if (artistsOfTheWeekSettled) {
+    artistsOfTheWeekSettled.artists.artist.forEach((artist) => {
+      searchedArtistsPromises.push(searchArtist(artist.name, accessToken));
+    });
+  }
+
+  if (tracksOfTheWeekSettled) {
+    tracksOfTheWeekSettled.tracks.track.forEach((track) => {
+      searchedTracksPromises.push(
+        searchTrack(
+          `track:${track.name}${
+            track?.artist?.name ? `%20artist:${track?.artist?.name}` : ""
+          }`,
+          accessToken
+        )
+      );
+    });
+  }
+
+  const searchedArtistsPromisesLenght = searchedArtistsPromises.length;
+
+  const result = await Promise.allSettled([
+    tracksRecommendationsProm,
+    ...searchedArtistsPromises,
+    ...searchedTracksPromises,
+  ]);
+
+  result.forEach((item, i) => {
+    if (i === 0) {
+      tracksRecommendations = fullFilledValue(item) as
+        | SpotifyApi.TrackObjectFull[]
+        | null;
+      return;
+    }
+    const fullFilledItem = fullFilledValue(item);
+    if (
+      fullFilledItem &&
+      i <= searchedArtistsPromisesLenght &&
+      fullFilledItem[0]
+    ) {
+      artistResult.push(fullFilledItem[0] as SpotifyApi.ArtistObjectFull);
+      return;
+    }
+    if (fullFilledItem && fullFilledItem[0]) {
+      tracksResult.push(fullFilledItem[0] as SpotifyApi.TrackObjectFull);
+    }
+  });
 
   const recommendedTracksIds =
     tracksRecommendations?.map((item) => item.id) || [];
@@ -385,6 +504,8 @@ export async function getServerSideProps({
       categories: fullFilledValue(categories),
       topTracks: fullFilledValue(topTracks),
       topArtists: fullFilledValue(topArtists),
+      artistOfTheWeek: artistResult,
+      tracksOfTheWeek: tracksResult,
       tracksRecommendations,
       tracksInLibrary,
       translations,
