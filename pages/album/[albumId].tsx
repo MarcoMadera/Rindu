@@ -45,7 +45,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
 }) => {
   const { setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
-  const { setAllTracks, setPageDetails } = useSpotify();
+  const { setAllTracks, setPageDetails, allTracks } = useSpotify();
   const router = useRouter();
   const [isPin, setIsPin] = useState(false);
   const [isFollowingThisAlbum, setIsFollowingThisAlbum] = useState(false);
@@ -125,7 +125,12 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
       />
       <div className="tracksContainer">
         <div className="options">
-          <PlayButton uri={album?.uri} size={56} centerSize={28} />
+          <PlayButton
+            uri={album?.uri}
+            size={56}
+            centerSize={28}
+            allTracks={allTracks}
+          />
           <div className="info">
             <Heart
               active={isFollowingThisAlbum}

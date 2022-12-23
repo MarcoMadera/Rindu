@@ -23,6 +23,7 @@ interface PlayButtonProps {
   isSingle?: boolean;
   uri?: string;
   position?: number;
+  allTracks: ITrack[];
 }
 
 export function PlayButton({
@@ -32,6 +33,7 @@ export function PlayButton({
   isSingle,
   uri,
   position,
+  allTracks,
   ...props
 }: PlayButtonProps & HTMLAttributes<HTMLButtonElement>): ReactElement | null {
   const {
@@ -40,7 +42,6 @@ export function PlayButton({
     deviceId,
     pageDetails,
     playlistPlayingId,
-    allTracks,
     setPlaylistPlayingId,
     setCurrentlyPlaying,
     setIsPlaying,

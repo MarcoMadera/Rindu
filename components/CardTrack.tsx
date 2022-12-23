@@ -40,6 +40,7 @@ interface CardTrackProps {
   onClickAdd?: () => void;
   uri?: string;
   visualPosition?: number;
+  allTracks: ITrack[];
 }
 
 export default function CardTrack({
@@ -54,6 +55,7 @@ export default function CardTrack({
   onClickAdd,
   uri,
   visualPosition,
+  allTracks,
 }: CardTrackProps): ReactElement | null {
   const {
     deviceId,
@@ -61,7 +63,6 @@ export default function CardTrack({
     player,
     isPlaying,
     setIsPlaying,
-    allTracks,
     setCurrentlyPlaying,
     pageDetails,
     setPlaylistPlayingId,

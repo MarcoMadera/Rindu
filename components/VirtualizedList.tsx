@@ -137,6 +137,7 @@ export default function VirtualizedList({
                             isSingleTrack={isConcert}
                             type={type}
                             position={allTracks?.[index]?.position}
+                            allTracks={allTracks}
                           />
                         );
                       }}

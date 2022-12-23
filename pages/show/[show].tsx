@@ -138,7 +138,12 @@ const Shows: NextPage<PlaylistProps> = ({
       />
       <section>
         <div className="options">
-          <PlayButton uri={show?.uri} size={56} centerSize={28} />
+          <PlayButton
+            uri={show?.uri}
+            size={56}
+            centerSize={28}
+            allTracks={allTracks || []}
+          />
           <div className="info">
             <Heart
               active={isShowInLibrary}

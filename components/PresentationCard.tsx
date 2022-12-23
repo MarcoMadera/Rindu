@@ -4,6 +4,7 @@ import { PlayButton } from "components/PlayButton";
 import useAuth from "hooks/useAuth";
 import { ITrack } from "types/spotify";
 import { useRouter } from "next/router";
+import useSpotify from "hooks/useSpotify";
 
 export interface PresentationCardProps {
   type: ITrack["type"] | CardType;
@@ -33,6 +34,8 @@ function PresentationCard({
   const isPremium = user?.product === "premium";
   const router = useRouter();
   const isCollection = router.pathname.includes("collection");
+  const { allTracks } = useSpotify();
+
   return (
     <div className="container">
       <CardContent
@@ -51,6 +54,7 @@ function PresentationCard({
           size={48}
           tabIndex={props.tabIndex}
           aria-hidden={props["aria-hidden"]}
+          allTracks={allTracks}
         />
       </span>
       <style jsx>{`

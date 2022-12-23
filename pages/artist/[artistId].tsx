@@ -76,7 +76,7 @@ export default function ArtistPage({
     showOnFixed: false,
   });
   const router = useRouter();
-  const { setPageDetails, setAllTracks } = useSpotify();
+  const { setPageDetails, setAllTracks, allTracks } = useSpotify();
   const [showMoreTopTracks, setShowMoreTopTracks] = useState(false);
   const [isFollowingThisArtist, setIsFollowingThisArtist] = useState(false);
   const [showMoreAbout, setShowMoreAbout] = useState(false);
@@ -182,7 +182,12 @@ export default function ArtistPage({
         stats={artistInfo?.stats}
       />
       <div className="options">
-        <PlayButton uri={currentArtist?.uri} size={56} centerSize={28} />
+        <PlayButton
+          uri={currentArtist?.uri}
+          size={56}
+          centerSize={28}
+          allTracks={allTracks}
+        />
         <div className="info button-inof">
           <button
             type="button"
@@ -238,6 +243,7 @@ export default function ArtistPage({
                       isSingleTrack
                       position={i}
                       type="playlist"
+                      allTracks={allTracks}
                     />
                   );
                 })}
@@ -715,7 +721,6 @@ export async function getServerSideProps({
   const lastFMAPIKey = process.env.LAST_FM_API_KEY;
   const setListsProm = getSetLists(currentArtist?.name, setListAPIKey);
   const artistInfoProm = getArtistInfo(currentArtist?.name, lastFMAPIKey);
-
   const topTracksProm = getArtistTopTracks(
     artistId,
     user?.country ?? "US",

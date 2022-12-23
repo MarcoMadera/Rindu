@@ -224,6 +224,7 @@ const Playlist: NextPage<
                     uri={pageDetails?.uri}
                     size={56}
                     centerSize={28}
+                    allTracks={allTracks}
                   />
                   <div className="info">
                     {isMyPlaylist ? (
@@ -308,6 +309,7 @@ const Playlist: NextPage<
                       isTrackInLibrary={tracksInLibrary?.[i] ?? false}
                       playlistUri=""
                       track={track}
+                      allTracks={allTracks}
                       onClickAdd={() => {
                         if (!pageDetails?.id) return;
                         addItemsToPlaylist(pageDetails.id, [track.uri]).then(
@@ -348,6 +350,7 @@ const Playlist: NextPage<
                   {searchedData.episodes.items?.map((track, i) => {
                     return (
                       <CardTrack
+                        allTracks={allTracks}
                         accessToken={accessToken ?? ""}
                         isTrackInLibrary={tracksInLibrary?.[i] ?? false}
                         playlistUri=""
