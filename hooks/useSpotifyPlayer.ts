@@ -43,6 +43,8 @@ export default function useSpotifyPlayer({
     setPlayer,
     allTracks,
     setProgressMs,
+    setSuffleState,
+    setRepeatState,
   } = useSpotify();
   const spotifyPlayer = useRef<Spotify.Player>();
   const audioPlayer = useRef<AudioPlayer>();
@@ -219,18 +221,19 @@ export default function useSpotifyPlayer({
           });
         }
       );
+      spotifyPlayer.current?.on("player_state_changed", (playbackState) => {
+        setCurrentlyPlayingDuration(playbackState?.duration);
+        setCurrentlyPlayingPosition(playbackState?.position);
+        setProgressMs(playbackState?.position);
+        setCurrentlyPlaying(playbackState?.track_window?.current_track);
+        setSuffleState(playbackState?.shuffle);
+        setRepeatState(playbackState?.repeat_mode);
 
-      spotifyPlayer.current?.on("player_state_changed", (trackWindow) => {
-        setCurrentlyPlayingDuration(trackWindow?.duration);
-        setCurrentlyPlayingPosition(trackWindow?.position);
-        setProgressMs(trackWindow?.position);
-        setCurrentlyPlaying(trackWindow?.track_window?.current_track);
-
-        if (trackWindow) {
-          setIsPlaying(!trackWindow.paused);
+        if (playbackState) {
+          setIsPlaying(!playbackState.paused);
         }
-        // trackWindow?.track_window.next_tracks
-        // trackWindow?.track_window.previous_tracks
+        // playbackState?.track_window.next_tracks
+        // playbackState?.track_window.previous_tracks
       });
 
       spotifyPlayer.current?.on("authentication_error", () => {

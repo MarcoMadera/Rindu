@@ -2,34 +2,26 @@ import useAuth from "hooks/useAuth";
 import useSpotify from "hooks/useSpotify";
 import useSpotifyPlayer from "hooks/useSpotifyPlayer";
 import useToast from "hooks/useToast";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement } from "react";
 import { repeat } from "utils/spotifyCalls/repeat";
 import { suffle } from "utils/spotifyCalls/suffle";
 import { Suffle, PreviousTrack, Pause, Play, NextTrack, Repeat } from "./icons";
 import { ProgressBar } from "./ProgressBar";
 
 export default function PlayerControls(): ReactElement {
-  const { isPlaying, currentlyPlaying, player, volume, deviceId } =
-    useSpotify();
+  const {
+    isPlaying,
+    currentlyPlaying,
+    player,
+    volume,
+    deviceId,
+    suffleState,
+    repeatState,
+  } = useSpotify();
   useSpotifyPlayer({ volume, name: "Rindu" });
   const { user, accessToken } = useAuth();
   const { addToast } = useToast();
   const isPremium = user?.product === "premium";
-  const [suffleState, setSuffleState] = useState(false);
-  const [repeatState, setRepeatState] = useState<"track" | "off" | "context">(
-    "off"
-  );
-  const [repeatTrackUri, setRepeatTrackUri] = useState<string | undefined>();
-
-  useEffect(() => {
-    const isSameRepeating = repeatTrackUri
-      ? repeatTrackUri === currentlyPlaying?.uri
-      : false;
-    if (repeatState === "track" && !isSameRepeating) {
-      setRepeatState("off");
-      setRepeatTrackUri("");
-    }
-  }, [currentlyPlaying?.uri, repeatState, repeatTrackUri]);
 
   return (
     <>
@@ -52,11 +44,7 @@ export default function PlayerControls(): ReactElement {
               });
               return;
             }
-            suffle(!suffleState, deviceId, accessToken).then((res) => {
-              if (res) {
-                setSuffleState((prev) => !prev);
-              }
-            });
+            suffle(!suffleState, deviceId, accessToken);
           }}
           className="button playerButton suffle"
         >
@@ -112,9 +100,9 @@ export default function PlayerControls(): ReactElement {
             }
 
             const state =
-              repeatState === "off"
+              repeatState === 0
                 ? "context"
-                : repeatState === "context"
+                : repeatState === 1
                 ? "track"
                 : "off";
             if (!deviceId) {
@@ -124,19 +112,14 @@ export default function PlayerControls(): ReactElement {
               });
               return;
             }
-            if (state === "track") {
-              setRepeatTrackUri(currentlyPlaying?.uri);
-            }
-            repeat(state, deviceId, accessToken).then((res) => {
-              if (res) {
-                setRepeatState(state);
-              }
+            (player as Spotify.Player).activateElement().then(() => {
+              repeat(state, deviceId, accessToken);
             });
           }}
           className="button playerButton repeat"
         >
           <Repeat
-            fill={repeatState === "off" ? "#b3b3b3" : "#1db954"}
+            fill={repeatState === 0 ? "#b3b3b3" : "#1db954"}
             state={repeatState}
           />
         </button>
@@ -196,7 +179,7 @@ export default function PlayerControls(): ReactElement {
           width: 4px;
         }
         .repeat::after {
-          display: ${repeatState === "off" ? "none" : "block"};
+          display: ${repeatState === 0 ? "none" : "block"};
         }
         .button.suffle.playerButton:hover :global(svg path),
         .button.suffle.playerButton:focus :global(svg path) {
@@ -204,7 +187,7 @@ export default function PlayerControls(): ReactElement {
         }
         .button.repeat.playerButton:hover :global(svg path),
         .button.repeat.playerButton:focus :global(svg path) {
-          fill: ${repeatState === "off" ? "#fff" : "#2fd669"};
+          fill: ${repeatState === 0 ? "#fff" : "#2fd669"};
         }
       `}</style>
     </>

@@ -48,6 +48,8 @@ export function SpotifyContextProvider({
   const pictureInPictureCanvas = useRef<HTMLCanvasElement>();
   const videoRef = useRef<HTMLVideoElement>();
   const [reconnectionError, setReconnectionError] = useState(false);
+  const [suffleState, setSuffleState] = useState(false);
+  const [repeatState, setRepeatState] = useState<0 | 1 | 2>(0);
   const [showLyrics, setShowLyrics] = useToggle();
   const [isPictureInPictureLyircsCanvas, setIsPictureInPictureLyircsCanvas] =
     useToggle();
@@ -155,6 +157,10 @@ export function SpotifyContextProvider({
         setProgressMs,
         isPictureInPictureLyircsCanvas,
         setIsPictureInPictureLyircsCanvas,
+        suffleState,
+        setSuffleState,
+        repeatState,
+        setRepeatState,
       }}
     >
       {currentlyPlaying?.name && (

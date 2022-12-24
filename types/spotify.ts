@@ -111,4 +111,8 @@ export interface ISpotifyContext {
   setIsPictureInPictureLyircsCanvas: IUseToggleHandlers;
   progressMs: number | null;
   setProgressMs: Dispatch<SetStateAction<number | null>>;
+  suffleState: boolean;
+  setSuffleState: Dispatch<SetStateAction<boolean>>;
+  repeatState: 0 | 1 | 2;
+  setRepeatState: Dispatch<SetStateAction<0 | 1 | 2>>;
 }
