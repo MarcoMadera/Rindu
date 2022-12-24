@@ -31,7 +31,11 @@ import MainTracks from "components/MainTracks";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { getTranslations, Page } from "utils/getTranslations";
 import { fullFilledValue } from "utils/fullFilledValue";
-import { searchArtist, searchTrack } from "utils/spotifyCalls/search";
+import {
+  searchArtist,
+  searchPlaylist,
+  searchTrack,
+} from "utils/spotifyCalls/search";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -46,6 +50,7 @@ interface DashboardProps {
   translations: Record<string, string>;
   artistOfTheWeek: SpotifyApi.ArtistObjectFull[] | null;
   tracksOfTheWeek: SpotifyApi.TrackObjectFull[] | null;
+  thisPlaylists: SpotifyApi.PlaylistObjectFull[] | null;
 }
 
 const Dashboard: NextPage<DashboardProps> = ({
@@ -61,6 +66,7 @@ const Dashboard: NextPage<DashboardProps> = ({
   translations,
   artistOfTheWeek,
   tracksOfTheWeek,
+  thisPlaylists,
 }) => {
   const { setUser } = useAuth();
   const { setHeaderColor } = useHeader({
@@ -219,6 +225,27 @@ const Dashboard: NextPage<DashboardProps> = ({
           tracksRecommendations={tracksRecommendations}
         />
       )}
+      {thisPlaylists && thisPlaylists.length > 0 ? (
+        <Carousel title={translations.thisPlaylistsHeading} gap={24}>
+          {thisPlaylists?.map((item) => {
+            if (!item) return null;
+            const { images, name, description, id, owner } = item;
+            return (
+              <PresentationCard
+                type={CardType.PLAYLIST}
+                key={id}
+                images={images}
+                title={name}
+                subTitle={
+                  decode(description) ||
+                  `${translations.by} ${owner?.display_name ?? ""}`
+                }
+                id={id}
+              />
+            );
+          })}
+        </Carousel>
+      ) : null}
       {recentListeningRecommendations.length > 0 ? (
         <Carousel
           title={translations.recentListeningRecommendationsHeading}
@@ -391,6 +418,13 @@ export async function getServerSideProps({
     "short_term",
     cookies
   );
+  const topTracksMediumProm = getMyTop(
+    TopType.TRACKS,
+    accessToken,
+    30,
+    "medium_term",
+    cookies
+  );
   const topArtistsProm = getMyTop(
     TopType.ARTISTS,
     accessToken,
@@ -407,6 +441,7 @@ export async function getServerSideProps({
     topArtists,
     artistsOfTheWeek,
     tracksOfTheWeek,
+    topTracksMedium,
   ] = await Promise.allSettled([
     featuredPlaylistsProm,
     newReleasesProm,
@@ -415,6 +450,7 @@ export async function getServerSideProps({
     topArtistsProm,
     artistsOfTheWeekProm,
     tracksOfTheWeekProm,
+    topTracksMediumProm,
   ]);
 
   const seed_tracks =
@@ -428,8 +464,10 @@ export async function getServerSideProps({
 
   const artistsOfTheWeekSettled = fullFilledValue(artistsOfTheWeek);
   const tracksOfTheWeekSettled = fullFilledValue(tracksOfTheWeek);
+  const topTracksMediumSettled = fullFilledValue(topTracksMedium);
   const artistResult: SpotifyApi.ArtistObjectFull[] = [];
   const tracksResult: SpotifyApi.TrackObjectFull[] = [];
+  const thisPlaylistsResult: SpotifyApi.PlaylistObjectFull[] = [];
   let tracksRecommendations: SpotifyApi.TrackObjectFull[] | null = [];
 
   const searchedArtistsPromises: Promise<
@@ -437,6 +475,9 @@ export async function getServerSideProps({
   >[] = [];
   const searchedTracksPromises: Promise<SpotifyApi.TrackObjectFull[] | null>[] =
     [];
+  const searchedPlaylistsPromises: Promise<
+    SpotifyApi.PlaylistObjectFull[] | null
+  >[] = [];
 
   if (artistsOfTheWeekSettled) {
     artistsOfTheWeekSettled.artists.artist.forEach((artist) => {
@@ -457,12 +498,21 @@ export async function getServerSideProps({
     });
   }
 
-  const searchedArtistsPromisesLenght = searchedArtistsPromises.length;
+  if (topTracksMediumSettled) {
+    topTracksMediumSettled.items.forEach((track) => {
+      searchedPlaylistsPromises.push(
+        searchPlaylist(`This is ${track.artists[0].name}`, accessToken)
+      );
+    });
+  }
 
+  const searchedArtistsPromisesLenght = searchedArtistsPromises.length;
+  const searchedPlaylistsPromisesLength = searchedPlaylistsPromises.length;
   const result = await Promise.allSettled([
     tracksRecommendationsProm,
     ...searchedArtistsPromises,
     ...searchedTracksPromises,
+    ...searchedPlaylistsPromises,
   ]);
 
   result.forEach((item, i) => {
@@ -481,8 +531,31 @@ export async function getServerSideProps({
       artistResult.push(fullFilledItem[0] as SpotifyApi.ArtistObjectFull);
       return;
     }
-    if (fullFilledItem && fullFilledItem[0]) {
+    if (
+      fullFilledItem &&
+      fullFilledItem[0] &&
+      i > searchedArtistsPromisesLenght &&
+      i <= searchedArtistsPromisesLenght + searchedTracksPromises.length
+    ) {
       tracksResult.push(fullFilledItem[0] as SpotifyApi.TrackObjectFull);
+      return;
+    }
+
+    if (
+      fullFilledItem &&
+      i > searchedArtistsPromisesLenght + searchedPlaylistsPromisesLength
+    ) {
+      const playlists = (
+        fullFilledItem as SpotifyApi.PlaylistObjectFull[]
+      ).filter((playlist) => playlist.owner.display_name === "Spotify");
+      if (!playlists[0]) return;
+      const isDuplicate = thisPlaylistsResult.some(
+        (playlist) => playlist.id === playlists[0].id
+      );
+      if (!isDuplicate) {
+        thisPlaylistsResult.push(playlists[0]);
+      }
+      return;
     }
   });
 
@@ -506,6 +579,7 @@ export async function getServerSideProps({
       topArtists: fullFilledValue(topArtists),
       artistOfTheWeek: artistResult,
       tracksOfTheWeek: tracksResult,
+      thisPlaylists: thisPlaylistsResult || [],
       tracksRecommendations,
       tracksInLibrary,
       translations,
