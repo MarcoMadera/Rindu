@@ -23,9 +23,9 @@ export function Repeat({
   state,
   ...props
 }: SVGProps<SVGSVGElement> & {
-  state: "off" | "track" | "context";
+  state: 0 | 1 | 2;
 }): ReactElement {
-  if (state === "track") {
+  if (state === 2) {
     return <RepeatTrack fill={fill} {...props} />;
   }
   return (
