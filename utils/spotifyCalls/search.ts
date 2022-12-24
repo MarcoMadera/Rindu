@@ -60,3 +60,26 @@ export async function searchTrack(
   const data = (await res.json()) as SpotifyApi.SearchResponse;
   return data?.tracks?.items || null;
 }
+
+export async function searchPlaylist(
+  query?: string,
+  accessToken?: string
+): Promise<SpotifyApi.PlaylistObjectFull[] | null> {
+  if (!query) return null;
+  const q = query.replaceAll(" ", "+");
+  const res = await fetch(
+    `https://api.spotify.com/v1/search?q=${q}&type=playlist&market=from_token&limit=50`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${
+          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
+        }`,
+      },
+    }
+  );
+  const data = (await res.json()) as SpotifyApi.PlaylistSearchResponse;
+  return (data?.playlists?.items || null) as
+    | SpotifyApi.PlaylistObjectFull[]
+    | null;
+}
