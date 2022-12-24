@@ -38,7 +38,7 @@ export default function NowPlaying(): ReactElement | null {
     checkInLibrary([currentlyPlaying.id], accessToken || "").then((res) => {
       setIsLikedTrack(!!res?.[0]);
     });
-  }, [accessToken, currentlyPlaying]);
+  }, [accessToken, currentlyPlaying?.id, currentlyPlaying?.type]);
 
   if (!currentlyPlaying) return null;
 
