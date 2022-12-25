@@ -68,7 +68,6 @@ export default function CardTrack({
     setPlaylistPlayingId,
     setPlayedSource,
     setReconnectionError,
-    setProgressMs,
   } = useSpotify();
   const [mouseEnter, setMouseEnter] = useState(false);
   const [isFocusing, setIsFocusing] = useState(false);
@@ -108,7 +107,6 @@ export default function CardTrack({
       isSingleTrack,
       position,
       setAccessToken,
-      setProgressMs,
       uri,
     }).then((status) => {
       if (status === 404) {

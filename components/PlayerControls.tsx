@@ -1,6 +1,5 @@
 import useAuth from "hooks/useAuth";
 import useSpotify from "hooks/useSpotify";
-import useSpotifyPlayer from "hooks/useSpotifyPlayer";
 import useToast from "hooks/useToast";
 import { ReactElement } from "react";
 import { repeat } from "utils/spotifyCalls/repeat";
@@ -13,12 +12,10 @@ export default function PlayerControls(): ReactElement {
     isPlaying,
     currentlyPlaying,
     player,
-    volume,
     deviceId,
     suffleState,
     repeatState,
   } = useSpotify();
-  useSpotifyPlayer({ volume, name: "Rindu" });
   const { user, accessToken } = useAuth();
   const { addToast } = useToast();
   const isPremium = user?.product === "premium";

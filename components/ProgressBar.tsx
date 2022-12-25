@@ -13,7 +13,6 @@ export function ProgressBar(): ReactElement {
     isPlaying,
     player,
     currentlyPlaying,
-    setProgressMs,
   } = useSpotify();
   const [progressSeconds, setProgressSeconds] = useState(0);
   const [progressFromSpotify, setProgressFromSpotify] = useState(0);
@@ -71,13 +70,6 @@ export function ProgressBar(): ReactElement {
           }
         }}
         setLabelValue={setProgressSeconds}
-        onProgressChange={(currentPositionPercent) => {
-          setProgressSeconds(
-            (currentPositionPercent * (currentlyPlayingDuration ?? 0)) /
-              100 /
-              (isPremium ? 1000 : 1)
-          );
-        }}
         valueText={`${formatTime(progressSeconds)}/${formatTime(
           durationInSeconds
         )}`}
@@ -93,16 +85,13 @@ export function ProgressBar(): ReactElement {
           player?.seek(
             (progressPercent * (currentlyPlayingDuration ?? 0)) / 100
           );
-          setProgressMs(
-            (progressPercent * (currentlyPlayingDuration ?? 0)) / 100
-          );
         }}
         currentValueCallback={(currentValuePercent) => {
-          setProgressMs(() => {
-            return (
-              (currentValuePercent * (currentlyPlayingDuration ?? 0)) / 100
-            );
-          });
+          setProgressSeconds(
+            (currentValuePercent * (currentlyPlayingDuration ?? 0)) /
+              100 /
+              (isPremium ? 1000 : 1)
+          );
         }}
       />
       <div className="timeTag">{formatTime(durationInSeconds)}</div>

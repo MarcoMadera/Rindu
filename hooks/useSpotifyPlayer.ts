@@ -22,13 +22,7 @@ export interface AudioPlayer extends HTMLAudioElement {
   sliderBusy: boolean;
 }
 
-export default function useSpotifyPlayer({
-  volume,
-  name,
-}: {
-  volume: number;
-  name: string;
-}): {
+export default function useSpotifyPlayer({ name }: { name: string }): {
   deviceId: string | undefined;
   player: MutableRefObject<Spotify.Player | undefined>;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
@@ -42,9 +36,9 @@ export default function useSpotifyPlayer({
     setCurrentlyPlayingDuration,
     setPlayer,
     allTracks,
-    setProgressMs,
     setSuffleState,
     setRepeatState,
+    volume,
   } = useSpotify();
   const spotifyPlayer = useRef<Spotify.Player>();
   const audioPlayer = useRef<AudioPlayer>();
@@ -224,7 +218,6 @@ export default function useSpotifyPlayer({
       spotifyPlayer.current?.on("player_state_changed", (playbackState) => {
         setCurrentlyPlayingDuration(playbackState?.duration);
         setCurrentlyPlayingPosition(playbackState?.position);
-        setProgressMs(playbackState?.position);
         setCurrentlyPlaying(playbackState?.track_window?.current_track);
         setSuffleState(playbackState?.shuffle);
         setRepeatState(playbackState?.repeat_mode);

@@ -109,8 +109,6 @@ export interface ISpotifyContext {
   setShowLyrics: IUseToggleHandlers;
   isPictureInPictureLyircsCanvas: boolean;
   setIsPictureInPictureLyircsCanvas: IUseToggleHandlers;
-  progressMs: number | null;
-  setProgressMs: Dispatch<SetStateAction<number | null>>;
   suffleState: boolean;
   setSuffleState: Dispatch<SetStateAction<boolean>>;
   repeatState: 0 | 1 | 2;
