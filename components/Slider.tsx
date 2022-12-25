@@ -23,7 +23,6 @@ interface SliderProps {
     steps: number;
     shouldUpdate: boolean;
   };
-  onProgressChange: (currentPositionPercent: number) => void;
   onDragging?: (isDragging: boolean) => void;
   showDot?: boolean;
   className?: string;
@@ -36,7 +35,6 @@ export default function Slider({
   updateProgress,
   intervalUpdateAction,
   valueText,
-  onProgressChange,
   onDragging,
   setLabelValue,
   initialValuePercent,
@@ -117,7 +115,6 @@ export default function Slider({
       e.preventDefault();
       const currentPositionPercent = getMyCurrentPositionPercent(e);
       setIsDragging(true);
-      onProgressChange(currentPositionPercent);
       setProgressPercent(currentPositionPercent);
     }
 
@@ -145,7 +142,6 @@ export default function Slider({
     action,
     isDragging,
     progressPercent,
-    onProgressChange,
     getMyCurrentPositionPercent,
   ]);
 
@@ -170,7 +166,6 @@ export default function Slider({
             );
             const currentPositionPercent = getMyCurrentPositionPercent(e);
             setProgressPercent(currentPositionPercent);
-            onProgressChange(currentPositionPercent);
           }
         }}
         onMouseDown={(e) => {
@@ -180,14 +175,10 @@ export default function Slider({
               100) /
               (sliderRef.current?.clientWidth ?? 0)
           );
-          const currentPositionPercent = getMyCurrentPositionPercent(e);
-          onProgressChange(currentPositionPercent);
         }}
-        onMouseLeave={(e) => {
+        onMouseLeave={() => {
           if (isPressingMouse) {
             setIsDragging(true);
-            const currentPositionPercent = getMyCurrentPositionPercent(e);
-            onProgressChange(currentPositionPercent);
           }
         }}
         onMouseUp={() => {

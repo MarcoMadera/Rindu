@@ -41,16 +41,15 @@ export default function VolumeControl(): ReactElement {
       </button>
       <Slider
         updateProgress={volume * 100}
-        onProgressChange={(currentPositionPercent) => {
-          setVolume(currentPositionPercent / 100);
-        }}
-        action={() => {
+        action={(progressPercent) => {
           if (!player) return;
-          player.setVolume(volume);
-          setLastVolume(volume);
+          const currentVolume = progressPercent / 100;
+          player.setVolume(currentVolume);
+          setLastVolume(currentVolume);
+          setVolume(currentVolume);
           localStorage.setItem(
             "playback",
-            encodeURI(JSON.stringify({ volume }))
+            encodeURI(JSON.stringify({ currentVolume }))
           );
         }}
         valueText={`${volume}`}

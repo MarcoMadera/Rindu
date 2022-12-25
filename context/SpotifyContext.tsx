@@ -25,7 +25,6 @@ export function SpotifyContextProvider({
 }: PropsWithChildren): ReactElement {
   const [playlists, setPlaylists] = useState<PlaylistItems>([]);
   const [totalPlaylists, setTotalPlaylists] = useState<number>(0);
-  const [progressMs, setProgressMs] = useState<number | null>(null);
   const [allTracks, setAllTracks] = useState<ITrack[]>([]);
   const [deviceId, setDeviceId] = useState<string>();
   const [isPlaying, setIsPlaying] = useState(false);
@@ -153,8 +152,6 @@ export function SpotifyContextProvider({
         removeTracks,
         showLyrics,
         setShowLyrics,
-        progressMs,
-        setProgressMs,
         isPictureInPictureLyircsCanvas,
         setIsPictureInPictureLyircsCanvas,
         suffleState,

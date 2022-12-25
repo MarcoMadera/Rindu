@@ -40,7 +40,6 @@ export default function EpisodeCard({
     pageDetails,
     setCurrentlyPlaying,
     setPlaylistPlayingId,
-    setProgressMs,
   } = useSpotify();
   const { user, accessToken, setAccessToken } = useAuth();
   const { addToast } = useToast();
@@ -225,7 +224,6 @@ export default function EpisodeCard({
                   isSingleTrack: true,
                   position,
                   setAccessToken,
-                  setProgressMs,
                 }
               );
             }}

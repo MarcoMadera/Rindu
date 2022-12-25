@@ -1,19 +1,18 @@
 import useAuth from "hooks/useAuth";
-import useSpotify from "hooks/useSpotify";
-import useSpotifyPlayer from "hooks/useSpotifyPlayer";
 import Script from "next/script";
 import { ReactElement, useEffect } from "react";
 import NowPlaying from "./NowPlaying";
 import useToast from "hooks/useToast";
 import PlayerControls from "components/PlayerControls";
 import PlaybackExtraControls from "components/PlaybackExtraControls";
+import useSpotifyPlayer from "hooks/useSpotifyPlayer";
 
 export default function SpotifyPlayer(): ReactElement {
-  const { volume } = useSpotify();
-  useSpotifyPlayer({ volume, name: "Rindu" });
   const { user } = useAuth();
   const { addToast } = useToast();
   const isPremium = user?.product === "premium";
+
+  useSpotifyPlayer({ name: "Rindu" });
 
   useEffect(() => {
     if (!user?.product) {

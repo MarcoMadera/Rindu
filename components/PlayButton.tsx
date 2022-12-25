@@ -48,7 +48,6 @@ export function PlayButton({
     currentlyPlaying,
     setPlayedSource,
     setReconnectionError,
-    setProgressMs,
   } = useSpotify();
   const { accessToken, user, setAccessToken } = useAuth();
   const [isThisTrackPlaying, setIsThisTrackPlaying] = useState(false);
@@ -154,8 +153,7 @@ export function PlayButton({
               uris: uris,
               offset: position ?? 0,
             },
-            setAccessToken,
-            setProgressMs
+            setAccessToken
           ).then((res) => {
             if (res.status === 404) {
               (player as Spotify.Player).disconnect();
@@ -188,8 +186,7 @@ export function PlayButton({
           {
             context_uri: uri ?? pageDetails?.uri,
           },
-          setAccessToken,
-          setProgressMs
+          setAccessToken
         ).then((res) => {
           if (res.status === 404) {
             (player as Spotify.Player).disconnect();
@@ -259,7 +256,6 @@ export function PlayButton({
       setPlayedSource,
       setPlaylistPlayingId,
       setReconnectionError,
-      setProgressMs,
       track,
       uri,
       uriId,

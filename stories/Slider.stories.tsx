@@ -39,9 +39,6 @@ WithUpdate.args = {
   setLabelValue: (value) => {
     console.log("label", value);
   },
-  onProgressChange: (currentPositionPercent) => {
-    console.log("currentPositionPercent", currentPositionPercent);
-  },
   valueText: "value",
   initialValuePercent: 0,
   action: (progressPercent) => {
@@ -54,9 +51,6 @@ Static.args = {
   title: "Static Slider",
   setLabelValue: (value) => {
     console.log("label", value);
-  },
-  onProgressChange: (currentPositionPercent) => {
-    console.log("currentPositionPercent", currentPositionPercent);
   },
   valueText: "value",
   initialValuePercent: 0,
