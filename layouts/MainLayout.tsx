@@ -8,10 +8,16 @@ import {
   PropsWithChildren,
   ReactElement,
   useRef,
+  useState,
 } from "react";
 import useRefreshAccessToken from "hooks/useRefreshAccessToken";
 import useSpotify from "hooks/useSpotify";
 import FullScreenLyrics from "components/FullScreenLyrics";
+import {
+  Panel,
+  PanelGroup,
+  PanelResizeHandle,
+} from "components/ResizablePanel";
 
 export default function MainLayout({
   children,
@@ -19,9 +25,15 @@ export default function MainLayout({
   const router = useRouter();
   const isLoginPage = router.pathname === "/";
   const appRef = useRef<HTMLDivElement>();
-  const { showLyrics, currentlyPlaying } = useSpotify();
+  const { showLyrics, currentlyPlaying, showHamburgerMenu } = useSpotify();
   const shouldDisplayLyrics = showLyrics && currentlyPlaying?.type === "track";
-
+  const leftPanelMinWidth = 245;
+  const leftPanelMaxWidth = 400;
+  const [leftPanelWidth, setLeftPanelWidth] = useState(leftPanelMinWidth);
+  const contentWidth = Math.max(
+    leftPanelMinWidth,
+    Math.min(leftPanelWidth, leftPanelMaxWidth)
+  );
   useRefreshAccessToken();
 
   return (
@@ -37,29 +49,46 @@ export default function MainLayout({
       ) : (
         <>
           <div className="container">
-            <SideBar />
-            <div
-              className="app"
-              ref={appRef as MutableRefObject<HTMLDivElement>}
-            >
-              <TopBar appRef={appRef} />
-              {shouldDisplayLyrics ? (
-                <FullScreenLyrics appRef={appRef} />
-              ) : (
-                children
-              )}
-            </div>
+            <PanelGroup direction="row">
+              <Panel
+                defaultSize={`${leftPanelWidth}px`}
+                id="left"
+                minWidth={`${leftPanelMinWidth}px`}
+                maxWidth={`${leftPanelMaxWidth}px`}
+              >
+                <SideBar />
+                <PanelResizeHandle onResize={setLeftPanelWidth} />
+              </Panel>
+              <Panel defaultSize="100%" id="right">
+                <div
+                  className="app"
+                  ref={appRef as MutableRefObject<HTMLDivElement>}
+                >
+                  <TopBar appRef={appRef} />
+                  {shouldDisplayLyrics ? (
+                    <FullScreenLyrics appRef={appRef} />
+                  ) : (
+                    children
+                  )}
+                </div>
+              </Panel>
+            </PanelGroup>
             <style jsx>{`
               div.container {
                 height: calc(100vh - 90px);
                 display: flex;
                 width: calc(100vw + 1px);
               }
+              @media (max-width: 1000px) {
+                div.container :global(#left) {
+                  display: ${showHamburgerMenu ? "grid" : "none"};
+                }
+              }
               .app {
                 overflow-y: overlay;
                 height: calc(100vh - 90px);
                 overflow-x: hidden;
-                width: calc(100vw - 244px);
+                width: calc(100vw - ${contentWidth - 1}px);
                 position: relative;
               }
               @media (max-width: 685px) {

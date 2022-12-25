@@ -226,8 +226,7 @@ export default function SideBar(): ReactElement {
         }
         nav {
           background-color: #010101;
-          width: 245px;
-          min-width: 245px;
+          width: 100%;
           overflow: hidden;
           height: 100%;
           display: grid;

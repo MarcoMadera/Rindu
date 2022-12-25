@@ -23,7 +23,7 @@ export default function ContentContainer({
           margin: ${hasPageHeader ? "-60px auto 0 auto" : "0 auto"};
           padding: ${hasPageHeader ? "0" : "0px 20px 30px"};
           min-height: calc(100vh - 90px);
-          width: calc(100vw - 244px);
+          width: 100%;
         }
         @media (max-width: 1000px) {
           main {
