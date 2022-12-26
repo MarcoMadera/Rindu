@@ -28,7 +28,10 @@ export default function CollectionPlaylists({
   user,
   translations,
 }: CollectionPlaylistsProps): ReactElement {
-  const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
+  const { setElement, setHeaderColor } = useHeader({
+    showOnFixed: true,
+    alwaysDisplayColor: true,
+  });
   const { setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
   const { playlists, setPlaylists, isPlaying } = useSpotify();

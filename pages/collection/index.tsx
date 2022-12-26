@@ -5,6 +5,8 @@ import { getTranslations, Page, Translations } from "utils/getTranslations";
 import { serverRedirect } from "utils/serverRedirect";
 import { NextApiResponse, NextApiRequest } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import NavigationTopBarExtraField from "components/NavigationTopBarExtraField";
+import useHeader from "hooks/useHeader";
 
 interface ICollectionProps {
   translations: Translations["collection"];
@@ -14,9 +16,21 @@ export default function Collection({
   translations,
 }: ICollectionProps): ReactElement {
   const router = useRouter();
+  const { setElement, setHeaderColor } = useHeader();
   useEffect(() => {
     router.push("/collection/playlists");
   }, [router]);
+
+  useEffect(() => {
+    setElement(() => <NavigationTopBarExtraField selected={1} />);
+
+    setHeaderColor("#242424");
+
+    return () => {
+      setElement(null);
+    };
+  }, [setElement, setHeaderColor]);
+
   return (
     <Head>
       <title>Rindu - {translations?.collection}</title>
