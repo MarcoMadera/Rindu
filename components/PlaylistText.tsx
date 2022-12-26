@@ -105,7 +105,7 @@ export default function PlaylistText({
         onDoubleClick={handleDoubleClick}
         className={playlistPlayingId === id ? "playlist green" : "playlist"}
       >
-        {name}
+        {name || "No name"}
       </button>
       {playlistPlayingId === id ? (
         <button

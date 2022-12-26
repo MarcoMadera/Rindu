@@ -17,8 +17,9 @@ export default function PageDetails({
   banner,
   disableOpacityChange,
 }: PropsWithChildren<PageDetailsProps>): ReactElement {
-  const { setHeaderColor, headerOpacity } = useHeader({
+  const { setHeaderColor } = useHeader({
     disableOpacityChange,
+    disableBackground: !!banner,
   });
   const { addContextMenu } = useContextMenu();
   const router = useRouter();
@@ -50,11 +51,6 @@ export default function PageDetails({
             });
           }
         }}
-        style={{
-          boxShadow: `inset 0px -20px 30px 30px rgba(0, 0, 0, ${
-            0.5 - (headerOpacity < 0 ? 0 : headerOpacity) - 0.3
-          })`,
-        }}
       >
         <div className="b-1"></div>
         <div className="b-2"></div>
@@ -65,14 +61,14 @@ export default function PageDetails({
         .banner {
           height: ${banner ? "40vh" : "0"};
           min-height: ${banner ? "40vh" : "0"};
-          transform: scale(calc(1.027 - (var(--header-opacity, 0) + 0.3) / 50));
+          transform: scale(calc(1.027 - (var(--banner-opacity, 0) + 0.3) / 50));
         }
         .banner-background {
           min-height: ${banner ? "40vh" : "0"};
         }
         .banner-background:after {
           min-height: ${banner ? "40vh" : "0"};
-          opacity: calc(var(--header-opacity, 0) * 2);
+          opacity: calc(var(--banner-opacity, 0) * 2);
           background-image: linear-gradient(
               rgba(0, 0, 0, 0.6),
               rgba(0, 0, 0, 0.6)
@@ -155,6 +151,8 @@ export default function PageDetails({
           max-height: 500px;
           width: 100%;
           position: relative;
+          box-shadow: inset 0px -20px 30px 30px rgba(0, 0, 0, calc(0.5 -
+                  var(--banner-opacity, 0) - 0.3));
         }
         div.b-1 {
           transition: background-color 0.3s ease;

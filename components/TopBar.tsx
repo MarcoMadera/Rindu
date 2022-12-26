@@ -8,6 +8,11 @@ import useRouterEvents from "hooks/useRouterEvents";
 import Logo from "./Logo";
 import LoginButton from "./LoginButton";
 import { useRouter } from "next/router";
+import {
+  calculateBannerOpacity,
+  calculateHeaderOpacityPercentage,
+  setOpacityStyles,
+} from "utils/topBar";
 
 interface TopBarProps {
   appRef?: MutableRefObject<HTMLDivElement | undefined>;
@@ -15,32 +20,37 @@ interface TopBarProps {
 
 export default function TopBar({ appRef }: TopBarProps): ReactElement {
   const { user } = useAuth();
-  const {
-    element,
-    displayOnFixed,
-    alwaysDisplayColor,
-    headerOpacity,
-    setHeaderOpacity,
-    disableOpacityChange,
-    disableBackground,
-  } = useHeader();
+  const { alwaysDisplayColor, element, displayOnFixed, disableBackground } =
+    useHeader();
   const isPremium = user?.product === "premium";
   const { setShowHamburgerMenu } = useSpotify();
-  const [showFixed, setShowFixed] = useState(false);
   const router = useRouter();
   const isLoginPage = router.pathname === "/";
+  const [displayElement, setDisplayElement] = useState(false);
 
   useRouterEvents(() => {
     const app = appRef?.current;
-    const headerOpacityPercentage = ((app?.scrollTop || 0) + -55) / 223;
-    const headerOpacity =
-      headerOpacityPercentage > 1 ? 1 : headerOpacityPercentage;
-    setHeaderOpacity(headerOpacity);
 
-    if ((app?.scrollTop || 0) > 223 && !disableBackground) {
-      setShowFixed(true);
+    const headerOpacityPercentage = calculateHeaderOpacityPercentage({
+      scrollTop: app?.scrollTop || 0,
+    });
+    const bannerOpacity = calculateBannerOpacity({
+      headerOpacityPercentage,
+      alwaysDisplayColor,
+      disableBackground,
+      scrollTop: app?.scrollTop || 0,
+    });
+
+    setOpacityStyles({
+      disableBackground,
+      headerOpacityPercentage,
+      bannerOpacity,
+    });
+
+    if (headerOpacityPercentage >= 1 && element) {
+      setDisplayElement(true);
     } else {
-      setShowFixed(false);
+      setDisplayElement(false);
     }
   }, appRef);
 
@@ -93,16 +103,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
     <>
       <div className="container">
         <header>
-          <div
-            className="background"
-            style={{
-              opacity: alwaysDisplayColor
-                ? 1
-                : disableOpacityChange && !showFixed
-                ? 0
-                : headerOpacity,
-            }}
-          >
+          <div className="background">
             <div className="noise"></div>
           </div>
           <button
@@ -119,9 +120,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
           </button>
           <RouterButtons />
           <div className="extraElement">
-            {displayOnFixed || (element && headerOpacity === 1) ? (
-              <>{element}</>
-            ) : null}
+            {displayOnFixed || displayElement ? <>{element}</> : null}
           </div>
           {user && !isPremium ? (
             <a
@@ -224,6 +223,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
         }
         div.background {
           background-color: var(--header-color, #797979);
+          opacity: var(--header-opacity, 0);
           bottom: 0;
           left: 0;
           overflow: hidden;

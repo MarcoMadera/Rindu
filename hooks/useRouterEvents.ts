@@ -8,7 +8,7 @@ export default function useRouterEvents(
   appRef?: MutableRefObject<HTMLDivElement | undefined>
 ): void {
   const router = useRouter();
-  const { alwaysDisplayColor, setHeaderOpacity } = useHeader();
+  const { alwaysDisplayColor } = useHeader();
   const { setShowLyrics } = useSpotify();
 
   useEffect(() => {
@@ -18,7 +18,8 @@ export default function useRouterEvents(
       app?.scrollTo(0, 0);
       setShowLyrics.off();
       if (!alwaysDisplayColor) {
-        setHeaderOpacity(0);
+        document.body.style.removeProperty("--banner-opacity");
+        document.body.style.removeProperty("--header-opacity");
       }
     });
 
@@ -28,16 +29,8 @@ export default function useRouterEvents(
       router.events.off("routeChangeComplete", () => {
         app?.scrollTo(0, 0);
         setShowLyrics.off();
-        setHeaderOpacity(0);
       });
       app?.removeEventListener("scroll", onAppScroll);
     };
-  }, [
-    router,
-    alwaysDisplayColor,
-    setHeaderOpacity,
-    appRef,
-    onAppScroll,
-    setShowLyrics,
-  ]);
+  }, [router, alwaysDisplayColor, appRef, onAppScroll, setShowLyrics]);
 }
