@@ -51,6 +51,12 @@ export function setOpacityStyles({
   headerOpacity,
   bannerOpacity,
 }: ISetOpacityStyles): void {
-  document.body.style.setProperty("--header-opacity", headerOpacity.toString());
-  document.body.style.setProperty("--banner-opacity", bannerOpacity.toString());
+  const topBar = document.getElementById("header-top-bar-background");
+  const banner = document.getElementById("banner-container");
+  if (topBar) {
+    topBar.style.setProperty("--header-opacity", headerOpacity.toString());
+  }
+  if (banner) {
+    banner.style.setProperty("--banner-opacity", bannerOpacity.toString());
+  }
 }
