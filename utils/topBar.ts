@@ -6,6 +6,13 @@ export function calculateBannerOpacity({
   scrollTop,
 }: ICalculateBannerOpacity): number {
   const rawPercentage = (scrollTop + -55) / 223;
+  if (rawPercentage < 0) {
+    return 0;
+  }
+  if (rawPercentage >= 1) {
+    return 1;
+  }
+
   return rawPercentage;
 }
 
@@ -16,7 +23,7 @@ interface ICalculateHeaderOpacityPercentage {
   disableBackground: boolean;
 }
 
-export function calculateHeaderOpacityPercentage({
+export function calculateHeaderOpacity({
   scrollTop,
   disableOpacityChange,
   displayOnFixed,
@@ -27,27 +34,23 @@ export function calculateHeaderOpacityPercentage({
     disableOpacityChange && !displayOnFixed && rawPercentage < 0.5;
   if (rawPercentage < 0 || isOpacityDelayed || disableBackground) {
     return 0;
-  } else if (rawPercentage >= 1) {
-    return 1;
-  } else {
-    return rawPercentage;
   }
+  if (rawPercentage >= 1) {
+    return 1;
+  }
+
+  return rawPercentage;
 }
 
 interface ISetOpacityStyles {
-  disableBackground: boolean;
-  headerOpacityPercentage: number;
+  headerOpacity: number;
   bannerOpacity: number;
 }
 
 export function setOpacityStyles({
-  headerOpacityPercentage,
+  headerOpacity,
   bannerOpacity,
 }: ISetOpacityStyles): void {
-  document.body.style.setProperty(
-    "--header-opacity",
-    headerOpacityPercentage.toString()
-  );
-
+  document.body.style.setProperty("--header-opacity", headerOpacity.toString());
   document.body.style.setProperty("--banner-opacity", bannerOpacity.toString());
 }
