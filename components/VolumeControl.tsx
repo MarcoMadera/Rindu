@@ -49,7 +49,7 @@ export default function VolumeControl(): ReactElement {
           setVolume(currentVolume);
           localStorage.setItem(
             "playback",
-            encodeURI(JSON.stringify({ currentVolume }))
+            encodeURI(JSON.stringify({ volume: currentVolume }))
           );
         }}
         valueText={`${volume}`}
