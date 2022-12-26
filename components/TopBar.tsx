@@ -235,7 +235,6 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
           position: sticky;
           top: 0px;
           z-index: 9999999999;
-          pointer-events: none;
         }
       `}</style>
     </>
