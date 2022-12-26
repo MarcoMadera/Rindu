@@ -144,7 +144,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
           position: absolute;
           width: 100%;
           background-color: var(--header-color, transparent);
-          transition: background-color 0.3s ease;
+          transition: background-color 0.25s ease;
           margin-top: -61px;
         }
         .HamburgerMenu {

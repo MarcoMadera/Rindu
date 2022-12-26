@@ -140,7 +140,7 @@ export default function PageDetails({
           height: 232px;
           position: absolute;
           width: 100%;
-          transition: background-color 0.3s ease;
+          transition: background-color 0.25s ease;
         }
         header {
           display: flex;
@@ -152,7 +152,7 @@ export default function PageDetails({
           position: relative;
         }
         div.b-1 {
-          transition: background-color 0.3s ease;
+          transition: background-color 0.25s ease;
         }
         .b-1,
         .b-2 {
