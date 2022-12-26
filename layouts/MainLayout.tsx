@@ -82,7 +82,7 @@ function AppContainer({ children }: PropsWithChildren): ReactElement {
           height: calc(100vh - 90px);
           overflow-x: hidden;
           position: relative;
-          width: calc(100vw - var(--left-panel-width, 0) - 2px);
+          width: calc(100vw - var(--left-panel-width, 0) + 2px);
         }
         @media (max-width: 685px) {
           .app {
