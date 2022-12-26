@@ -84,6 +84,9 @@ function AppContainer({ children }: PropsWithChildren): ReactElement {
           position: relative;
           width: calc(100vw - var(--left-panel-width, 0) + 2px);
         }
+        .app::-webkit-scrollbar {
+          width: 14px;
+        }
         @media (max-width: 685px) {
           .app {
             height: calc(100vh - 270px);

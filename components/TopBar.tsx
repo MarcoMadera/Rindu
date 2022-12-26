@@ -46,11 +46,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
       bannerOpacity,
     });
 
-    if (headerOpacity >= 1 && element) {
-      setDisplayElement(true);
-    } else {
-      setDisplayElement(false);
-    }
+    setDisplayElement(headerOpacity >= 1 && !!element);
   }, appRef);
 
   if (isLoginPage) {
@@ -102,7 +98,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
     <>
       <div className="container">
         <header>
-          <div className="background">
+          <div className="background" id="header-top-bar-background">
             <div className="noise"></div>
           </div>
           <button
@@ -230,14 +226,16 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
           position: absolute;
           right: 0;
           top: 0;
-          transition: background-color 0.3s;
+          transition: background-color 0.25s;
           z-index: -1;
+          pointer-events: none;
         }
         .container {
           height: 60px;
           position: sticky;
           top: 0px;
           z-index: 9999999999;
+          pointer-events: none;
         }
       `}</style>
     </>

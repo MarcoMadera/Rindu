@@ -31,11 +31,11 @@ export default function PageDetails({
   return (
     <>
       {banner ? (
-        <>
+        <div id="banner-container">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={banner} alt="" className="banner" id="banner" />
           <div className="banner-background"></div>
-        </>
+        </div>
       ) : null}
       <header
         onContextMenu={(e) => {
