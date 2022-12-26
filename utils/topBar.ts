@@ -1,35 +1,31 @@
 interface ICalculateBannerOpacity {
-  headerOpacityPercentage: number;
-  alwaysDisplayColor: boolean;
-  disableBackground: boolean;
   scrollTop: number;
 }
 
 export function calculateBannerOpacity({
-  headerOpacityPercentage,
-  alwaysDisplayColor,
-  disableBackground,
   scrollTop,
 }: ICalculateBannerOpacity): number {
-  switch (true) {
-    case headerOpacityPercentage > 1 || alwaysDisplayColor:
-      return 1;
-    case disableBackground && scrollTop > 223:
-      return headerOpacityPercentage;
-    default:
-      return 0;
-  }
+  const rawPercentage = (scrollTop + -55) / 223;
+  return rawPercentage;
 }
 
 interface ICalculateHeaderOpacityPercentage {
   scrollTop: number;
+  disableOpacityChange: boolean;
+  displayOnFixed: boolean;
+  disableBackground: boolean;
 }
 
 export function calculateHeaderOpacityPercentage({
   scrollTop,
+  disableOpacityChange,
+  displayOnFixed,
+  disableBackground,
 }: ICalculateHeaderOpacityPercentage): number {
   const rawPercentage = (scrollTop + -55) / 223;
-  if (rawPercentage < 0) {
+  const isOpacityDelayed =
+    disableOpacityChange && !displayOnFixed && rawPercentage < 0.5;
+  if (rawPercentage < 0 || isOpacityDelayed || disableBackground) {
     return 0;
   } else if (rawPercentage >= 1) {
     return 1;
@@ -40,32 +36,18 @@ export function calculateHeaderOpacityPercentage({
 
 interface ISetOpacityStyles {
   disableBackground: boolean;
-  displayOnFixed: boolean;
-  disableOpacityChange: boolean;
   headerOpacityPercentage: number;
   bannerOpacity: number;
 }
 
 export function setOpacityStyles({
-  disableBackground,
-  displayOnFixed,
-  disableOpacityChange,
   headerOpacityPercentage,
   bannerOpacity,
 }: ISetOpacityStyles): void {
-  if (disableOpacityChange && !displayOnFixed) {
-    document.body.style.setProperty("--header-opacity", "0");
-  } else {
-    document.body.style.setProperty(
-      "--header-opacity",
-      !disableBackground
-        ? headerOpacityPercentage.toString()
-        : bannerOpacity.toString()
-    );
-  }
-
   document.body.style.setProperty(
-    "--banner-opacity",
+    "--header-opacity",
     headerOpacityPercentage.toString()
   );
+
+  document.body.style.setProperty("--banner-opacity", bannerOpacity.toString());
 }
