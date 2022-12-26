@@ -20,13 +20,8 @@ interface TopBarProps {
 
 export default function TopBar({ appRef }: TopBarProps): ReactElement {
   const { user } = useAuth();
-  const {
-    alwaysDisplayColor,
-    element,
-    displayOnFixed,
-    disableBackground,
-    disableOpacityChange,
-  } = useHeader();
+  const { element, displayOnFixed, disableBackground, disableOpacityChange } =
+    useHeader();
   const isPremium = user?.product === "premium";
   const { setShowHamburgerMenu } = useSpotify();
   const router = useRouter();
@@ -38,11 +33,11 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
 
     const headerOpacityPercentage = calculateHeaderOpacityPercentage({
       scrollTop: app?.scrollTop || 0,
+      disableOpacityChange,
+      displayOnFixed,
+      disableBackground,
     });
     const bannerOpacity = calculateBannerOpacity({
-      headerOpacityPercentage,
-      alwaysDisplayColor,
-      disableBackground,
       scrollTop: app?.scrollTop || 0,
     });
 
@@ -50,8 +45,6 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
       disableBackground,
       headerOpacityPercentage,
       bannerOpacity,
-      displayOnFixed,
-      disableOpacityChange,
     });
 
     if (headerOpacityPercentage >= 1 && element) {
