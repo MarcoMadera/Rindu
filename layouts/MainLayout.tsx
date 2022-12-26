@@ -48,7 +48,9 @@ function AppContainer({ children }: PropsWithChildren): ReactElement {
           <div
             className="app"
             ref={appRef as MutableRefObject<HTMLDivElement>}
-            style={{ width: `calc(100vw - ${leftPanelWidth - 2}px)` }}
+            style={{
+              "--left-panel-width": `${leftPanelWidth}px`,
+            }}
           >
             <TopBar appRef={appRef} />
             {shouldDisplayLyrics ? (
@@ -64,6 +66,9 @@ function AppContainer({ children }: PropsWithChildren): ReactElement {
           div.container :global(#left) {
             display: ${showHamburgerMenu ? "grid" : "none"};
           }
+          .app {
+            width: 100%;
+          }
         }
       `}</style>
       <style jsx>{`
@@ -77,6 +82,7 @@ function AppContainer({ children }: PropsWithChildren): ReactElement {
           height: calc(100vh - 90px);
           overflow-x: hidden;
           position: relative;
+          width: calc(100vw - var(--left-panel-width, 0) - 2px);
         }
         @media (max-width: 685px) {
           .app {
