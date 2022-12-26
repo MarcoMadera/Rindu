@@ -25,10 +25,11 @@ function AppContainer({ children }: PropsWithChildren): ReactElement {
   const shouldDisplayLyrics = showLyrics && currentlyPlaying?.type === "track";
   const leftPanelMinWidth = 245;
   const leftPanelMaxWidth = 400;
-  const [leftPanelWidth, setLeftPanelWidth] = useState(leftPanelMinWidth);
-  const contentWidth = Math.max(
+  const [leftPanelDraggedWidth, setLeftPanelDraggedWidth] =
+    useState(leftPanelMinWidth);
+  const leftPanelWidth = Math.max(
     leftPanelMinWidth,
-    Math.min(leftPanelWidth, leftPanelMaxWidth)
+    Math.min(leftPanelDraggedWidth, leftPanelMaxWidth)
   );
 
   return (
@@ -41,10 +42,14 @@ function AppContainer({ children }: PropsWithChildren): ReactElement {
           maxWidth={`${leftPanelMaxWidth}px`}
         >
           <SideBar />
-          <PanelResizeHandle onResize={setLeftPanelWidth} />
+          <PanelResizeHandle onResize={setLeftPanelDraggedWidth} />
         </Panel>
         <Panel defaultSize="100%" id="right">
-          <div className="app" ref={appRef as MutableRefObject<HTMLDivElement>}>
+          <div
+            className="app"
+            ref={appRef as MutableRefObject<HTMLDivElement>}
+            style={{ width: `calc(100vw - ${leftPanelWidth - 2}px)` }}
+          >
             <TopBar appRef={appRef} />
             {shouldDisplayLyrics ? (
               <FullScreenLyrics appRef={appRef} />
@@ -55,21 +60,22 @@ function AppContainer({ children }: PropsWithChildren): ReactElement {
         </Panel>
       </PanelGroup>
       <style jsx>{`
-        div.container {
-          height: calc(100vh - 90px);
-          display: flex;
-          width: calc(100vw + 1px);
-        }
         @media (max-width: 1000px) {
           div.container :global(#left) {
             display: ${showHamburgerMenu ? "grid" : "none"};
           }
         }
+      `}</style>
+      <style jsx>{`
+        div.container {
+          height: calc(100vh - 90px);
+          display: flex;
+          width: calc(100vw + 1px);
+        }
         .app {
           overflow-y: overlay;
           height: calc(100vh - 90px);
           overflow-x: hidden;
-          width: calc(100vw - ${contentWidth - 2}px);
           position: relative;
         }
         @media (max-width: 685px) {

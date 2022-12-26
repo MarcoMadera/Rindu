@@ -53,7 +53,6 @@ export const AppProviders = ({
               {
                 alwaysDisplayColor: true,
                 headerColor: "#ccc",
-                headerOpacity: 1,
                 element: null,
                 disableBackground: true,
                 disableOpacityChange: true,
