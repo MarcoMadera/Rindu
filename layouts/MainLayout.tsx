@@ -69,7 +69,7 @@ function AppContainer({ children }: PropsWithChildren): ReactElement {
           overflow-y: overlay;
           height: calc(100vh - 90px);
           overflow-x: hidden;
-          width: calc(100vw - ${contentWidth - 1}px);
+          width: calc(100vw - ${contentWidth - 2}px);
           position: relative;
         }
         @media (max-width: 685px) {

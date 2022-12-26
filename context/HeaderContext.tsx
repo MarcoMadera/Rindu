@@ -5,6 +5,7 @@ import {
   PropsWithChildren,
   SetStateAction,
   useState,
+  useEffect,
 } from "react";
 
 export interface IHeaderContext {
@@ -39,6 +40,19 @@ export function HeaderContextProvider({
   const [headerColor, setHeaderColor] = useState<string>("#7a7a7a");
   const [headerOpacity, setHeaderOpacity] = useState<number>(0);
   const [disableBackground, setDisableBackground] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (headerColor) {
+      document.body.style.setProperty("--header-color", headerColor);
+    }
+    if (headerOpacity) {
+      document.body.style.setProperty(
+        "--header-opacity",
+        headerOpacity.toString()
+      );
+    }
+  }, [headerColor, headerOpacity]);
+
   return (
     <HeaderContext.Provider
       value={{

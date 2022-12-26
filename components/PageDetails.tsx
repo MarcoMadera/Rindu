@@ -17,7 +17,7 @@ export default function PageDetails({
   banner,
   disableOpacityChange,
 }: PropsWithChildren<PageDetailsProps>): ReactElement {
-  const { headerColor, setHeaderColor, headerOpacity } = useHeader({
+  const { setHeaderColor, headerOpacity } = useHeader({
     disableOpacityChange,
   });
   const { addContextMenu } = useContextMenu();
@@ -33,15 +33,7 @@ export default function PageDetails({
       {banner ? (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={banner}
-            alt=""
-            className="banner"
-            id="banner"
-            style={{
-              transform: `scale(${1.027 - (headerOpacity + 0.3) / 50})`,
-            }}
-          />
+          <img src={banner} alt="" className="banner" id="banner" />
           <div className="banner-background"></div>
         </>
       ) : null}
@@ -73,22 +65,25 @@ export default function PageDetails({
         .banner {
           height: ${banner ? "40vh" : "0"};
           min-height: ${banner ? "40vh" : "0"};
+          transform: scale(calc(1.027 - (var(--header-opacity, 0) + 0.3) / 50));
         }
         .banner-background {
           min-height: ${banner ? "40vh" : "0"};
         }
         .banner-background:after {
           min-height: ${banner ? "40vh" : "0"};
-          opacity: ${headerOpacity * 2};
-
+          opacity: calc(var(--header-opacity, 0) * 2);
           background-image: linear-gradient(
               rgba(0, 0, 0, 0.6),
               rgba(0, 0, 0, 0.6)
             ),
-            linear-gradient(${headerColor}, ${headerColor});
+            linear-gradient(
+              var(--header-color, transparent),
+              var(--header-color, transparent)
+            );
         }
         .bg-12 {
-          background-color: ${headerColor ?? "transparent"};
+          background-color: var(--header-color, transparent);
           z-index: ${banner ? "999999" : "0"};
         }
         header {
@@ -99,7 +94,7 @@ export default function PageDetails({
         div.b-1 {
           background-color: ${banner
             ? "transparent"
-            : headerColor ?? "transparent"};
+            : "var(--header-color, transparent)"};
         }
         div.b-2 {
           background-image: ${banner
