@@ -68,7 +68,7 @@ function PresentationCard({
           text-decoration: none;
           position: relative;
           background-color: #181818;
-          transition: background-color 0.3s ease;
+          transition: background-color 0.25s ease;
           border-radius: 4px;
           width: ${isCollection ? "unset" : "min-content"};
         }
@@ -76,7 +76,7 @@ function PresentationCard({
           position: absolute;
           bottom: 100px;
           right: 24px;
-          transition: all 0.3s ease;
+          transition: all 0.25s ease;
           opacity: 0;
           display: ${!isPremium || !uri ? "none" : "flex"};
           z-index: 2;
