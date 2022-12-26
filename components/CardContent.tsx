@@ -128,9 +128,14 @@ export const CardContent: React.FC<CardContentProps> = ({
           width: 100%;
           min-width: 160px;
           margin-bottom: 16px;
+          --card-image-border-radius: clamp(
+            4px,
+            (var(--left-panel-width, 0px) - 32px) * 0.025,
+            8px
+          );
           border-radius: ${type === "artist" || type === "user"
             ? "50%"
-            : "2px"};
+            : "var(--card-image-border-radius)"};
           box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
           object-fit: cover;
           object-position: center center;
