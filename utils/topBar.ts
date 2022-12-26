@@ -40,21 +40,30 @@ export function calculateHeaderOpacityPercentage({
 
 interface ISetOpacityStyles {
   disableBackground: boolean;
+  displayOnFixed: boolean;
+  disableOpacityChange: boolean;
   headerOpacityPercentage: number;
   bannerOpacity: number;
 }
 
 export function setOpacityStyles({
   disableBackground,
+  displayOnFixed,
+  disableOpacityChange,
   headerOpacityPercentage,
   bannerOpacity,
 }: ISetOpacityStyles): void {
-  document.body.style.setProperty(
-    "--header-opacity",
-    !disableBackground
-      ? headerOpacityPercentage.toString()
-      : bannerOpacity.toString()
-  );
+  if (disableOpacityChange && !displayOnFixed) {
+    document.body.style.setProperty("--header-opacity", "0");
+  } else {
+    document.body.style.setProperty(
+      "--header-opacity",
+      !disableBackground
+        ? headerOpacityPercentage.toString()
+        : bannerOpacity.toString()
+    );
+  }
+
   document.body.style.setProperty(
     "--banner-opacity",
     headerOpacityPercentage.toString()

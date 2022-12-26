@@ -19,6 +19,7 @@ export default function PageDetails({
 }: PropsWithChildren<PageDetailsProps>): ReactElement {
   const { setHeaderColor } = useHeader({
     disableOpacityChange,
+    showOnFixed: !!banner,
     disableBackground: !!banner,
   });
   const { addContextMenu } = useContextMenu();
