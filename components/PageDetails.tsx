@@ -150,8 +150,6 @@ export default function PageDetails({
           max-height: 500px;
           width: 100%;
           position: relative;
-          box-shadow: inset 0px -20px 30px 30px rgba(0, 0, 0, calc(0.5 -
-                  var(--banner-opacity, 0) - 0.3));
         }
         div.b-1 {
           transition: background-color 0.3s ease;
