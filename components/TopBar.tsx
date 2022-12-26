@@ -10,7 +10,7 @@ import LoginButton from "./LoginButton";
 import { useRouter } from "next/router";
 import {
   calculateBannerOpacity,
-  calculateHeaderOpacityPercentage,
+  calculateHeaderOpacity,
   setOpacityStyles,
 } from "utils/topBar";
 
@@ -30,24 +30,23 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
 
   useRouterEvents(() => {
     const app = appRef?.current;
-
-    const headerOpacityPercentage = calculateHeaderOpacityPercentage({
-      scrollTop: app?.scrollTop || 0,
+    const scrollTop = app?.scrollTop || 0;
+    const headerOpacity = calculateHeaderOpacity({
+      scrollTop,
       disableOpacityChange,
       displayOnFixed,
       disableBackground,
     });
     const bannerOpacity = calculateBannerOpacity({
-      scrollTop: app?.scrollTop || 0,
+      scrollTop,
     });
 
     setOpacityStyles({
-      disableBackground,
-      headerOpacityPercentage,
+      headerOpacity,
       bannerOpacity,
     });
 
-    if (headerOpacityPercentage >= 1 && element) {
+    if (headerOpacity >= 1 && element) {
       setDisplayElement(true);
     } else {
       setDisplayElement(false);
