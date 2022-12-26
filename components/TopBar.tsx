@@ -16,7 +16,6 @@ interface TopBarProps {
 export default function TopBar({ appRef }: TopBarProps): ReactElement {
   const { user } = useAuth();
   const {
-    headerColor,
     element,
     displayOnFixed,
     alwaysDisplayColor,
@@ -150,7 +149,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
           height: 293px;
           position: absolute;
           width: 100%;
-          background-color: ${headerColor ?? "transparent"};
+          background-color: var(--header-color, transparent);
           transition: background-color 0.3s ease;
           margin-top: -61px;
         }
@@ -224,7 +223,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
           height: 100%;
         }
         div.background {
-          background-color: ${headerColor ?? "#797979"};
+          background-color: var(--header-color, #797979);
           bottom: 0;
           left: 0;
           overflow: hidden;
