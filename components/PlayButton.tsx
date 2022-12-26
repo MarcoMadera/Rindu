@@ -286,9 +286,9 @@ export function PlayButton({
           !isThisArtistPlaying &&
           !isThisTrackPlaying &&
           !track) ? (
-          <Pause fill="#fff" width={centerSize} height={centerSize} />
+          <Pause fill="#000" width={centerSize} height={centerSize} />
         ) : (
-          <Play fill="#fff" width={centerSize} height={centerSize} />
+          <Play fill="#000" width={centerSize} height={centerSize} />
         )}
       </button>
       <style jsx>{`
@@ -312,6 +312,7 @@ export function PlayButton({
         }
         .play-Button:active {
           transform: scale(1);
+          background-color: #169c46;
         }
       `}</style>
     </>

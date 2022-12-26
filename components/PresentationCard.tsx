@@ -59,6 +59,11 @@ function PresentationCard({
       </span>
       <style jsx>{`
         .container {
+          --card-container-border-radius: clamp(
+            4px,
+            (var(--left-panel-width, 0px) - 32px) * 0.025,
+            8px
+          );
           color: inherit;
           cursor: pointer;
           border: none;
@@ -69,7 +74,7 @@ function PresentationCard({
           position: relative;
           background-color: #181818;
           transition: background-color 0.25s ease;
-          border-radius: 4px;
+          border-radius: calc(var(--card-container-border-radius) + 2px);
           width: ${isCollection ? "unset" : "min-content"};
         }
         span {
