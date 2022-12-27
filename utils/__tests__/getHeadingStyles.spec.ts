@@ -47,7 +47,7 @@ describe("getHeadingStyles", () => {
 
     expect(styles.className).toStrictEqual(expect.any(String));
     expect((styles.styles.props as PropsWithChildren).children).toBe(
-      "h3.__jsx-style-dynamic-selector{color:#e5e5e5;font-weight:700;font-size:24px;margin:0;text-align:left;-webkit-line-clamp:3;pointer-events:auto;-webkit-user-select:auto;-moz-user-select:auto;-ms-user-select:auto;user-select:auto;padding:0;line-height:28px}"
+      "h3.__jsx-style-dynamic-selector{color:#fff;font-weight:700;font-size:24px;margin:0;text-align:left;-webkit-line-clamp:3;pointer-events:auto;-webkit-user-select:auto;-moz-user-select:auto;-ms-user-select:auto;user-select:auto;padding:0;line-height:28px}"
     );
   });
 });
