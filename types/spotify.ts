@@ -18,7 +18,7 @@ export type PlaylistItem = SpotifyApi.PlaylistObjectSimplified;
 
 export type PlaylistItems = PlaylistItem[];
 
-interface IPageDetails {
+export interface IPageDetails {
   id?: string;
   uri?: string;
   type?: "playlist" | "artist" | "collection" | "concert";

@@ -211,7 +211,8 @@ export default function NowPlaying(): ReactElement | null {
           margin: 0 10px;
           color: #ffffffb3;
         }
-        .navBar-Button:hover {
+        .navBar-Button:hover,
+        .trackName {
           color: #fff;
         }
         p,
@@ -259,7 +260,7 @@ export default function NowPlaying(): ReactElement | null {
             opacity: 1;
           }
           100% {
-            transform: translateX(-90px);
+            transform: translateX(-80px);
             opacity: 1;
           }
         }

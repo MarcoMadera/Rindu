@@ -86,7 +86,7 @@ export default function SingleTrackCard({
               border-radius: 4px;
               height: 80px;
               position: relative;
-              transition: background-color 0.25s ease;
+              transition: background-color 1s ease;
               text-decoration: none;
             }
             a:hover,
