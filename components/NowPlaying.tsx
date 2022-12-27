@@ -14,6 +14,7 @@ import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary"
 import useContextMenu from "hooks/useContextMenu";
 import PictureInPictureButton from "./PictureInPictureButton";
 import ArtistList from "./ArtistList";
+import ScrollableText from "./ScrollableText";
 
 export default function NowPlaying(): ReactElement | null {
   const [isLikedTrack, setIsLikedTrack] = useState(false);
@@ -107,15 +108,17 @@ export default function NowPlaying(): ReactElement | null {
                 });
               }}
             >
-              {currentlyPlaying.name}
+              <ScrollableText>{currentlyPlaying.name}</ScrollableText>
             </a>
           </Link>
         ) : (
-          <span>{currentlyPlaying.name}</span>
+          <ScrollableText>{currentlyPlaying.name}</ScrollableText>
         )}
-        <span className="trackArtists">
-          <ArtistList artists={currentlyPlaying.artists} />
-        </span>
+        <ScrollableText>
+          <span className="trackArtists">
+            <ArtistList artists={currentlyPlaying.artists} />
+          </span>
+        </ScrollableText>
       </section>
       {!currentlyPlaying.is_local && (
         <Heart
@@ -168,11 +171,14 @@ export default function NowPlaying(): ReactElement | null {
       <style jsx>{`
         section {
           margin-right: 10px;
+          max-width: 250px;
+          overflow: hidden;
+          position: relative;
         }
         .img-container {
           display: block;
           position: relative;
-          margin-right: 23px;
+          margin-right: 8px;
         }
         .img-container:hover .show-img {
           opacity: 1;
@@ -196,6 +202,7 @@ export default function NowPlaying(): ReactElement | null {
         }
         span.trackArtists {
           font-size: 12px;
+          color: #b3b3b3;
         }
         .navBar-Button {
           background: transparent;
@@ -208,19 +215,9 @@ export default function NowPlaying(): ReactElement | null {
           color: #fff;
         }
         p,
-        span,
-        .trackName {
+        span {
           margin: 0px;
-          overflow: hidden;
           text-align: left;
-          text-overflow: ellipsis;
-          white-space: unset;
-          -webkit-box-orient: vertical;
-          display: -webkit-box;
-          -webkit-line-clamp: 1;
-        }
-        .trackName {
-          -webkit-line-clamp: 2;
         }
         a {
           text-decoration: none;
