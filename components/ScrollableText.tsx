@@ -1,14 +1,14 @@
 import { PropsWithChildren, ReactElement, useEffect, useRef } from "react";
 
 interface IScrollableText {
-  speed?: number;
+  speedPxSeconds?: number;
   delay?: number;
 }
 
 export default function ScrollableText({
   children,
-  speed = 20,
-  delay = 2000,
+  speedPxSeconds = 20,
+  delay = 5000,
 }: PropsWithChildren<IScrollableText>): ReactElement {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -18,51 +18,66 @@ export default function ScrollableText({
 
     const container = ref.current;
     const text = container.firstElementChild as HTMLElement;
+    const distanceToMove = -(text.scrollWidth - text.offsetWidth);
 
     let lastTime: number | undefined;
     let animationFrameId: number;
-    let distance = 0;
+    let distanceMoved = 0;
+    let delayedTimerId: NodeJS.Timeout | undefined;
     text.style.transform = "translateX(0px)";
 
     if (text.scrollWidth <= container.offsetWidth) return;
 
     const update = (timestamp: number) => {
       const elapsedTime = lastTime ? timestamp - lastTime : 0;
-      distance += (direction * speed * elapsedTime) / 1000;
+      distanceMoved += (direction * speedPxSeconds * elapsedTime) / 1000;
       lastTime = timestamp;
-      const textWidth = text.scrollWidth - text.offsetWidth;
 
-      if (distance < -textWidth) {
-        distance = -textWidth;
-        direction = 1;
-        setTimeout(() => {
+      function setNewAnimationFrame(delay?: number) {
+        if (!delay) {
+          animationFrameId = requestAnimationFrame(update);
+          return;
+        }
+        delayedTimerId = setTimeout(() => {
           lastTime = undefined;
           animationFrameId = requestAnimationFrame(update);
         }, delay);
-      } else if (distance > 0) {
-        text.style.transform = "translateX(0px)";
-        distance = 0;
-        direction = -1;
-        setTimeout(() => {
-          lastTime = undefined;
-          animationFrameId = requestAnimationFrame(update);
-        }, delay);
-      } else {
-        text.style.transform = `translateX(${distance}px)`;
-        animationFrameId = requestAnimationFrame(update);
       }
+
+      function switchDirection() {
+        direction = -direction;
+        setNewAnimationFrame(delay);
+      }
+
+      if (distanceMoved < distanceToMove) {
+        text.style.transform = `translateX(${distanceToMove}px)`;
+        distanceMoved = distanceToMove;
+        switchDirection();
+        return;
+      }
+
+      if (distanceMoved > 0) {
+        text.style.transform = "translateX(0px)";
+        distanceMoved = 0;
+        switchDirection();
+        return;
+      }
+
+      text.style.transform = `translateX(${distanceMoved}px)`;
+      setNewAnimationFrame();
     };
 
-    const timer = setTimeout(() => {
+    const initialTimerId = setTimeout(() => {
       lastTime = undefined;
       requestAnimationFrame(update);
     }, delay);
 
     return () => {
-      clearTimeout(timer);
+      clearTimeout(initialTimerId);
       cancelAnimationFrame(animationFrameId);
+      if (delayedTimerId) clearTimeout(delayedTimerId);
     };
-  }, [speed, delay, children]);
+  }, [speedPxSeconds, delay, children]);
 
   return (
     <div ref={ref} className="container">
@@ -71,23 +86,11 @@ export default function ScrollableText({
         .container {
           position: relative;
           overflow: hidden;
-          width: 100%;
-          mask-image: linear-gradient(
-            90deg,
-            transparent 0,
-            #000 2px,
-            #000 calc(100% - 12px),
-            transparent
-          );
-          margin: 0 -4px;
         }
-
         .text {
           white-space: nowrap;
           width: 100%;
           display: flex;
-          transform: translateX(var(--trans-x));
-          padding: 0 4px;
         }
       `}</style>
     </div>

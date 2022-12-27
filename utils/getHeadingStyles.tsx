@@ -15,7 +15,7 @@ export function getHeadingStyles(
 } {
   return css.resolve`
     ${element} {
-      color: ${color ?? (number === 1 ? Color.Primary : Color.Secondary)};
+      color: ${color ?? Color.Primary};
       font-weight: ${number === 1 ? "900" : "700"};
       font-size: ${fontSize ?? fontSizes[number - 1]};
       margin: ${margin ?? 0};

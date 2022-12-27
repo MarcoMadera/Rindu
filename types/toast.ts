@@ -1,4 +1,4 @@
-interface NewToast {
+export interface NewToast {
   variant: "info" | "error" | "success";
   message: string;
   displayTime?: number;
