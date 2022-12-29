@@ -99,24 +99,20 @@ export async function getServerSideProps({
 
   const tracks: ITrack[] = playListTracks ? [...playListTracks] : [];
 
-  const threeMostPopularTracks = tracks?.sort(
+  const mostPopularTracks = tracks?.sort(
     (a, b) => (b.popularity || 0) - (a.popularity || 0)
   );
-  const albumCovers = threeMostPopularTracks
-    .slice(0, 4)
-    .map((track) => track.album?.images?.[0]);
+  const albumCovers = mostPopularTracks.map((track) => {
+    return track.album?.images?.[0];
+  });
   const currentTrackAlbumCover = currentTrack.album.images?.[0]?.url;
 
-  let cover2 = "";
-  let cover3 = "";
+  const filteredAlbumCovers = albumCovers.filter(
+    (cover) => cover?.url !== currentTrackAlbumCover
+  );
 
-  if (currentTrackAlbumCover !== albumCovers?.[0]?.url) {
-    cover2 = albumCovers[0]?.url || "";
-    cover3 = albumCovers[1]?.url || "";
-  } else {
-    cover2 = albumCovers[1]?.url || "";
-    cover3 = albumCovers[2]?.url || "";
-  }
+  const cover2 = filteredAlbumCovers[0]?.url || albumCovers[0]?.url || "";
+  const cover3 = filteredAlbumCovers[1]?.url || albumCovers[0]?.url || "";
 
   const imageUrl = `/api/radio-cover?cover1=${currentTrackAlbumCover}&cover2=${cover2}&cover3=${cover3}&name=${currentTrack.name}`;
 
