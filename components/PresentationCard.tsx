@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import useSpotify from "hooks/useSpotify";
 
 export interface PresentationCardProps {
-  type: ITrack["type"] | CardType;
+  type: CardType;
   id: string;
   images?: SpotifyApi.ImageObject[];
   title: string;

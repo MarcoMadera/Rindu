@@ -176,7 +176,7 @@ const Dashboard: NextPage<DashboardProps> = ({
           {recentlyPlayed.map((track) => {
             return (
               <PresentationCard
-                type={track.type ?? CardType.TRACK}
+                type={(track.type as CardType) ?? CardType.TRACK}
                 key={track.id}
                 images={track.album?.images as SpotifyApi.ImageObject[]}
                 title={track.name ?? ""}
