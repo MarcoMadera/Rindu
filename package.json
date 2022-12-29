@@ -31,7 +31,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
-    "@babel/plugin-transform-runtime": "^7.19.1",
     "@babel/runtime": "^7.19.4",
     "@mdx-js/react": "^2.1.5",
     "@storybook/addon-actions": "^6.5.12",

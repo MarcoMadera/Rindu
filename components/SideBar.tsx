@@ -52,19 +52,19 @@ export default function SideBar(): ReactElement {
         </div>
         <section>
           <Link href="/dashboard">
-            <a>
+            <a className="dashboard">
               <Home fill="#b3b3b3" />
               {translations?.home}
             </a>
           </Link>
           <Link href="/search">
-            <a>
+            <a className="search">
               <Search fill="#b3b3b3" />
               {translations?.search}
             </a>
           </Link>
           <Link href="/collection">
-            <a>
+            <a className="collection">
               <Library fill="#b3b3b3" />
               {translations?.collection}
             </a>
@@ -163,15 +163,15 @@ export default function SideBar(): ReactElement {
         </section>
       </nav>
       <style jsx>{`
-        section:nth-of-type(1) a:nth-of-type(1) {
+        section:nth-of-type(1) .dashboard {
           color: ${router.pathname === "/dashboard" ? "#fff" : "inherit"};
           background: ${router.pathname === "/dashboard" ? "#282828" : "unset"};
         }
-        section:nth-of-type(1) a:nth-of-type(2) {
+        section:nth-of-type(1) .search {
           color: ${router.pathname === "/search" ? "#fff" : "inherit"};
           background: ${router.pathname === "/search" ? "#282828" : "unset"};
         }
-        section:nth-of-type(1) a:nth-of-type(3) {
+        section:nth-of-type(1) .library {
           color: ${router.pathname === "/library" ? "#fff" : "inherit"};
           background: ${router.pathname === "/library" ? "#282828" : "unset"};
         }

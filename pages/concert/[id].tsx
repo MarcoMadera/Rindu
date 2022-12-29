@@ -22,7 +22,7 @@ const Playlist: NextPage<ConcertProps> = (props) => {
   return (
     <PlaylistLayout
       isLibrary={false}
-      isConcert={true}
+      isGeneratedPlaylist={true}
       pageDetails={{
         images: [
           {
