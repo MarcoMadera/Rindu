@@ -96,7 +96,7 @@ export default async function radioCover(
               alignItems: "center",
               justifyContent: "center",
               width: "100%",
-              marginTop: 60,
+              marginTop: 80,
             }}
           >
             <div
@@ -105,6 +105,12 @@ export default async function radioCover(
                 fontSize: 60,
                 color: textColor,
                 fontWeight: 900,
+                lineClamp: 1,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                justifySelf: "flex-start",
+                width: 600,
               }}
             >
               {name || ""}
