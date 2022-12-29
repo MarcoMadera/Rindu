@@ -31,7 +31,7 @@ import { createPlaylist } from "utils/spotifyCalls/createPlaylist";
 import { addCustomPlaylistImage } from "utils/spotifyCalls/addCustomPlaylistImage";
 
 const Playlist: NextPage<
-  PlaylistProps & { isLibrary: boolean; isConcert?: boolean }
+  PlaylistProps & { isLibrary: boolean; isGeneratedPlaylist?: boolean }
 > = ({
   pageDetails,
   playListTracks,
@@ -39,7 +39,7 @@ const Playlist: NextPage<
   tracksInLibrary,
   isLibrary,
   translations,
-  isConcert,
+  isGeneratedPlaylist,
 }) => {
   const router = useRouter();
   const { setUser, accessToken } = useAuth();
@@ -83,7 +83,7 @@ const Playlist: NextPage<
     if (!pageDetails) {
       router.push("/");
     }
-    if (!isConcert) {
+    if (!isGeneratedPlaylist) {
       setElement(() => <PlaylistTopBarExtraField uri={pageDetails?.uri} />);
     }
     setPageDetails(pageDetails);
@@ -92,7 +92,7 @@ const Playlist: NextPage<
 
     setUser(user);
   }, [
-    isConcert,
+    isGeneratedPlaylist,
     setElement,
     setPageDetails,
     pageDetails,
@@ -157,6 +157,8 @@ const Playlist: NextPage<
         type={
           pageDetails?.type === "concert"
             ? HeaderType.concert
+            : pageDetails?.type === "radio"
+            ? HeaderType.radio
             : HeaderType.playlist
         }
         title={pageDetails?.name ?? ""}
@@ -175,7 +177,7 @@ const Playlist: NextPage<
         {allTracks.length > 0 ? (
           <>
             <div className="options">
-              {isConcert && (
+              {isGeneratedPlaylist && (
                 <div>
                   <button
                     className="save-concert-to-playlist-button"
@@ -214,11 +216,11 @@ const Playlist: NextPage<
                       }
                     }}
                   >
-                    {translations.saveConcertToPlaylist}
+                    {translations.saveAsPlaylist}
                   </button>
                 </div>
               )}
-              {!isConcert && (
+              {!isGeneratedPlaylist && (
                 <>
                   <PlayButton
                     uri={pageDetails?.uri}
@@ -285,13 +287,15 @@ const Playlist: NextPage<
               <VirtualizedList
                 type="playlist"
                 isLibrary={isLibrary}
-                isConcert={isConcert}
+                isGeneratedPlaylist={isGeneratedPlaylist}
                 initialTracksInLibrary={tracksInLibrary}
               />
             </div>
           </>
         ) : null}
-        {!isConcert && playListTracks && playListTracks.length === 0 ? (
+        {!isGeneratedPlaylist &&
+        playListTracks &&
+        playListTracks.length === 0 ? (
           <div className="noTracks">
             <Heading number={3} as="h2" margin="1rem 0">
               {translations.playlistSearchHeading}
@@ -394,7 +398,9 @@ const Playlist: NextPage<
                 </>
               )}
           </div>
-        ) : isConcert && playListTracks && playListTracks.length === 0 ? (
+        ) : isGeneratedPlaylist &&
+          playListTracks &&
+          playListTracks.length === 0 ? (
           <div className="noTracks">
             <Heading number={3} as="h2" margin="1rem 0">
               {translations.noTracksFoundForConcert}

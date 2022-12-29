@@ -21,7 +21,7 @@ export type PlaylistItems = PlaylistItem[];
 export interface IPageDetails {
   id?: string;
   uri?: string;
-  type?: "playlist" | "artist" | "collection" | "concert";
+  type?: "playlist" | "artist" | "collection" | "concert" | "radio";
   name?: string;
   description?: string | null;
   tracks?: { total?: number };

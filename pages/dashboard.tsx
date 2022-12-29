@@ -88,11 +88,13 @@ const Dashboard: NextPage<DashboardProps> = ({
       recentlyPlayed.forEach((track) => {
         if (track.id) seeds.push(track.id);
       });
-      getRecommendations(seeds.slice(0, 5), user?.country, accessToken).then(
-        (tracks) => {
-          if (Array.isArray(tracks)) setRecentListeningRecommendations(tracks);
-        }
-      );
+      getRecommendations({
+        seed_tracks: seeds.slice(0, 5),
+        market: user?.country,
+        accessToken,
+      }).then((tracks) => {
+        if (Array.isArray(tracks)) setRecentListeningRecommendations(tracks);
+      });
     }
   }, [
     recentlyPlayed,
@@ -456,11 +458,11 @@ export async function getServerSideProps({
   const seed_tracks =
     fullFilledValue(topTracks)?.items?.map((item) => item.id) ?? [];
 
-  const tracksRecommendationsProm = getRecommendations(
-    seed_tracks.slice(0, 5),
-    user?.country ?? "US",
-    accessToken
-  );
+  const tracksRecommendationsProm = getRecommendations({
+    seed_tracks: seed_tracks.slice(0, 5),
+    market: user?.country ?? "US",
+    accessToken,
+  });
 
   const artistsOfTheWeekSettled = fullFilledValue(artistsOfTheWeek);
   const tracksOfTheWeekSettled = fullFilledValue(tracksOfTheWeek);

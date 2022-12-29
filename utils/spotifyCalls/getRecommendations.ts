@@ -1,15 +1,23 @@
 import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 import { takeCookie } from "utils/cookies";
 
-export async function getRecommendations(
-  seed_tracks: string[],
-  market: string,
-  accessToken?: string | null
-): Promise<SpotifyApi.TrackObjectFull[] | null> {
+interface IgetRecommendations {
+  seed_tracks: string[];
+  limit?: number;
+  market?: string;
+  accessToken?: string | null;
+}
+
+export async function getRecommendations({
+  seed_tracks,
+  limit,
+  market,
+  accessToken,
+}: IgetRecommendations): Promise<SpotifyApi.TrackObjectFull[] | null> {
   const res = await fetch(
     `https://api.spotify.com/v1/recommendations?seed_tracks=${seed_tracks.join()}&market=${
       market || "from_token"
-    }`,
+    }&limit=${limit ?? 20}`,
     {
       method: "GET",
       headers: {

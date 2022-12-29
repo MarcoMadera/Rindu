@@ -20,14 +20,14 @@ interface Props {
   type: "playlist" | "album" | "presentation";
   initialTracksInLibrary: boolean[] | null;
   isLibrary?: boolean;
-  isConcert?: boolean;
+  isGeneratedPlaylist?: boolean;
 }
 
 export default function VirtualizedList({
   type,
   initialTracksInLibrary,
   isLibrary,
-  isConcert,
+  isGeneratedPlaylist,
 }: Props): ReactElement | null {
   const { allTracks, pageDetails, setAllTracks } = useSpotify();
   const { accessToken } = useAuth();
@@ -66,7 +66,7 @@ export default function VirtualizedList({
 
   const loadMoreRows = useCallback(
     async ({ startIndex }: IndexRange) => {
-      if (isConcert) return;
+      if (isGeneratedPlaylist) return;
       const data = isLibrary
         ? await getTracksFromLibrary(startIndex, accessToken)
         : await getTracksFromPlaylist(
@@ -84,7 +84,13 @@ export default function VirtualizedList({
       );
       addTracksToPlaylists(tracks, tracksInLibrary, startIndex);
     },
-    [accessToken, addTracksToPlaylists, isConcert, isLibrary, pageDetails?.id]
+    [
+      accessToken,
+      addTracksToPlaylists,
+      isGeneratedPlaylist,
+      isLibrary,
+      pageDetails?.id,
+    ]
   );
 
   const scrollElement = !isServer()
@@ -134,7 +140,7 @@ export default function VirtualizedList({
                                 allTracks?.[index]?.position ?? -1
                               ]
                             }
-                            isSingleTrack={isConcert}
+                            isSingleTrack={isGeneratedPlaylist}
                             type={type}
                             position={allTracks?.[index]?.position}
                             allTracks={allTracks}

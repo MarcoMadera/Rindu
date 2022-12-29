@@ -15,12 +15,15 @@ import useAuth from "hooks/useAuth";
 import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
 import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
 import { addItemsToPlaylist } from "utils/spotifyCalls/addItemsToPlaylist";
+import { useRouter } from "next/router";
+import { getSiteUrl } from "utils/environment";
 
 export default function ContextMenu(): ReactPortal | null {
   const [targetNode, setTargetNode] = useState<Element | null>();
   const { addToast } = useToast();
   const { deviceId, playlists } = useSpotify();
   const { accessToken } = useAuth();
+  const router = useRouter();
   const { contextMenuData, removeContextMenu } = useContextMenu();
   const [isDifferentPosX, setIsDifferentPosX] = useState<boolean>(false);
   const [isDifferentPosY, setIsDifferentPosY] = useState<boolean>(false);
@@ -242,13 +245,11 @@ export default function ContextMenu(): ReactPortal | null {
           <button
             type="button"
             onClick={() => {
-              // TODO: create path station/${type}/${id} where type can be (playlist, show, track, album,episode)
-              // It should use the recommendations API
-              // This will be used to push to that page
-              addToast({
-                variant: "error",
-                message: "This feature is not implemented yet",
-              });
+              router.push(
+                `${getSiteUrl()}/station/${
+                  contextMenuData.data.type ?? "track"
+                }/${contextMenuData.data?.id || ""}`
+              );
               removeContextMenu();
             }}
           >

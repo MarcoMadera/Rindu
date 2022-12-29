@@ -19,6 +19,7 @@ export enum Page {
   CollectionPlaylists = "collectionPlaylists",
   CollectionPodcasts = "collectionPodcasts",
   Collection = "collection",
+  Radio = "radio",
 }
 
 export enum Language {
@@ -81,6 +82,7 @@ const pageHeaderTranslations = {
     pageHeaderConcert: "CONCERT",
     pageHeaderEpisode: "EPISODE",
     pageHeaderPodcast: "PODCAST",
+    pageHeaderRadio: "RADIO",
     pageHeaderSong: "SONG",
     followers: "followers",
     song: "Song",
@@ -101,6 +103,7 @@ const pageHeaderTranslations = {
     pageHeaderConcert: "CONCIERTO",
     pageHeaderEpisode: "EPISODIO",
     pageHeaderPodcast: "PODCAST",
+    pageHeaderRadio: "RADIO",
     pageHeaderSong: "CANCIÓN",
     followers: "seguidores",
     song: "Canción",
@@ -357,7 +360,17 @@ export const translations = {
       title: "Concert",
       searchPlaceholder: "Search for songs or episodes",
       noTracksFoundForConcert: "No tracks found for this concert",
-      saveConcertToPlaylist: "Save concert to playlist",
+      saveAsPlaylist: "Save concert to playlist",
+    },
+    [Page.Radio]: {
+      ...sideBarTranslations[Language.EN],
+      ...pageHeaderTranslations[Language.EN],
+      ...listHeaderTranslations[Language.EN],
+      ...removeTracksModalTranslations[Language.EN],
+      title: "Radio",
+      searchPlaceholder: "Search for songs or episodes",
+      noTracksFoundForConcert: "No tracks found for this radio",
+      saveAsPlaylist: "Save radio to playlist",
     },
     [Page.Episode]: {
       ...sideBarTranslations[Language.EN],
@@ -533,7 +546,17 @@ export const translations = {
       searchPlaceholder: "Busca canciones o episodios",
       noTracksFoundForConcert:
         "No se encontraron canciones para este concierto",
-      saveConcertToPlaylist: "Guardar concierto en playlist",
+      saveAsPlaylist: "Guardar concierto en playlist",
+    },
+    [Page.Radio]: {
+      ...sideBarTranslations[Language.ES],
+      ...pageHeaderTranslations[Language.ES],
+      ...listHeaderTranslations[Language.ES],
+      ...removeTracksModalTranslations[Language.ES],
+      title: "Radio",
+      searchPlaceholder: "Busca canciones o episodios",
+      noTracksFoundForConcert: "No se encontraron canciones para esta radio",
+      saveAsPlaylist: "Guardar radio en playlist",
     },
     [Page.Episode]: {
       ...sideBarTranslations[Language.ES],
