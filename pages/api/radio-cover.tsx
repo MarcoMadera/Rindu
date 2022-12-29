@@ -13,7 +13,7 @@ const font = fetch(
   new URL("../../fonts/SourceSansPro-Black.ttf", import.meta.url)
 ).then((res) => res.arrayBuffer());
 
-export default async function concertCover(
+export default async function radioCover(
   req: NextRequest
 ): Promise<ImageResponse | void> {
   try {
@@ -44,6 +44,21 @@ export default async function concertCover(
             fontFamily: '"SourceSansPro"',
           }}
         >
+          <div
+            style={{
+              display: "flex",
+              position: "absolute",
+              letterSpacing: "-.02em",
+              fontWeight: 400,
+              fontFamily: "unset",
+              color: textColor,
+              fontSize: "32px",
+              top: 10,
+              left: 10,
+            }}
+          >
+            Rindu
+          </div>
           <div
             style={{
               position: "absolute",
@@ -153,7 +168,6 @@ export default async function concertCover(
               }}
             />
           </div>
-          {/* next div should be a big circle that should go in the background with the secondary color */}
         </div>
       ),
       {
