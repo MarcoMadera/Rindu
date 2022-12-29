@@ -1,8 +1,8 @@
+import useContextMenu from "hooks/useContextMenu";
 import useOnScreen from "hooks/useOnScreen";
 import { decode } from "html-entities";
 import { useRouter } from "next/router";
 import { useRef } from "react";
-import { ITrack } from "types/spotify";
 import { getSiteUrl } from "utils/environment";
 
 export enum CardType {
@@ -17,15 +17,15 @@ export enum CardType {
   AD = "ad",
 }
 
-interface CardContentProps {
+export interface ICardContent {
   id: string;
   images?: SpotifyApi.ImageObject[];
   title: string;
   subTitle: string | JSX.Element;
-  type: ITrack["type"] | CardType;
+  type: CardType;
 }
 
-export const CardContent: React.FC<CardContentProps> = ({
+export const CardContent: React.FC<ICardContent> = ({
   id,
   type,
   images,
@@ -35,6 +35,8 @@ export const CardContent: React.FC<CardContentProps> = ({
   const router = useRouter();
   const handlerRef = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(handlerRef, "-150px");
+  const { addContextMenu } = useContextMenu();
+
   return (
     <article>
       <div
@@ -51,6 +53,16 @@ export const CardContent: React.FC<CardContentProps> = ({
             if (!type) return;
             router.push(`/${type}/${encodeURIComponent(id)}`);
           }
+        }}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          const x = e.pageX;
+          const y = e.pageY;
+          addContextMenu({
+            type: "cardContent",
+            data: { id, type },
+            position: { x, y },
+          });
         }}
         role="button"
         tabIndex={isVisible ? 0 : -1}
@@ -133,7 +145,7 @@ export const CardContent: React.FC<CardContentProps> = ({
             (var(--left-panel-width, 0px) - 32px) * 0.025,
             8px
           );
-          border-radius: ${type === "artist" || type === "user"
+          border-radius: ${type === CardType.ARTIST || type === CardType.USER
             ? "50%"
             : "var(--card-image-border-radius)"};
           box-shadow: 0 8px 24px rgb(0 0 0 / 50%);

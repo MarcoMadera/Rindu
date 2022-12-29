@@ -27,6 +27,8 @@ export default async function radioCover(
     const firstColor = `hsl(${h}, ${s}%, ${l + 30}%)`;
     const secondaryColor = `hsl(${h}, ${s}%, ${l + 20}%)`;
     const tertiaryColor = `hsl(${h}, ${s}%, ${l + 15}%)`;
+    const isTextTooLong = name.length >= 20;
+    const textOverflow = isTextTooLong ? "ellipsis" : "unset";
 
     return new ImageResponse(
       (
@@ -101,19 +103,28 @@ export default async function radioCover(
           >
             <div
               style={{
+                color: textColor,
                 display: "flex",
                 fontSize: 60,
-                color: textColor,
                 fontWeight: 900,
-                lineClamp: 1,
                 overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                justifySelf: "flex-start",
                 width: 600,
+                position: "relative",
+                margin: "0 auto",
+                justifyContent: "center",
               }}
             >
-              {name || ""}
+              <span
+                style={{
+                  textOverflow: textOverflow,
+                  whiteSpace: "nowrap",
+                  display: "flex",
+                  width: "-100%",
+                  letterSpacing: "1.2px",
+                }}
+              >
+                {name || ""}
+              </span>
             </div>
             <div
               style={{
@@ -189,6 +200,7 @@ export default async function radioCover(
       }
     );
   } catch (e) {
+    console.error(e);
     return new Response("Failed to generate the image", {
       status: 500,
     });
