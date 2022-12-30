@@ -96,8 +96,8 @@ export interface ISpotifyContext {
   setLastVolume: Dispatch<SetStateAction<number>>;
   pictureInPictureCanvas: MutableRefObject<HTMLCanvasElement | undefined>;
   videoRef: MutableRefObject<HTMLVideoElement | undefined>;
-  showHamburgerMenu: boolean;
-  setShowHamburgerMenu: Dispatch<SetStateAction<boolean>>;
+  hideSideBar: boolean;
+  setHideSideBar: Dispatch<SetStateAction<boolean>>;
   setReconnectionError: Dispatch<SetStateAction<boolean>>;
   recentlyPlayed: ITrack[];
   removeTracks: (

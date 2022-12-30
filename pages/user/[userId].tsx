@@ -13,6 +13,12 @@ import ContentContainer from "components/ContentContainer";
 import { getSiteUrl } from "utils/environment";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { getTranslations, Page } from "utils/getTranslations";
+import { fullFilledValue } from "utils/fullFilledValue";
+import Grid from "components/Grid";
+import useUserPlaylists from "hooks/useUserPlaylists";
+import PresentationCard from "components/PresentationCard";
+import { CardType } from "components/CardContent";
+import { decode } from "html-entities";
 
 interface CurrentUserProps {
   currentUser: SpotifyApi.UserObjectPublic | null;
@@ -27,10 +33,13 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
   user,
   accessToken,
   currentUserPlaylists,
+  translations,
 }) => {
   const { setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
   const router = useRouter();
+  const playlists = useUserPlaylists();
+  const isThisUser = currentUser?.id === user?.id;
 
   useEffect(() => {
     if (!currentUser) {
@@ -64,6 +73,29 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
         totalPublicPlaylists={currentUserPlaylists?.total ?? 0}
         totalFollowers={currentUser?.followers?.total ?? 0}
       />
+      {isThisUser && (
+        <ContentContainer>
+          <Grid>
+            {playlists?.length > 0
+              ? playlists.map(({ images, name, description, id, owner }) => {
+                  return (
+                    <PresentationCard
+                      type={CardType.PLAYLIST}
+                      key={id}
+                      images={images}
+                      title={name}
+                      subTitle={
+                        decode(description) ||
+                        `${translations.by} ${owner.display_name || owner.id}`
+                      }
+                      id={id}
+                    />
+                  );
+                })
+              : null}
+          </Grid>
+        </ContentContainer>
+      )}
     </ContentContainer>
   );
 };
@@ -93,15 +125,20 @@ export async function getServerSideProps({
   }
 
   const { accessToken, user } = (await getAuth(res, cookies)) || {};
-  const currentUser = await getUserById(userId, accessToken);
-  const currentUserPlaylists = await getPlaylistsFromUser(userId, accessToken);
+  const currentUserProm = getUserById(userId, accessToken);
+  const currentUserPlaylistsProm = getPlaylistsFromUser(userId, accessToken);
+
+  const [currentUser, currentUserPlaylists] = await Promise.allSettled([
+    currentUserProm,
+    currentUserPlaylistsProm,
+  ]);
 
   return {
     props: {
-      currentUser,
+      currentUser: fullFilledValue(currentUser),
       accessToken,
       user: user ?? null,
-      currentUserPlaylists: currentUserPlaylists ?? null,
+      currentUserPlaylists: fullFilledValue(currentUserPlaylists),
       translations,
     },
   };

@@ -56,6 +56,7 @@ export function getServerSideProps({
     serverRedirect(res, "/");
     return { props: null };
   }
+  serverRedirect(res, "/collection/playlists", false);
 
   return {
     props: {

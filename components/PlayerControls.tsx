@@ -53,7 +53,7 @@ export default function PlayerControls(): ReactElement {
           onClick={() => {
             player?.previousTrack();
           }}
-          className="button playerButton"
+          className="button playerButton previous"
         >
           <PreviousTrack fill="#b3b3b3" />
         </button>
@@ -80,7 +80,7 @@ export default function PlayerControls(): ReactElement {
           onClick={() => {
             player?.nextTrack();
           }}
-          className="button playerButton"
+          className="button playerButton next"
         >
           <NextTrack fill="#b3b3b3" />
         </button>
@@ -185,6 +185,29 @@ export default function PlayerControls(): ReactElement {
         .button.repeat.playerButton:hover :global(svg path),
         .button.repeat.playerButton:focus :global(svg path) {
           fill: ${repeatState === 0 ? "#fff" : "#2fd669"};
+        }
+        @media (max-width: 750px) {
+          .repeat,
+          .suffle {
+            display: none;
+          }
+        }
+        @media (max-width: 1100px) {
+          .repeat,
+          .suffle {
+            display: none;
+          }
+        }
+        @media (max-width: 1000px) {
+          div.player {
+            justify-content: flex-end;
+          }
+        }
+        @media (max-width: 600px) {
+          .previous,
+          .next {
+            display: none;
+          }
         }
       `}</style>
     </>
