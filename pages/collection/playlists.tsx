@@ -16,7 +16,7 @@ import { getTranslations, Page, Translations } from "utils/getTranslations";
 import { serverRedirect } from "utils/serverRedirect";
 import useAuth from "hooks/useAuth";
 import useAnalytics from "hooks/useAnalytics";
-import { getCurrentUserPlaylists } from "utils/getAllMyPlaylists";
+import useUserPlaylists from "hooks/useUserPlaylists";
 interface CollectionPlaylistsProps {
   accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
@@ -34,7 +34,8 @@ export default function CollectionPlaylists({
   });
   const { setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
-  const { playlists, setPlaylists, isPlaying } = useSpotify();
+  const { isPlaying } = useSpotify();
+  const playlists = useUserPlaylists();
 
   useEffect(() => {
     setElement(() => <NavigationTopBarExtraField selected={1} />);
@@ -53,16 +54,6 @@ export default function CollectionPlaylists({
 
     setUser(user);
   }, [accessToken, setAccessToken, setUser, trackWithGoogleAnalytics, user]);
-
-  useEffect(() => {
-    if (!playlists) {
-      getCurrentUserPlaylists(accessToken as string).then((playlists) => {
-        if (playlists) {
-          setPlaylists(playlists.items);
-        }
-      });
-    }
-  }, [accessToken, playlists, setPlaylists]);
 
   return (
     <ContentContainer>

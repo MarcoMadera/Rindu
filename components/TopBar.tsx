@@ -3,7 +3,6 @@ import { MutableRefObject, ReactElement, useState } from "react";
 import UserWidget from "./UserWidget";
 import RouterButtons from "./RouterButtons";
 import useHeader from "hooks/useHeader";
-import useSpotify from "hooks/useSpotify";
 import useRouterEvents from "hooks/useRouterEvents";
 import Logo from "./Logo";
 import LoginButton from "./LoginButton";
@@ -23,7 +22,6 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
   const { element, displayOnFixed, disableBackground, disableOpacityChange } =
     useHeader();
   const isPremium = user?.product === "premium";
-  const { setShowHamburgerMenu } = useSpotify();
   const router = useRouter();
   const isLoginPage = router.pathname === "/";
   const [displayElement, setDisplayElement] = useState(false);
@@ -101,18 +99,6 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
           <div className="background" id="header-top-bar-background">
             <div className="noise"></div>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              setShowHamburgerMenu((prev) => !prev);
-            }}
-            className="HamburgerMenu"
-            aria-label="Hamburger menu"
-          >
-            <div className="HamburgerMenu-line"></div>
-            <div className="HamburgerMenu-line"></div>
-            <div className="HamburgerMenu-line"></div>
-          </button>
           <RouterButtons />
           <div className="extraElement">
             {displayElement || displayOnFixed ? <>{element}</> : null}
@@ -147,29 +133,6 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
           transition: background-color 1s ease;
           margin-top: -61px;
         }
-        .HamburgerMenu {
-          width: 50px;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          flex-direction: column;
-          background: none;
-          border: none;
-          margin-right: 20px;
-          display: none;
-        }
-        @media (max-width: 1000px) {
-          .HamburgerMenu {
-            display: flex;
-          }
-        }
-        .HamburgerMenu-line {
-          background-color: #fff;
-          height: 2px;
-          width: 30px;
-          margin: 4px 5px;
-        }
-
         .extraElement {
           white-space: nowrap;
           width: 100%;

@@ -9,6 +9,7 @@ import { getTranslations, Page } from "utils/getTranslations";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { getSiteUrl } from "utils/environment";
 import { getArtistById } from "utils/spotifyCalls/getArtistById";
+import { fullFilledValue } from "utils/fullFilledValue";
 
 interface ConcertProps extends PlaylistProps {
   setList: SetList | null;
@@ -73,9 +74,15 @@ export async function getServerSideProps({
   const setListId = id.split(".")[1];
 
   const setListAPIKey = process.env.SETLIST_FM_API_KEY;
-  const setList = await getSetList(setListId, setListAPIKey);
-  const artist = await getArtistById(artistId, accessToken);
+  const setListProm = getSetList(setListId, setListAPIKey);
+  const artistProm = getArtistById(artistId, accessToken);
+  const [setListSettled, artistSettled] = await Promise.allSettled([
+    setListProm,
+    artistProm,
+  ]);
   const trackList: ITrack[] = [];
+  const setList = fullFilledValue(setListSettled);
+  const artist = fullFilledValue(artistSettled);
 
   setList?.sets.set?.forEach((set) => {
     set.song?.forEach((song, i) => {

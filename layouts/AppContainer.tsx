@@ -17,7 +17,7 @@ import {
 
 export function AppContainer({ children }: PropsWithChildren): ReactElement {
   const appRef = useRef<HTMLDivElement>();
-  const { showLyrics, currentlyPlaying, showHamburgerMenu } = useSpotify();
+  const { showLyrics, currentlyPlaying, hideSideBar } = useSpotify();
   const shouldDisplayLyrics = showLyrics && currentlyPlaying?.type === "track";
   const leftPanelMinWidth = 245;
   const leftPanelMaxWidth = 400;
@@ -60,13 +60,14 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
       <style jsx>{`
         @media (max-width: 1000px) {
           div.container :global(#left) {
-            display: ${showHamburgerMenu ? "grid" : "none"};
+            display: ${hideSideBar ? "grid" : "none"};
           }
           .app {
             width: 100%;
           }
         }
       `}</style>
+
       <style jsx>{`
         div.container {
           height: calc(100vh - 90px);
@@ -83,19 +84,26 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
         .app::-webkit-scrollbar {
           width: 14px;
         }
-        @media (max-width: 685px) {
-          .app {
-            height: calc(100vh - 270px);
-          }
-        }
+      `}</style>
+      <style jsx>{`
         @media (max-width: 1000px) {
+          div.container {
+            height: calc(100vh - ${currentlyPlaying?.id ? "150" : "68"}px);
+          }
           .app {
             width: 100%;
+            height: calc(100vh - ${currentlyPlaying?.id ? "150" : "68"}px);
           }
         }
         @media (max-width: 685px) {
+          .app {
+            height: calc(100vh - ${currentlyPlaying?.id ? "150" : "68"}px);
+          }
+        }
+
+        @media (max-width: 685px) {
           div.container {
-            height: calc(100vh - 270px);
+            height: calc(100vh - ${currentlyPlaying?.id ? "150" : "68"}px);
           }
         }
       `}</style>

@@ -25,7 +25,7 @@ export default function SideBar(): ReactElement {
     isShowingSideBarImg,
     setIsShowingSideBarImg,
     playedSource,
-    showHamburgerMenu,
+    hideSideBar,
   } = useSpotify();
   const { accessToken, user } = useAuth();
   const router = useRouter();
@@ -234,7 +234,7 @@ export default function SideBar(): ReactElement {
         }
         @media (max-width: 1000px) {
           nav {
-            display: ${showHamburgerMenu ? "grid" : "none"};
+            display: ${hideSideBar ? "grid" : "none"};
           }
         }
         .section-2 .green {

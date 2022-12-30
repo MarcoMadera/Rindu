@@ -42,7 +42,7 @@ export function SpotifyContextProvider({
   const [volume, setVolume] = useState<number>(1);
   const [lastVolume, setLastVolume] = useState<number>(1);
   const [isPip, setIsPip] = useState(false);
-  const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
+  const [hideSideBar, setHideSideBar] = useState(false);
   const [recentlyPlayed, setRecentlyPlayed] = useState<ITrack[]>([]);
   const pictureInPictureCanvas = useRef<HTMLCanvasElement>();
   const videoRef = useRef<HTMLVideoElement>();
@@ -145,8 +145,8 @@ export function SpotifyContextProvider({
         videoRef,
         isPip,
         setIsPip,
-        showHamburgerMenu,
-        setShowHamburgerMenu,
+        hideSideBar,
+        setHideSideBar,
         recentlyPlayed,
         setReconnectionError,
         removeTracks,

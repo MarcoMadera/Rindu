@@ -9,6 +9,7 @@ import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import { mapPlaylistItems } from "utils/mapPlaylistItems";
 import { getTranslations, Page } from "utils/getTranslations";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { fullFilledValue } from "utils/fullFilledValue";
 
 export interface PlaylistProps {
   pageDetails: ISpotifyContext["pageDetails"] | null;
@@ -57,14 +58,21 @@ export async function getServerSideProps({
   }
   const { accessToken, user } = (await getAuth(res, cookies)) || {};
 
-  const pageDetails = await getpageDetails(playlist, accessToken, cookies);
-  const playlistTrackResponse = await getTracksFromPlaylist(
+  const pageDetailsProm = getpageDetails(playlist, accessToken, cookies);
+  const playlistTrackProm = getTracksFromPlaylist(
     playlist,
     0,
     accessToken,
     cookies
   );
-  const playListTracks = mapPlaylistItems(playlistTrackResponse?.items, 0);
+  const [pageDetails, playlistTrackResponse] = await Promise.allSettled([
+    pageDetailsProm,
+    playlistTrackProm,
+  ]);
+  const playListTracks = mapPlaylistItems(
+    fullFilledValue(playlistTrackResponse)?.items,
+    0
+  );
 
   const trackIds = playListTracks?.map(({ id }) => id);
   const tracksInLibrary = await checkTracksInLibrary(
@@ -73,7 +81,7 @@ export async function getServerSideProps({
   );
   return {
     props: {
-      pageDetails,
+      pageDetails: fullFilledValue(pageDetails),
       tracksInLibrary,
       playListTracks,
       accessToken: accessToken ?? null,

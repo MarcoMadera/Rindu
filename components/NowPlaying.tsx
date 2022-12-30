@@ -171,7 +171,8 @@ export default function NowPlaying(): ReactElement | null {
       <style jsx>{`
         section {
           margin-right: 10px;
-          max-width: 250px;
+          max-width: 310px;
+          min-width: 100px;
           overflow: hidden;
           position: relative;
         }
@@ -272,6 +273,11 @@ export default function NowPlaying(): ReactElement | null {
           100% {
             transform: translateX(0px);
             opacity: 1;
+          }
+        }
+        @media (max-width: 685px) {
+          section {
+            max-width: 200px;
           }
         }
       `}</style>
