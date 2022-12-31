@@ -1,6 +1,6 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import CardTrack from "../components/CardTrack";
+import CardTrack, { CardType } from "../components/CardTrack";
 import UserContext from "context/UserContext";
 import { ToastContextProvider } from "context/ToastContext";
 import { HeaderContextProvider } from "context/HeaderContext";
@@ -154,7 +154,7 @@ Default.args = {
   position: 0,
   accessToken: "",
   style: {},
-  type: "playlist",
+  type: CardType.playlist,
   isTrackInLibrary: false,
   isSingleTrack: false,
   playlistUri: "",
@@ -168,7 +168,7 @@ WithAddButton.args = {
   position: 0,
   accessToken: "",
   style: {},
-  type: "presentation",
+  type: CardType.presentation,
   isTrackInLibrary: false,
   isSingleTrack: false,
   playlistUri: "",

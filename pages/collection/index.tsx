@@ -7,6 +7,8 @@ import { NextApiResponse, NextApiRequest } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import NavigationTopBarExtraField from "components/NavigationTopBarExtraField";
 import useHeader from "hooks/useHeader";
+import useOnSmallScreen from "hooks/useOnSmallScreen";
+import ContentContainer from "components/ContentContainer";
 
 interface ICollectionProps {
   translations: Translations["collection"];
@@ -17,9 +19,13 @@ export default function Collection({
 }: ICollectionProps): ReactElement {
   const router = useRouter();
   const { setElement, setHeaderColor } = useHeader();
+
+  const isSmallScreen = useOnSmallScreen();
+
   useEffect(() => {
+    if (isSmallScreen || window.innerWidth < 768) return;
     router.push("/collection/playlists");
-  }, [router]);
+  }, [router, isSmallScreen]);
 
   useEffect(() => {
     setElement(() => <NavigationTopBarExtraField selected={1} />);
@@ -32,9 +38,40 @@ export default function Collection({
   }, [setElement, setHeaderColor]);
 
   return (
-    <Head>
-      <title>Rindu - {translations?.collection}</title>
-    </Head>
+    <ContentContainer>
+      <Head>
+        <title>Rindu - {translations?.collection}</title>
+      </Head>
+      <div className="navigation-container">
+        <NavigationTopBarExtraField selected={0} />
+        <style jsx>{`
+          .navigation-container {
+            display: none;
+          }
+
+          @media screen and (max-width: 768px) {
+            .navigation-container {
+              display: block;
+              position: relative;
+            }
+
+            .navigation-container :global(.extraField-nav) {
+              margin-left: 0;
+              display: block;
+              position: relative;
+            }
+            .navigation-container :global(.extraField-nav ul) {
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 2rem;
+              justify-content: center;
+              align-items: baseline;
+              margin: 16px 0;
+            }
+          }
+        `}</style>
+      </div>
+    </ContentContainer>
   );
 }
 
@@ -56,7 +93,6 @@ export function getServerSideProps({
     serverRedirect(res, "/");
     return { props: null };
   }
-  serverRedirect(res, "/collection/playlists", false);
 
   return {
     props: {

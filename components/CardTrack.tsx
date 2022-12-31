@@ -27,14 +27,20 @@ import { useRouter } from "next/router";
 import { spanishCountries } from "utils/getTranslations";
 import { getSiteUrl } from "utils/environment";
 import ArtistList from "./ArtistList";
+import useOnSmallScreen from "hooks/useOnSmallScreen";
 
+export enum CardType {
+  presentation = "presentation",
+  playlist = "playlist",
+  album = "album",
+}
 interface CardTrackProps {
   track: ITrack | undefined;
   accessToken: string | undefined;
   playlistUri: string;
   style?: CSSProperties;
   isTrackInLibrary: boolean | undefined;
-  type: "presentation" | "playlist" | "album";
+  type: CardType;
   isSingleTrack?: boolean;
   position?: number;
   onClickAdd?: () => void;
@@ -49,7 +55,7 @@ export default function CardTrack({
   playlistUri,
   isTrackInLibrary,
   style,
-  type,
+  type: cardType,
   isSingleTrack,
   position,
   onClickAdd,
@@ -83,6 +89,15 @@ export default function CardTrack({
   const locale = spanishCountries.includes(country) ? "es" : "en";
   const date = track?.added_at ? +new Date(track?.added_at) : NaN;
   const displayDate = isNaN(date) ? track?.added_at : getTimeAgo(date, locale);
+  const [type, setType] = useState<CardType>(cardType);
+
+  const isSmallScreen = useOnSmallScreen((isSmall) => {
+    if (isSmall) {
+      setType(CardType.presentation);
+    } else {
+      setType(cardType);
+    }
+  });
 
   const isPlayable =
     track?.type === "episode" ||
@@ -141,6 +156,27 @@ export default function CardTrack({
     <div
       style={style}
       className="trackItem"
+      onClick={() => {
+        if (!isSmallScreen) return;
+        if (isPlayable) {
+          if (track.corruptedTrack) {
+            addToast({
+              variant: "error",
+              message: "This track is corrupted and cannot be played",
+            });
+            return;
+          }
+          if (isPremium) {
+            (player as Spotify.Player)?.activateElement();
+          }
+          playThisTrack();
+        } else {
+          addToast({
+            variant: "info",
+            message: "This content is not available",
+          });
+        }
+      }}
       onDoubleClick={() => {
         if (isPlayable) {
           if (track.corruptedTrack) {
@@ -323,7 +359,7 @@ export default function CardTrack({
         </>
       ) : null}
       <section>
-        {track.popularity ? (
+        {track.popularity && !isSmallScreen ? (
           <div className="pop-meter">
             <div className="pop-meter-bar"></div>
             <div
@@ -460,6 +496,18 @@ export default function CardTrack({
             : type === "album"
             ? "[index] 48px [first] 14fr [popularity] 1fr [last] minmax(180px,1fr)"
             : "[index] 55px [first] 14fr [popularity] 1fr [last] minmax(180px,1fr)"};
+        }
+        @media (max-width: 768px) {
+          .trackItem {
+            background-color: ${isTheSameAsCurrentlyPlaying
+              ? "#2020204d"
+              : "transparent"};
+            grid-template-columns: ${type === "playlist"
+              ? "[index] 48px [first] 14fr [var1] 8fr [var2] 3fr [popularity] 1fr [last] minmax(60px,1fr)"
+              : type === "album"
+              ? "[index] 48px [first] 14fr [popularity] 1fr [last] minmax(60px,1fr)"
+              : "[index] 55px [first] 14fr [popularity] 1fr [last] minmax(60px,1fr)"};
+          }
         }
       `}</style>
       <style jsx>{`

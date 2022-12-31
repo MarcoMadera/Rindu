@@ -242,6 +242,11 @@ export default function EpisodePage({
           margin: 16px 0;
           flex-direction: row;
         }
+        @media (max-width: 768px) {
+          .options {
+            margin: 32px;
+          }
+        }
       `}</style>
     </ContentContainer>
   );

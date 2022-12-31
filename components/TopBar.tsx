@@ -138,6 +138,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
           width: 100%;
           min-width: 0;
           z-index: 2;
+          display: flex;
         }
         a {
           border-radius: 500px;
@@ -198,6 +199,11 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
           position: sticky;
           top: 0px;
           z-index: 9999999999;
+        }
+        @media screen and (max-width: 768px) {
+          .extraElement {
+            display: none;
+          }
         }
       `}</style>
     </>

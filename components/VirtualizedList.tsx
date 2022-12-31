@@ -1,4 +1,4 @@
-import CardTrack from "components/CardTrack";
+import CardTrack, { CardType } from "components/CardTrack";
 import useAuth from "hooks/useAuth";
 import useSpotify from "hooks/useSpotify";
 import { ReactElement, useCallback, useState } from "react";
@@ -17,7 +17,7 @@ import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import { getTracksFromPlaylist } from "utils/spotifyCalls/getTracksFromPlayList";
 
 interface Props {
-  type: "playlist" | "album" | "presentation";
+  type: CardType;
   initialTracksInLibrary: boolean[] | null;
   isLibrary?: boolean;
   isGeneratedPlaylist?: boolean;

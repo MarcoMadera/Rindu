@@ -3,7 +3,7 @@ import { ReactElement } from "react";
 import { ITrack } from "types/spotify";
 import { divideArray } from "utils/divideArray";
 import { isCorruptedTrack } from "utils/isCorruptedTrack";
-import CardTrack from "./CardTrack";
+import CardTrack, { CardType } from "./CardTrack";
 import Carousel from "./Carousel";
 import FirstTrackContainer from "./FirstTrackContainer";
 interface MainTracksProps {
@@ -50,7 +50,7 @@ export default function MainTracks({
                     playlistUri=""
                     track={track}
                     key={track.id}
-                    type="presentation"
+                    type={CardType.presentation}
                     position={index}
                     isSingleTrack
                     allTracks={allTracks}

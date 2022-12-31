@@ -20,6 +20,7 @@ import BrowseCategories from "components/BrowseCategories";
 import { getTranslations, Page } from "utils/getTranslations";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import useTranslations from "hooks/useTranslations";
+import useOnSmallScreen from "hooks/useOnSmallScreen";
 
 interface SearchPageProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
@@ -38,6 +39,7 @@ export default function SearchPage({
   const [data, setData] = useState<SpotifyApi.SearchResponse | null>(null);
   const { isPlaying } = useSpotify();
   const { translations } = useTranslations();
+  const isSmallScreen = useOnSmallScreen();
 
   useEffect(() => {
     setElement(() => <SearchInputElement source="search" setData={setData} />);
@@ -62,6 +64,19 @@ export default function SearchPage({
         <Head>
           <title>Rindu - {translations.search}</title>
         </Head>
+      )}
+      {isSmallScreen && (
+        <div className="search-container">
+          <SearchInputElement source="search" setData={setData} />
+          <style jsx>{`
+            .search-container {
+              margin: 30px auto;
+              display: flex;
+              justify-content: center;
+              width: 100%;
+            }
+          `}</style>
+        </div>
       )}
       {data ? (
         <div>

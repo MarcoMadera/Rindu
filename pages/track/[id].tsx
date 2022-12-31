@@ -15,7 +15,7 @@ import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
 import { Heart } from "components/icons/Heart";
 import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibrary";
 import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
-import CardTrack from "components/CardTrack";
+import CardTrack, { CardType } from "components/CardTrack";
 import { getArtistTopTracks } from "utils/spotifyCalls/getArtistTopTracks";
 import { getArtistById } from "utils/spotifyCalls/getArtistById";
 import { HeaderType } from "types/pageHeader";
@@ -249,7 +249,7 @@ export default function TrackPage({
                   playlistUri=""
                   track={artistTrack}
                   key={artistTrack.id}
-                  type="playlist"
+                  type={CardType.playlist}
                   position={position}
                   visualPosition={i + 1}
                   isSingleTrack
@@ -340,6 +340,11 @@ export default function TrackPage({
           margin-top: 32px;
           position: relative;
           z-index: 1;
+        }
+        @media (max-width: 768px) {
+          .options {
+            margin: 32px 0;
+          }
         }
       `}</style>
     </ContentContainer>

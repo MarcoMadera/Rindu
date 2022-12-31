@@ -30,6 +30,7 @@ import { getSetLists, SetLists } from "utils/getSetLists";
 import { getArtistInfo, Artist } from "utils/getArtistInfo";
 import { conjuction } from "utils/conjuction";
 import { CardType } from "components/CardContent";
+import { CardType as TrackCardType } from "components/CardTrack";
 import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
 import { getMonth } from "utils/getMonth";
@@ -242,7 +243,7 @@ export default function ArtistPage({
                       key={track.id}
                       isSingleTrack
                       position={i}
-                      type="playlist"
+                      type={TrackCardType.playlist}
                       allTracks={allTracks}
                     />
                   );
@@ -682,6 +683,11 @@ export default function ArtistPage({
           position: relative;
           flex: 60%;
           height: fit-content;
+        }
+        @media (max-width: 768px) {
+          .options {
+            padding: 32px 32px;
+          }
         }
         @media (max-width: 500px) {
           .popular-content,

@@ -209,6 +209,11 @@ export default function UserWidget({
         svg {
           margin-right: 6px;
         }
+        @media screen and (max-width: 500px) {
+          p {
+            display: none;
+          }
+        }
       `}</style>
     </div>
   );

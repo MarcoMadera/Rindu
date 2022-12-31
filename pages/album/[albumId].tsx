@@ -26,6 +26,7 @@ import ContentContainer from "components/ContentContainer";
 import { isCorruptedTrack } from "utils/isCorruptedTrack";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { getTranslations, Page } from "utils/getTranslations";
+import { CardType } from "components/CardTrack";
 
 interface AlbumPageProps {
   album: SpotifyApi.SingleAlbumResponse | null;
@@ -163,9 +164,13 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
           </div>
         </div>
         <div className="trc">
-          <TrackListHeader type="album" setIsPin={setIsPin} isPin={isPin} />
+          <TrackListHeader
+            type={CardType.album}
+            setIsPin={setIsPin}
+            isPin={isPin}
+          />
           <VirtualizedList
-            type="album"
+            type={CardType.album}
             initialTracksInLibrary={tracksInLibrary}
           />
           <div className="copy">
@@ -216,6 +221,11 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
         }
         .trc {
           margin-bottom: 50px;
+        }
+        @media (max-width: 768px) {
+          .options {
+            padding: 32px 32px;
+          }
         }
       `}</style>
     </ContentContainer>
