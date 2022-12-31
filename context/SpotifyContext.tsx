@@ -13,7 +13,12 @@ import {
   useRef,
   useState,
 } from "react";
-import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
+import {
+  DisplayInFullScreen,
+  ISpotifyContext,
+  ITrack,
+  PlaylistItems,
+} from "types/spotify";
 import { removeTracksFromPlaylist } from "utils/spotifyCalls/removeTracksFromPlaylist";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -29,7 +34,9 @@ export function SpotifyContextProvider({
   const [deviceId, setDeviceId] = useState<string>();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isShowingSideBarImg, setIsShowingSideBarImg] = useState(false);
+  const [previousTracks, setPreviousTracks] = useState<ITrack[]>([]);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<ITrack>();
+  const [nextTracks, setNextTracks] = useState<ITrack[]>([]);
   const [currentlyPlayingPosition, setCurrentlyPlayingPosition] =
     useState<number>();
   const [currentlyPlayingDuration, setCurrentlyPlayingDuration] =
@@ -49,7 +56,8 @@ export function SpotifyContextProvider({
   const [reconnectionError, setReconnectionError] = useState(false);
   const [suffleState, setSuffleState] = useState(false);
   const [repeatState, setRepeatState] = useState<0 | 1 | 2>(0);
-  const [showLyrics, setShowLyrics] = useToggle();
+  const [displayInFullScreen, setDisplayInFullScreen] =
+    useState<DisplayInFullScreen>(DisplayInFullScreen.App);
   const [isPictureInPictureLyircsCanvas, setIsPictureInPictureLyircsCanvas] =
     useToggle();
 
@@ -150,14 +158,18 @@ export function SpotifyContextProvider({
         recentlyPlayed,
         setReconnectionError,
         removeTracks,
-        showLyrics,
-        setShowLyrics,
         isPictureInPictureLyircsCanvas,
         setIsPictureInPictureLyircsCanvas,
         suffleState,
         setSuffleState,
         repeatState,
         setRepeatState,
+        displayInFullScreen,
+        setDisplayInFullScreen,
+        previousTracks,
+        setPreviousTracks,
+        nextTracks,
+        setNextTracks,
       }}
     >
       {currentlyPlaying?.name && (

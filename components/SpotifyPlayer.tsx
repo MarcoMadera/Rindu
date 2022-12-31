@@ -178,6 +178,9 @@ export default function SpotifyPlayer(): ReactElement {
           .playerControls-2 {
             max-width: 350px;
           }
+          div.container {
+            gap: 0px;
+          }
         }
         @media (max-width: 1000px) {
           .playerControls-1 {

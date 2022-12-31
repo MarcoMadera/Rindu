@@ -10,6 +10,7 @@ import {
   useLayoutEffect,
   useState,
 } from "react";
+import { DisplayInFullScreen } from "types/spotify";
 import { colorCodedToHex, colorCodedToRGB } from "utils/colorCoded";
 import { getRandomColor } from "utils/colors";
 import { getLinesFittingCanvas } from "utils/getLinesFittingCanvas";
@@ -27,7 +28,7 @@ export default function FullScreenLyrics({
 }: FullScreenLyricsProps): ReactElement {
   const {
     currentlyPlaying,
-    setShowLyrics,
+    setDisplayInFullScreen,
     currentlyPlayingDuration,
     isPlaying,
     player,
@@ -108,7 +109,8 @@ export default function FullScreenLyrics({
         : lyricTextColor ?? `hsl(${h}, ${s}%, ${l - 20}%)`
     );
 
-    if (currentlyPlaying?.type !== "track" || !app) return setShowLyrics.off();
+    if (currentlyPlaying?.type !== "track" || !app)
+      return setDisplayInFullScreen(DisplayInFullScreen.App);
     app.style.backgroundColor = newLyricsBackgroundColor;
     setLyricsBackgroundColor(newLyricsBackgroundColor);
     return () => {
@@ -123,7 +125,7 @@ export default function FullScreenLyrics({
     lyrics?.colors?.background,
     lyrics?.colors?.highlightText,
     lyrics?.colors?.text,
-    setShowLyrics,
+    setDisplayInFullScreen,
   ]);
 
   useEffect(() => {
