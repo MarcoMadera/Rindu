@@ -34,6 +34,8 @@ export default function useSpotifyPlayer({ name }: { name: string }): {
     setCurrentlyPlaying,
     setCurrentlyPlayingPosition,
     setCurrentlyPlayingDuration,
+    setPreviousTracks,
+    setNextTracks,
     setPlayer,
     allTracks,
     setSuffleState,
@@ -225,8 +227,8 @@ export default function useSpotifyPlayer({ name }: { name: string }): {
         if (playbackState) {
           setIsPlaying(!playbackState.paused);
         }
-        // playbackState?.track_window.next_tracks
-        // playbackState?.track_window.previous_tracks
+        setPreviousTracks(playbackState?.track_window?.previous_tracks || []);
+        setNextTracks(playbackState?.track_window?.next_tracks || []);
       });
 
       spotifyPlayer.current?.on("authentication_error", () => {

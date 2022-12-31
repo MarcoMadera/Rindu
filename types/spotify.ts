@@ -61,6 +61,13 @@ export interface ITrack {
   popularity?: number;
 }
 
+export enum DisplayInFullScreen {
+  Lyrics = "lyrics",
+  Queue = "queue",
+  App = "app",
+  Player = "player",
+}
+
 export interface ISpotifyContext {
   playlists: PlaylistItems;
   setPlaylists: Dispatch<SetStateAction<PlaylistItems>>;
@@ -76,8 +83,12 @@ export interface ISpotifyContext {
   setIsShowingSideBarImg: Dispatch<SetStateAction<boolean>>;
   setIsPip: Dispatch<SetStateAction<boolean>>;
   isShowingSideBarImg: boolean;
+  setPreviousTracks: Dispatch<SetStateAction<ITrack[]>>;
+  previousTracks: ITrack[];
   setCurrentlyPlaying: Dispatch<SetStateAction<ITrack | undefined>>;
   currentlyPlaying: ITrack | undefined;
+  setNextTracks: Dispatch<SetStateAction<ITrack[]>>;
+  nextTracks: ITrack[];
   currentlyPlayingPosition: number | undefined;
   currentlyPlayingDuration: number | undefined;
   setCurrentlyPlayingPosition: Dispatch<SetStateAction<number | undefined>>;
@@ -105,8 +116,8 @@ export interface ISpotifyContext {
     tracks: number[],
     snapshotID: string | undefined
   ) => Promise<string | undefined>;
-  showLyrics: boolean;
-  setShowLyrics: IUseToggleHandlers;
+  displayInFullScreen: DisplayInFullScreen;
+  setDisplayInFullScreen: Dispatch<SetStateAction<DisplayInFullScreen>>;
   isPictureInPictureLyircsCanvas: boolean;
   setIsPictureInPictureLyircsCanvas: IUseToggleHandlers;
   suffleState: boolean;

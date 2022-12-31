@@ -51,7 +51,8 @@ export async function getLyrics(
 ): Promise<GetLyrics> {
   if (action === LyricsAction.Fullscreen) {
     const resSyncedLyrics = await fetch(
-      process.env.NEXT_PUBLIC_LYRICS_API_URL as string,
+      process.env.NEXT_PUBLIC_LYRICS_API_URL ??
+        `${getSiteUrl()}/api/synced-lyrics`,
       {
         method: "POST",
         headers: {

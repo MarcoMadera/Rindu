@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { MutableRefObject, useEffect } from "react";
+import { DisplayInFullScreen } from "types/spotify";
 import useSpotify from "./useSpotify";
 
 export default function useRouterEvents(
@@ -7,14 +8,14 @@ export default function useRouterEvents(
   appRef?: MutableRefObject<HTMLDivElement | undefined>
 ): void {
   const router = useRouter();
-  const { setShowLyrics } = useSpotify();
+  const { setDisplayInFullScreen } = useSpotify();
 
   useEffect(() => {
     const app = appRef?.current;
 
     router.events.on("routeChangeComplete", () => {
       app?.scrollTo(0, 0);
-      setShowLyrics.off();
+      setDisplayInFullScreen(DisplayInFullScreen.App);
     });
 
     app?.addEventListener("scroll", onAppScroll);
@@ -22,9 +23,9 @@ export default function useRouterEvents(
     return () => {
       router.events.off("routeChangeComplete", () => {
         app?.scrollTo(0, 0);
-        setShowLyrics.off();
+        setDisplayInFullScreen(DisplayInFullScreen.App);
       });
       app?.removeEventListener("scroll", onAppScroll);
     };
-  }, [router, appRef, onAppScroll, setShowLyrics]);
+  }, [router, appRef, onAppScroll, setDisplayInFullScreen]);
 }

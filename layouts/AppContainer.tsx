@@ -14,11 +14,16 @@ import {
   PanelGroup,
   PanelResizeHandle,
 } from "components/ResizablePanel";
+import { DisplayInFullScreen } from "types/spotify";
+import FullScreenQueue from "../components/FullScreenQueue";
 
 export function AppContainer({ children }: PropsWithChildren): ReactElement {
   const appRef = useRef<HTMLDivElement>();
-  const { showLyrics, currentlyPlaying, hideSideBar } = useSpotify();
-  const shouldDisplayLyrics = showLyrics && currentlyPlaying?.type === "track";
+  const { displayInFullScreen, currentlyPlaying, hideSideBar } = useSpotify();
+  const shouldDisplayLyrics =
+    displayInFullScreen === DisplayInFullScreen.Lyrics &&
+    currentlyPlaying?.type === "track";
+  const shouldDisplayQueue = displayInFullScreen === DisplayInFullScreen.Queue;
   const leftPanelMinWidth = 245;
   const leftPanelMaxWidth = 400;
   const [leftPanelDraggedWidth, setLeftPanelDraggedWidth] =
@@ -51,6 +56,8 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
             <TopBar appRef={appRef} />
             {shouldDisplayLyrics ? (
               <FullScreenLyrics appRef={appRef} />
+            ) : shouldDisplayQueue ? (
+              <FullScreenQueue />
             ) : (
               children
             )}

@@ -75,7 +75,7 @@ export default function VolumeControl(): ReactElement {
           height: 32px;
         }
         :global(.volume-slider) {
-          max-width: 120px;
+          max-width: 100px;
         }
       `}</style>
     </>
