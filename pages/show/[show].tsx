@@ -247,6 +247,11 @@ const Shows: NextPage<PlaylistProps> = ({
           color: #b3b3b3;
           font-family: "Lato", sans-serif;
         }
+        @media (max-width: 768px) {
+          .options {
+            padding: 32px;
+          }
+        }
       `}</style>
     </ContentContainer>
   );

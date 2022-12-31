@@ -163,6 +163,23 @@ export default function PageDetails({
           top: 0;
           width: 100%;
         }
+        @media screen and (max-width: 768px) {
+          section {
+            display: block;
+            text-align: center;
+            position: relative;
+          }
+          header {
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            height: 35vh;
+            min-height: 500px;
+            max-height: 700px;
+            width: 100%;
+            position: relative;
+          }
+        }
       `}</style>
     </>
   );

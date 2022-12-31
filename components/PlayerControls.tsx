@@ -202,6 +202,10 @@ export default function PlayerControls(): ReactElement {
           div.player {
             justify-content: flex-end;
           }
+          div.player {
+            justify-content: center;
+            min-width: 100%;
+          }
         }
         @media (max-width: 600px) {
           .previous,

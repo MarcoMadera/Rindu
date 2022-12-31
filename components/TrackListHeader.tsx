@@ -1,4 +1,5 @@
 import Clock from "components/icons/Clock";
+import useOnSmallScreen from "hooks/useOnSmallScreen";
 import useTranslations from "hooks/useTranslations";
 import {
   Dispatch,
@@ -7,19 +8,30 @@ import {
   SetStateAction,
   useEffect,
   useRef,
+  useState,
 } from "react";
+import { CardType } from "./CardTrack";
 
 export default function TrackListHeader({
   isPin,
   setIsPin,
-  type,
+  type: cardType,
 }: {
   isPin: boolean;
   setIsPin: Dispatch<SetStateAction<boolean>>;
-  type: "presentation" | "playlist" | "album";
+  type: CardType;
 }): ReactElement {
   const ref = useRef<HTMLDivElement>();
   const { translations } = useTranslations();
+  const [type, setType] = useState<CardType>(cardType);
+
+  const isSmallScreen = useOnSmallScreen((isSmall) => {
+    if (isSmall) {
+      setType(CardType.presentation);
+    } else {
+      setType(cardType);
+    }
+  });
 
   useEffect(() => {
     const cachedRef = ref.current,
@@ -93,10 +105,19 @@ export default function TrackListHeader({
           margin-left: 16px;
         }
         .trackListHeader span:nth-of-type(2) {
-          margin-left: 70px;
+          margin-left: ${isSmallScreen ? "0" : "70px"};
         }
         .clock {
           justify-content: center;
+        }
+        @media (max-width: 768px) {
+          .trackListHeader {
+            grid-template-columns: ${type === "playlist"
+              ? "[index] 48px [first] 14fr [var1] 8fr [var2] 3fr [popularity] 1fr [last] minmax(60px,2fr)"
+              : type === "album"
+              ? "[index] 48px [first] 14fr [popularity] 1fr [last] minmax(60px,2fr)"
+              : "[index] 55px [first] 14fr [popularity] 1fr [last] minmax(60px,2fr)"};
+          }
         }
       `}</style>
     </div>

@@ -13,6 +13,8 @@ import Search from "./icons/Search";
 import Library from "./icons/Library";
 import { useRouter } from "next/router";
 import useSpotify from "hooks/useSpotify";
+import useOnSmallScreen from "hooks/useOnSmallScreen";
+import { DisplayInFullScreen } from "types/spotify";
 
 export default function SpotifyPlayer(): ReactElement {
   const { user } = useAuth();
@@ -20,8 +22,9 @@ export default function SpotifyPlayer(): ReactElement {
   const isPremium = user?.product === "premium";
   const { translations } = useTranslations();
   const router = useRouter();
-  const { currentlyPlaying } = useSpotify();
+  const { currentlyPlaying, setDisplayInFullScreen } = useSpotify();
   useSpotifyPlayer({ name: "Rindu" });
+  const isSmallScreen = useOnSmallScreen();
 
   useEffect(() => {
     if (!user?.product) {
@@ -48,7 +51,19 @@ export default function SpotifyPlayer(): ReactElement {
         {isPremium ? (
           <Script src="https://sdk.scdn.co/spotify-player.js"></Script>
         ) : null}
-        <section>
+        <section
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "p") {
+              setDisplayInFullScreen(DisplayInFullScreen.Player);
+            }
+          }}
+          onClick={() => {
+            if (!isSmallScreen) return;
+            setDisplayInFullScreen(DisplayInFullScreen.Player);
+          }}
+        >
           <NowPlaying />
           <div className="playerControls-1">
             <PlayerControls />

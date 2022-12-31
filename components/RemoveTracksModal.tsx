@@ -13,7 +13,7 @@ import {
 import useSpotify from "hooks/useSpotify";
 import useAuth from "hooks/useAuth";
 import { ITrack } from "types/spotify";
-import CardTrack from "./CardTrack";
+import CardTrack, { CardType } from "./CardTrack";
 import { takeCookie } from "utils/cookies";
 import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 import { List } from "react-virtualized";
@@ -204,7 +204,7 @@ export default function RemoveTracksModal({
                         isTrackInLibrary={false}
                         track={tracksToRemove[index]}
                         playlistUri={pageDetails?.uri ?? ""}
-                        type="album"
+                        type={CardType.album}
                         position={tracksToRemove[index].position}
                         allTracks={allTracks}
                       />

@@ -15,6 +15,7 @@ import { Eyebrow } from "./Eyebrow";
 import { AsType } from "types/heading";
 import useTranslations from "hooks/useTranslations";
 import ArtistList from "./ArtistList";
+import useOnSmallScreen from "hooks/useOnSmallScreen";
 
 export default function PageHeader({
   type,
@@ -63,6 +64,8 @@ export default function PageHeader({
     getMainColorFromImage("cover-image", setHeaderColor);
   }, [banner, router.asPath, setHeaderColor]);
 
+  const isSmallScreen = useOnSmallScreen();
+
   return (
     <PageDetails
       banner={banner}
@@ -80,7 +83,9 @@ export default function PageHeader({
         <Heading
           number={1}
           fontSize={
-            title.length < 16
+            isSmallScreen
+              ? "48px"
+              : title.length < 16
               ? "96px"
               : title.length < 21
               ? "72px"
@@ -249,6 +254,16 @@ export default function PageHeader({
               : "0px"};
             object-fit: cover;
             object-position: center center;
+          }
+          @media (max-width: 768px) {
+            .playlistInfo :global(h1) {
+              white-space: nowrap;
+              justify-content: center;
+              display: flex;
+            }
+            #cover-image {
+              margin: 0;
+            }
           }
         `}
       </style>

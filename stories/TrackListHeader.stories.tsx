@@ -1,6 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import TrackListHeader from "../components/TrackListHeader";
+import { CardType } from "components/CardTrack";
 
 export default {
   title: "Components/TrackListHeader",
@@ -16,7 +17,7 @@ const Template: ComponentStory<typeof TrackListHeader> = (args) => {
 
 export const Album = Template.bind({});
 Album.args = {
-  type: "album",
+  type: CardType.album,
   isPin: true,
   setIsPin: () => {
     console.log("pin clicked");
@@ -25,7 +26,7 @@ Album.args = {
 
 export const Playlist = Template.bind({});
 Playlist.args = {
-  type: "playlist",
+  type: CardType.playlist,
   isPin: true,
   setIsPin: () => {
     console.log("pin");
@@ -34,7 +35,7 @@ Playlist.args = {
 
 export const Presentation = Template.bind({});
 Presentation.args = {
-  type: "presentation",
+  type: CardType.presentation,
   isPin: true,
   setIsPin: () => {
     console.log("pin");

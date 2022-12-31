@@ -20,7 +20,7 @@ import { PlaylistProps } from "pages/playlist/[playlist]";
 import { SearchInputElement } from "components/SearchInputElement";
 import { addItemsToPlaylist } from "utils/spotifyCalls/addItemsToPlaylist";
 import useToast from "hooks/useToast";
-import CardTrack from "components/CardTrack";
+import CardTrack, { CardType } from "components/CardTrack";
 import { checkUsersFollowAPlaylist } from "utils/spotifyCalls/checkUsersFollowAPlaylist";
 import { followPlaylist } from "utils/spotifyCalls/followPlaylist";
 import { unfollowPlaylist } from "utils/spotifyCalls/unfollowPlaylist";
@@ -281,11 +281,11 @@ const Playlist: NextPage<
             <div className="trc">
               <TrackListHeader
                 isPin={isPin}
-                type="playlist"
+                type={CardType.playlist}
                 setIsPin={setIsPin}
               />
               <VirtualizedList
-                type="playlist"
+                type={CardType.playlist}
                 isLibrary={isLibrary}
                 isGeneratedPlaylist={isGeneratedPlaylist}
                 initialTracksInLibrary={tracksInLibrary}
@@ -336,7 +336,7 @@ const Playlist: NextPage<
                         );
                       }}
                       key={track.id}
-                      type="presentation"
+                      type={CardType.presentation}
                       position={i}
                       isSingleTrack
                       uri={track.uri}
@@ -388,7 +388,7 @@ const Playlist: NextPage<
                           );
                         }}
                         key={track.id}
-                        type="presentation"
+                        type={CardType.presentation}
                         position={i}
                         isSingleTrack
                         uri={track.uri}
@@ -516,6 +516,11 @@ const Playlist: NextPage<
         }
         .trc :global(.titles span:nth-of-type(5)) {
           justify-content: center;
+        }
+        @media (max-width: 768px) {
+          .options {
+            margin: 32px 0;
+          }
         }
       `}</style>
     </ContentContainer>
