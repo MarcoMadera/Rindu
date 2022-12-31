@@ -8,16 +8,13 @@ export default function useFullScreenControl(
   setDisplayInFullScreen: (visible: boolean) => void;
 } {
   const { setDisplayInFullScreen } = useSpotify();
-  const [lastDisplayFullScreen, setLastDisplayFullScreen] = useState<
-    DisplayInFullScreen | undefined
-  >();
+  const [lastDisplayFullScreen, setLastDisplayFullScreen] =
+    useState<DisplayInFullScreen>(displayInFullScreen);
 
   return {
     setDisplayInFullScreen: (visible: boolean) => {
       setDisplayInFullScreen(
-        visible
-          ? lastDisplayFullScreen || DisplayInFullScreen.App
-          : DisplayInFullScreen.App
+        visible ? lastDisplayFullScreen : DisplayInFullScreen.App
       );
       setLastDisplayFullScreen(displayInFullScreen);
     },
