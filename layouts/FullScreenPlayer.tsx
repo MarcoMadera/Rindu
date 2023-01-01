@@ -51,7 +51,15 @@ export default function FullScreenPlayer(): ReactElement {
     player?.togglePlay();
   }
   function onDoubleClick() {
-    setDisplayInFullScreen(false);
+    const app = document.getElementById("right");
+    if (app) {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        app.requestFullscreen();
+      }
+      setDisplayInFullScreen(!document.fullscreenElement);
+    }
   }
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [handleClick, handleDoubleClick] = useClickPreventionOnDoubleClick(

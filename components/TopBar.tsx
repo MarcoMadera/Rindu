@@ -12,6 +12,9 @@ import {
   calculateHeaderOpacity,
   setOpacityStyles,
 } from "utils/topBar";
+import useSpotify from "hooks/useSpotify";
+import { DisplayInFullScreen } from "types/spotify";
+import { Chevron } from "./icons/Chevron";
 
 interface TopBarProps {
   appRef?: MutableRefObject<HTMLDivElement | undefined>;
@@ -25,6 +28,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
   const router = useRouter();
   const isLoginPage = router.pathname === "/";
   const [displayElement, setDisplayElement] = useState(false);
+  const { setDisplayInFullScreen } = useSpotify();
 
   useRouterEvents(() => {
     const app = appRef?.current;
@@ -100,6 +104,18 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
             <div className="noise"></div>
           </div>
           <RouterButtons />
+          <div className="back-to-player">
+            <button
+              type="button"
+              aria-label={"Back to player"}
+              onClick={(e) => {
+                e.stopPropagation();
+                setDisplayInFullScreen(DisplayInFullScreen.Player);
+              }}
+            >
+              <Chevron rotation={"270deg"} />
+            </button>
+          </div>
           <div className="extraElement">
             {displayElement || displayOnFixed ? <>{element}</> : null}
           </div>
@@ -123,6 +139,49 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
       </div>
       {!disableBackground && <div className="bg-12"></div>}
       <style jsx>{`
+        .back-to-player {
+          display: none;
+        }
+        .back-to-player button {
+          opacity: 1;
+          top: 5px;
+          right: 5px;
+          width: 40px;
+          height: 40px;
+          background-color: rgba(214, 214, 214, 0.311);
+          z-index: 1;
+          cursor: auto;
+          border: none;
+          border-radius: 50%;
+          color: #ffffffb3;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s ease-in-out;
+          animation: border-animation 1s ease-in-out;
+          animation-iteration-count: 3;
+        }
+        .back-to-player button:hover {
+          background-color: rgba(255, 255, 255, 0.45);
+        }
+        .back-to-player button:focus {
+          outline: none;
+        }
+        .back-to-player button:active {
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+        @keyframes border-animation {
+          0% {
+            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+          }
+          70% {
+            box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+          }
+          100% {
+            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+          }
+        }
         .bg-12 {
           background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0, #121212 100%),
             url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");

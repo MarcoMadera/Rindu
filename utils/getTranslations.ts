@@ -78,7 +78,7 @@ const queueTranslations = {
   },
   [Language.ES]: {
     previousTracks: "Canciones anteriores",
-    currentlyPlaying: "Reproduciendo actualmente",
+    currentlyPlaying: "Reproduciendo",
     nextUp: "Siguiente",
   },
 };
