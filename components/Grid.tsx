@@ -13,6 +13,16 @@ export default function Grid({ children }: PropsWithChildren): ReactElement {
           margin-top: 20px;
           grid-template-rows: 1fr;
         }
+        @media (max-width: 768px) {
+          div {
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+          }
+        }
+        @media (max-width: 420px) {
+          div {
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+          }
+        }
       `}</style>
     </div>
   );

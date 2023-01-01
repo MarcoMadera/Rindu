@@ -153,6 +153,22 @@ export const CardContent: React.FC<ICardContent> = ({
           object-position: center center;
           aspect-ratio: 1;
         }
+        @media screen and (max-width: 768px) {
+          img {
+            min-width: 140px;
+          }
+          article {
+            min-width: 160px;
+          }
+        }
+        @media screen and (max-width: 420px) {
+          img {
+            min-width: 110px;
+          }
+          article {
+            min-width: 120px;
+          }
+        }
       `}</style>
     </article>
   );
