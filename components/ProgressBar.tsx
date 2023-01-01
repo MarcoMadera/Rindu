@@ -29,7 +29,7 @@ export function ProgressBar(): ReactElement {
     if (!isPremium || !player) return;
     (player as Spotify.Player)?.getCurrentState()?.then((state) => {
       if (!state) return;
-      setProgressFromSpotify(state.position / 1000);
+      setProgressFromSpotify((state.position / state.duration) * 100);
     });
   }, [isPremium, player]);
 
