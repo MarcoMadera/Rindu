@@ -24,6 +24,7 @@ export default function ContentContainer({
           padding: ${hasPageHeader ? "0" : "0px 20px 30px"};
           min-height: calc(100vh - 90px);
           width: 100%;
+          background: #121212;
         }
         @media (max-width: 1000px) {
           main {

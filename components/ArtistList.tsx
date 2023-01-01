@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import useOnScreen from "hooks/useOnScreen";
 import Link from "next/link";
 import { Fragment, ReactElement, useRef } from "react";
@@ -46,6 +48,9 @@ export default function ArtistList({
                 tabIndex={isVisible ? 0 : -1}
                 aria-hidden={isVisible ? "false" : "true"}
                 ref={artistsRef}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
               >
                 {artist.name}
               </a>

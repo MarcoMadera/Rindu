@@ -3,6 +3,7 @@ import { ReactElement } from "react";
 import { DisplayInFullScreen } from "types/spotify";
 import DeviceConnectControl from "./DeviceConnectControl";
 import FullScreenControl from "./FullScreenControl";
+import FullScreen from "./icons/FullScreen";
 import Lyrics from "./icons/Lyrics";
 import Queue from "./icons/Queue";
 import VolumeControl from "./VolumeControl";
@@ -23,6 +24,10 @@ export default function PlaybackExtraControls(): ReactElement {
       />
       <DeviceConnectControl />
       <VolumeControl />
+      <FullScreenControl
+        icon={FullScreen}
+        displayInFullScreen={DisplayInFullScreen.Player}
+      />
       <style jsx>{`
         .extras {
           display: flex;

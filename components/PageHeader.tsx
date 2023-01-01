@@ -258,8 +258,9 @@ export default function PageHeader({
           @media (max-width: 768px) {
             .playlistInfo :global(h1) {
               white-space: nowrap;
-              justify-content: center;
               display: flex;
+              margin: 0 auto;
+              width: fit-content;
             }
             #cover-image {
               margin: 0;

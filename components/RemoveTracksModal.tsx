@@ -149,7 +149,10 @@ export default function RemoveTracksModal({
     <div className="popupConfirm">
       <div
         className="overlay"
-        onClick={() => setOpenModal(false)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpenModal(false);
+        }}
         aria-checked={openModal}
         onKeyDown={(e) => e.key === "Escape" && setOpenModal(false)}
         role="switch"
@@ -168,6 +171,7 @@ export default function RemoveTracksModal({
           tabIndex={0}
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             setOpenModal(false);
           }}
           className="exitButton"
@@ -219,6 +223,7 @@ export default function RemoveTracksModal({
                   className="removeButton"
                   onClick={async (e) => {
                     e.preventDefault();
+                    e.stopPropagation();
                     if (!isLibrary) {
                       const indexes = [
                         ...new Set([

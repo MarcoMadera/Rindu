@@ -2,6 +2,7 @@ import useMediaSession from "hooks/useMediaSession";
 import usePictureInPicture from "hooks/usePictureInPicture";
 import useRecentlyPlayed from "hooks/useRecentlyPlayed";
 import useReconnectSpotifyPlayer from "hooks/useReconnectSpotifyPlayer";
+import useShortcuts from "hooks/useShortCuts";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import useToggle from "hooks/useToggle";
 import Head from "next/head";
@@ -60,6 +61,7 @@ export function SpotifyContextProvider({
     useState<DisplayInFullScreen>(DisplayInFullScreen.App);
   const [isPictureInPictureLyircsCanvas, setIsPictureInPictureLyircsCanvas] =
     useToggle();
+  const [ignoreShortcuts, setIgnoreShortcuts] = useToggle();
 
   useReconnectSpotifyPlayer({
     reconnect: reconnectionError,
@@ -78,7 +80,6 @@ export function SpotifyContextProvider({
     videoRef,
     pictureInPictureCanvas,
     isPictureInPictureLyircsCanvas,
-    isPlaying,
     currentlyPlaying,
   });
   useMediaSession({
@@ -90,6 +91,12 @@ export function SpotifyContextProvider({
     videoRef,
     pictureInPictureCanvas,
     isPictureInPictureLyircsCanvas,
+  });
+  useShortcuts({
+    ignoreShortcuts,
+    setDisplayInFullScreen,
+    player,
+    currentlyPlaying,
   });
 
   const removeTracks = useCallback(
@@ -170,6 +177,7 @@ export function SpotifyContextProvider({
         setPreviousTracks,
         nextTracks,
         setNextTracks,
+        setIgnoreShortcuts,
       }}
     >
       {currentlyPlaying?.name && (

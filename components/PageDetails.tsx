@@ -6,7 +6,14 @@ import { ITrack } from "types/spotify";
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
 
 interface PageDetailsProps {
-  data: ITrack | null;
+  data?:
+    | ITrack
+    | SpotifyApi.UserObjectPublic
+    | SpotifyApi.PlaylistObjectFull
+    | SpotifyApi.AlbumObjectFull
+    | SpotifyApi.ArtistObjectFull
+    | SpotifyApi.ShowObject
+    | null;
   banner?: string;
   disableOpacityChange?: boolean;
 }
@@ -168,13 +175,14 @@ export default function PageDetails({
             display: block;
             text-align: center;
             position: relative;
+            margin-top: ${banner ? "180px" : "0px"};
           }
           header {
             display: flex;
             align-items: center;
             padding: 0 32px;
             height: 35vh;
-            min-height: 500px;
+            min-height: ${banner ? "320px" : "500px"};
             max-height: 700px;
             width: 100%;
             position: relative;

@@ -22,9 +22,11 @@ export default function SpotifyPlayer(): ReactElement {
   const isPremium = user?.product === "premium";
   const { translations } = useTranslations();
   const router = useRouter();
-  const { currentlyPlaying, setDisplayInFullScreen } = useSpotify();
+  const { currentlyPlaying, setDisplayInFullScreen, displayInFullScreen } =
+    useSpotify();
   useSpotifyPlayer({ name: "Rindu" });
   const isSmallScreen = useOnSmallScreen();
+  const isFullScreenPlayer = displayInFullScreen === DisplayInFullScreen.Player;
 
   useEffect(() => {
     if (!user?.product) {
@@ -59,7 +61,8 @@ export default function SpotifyPlayer(): ReactElement {
               setDisplayInFullScreen(DisplayInFullScreen.Player);
             }
           }}
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             if (!isSmallScreen) return;
             setDisplayInFullScreen(DisplayInFullScreen.Player);
           }}
@@ -76,19 +79,19 @@ export default function SpotifyPlayer(): ReactElement {
           <nav>
             <Link href="/dashboard">
               <a className="dashboard">
-                <Home fill="#b3b3b3" />
+                <Home fill="#ffffffb3" />
                 {translations?.home}
               </a>
             </Link>
             <Link href="/search">
               <a className="search">
-                <Search fill="#b3b3b3" />
+                <Search fill="#ffffffb3" />
                 {translations?.search}
               </a>
             </Link>
             <Link href="/collection">
               <a className="collection">
-                <Library fill="#b3b3b3" />
+                <Library fill="#ffffffb3" />
                 {translations?.collection}
               </a>
             </Link>
@@ -102,17 +105,17 @@ export default function SpotifyPlayer(): ReactElement {
         .dashboard,
         .dashboard :global(path) {
           color: ${router.pathname === "/dashboard" ? "#fff" : "inherit"};
-          fill: ${router.pathname === "/dashboard" ? "#fff" : "#b3b3b3"};
+          fill: ${router.pathname === "/dashboard" ? "#fff" : "#ffffffb3"};
         }
         .search,
         .search :global(path) {
           color: ${router.pathname === "/search" ? "#fff" : "inherit"};
-          fill: ${router.pathname === "/search" ? "#fff" : "#b3b3b3"};
+          fill: ${router.pathname === "/search" ? "#fff" : "#ffffffb3"};
         }
         .library,
         .library :global(path) {
           color: ${router.pathname === "/library" ? "#fff" : "inherit"};
-          fill: ${router.pathname === "/library" ? "#fff" : "#b3b3b3"};
+          fill: ${router.pathname === "/library" ? "#fff" : "#ffffffb3"};
         }
         a:hover,
         a:active,
@@ -124,11 +127,16 @@ export default function SpotifyPlayer(): ReactElement {
         a:focus :global(path) {
           fill: #fff;
         }
+        footer {
+          display: ${isFullScreenPlayer ? "none" : "flex"};
+        }
       `}</style>
       <style jsx>{`
         @media (max-width: 1000px) {
           section:nth-child(1) {
-            display: ${currentlyPlaying?.id ? "flex" : "none"};
+            display: ${currentlyPlaying?.id && !isFullScreenPlayer
+              ? "flex"
+              : "none"};
           }
         }
       `}</style>
@@ -183,7 +191,7 @@ export default function SpotifyPlayer(): ReactElement {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          color: #b3b3b3;
+          color: #ffffffb3;
           text-decoration: none;
           font-size: 12px;
           font-weight: 500;

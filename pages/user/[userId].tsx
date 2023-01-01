@@ -72,6 +72,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
         }
         totalPublicPlaylists={currentUserPlaylists?.total ?? 0}
         totalFollowers={currentUser?.followers?.total ?? 0}
+        data={currentUser}
       />
       {isThisUser && (
         <ContentContainer>

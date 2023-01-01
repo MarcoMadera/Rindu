@@ -65,3 +65,11 @@ p {
 small {
   font-size: 0.85rem;
 }
+@media screen and (max-width: 768px) {
+  ::-webkit-scrollbar {
+    height: 12px;
+    width: 4px;
+    overflow: visible;
+    margin: 2px;
+  }
+}

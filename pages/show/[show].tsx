@@ -244,7 +244,7 @@ const Shows: NextPage<PlaylistProps> = ({
           letter-spacing: normal;
           font-weight: 400;
           box-sizing: border-box;
-          color: #b3b3b3;
+          color: #ffffffb3;
           font-family: "Lato", sans-serif;
         }
         @media (max-width: 768px) {

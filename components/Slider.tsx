@@ -185,6 +185,16 @@ export default function Slider({
           action(progressPercent);
           setIsPressingMouse(false);
         }}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        onKeyUp={(e) => {
+          if (e.key === "ArrowRight") {
+            setProgressPercent((value) => (value >= 100 ? 100 : value + 1));
+          } else if (e.key === "ArrowLeft") {
+            setProgressPercent((value) => (value <= 0 ? 0 : value - 1));
+          }
+        }}
       >
         <div className="barBackground">
           <div className="lineContainer">
@@ -230,7 +240,7 @@ export default function Slider({
           height: 4px;
           width: 100%;
           display: flex;
-          background-color: #535353;
+          background-color: #ffffff75;
           position: absolute;
           top: 50%;
           transform: translateY(-50%);
@@ -281,9 +291,7 @@ export default function Slider({
           display: ${isPressingMouse || showDot ? "block" : "none"};
         }
         .slider-line {
-          background-color: ${isPressingMouse || showDot
-            ? "#1db954"
-            : "#b3b3b3"};
+          background-color: ${isPressingMouse || showDot ? "#1db954" : "#fff"};
         }
       `}</style>
     </div>

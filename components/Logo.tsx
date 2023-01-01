@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import useAuth from "hooks/useAuth";
 import Link from "next/link";
 import { ReactElement } from "react";
@@ -11,7 +13,14 @@ export default function Logo({ color }: LogoProps): ReactElement {
   return (
     <>
       <Link href={isLogin ? "/dashboard" : "/"}>
-        <a translate="no">Rindu</a>
+        <a
+          translate="no"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          Rindu
+        </a>
       </Link>
       <style jsx>{`
         a {

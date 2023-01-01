@@ -40,6 +40,7 @@ interface IAlbumLike {
   artists: SpotifyApi.ArtistObjectSimplified[];
   release_date: string;
   totalTracks: number;
+  data: SpotifyApi.AlbumObjectFull | null;
 }
 type AlbumLike = Modify<IPageHeader, IAlbumLike>;
 
@@ -47,6 +48,7 @@ interface IProfile {
   type: HeaderType.profile;
   totalPublicPlaylists: number;
   totalFollowers: number;
+  data: SpotifyApi.UserObjectPublic | null;
 }
 type Profile = Modify<IPageHeader, IProfile>;
 
@@ -60,6 +62,7 @@ interface IArtist {
     listeners: string;
     playcount: string;
   };
+  data: SpotifyApi.ArtistObjectFull | null;
 }
 type Artist = Modify<IPageHeader, IArtist>;
 
@@ -79,6 +82,7 @@ interface IPlaylist {
   ownerDisplayName: string;
   totalFollowers: number;
   totalTracks: number;
+  data: SpotifyApi.PlaylistObjectFull | null;
 }
 type Playlist = Modify<IPageHeader, IPlaylist>;
 
@@ -93,12 +97,18 @@ interface IConcert {
 
 type Concert = Modify<IPageHeader, IConcert>;
 interface IRadio {
-  type: HeaderType.radio;
+  type:
+    | HeaderType.playlist
+    | HeaderType.podcast
+    | HeaderType.episode
+    | HeaderType.concert
+    | HeaderType.radio;
   ownerId: string;
-  description: string;
+  description?: string;
   ownerDisplayName: string;
-  totalFollowers: number;
-  totalTracks: number;
+  totalFollowers?: number;
+  totalTracks?: number;
+  data?: SpotifyApi.PlaylistObjectFull | null;
 }
 
 type Radio = Modify<IPageHeader, IRadio>;
@@ -107,6 +117,10 @@ interface IShowLike {
   type: HeaderType.episode | HeaderType.podcast;
   ownerId: string;
   ownerDisplayName: string;
+  description: string;
+  data?: SpotifyApi.ShowObject | null;
+  totalTracks?: number;
+  totalFollowers?: number;
 }
 type Show = Modify<IPageHeader, IShowLike>;
 

@@ -29,7 +29,8 @@ export default function VolumeControl(): ReactElement {
           setIsHoveringVolume(false);
         }}
         aria-label={`${volume > 0 ? "Mute" : "Unmute"}`}
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           setVolume(getActualVolume());
           if (volume > 0) {
             setLastVolume(volume);

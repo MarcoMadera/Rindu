@@ -181,6 +181,7 @@ export default function ArtistPage({
         banner={banner ?? ""}
         disableOpacityChange={!!banner}
         stats={artistInfo?.stats}
+        data={currentArtist}
       />
       <div className="options">
         <PlayButton
@@ -193,7 +194,8 @@ export default function ArtistPage({
           <button
             type="button"
             className="follow-button"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               if (isFollowingThisArtist) {
                 unFollow(
                   Follow_type.artist,
@@ -252,7 +254,8 @@ export default function ArtistPage({
             <button
               type="button"
               className="show-more"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setShowMoreTopTracks((prev) => !prev);
               }}
             >
@@ -442,7 +445,8 @@ export default function ArtistPage({
               <button
                 type="button"
                 className="read-more"
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   setShowMoreAbout((prev) => !prev);
                 }}
               >
@@ -487,12 +491,12 @@ export default function ArtistPage({
           text-transform: none;
           letter-spacing: normal;
           font-weight: 400;
-          color: #b3b3b3;
+          color: #ffffffb3;
           margin: 0;
         }
         a,
         .about :global(a) {
-          color: #b3b3b3;
+          color: #ffffffb3;
         }
         .set {
           display: flex;

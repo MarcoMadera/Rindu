@@ -107,7 +107,7 @@ export default function DeviceConnectControl(): ReactElement {
         }}
         className="button playerButton"
       >
-        <DeviceConnect fill={devices.length > 0 ? "#1db954" : "#b3b3b3"} />
+        <DeviceConnect fill={devices.length > 0 ? "#1db954" : "#ffffffb3"} />
       </button>
       <style jsx>{`
         .devices {

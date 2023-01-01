@@ -300,7 +300,8 @@ export default function FullScreenLyrics({
             return (
               <button
                 key={i}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   if (
                     isPremium &&
                     line?.startTimeMs &&
@@ -331,7 +332,8 @@ export default function FullScreenLyrics({
       {!!document?.pictureInPictureEnabled && (
         <button
           className="lyrics-pip-button"
-          onClick={async () => {
+          onClick={async (e) => {
+            e.stopPropagation();
             if (!isPremium) {
               addToast({
                 variant: "error",
