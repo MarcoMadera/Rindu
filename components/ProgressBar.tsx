@@ -26,8 +26,8 @@ export function ProgressBar(): ReactElement {
     : 0;
 
   useEffect(() => {
-    if (!isPremium) return;
-    (player as Spotify.Player).getCurrentState().then((state) => {
+    if (!isPremium || !player) return;
+    (player as Spotify.Player)?.getCurrentState()?.then((state) => {
       if (!state) return;
       setProgressFromSpotify(state.position / 1000);
     });
