@@ -158,6 +158,7 @@ export default function Slider({
         tabIndex={0}
         ref={sliderRef as MutableRefObject<HTMLDivElement>}
         onMouseMove={(e) => {
+          e.stopPropagation();
           if (isPressingMouse) {
             setProgressPercent(
               ((e.pageX - (sliderRef.current?.parentElement?.offsetLeft ?? 0)) *
@@ -169,6 +170,7 @@ export default function Slider({
           }
         }}
         onMouseDown={(e) => {
+          e.stopPropagation();
           setIsPressingMouse(true);
           setProgressPercent(
             ((e.pageX - (sliderRef.current?.parentElement?.offsetLeft ?? 0)) *
@@ -176,12 +178,14 @@ export default function Slider({
               (sliderRef.current?.clientWidth ?? 0)
           );
         }}
-        onMouseLeave={() => {
+        onMouseLeave={(e) => {
+          e.stopPropagation();
           if (isPressingMouse) {
             setIsDragging(true);
           }
         }}
-        onMouseUp={() => {
+        onMouseUp={(e) => {
+          e.stopPropagation();
           action(progressPercent);
           setIsPressingMouse(false);
         }}

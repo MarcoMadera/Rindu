@@ -369,6 +369,9 @@ export default function FullScreenLyrics({
         :global(.app) {
           position: relative;
         }
+        :global(body .app:fullscreen .back-to-player) {
+          display: block;
+        }
         .lyrics-pip-button {
           position: fixed;
           top: 50%;

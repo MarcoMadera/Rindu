@@ -70,6 +70,12 @@ export default function FullScreenQueue(): ReactElement {
             ))}
           </div>
           <style jsx>{`
+            :global(body .app:fullscreen main) {
+              height: calc(100vh);
+            }
+            :global(body .app:fullscreen .back-to-player) {
+              display: block;
+            }
             .queue {
               display: flex;
               flex-direction: column;
