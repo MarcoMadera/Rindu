@@ -9,11 +9,13 @@ import { getIdFromUri } from "utils/getIdFromUri";
 interface IAritstListProps {
   artists: ITrack["artists"];
   maxArtistsToShow?: number;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
 export default function ArtistList({
   artists,
   maxArtistsToShow,
+  onClick,
 }: IAritstListProps): ReactElement | null {
   const artistsRef = useRef<HTMLAnchorElement>(null);
   const isVisible = useOnScreen(artistsRef);
@@ -50,6 +52,7 @@ export default function ArtistList({
                 ref={artistsRef}
                 onClick={(e) => {
                   e.stopPropagation();
+                  if (onClick) onClick(e);
                 }}
               >
                 {artist.name}

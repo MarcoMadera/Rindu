@@ -197,7 +197,19 @@ export default function FullScreenPlayer(): ReactElement {
                   </Heading>
                   <ScrollableText>
                     <span className="trackArtists">
-                      <ArtistList artists={currentlyPlaying?.artists} />
+                      <ArtistList
+                        artists={currentlyPlaying?.artists}
+                        onClick={() => {
+                          const app = document.getElementById("right");
+                          if (app) {
+                            if (document.fullscreenElement) {
+                              document.exitFullscreen();
+                            } else {
+                              app.requestFullscreen();
+                            }
+                          }
+                        }}
+                      />
                     </span>
                   </ScrollableText>
                 </div>
