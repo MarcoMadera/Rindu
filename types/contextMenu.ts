@@ -4,7 +4,14 @@ import { ICardContent } from "../components/CardContent";
 
 export interface ICardTrackContextMenuData {
   type: "cardTrack";
-  data: ITrack;
+  data:
+    | ITrack
+    | SpotifyApi.UserObjectPublic
+    | SpotifyApi.PlaylistObjectFull
+    | SpotifyApi.AlbumObjectFull
+    | SpotifyApi.ArtistObjectFull
+    | SpotifyApi.ShowObject
+    | null;
   position: { x: number; y: number };
 }
 

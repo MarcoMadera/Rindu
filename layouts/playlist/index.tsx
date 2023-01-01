@@ -159,6 +159,10 @@ const Playlist: NextPage<
             ? HeaderType.concert
             : pageDetails?.type === "radio"
             ? HeaderType.radio
+            : pageDetails?.type === "episode"
+            ? HeaderType.episode
+            : pageDetails?.type === "podcast"
+            ? HeaderType.podcast
             : HeaderType.playlist
         }
         title={pageDetails?.name ?? ""}
@@ -181,7 +185,8 @@ const Playlist: NextPage<
                 <div>
                   <button
                     className="save-concert-to-playlist-button"
-                    onClick={async () => {
+                    onClick={async (e) => {
+                      e.stopPropagation();
                       try {
                         const playlist = await createPlaylist(user?.id, {
                           name: pageDetails?.name,
@@ -234,7 +239,8 @@ const Playlist: NextPage<
                         type="button"
                         aria-label={translations?.cleanPlaylist}
                         className="broom"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setOpenModal(true);
                         }}
                       >
@@ -503,7 +509,7 @@ const Playlist: NextPage<
           display: flex;
           align-items: center;
           font-size: 0.75rem;
-          color: #b3b3b3;
+          color: #ffffffb3;
           font-family: sans-serif;
         }
         .trc :global(.titles span:nth-of-type(1)) {

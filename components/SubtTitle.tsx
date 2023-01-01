@@ -23,7 +23,7 @@ export default function SubTitle({
         {`
           span :global(a) {
             text-decoration: none;
-            color: #b3b3b3;
+            color: #ffffffb3;
             z-index: 3;
             position: relative;
           }

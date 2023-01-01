@@ -6,7 +6,6 @@ export default function usePictureInPicture({
   videoRef,
   pictureInPictureCanvas,
   currentlyPlaying,
-  isPlaying,
   isPictureInPictureLyircsCanvas,
 }: {
   setIsPip: Dispatch<SetStateAction<boolean>>;
@@ -14,13 +13,11 @@ export default function usePictureInPicture({
   pictureInPictureCanvas: MutableRefObject<HTMLCanvasElement | undefined>;
   isPictureInPictureLyircsCanvas: boolean;
   currentlyPlaying: ITrack | undefined;
-  isPlaying: boolean;
 }): void {
   useEffect(() => {
     if (
       videoRef.current ||
       pictureInPictureCanvas.current ||
-      !isPlaying ||
       !currentlyPlaying ||
       isPictureInPictureLyircsCanvas
     ) {
@@ -50,7 +47,6 @@ export default function usePictureInPicture({
     videoRef.current = video;
   }, [
     currentlyPlaying,
-    isPlaying,
     isPictureInPictureLyircsCanvas,
     pictureInPictureCanvas,
     setIsPip,

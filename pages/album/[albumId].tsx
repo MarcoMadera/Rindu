@@ -123,6 +123,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
         artists={album?.artists ?? []}
         totalTracks={album?.tracks.total ?? 0}
         release_date={album?.release_date ?? "1"}
+        data={album}
       />
       <div className="tracksContainer">
         <div className="options">
@@ -191,7 +192,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
           text-transform: none;
           letter-spacing: normal;
           font-weight: 400;
-          color: #b3b3b3;
+          color: #ffffffb3;
           margin: 0;
         }
         div.info {

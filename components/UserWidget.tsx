@@ -104,7 +104,8 @@ export default function UserWidget({
             role="menuitem"
             tabIndex={-1}
             className="option"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               eatCookie(ACCESS_TOKEN_COOKIE);
               eatCookie(REFRESH_TOKEN_COOKIE);
               eatCookie(EXPIRE_TOKEN_COOKIE);

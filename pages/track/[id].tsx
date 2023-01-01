@@ -279,7 +279,7 @@ export default function TrackPage({
         }
         .topTracks-header span {
           display: block;
-          color: #b3b3b3;
+          color: #ffffffb3;
         }
         .info :global(button) {
           margin-left: 12px;

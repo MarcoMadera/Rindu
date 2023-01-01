@@ -159,7 +159,7 @@ export default function PlaylistText({
         .playlist {
           display: inline-block;
           font-size: 14px;
-          color: #b3b3b3;
+          color: #ffffffb3;
           width: 100%;
           overflow: hidden;
           text-overflow: ellipsis;

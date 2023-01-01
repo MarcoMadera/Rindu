@@ -96,7 +96,7 @@ export default function TrackListHeader({
           display: flex;
           align-items: center;
           font-size: 0.75rem;
-          color: #b3b3b3;
+          color: #ffffffb3;
           font-family: sans-serif;
         }
         .trackListHeader span:nth-of-type(1) {

@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 
 export default function useOnSmallScreen(
-  callback?: (isSmall: boolean) => void
+  callback?: (isSmall: boolean) => void,
+  width = 768
 ): boolean {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      const isSmall = window.innerWidth < 768;
+      const isSmall = window.innerWidth < width;
       if (isSmall !== isSmallScreen) {
         setIsSmallScreen(isSmall);
         callback && callback(isSmall);
@@ -18,7 +19,7 @@ export default function useOnSmallScreen(
     handleResize();
 
     return () => window.removeEventListener("resize", handleResize);
-  }, [callback, isSmallScreen]);
+  }, [callback, isSmallScreen, width]);
 
   return isSmallScreen;
 }

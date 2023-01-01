@@ -53,7 +53,8 @@ export default function NowPlaying(): ReactElement | null {
         <button
           type="button"
           aria-label="Maximize cover image"
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             setIsShowingSideBarImg(true);
           }}
           className="show-img"
@@ -196,14 +197,14 @@ export default function NowPlaying(): ReactElement | null {
           cursor: auto;
           border: none;
           border-radius: 50%;
-          color: #b3b3b3;
+          color: #ffffffb3;
         }
         .show-img:hover {
           transform: scale(1.1);
         }
         span.trackArtists {
           font-size: 12px;
-          color: #b3b3b3;
+          color: #ffffffb3;
         }
         .navBar-Button {
           background: transparent;
@@ -278,6 +279,9 @@ export default function NowPlaying(): ReactElement | null {
         @media (max-width: 685px) {
           section {
             max-width: 200px;
+          }
+          .navBar-left :global(.navBar-Button) {
+            display: none;
           }
         }
       `}</style>

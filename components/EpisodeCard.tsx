@@ -110,7 +110,7 @@ export default function EpisodeCard({
         </div>
         <div className="actions">
           <Add
-            fill="#b3b3b3"
+            fill="#ffffffb3"
             isAdded={isEpisodeInLibrary}
             shouldUpdateList={shouldUpdateList}
             handleClick={async () => {
@@ -156,7 +156,7 @@ export default function EpisodeCard({
               });
             }}
           >
-            <Share fill="#b3b3b3" />
+            <Share fill="#ffffffb3" />
           </button>
           <button
             type="button"
@@ -173,7 +173,7 @@ export default function EpisodeCard({
               });
             }}
           >
-            <ThreeDots fill="#b3b3b3" width={24} height={24} />
+            <ThreeDots fill="#ffffffb3" width={24} height={24} />
           </button>
         </div>
         <div className="play">
@@ -243,7 +243,7 @@ export default function EpisodeCard({
           grid-template-columns: min-content min-content 1fr min-content;
           grid-template-rows: auto;
           border-radius: 4px;
-          color: #b3b3b3;
+          color: #ffffffb3;
           cursor: pointer;
           margin: 0px -16px;
           padding: 16px;

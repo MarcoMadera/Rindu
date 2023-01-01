@@ -73,7 +73,7 @@ const sideBarTranslations = {
 const queueTranslations = {
   [Language.EN]: {
     previousTracks: "Previous Tracks",
-    currentlyPlaying: "Currently Playing",
+    currentlyPlaying: "Now Playing",
     nextUp: "Next Up",
   },
   [Language.ES]: {

@@ -71,7 +71,8 @@ export default function RouterButtons(): ReactElement {
     <div>
       <button
         type="button"
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           window.history.back();
         }}
         disabled={disableBackButton}
@@ -82,7 +83,8 @@ export default function RouterButtons(): ReactElement {
       </button>
       <button
         type="button"
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           window.history.forward();
         }}
         disabled={disableForwardButton}

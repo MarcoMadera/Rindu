@@ -17,7 +17,8 @@ export default function PictureInPictureButton(): ReactElement {
       type="button"
       aria-label="Picture in Picture"
       className="navBar-Button pictureInPicture"
-      onClick={async () => {
+      onClick={async (e) => {
+        e.stopPropagation();
         if (pictureInPictureCanvas.current && videoRef.current) {
           if (
             isPip &&

@@ -123,7 +123,7 @@ export const CardContent: React.FC<ICardContent> = ({
           white-space: unset;
           word-break: break-all;
           font-size: 15px;
-          color: #b3b3b3;
+          color: #ffffffb3;
         }
         article {
           width: 100%;

@@ -26,7 +26,7 @@ export function SearchInputElement({
   const [isTyping, setIsTyping] = useState(false);
   const [query, setQuery] = useState("");
   const [shouldSearch, setShouldSearch] = useState(false);
-  const { setAllTracks } = useSpotify();
+  const { setAllTracks, setIgnoreShortcuts } = useSpotify();
   const isFromSearch = source === "search";
   const { translations } = useTranslations();
 
@@ -92,6 +92,12 @@ export function SearchInputElement({
           onChange={(e) => {
             setQuery(e.target.value);
             setIsTyping(true);
+          }}
+          onFocus={() => {
+            setIgnoreShortcuts.on();
+          }}
+          onBlur={() => {
+            setIgnoreShortcuts.off();
           }}
           onKeyDown={(e) => {
             if (e.key === " ") {

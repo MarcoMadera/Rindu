@@ -646,7 +646,7 @@ export default function CardTrack({
           margin: 0;
           font-family: "Lato", "sans-serif";
           font-weight: 400;
-          color: #b3b3b3;
+          color: #ffffffb3;
           font-size: 13px;
         }
         strong {

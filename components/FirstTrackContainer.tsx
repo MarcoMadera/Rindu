@@ -191,7 +191,7 @@ export default function FirstTrackContainer({
           max-width: 80%;
         }
         .firstTrack-Container a {
-          color: #b3b3b3;
+          color: #ffffffb3;
           text-decoration: none;
         }
         .firstTrack-Container .link:hover,

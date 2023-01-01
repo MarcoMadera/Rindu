@@ -25,7 +25,6 @@ export default function SideBar(): ReactElement {
     isShowingSideBarImg,
     setIsShowingSideBarImg,
     playedSource,
-    hideSideBar,
   } = useSpotify();
   const { accessToken, user } = useAuth();
   const router = useRouter();
@@ -53,19 +52,19 @@ export default function SideBar(): ReactElement {
         <section>
           <Link href="/dashboard">
             <a className="dashboard">
-              <Home fill="#b3b3b3" />
+              <Home fill="#ffffffb3" />
               {translations?.home}
             </a>
           </Link>
           <Link href="/search">
             <a className="search">
-              <Search fill="#b3b3b3" />
+              <Search fill="#ffffffb3" />
               {translations?.search}
             </a>
           </Link>
           <Link href="/collection">
             <a className="collection">
-              <Library fill="#b3b3b3" />
+              <Library fill="#ffffffb3" />
               {translations?.collection}
             </a>
           </Link>
@@ -73,7 +72,8 @@ export default function SideBar(): ReactElement {
         <section className="section-2">
           <button
             type="button"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               if (!user?.id) return;
               createPlaylist(user.id, { accessToken }).then((res) => {
                 if (!res) {
@@ -126,7 +126,8 @@ export default function SideBar(): ReactElement {
               <button
                 type="button"
                 aria-label={translations?.minimizeCoverImage}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   setIsShowingSideBarImg(false);
                 }}
                 className="show-img"
@@ -219,7 +220,7 @@ export default function SideBar(): ReactElement {
           cursor: auto;
           border: none;
           border-radius: 50%;
-          color: #b3b3b3;
+          color: #ffffffb3;
         }
         .show-img:hover {
           transform: scale(1.1);
@@ -231,11 +232,6 @@ export default function SideBar(): ReactElement {
           height: 100%;
           display: grid;
           grid-template-rows: 86px 130px minmax(0, 120px) minmax(0, 1fr) min-content;
-        }
-        @media (max-width: 1000px) {
-          nav {
-            display: ${hideSideBar ? "grid" : "none"};
-          }
         }
         .section-2 .green {
           color: #1db954;
@@ -258,7 +254,7 @@ export default function SideBar(): ReactElement {
           padding: 8px 15px;
           border-radius: 4px;
           font-weight: 800;
-          color: #b3b3b3;
+          color: #ffffffb3;
           font-size: 13px;
         }
 
@@ -279,7 +275,7 @@ export default function SideBar(): ReactElement {
           background: none;
           border: none;
           cursor: pointer;
-          color: #b3b3b3;
+          color: #ffffffb3;
           font-weight: 800;
           font-size: 13px;
           margin-bottom: 4px;
@@ -311,7 +307,7 @@ export default function SideBar(): ReactElement {
           margin: 4px 16px 4px 0px;
         }
         section:nth-of-type(2) button div {
-          background: #b3b3b3;
+          background: #ffffffb3;
         }
         section:nth-of-type(2) a div {
           background: linear-gradient(135deg, #450af5, #c4efd9);
@@ -332,7 +328,7 @@ export default function SideBar(): ReactElement {
           white-space: nowrap;
           width: 100%;
           text-decoration: none;
-          color: #b3b3b3;
+          color: #ffffffb3;
         }
         a:hover {
           color: #fff;

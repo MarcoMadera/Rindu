@@ -113,8 +113,8 @@ export default function ContextMenu(): ReactPortal | null {
         top: `${top}px`,
       }}
     >
-      {contextMenuData.data.type === "track" ||
-      contextMenuData.data.type === "episode" ? (
+      {contextMenuData.data?.type === "track" ||
+      contextMenuData.data?.type === "episode" ? (
         <CardTrackContextMenu track={contextMenuData.data as ITrack} />
       ) : (
         <CardContentContextMenu

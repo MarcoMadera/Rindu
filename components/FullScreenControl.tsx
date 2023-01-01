@@ -21,9 +21,12 @@ export default function FullScreenControl({
         type="button"
         className="button full-screen-control"
         aria-label={isVisible ? "Hide" : "Show"}
-        onClick={() => setDisplayInFullScreen(!isVisible)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setDisplayInFullScreen(!isVisible);
+        }}
       >
-        {icon({ fill: isVisible ? "#1db954" : "#b3b3b3" })}
+        {icon({ fill: isVisible ? "#1db954" : "#ffffffb3" })}
       </button>
       <style jsx>{`
         .full-screen-control:hover :global(svg path) {

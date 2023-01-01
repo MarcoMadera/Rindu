@@ -21,7 +21,14 @@ export type PlaylistItems = PlaylistItem[];
 export interface IPageDetails {
   id?: string;
   uri?: string;
-  type?: "playlist" | "artist" | "collection" | "concert" | "radio";
+  type?:
+    | "playlist"
+    | "artist"
+    | "collection"
+    | "concert"
+    | "radio"
+    | "episode"
+    | "podcast";
   name?: string;
   description?: string | null;
   tracks?: { total?: number };
@@ -124,4 +131,5 @@ export interface ISpotifyContext {
   setSuffleState: Dispatch<SetStateAction<boolean>>;
   repeatState: 0 | 1 | 2;
   setRepeatState: Dispatch<SetStateAction<0 | 1 | 2>>;
+  setIgnoreShortcuts: IUseToggleHandlers;
 }

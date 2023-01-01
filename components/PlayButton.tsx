@@ -64,6 +64,7 @@ export function PlayButton({
         className="play-Button"
         onClick={(e) => {
           e.preventDefault();
+          e.stopPropagation();
           if (!accessToken || (!pageDetails && !track && !uri) || !user) {
             return;
           }
