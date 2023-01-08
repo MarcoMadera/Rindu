@@ -474,7 +474,7 @@ export default function FullScreenLyrics({
         }
         .message-container {
           width: 100%;
-          height: calc(100vh - 90px - 60px);
+          height: calc((var(--vh, 1vh) * 100) - 90px - 60px);
         }
         .line,
         .line-opaque,
