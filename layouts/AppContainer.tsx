@@ -19,6 +19,7 @@ import { DisplayInFullScreen } from "types/spotify";
 import FullScreenQueue from "../components/FullScreenQueue";
 import FullScreenPlayer from "./FullScreenPlayer";
 import useOnSmallScreen from "hooks/useOnSmallScreen";
+import { requestFullScreen } from "utils/fullScreen";
 
 export function AppContainer({ children }: PropsWithChildren): ReactElement {
   const appRef = useRef<HTMLDivElement>();
@@ -51,7 +52,7 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
 
   useEffect(() => {
     if (shouldDisplayPlayer && appRef.current) {
-      appRef.current?.requestFullscreen();
+      requestFullScreen(appRef.current);
     }
   }, [shouldDisplayPlayer]);
 
@@ -104,13 +105,17 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
 
       <style jsx>{`
         div.container {
-          height: calc(100vh - ${shouldDisplayPlayer ? "0" : "90px"});
+          height: calc(
+            (var(--vh, 1vh) * 100) - ${shouldDisplayPlayer ? "0" : "90px"}
+          );
           display: flex;
           width: calc(100vw + 1px);
         }
         .app {
           overflow-y: overlay;
-          height: calc(100vh - ${shouldDisplayPlayer ? "0px" : "90px"});
+          height: calc(
+            (var(--vh, 1vh) * 100) - ${shouldDisplayPlayer ? "0" : "90px"}
+          );
           overflow-x: hidden;
           position: relative;
           width: calc(100vw - var(--left-panel-width, 0) + 2px);
@@ -127,22 +132,22 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
       <style jsx>{`
         @media (max-width: 1000px) {
           div.container {
-            height: calc(100vh - ${playerHeight}px);
+            height: calc((var(--vh, 1vh) * 100) - ${playerHeight}px);
           }
           .app {
             width: 100%;
-            height: calc(100vh - ${playerHeight}px);
+            height: calc((var(--vh, 1vh) * 100) - ${playerHeight}px);
           }
         }
         @media (max-width: 685px) {
           .app {
-            height: calc(100vh - ${playerHeight}px);
+            height: calc((var(--vh, 1vh) * 100) - ${playerHeight}px);
           }
         }
 
         @media (max-width: 685px) {
           div.container {
-            height: calc(100vh - ${playerHeight}px);
+            height: calc((var(--vh, 1vh) * 100) - ${playerHeight}px);
           }
         }
       `}</style>

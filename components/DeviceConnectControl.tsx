@@ -115,7 +115,7 @@ export default function DeviceConnectControl(): ReactElement {
           align-items: center;
           justify-content: center;
           z-index: 999999999999999999999999999;
-          max-height: calc(100vh - 114px);
+          max-height: calc((var(--vh, 1vh) * 100) - 114px);
           overflow-y: auto;
           padding: 5px;
         }

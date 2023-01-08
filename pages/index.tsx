@@ -96,7 +96,7 @@ const Home: NextPage<HomeProps> = ({ translations }) => {
             background: #fff;
           }
           main {
-            min-height: calc(100vh - 124px);
+            min-height: calc((var(--vh, 1vh) * 100) - 124px);
             width: 100%;
             display: block;
             margin: 0 auto;

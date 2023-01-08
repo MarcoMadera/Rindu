@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect } from "react";
 import useSpotify from "hooks/useSpotify";
 import { DisplayInFullScreen } from "types/spotify";
 import ContentContainer from "components/ContentContainer";
@@ -30,6 +30,11 @@ import VolumeControl from "components/VolumeControl";
 import FullScreenExit from "components/icons/FullScreenExit";
 import Logo from "components/Logo";
 import useClickPreventionOnDoubleClick from "hooks/useClickPreventionOnDoubleClick";
+import {
+  requestFullScreen,
+  isFullScreen,
+  exitFullScreen,
+} from "utils/fullScreen";
 
 export default function FullScreenPlayer(): ReactElement {
   const { accessToken } = useAuth();
@@ -50,18 +55,19 @@ export default function FullScreenPlayer(): ReactElement {
   function onClick() {
     player?.togglePlay();
   }
+
   function onDoubleClick() {
     const app = document.getElementById("right");
     if (app) {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
+      if (isFullScreen()) {
+        exitFullScreen();
       } else {
-        app.requestFullscreen();
+        requestFullScreen(app);
       }
-      setDisplayInFullScreen(!document.fullscreenElement);
+      setDisplayInFullScreen(!isFullScreen());
     }
   }
-  const [isFullScreen, setIsFullScreen] = useState(false);
+
   const [handleClick, handleDoubleClick] = useClickPreventionOnDoubleClick(
     onClick,
     onDoubleClick
@@ -83,16 +89,6 @@ export default function FullScreenPlayer(): ReactElement {
     if (!currentlyPlaying?.id) return;
     getMainColorFromImage("cover-image", setHeaderColor);
   }, [currentlyPlaying?.id, setHeaderColor]);
-
-  useEffect(() => {
-    function handleFullScreenChange() {
-      setIsFullScreen(document.fullscreenElement !== null);
-    }
-    document.addEventListener("fullscreenchange", handleFullScreenChange);
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullScreenChange);
-    };
-  }, []);
 
   return (
     <>
@@ -202,10 +198,10 @@ export default function FullScreenPlayer(): ReactElement {
                         onClick={() => {
                           const app = document.getElementById("right");
                           if (app) {
-                            if (document.fullscreenElement) {
-                              document.exitFullscreen();
+                            if (isFullScreen()) {
+                              exitFullScreen();
                             } else {
-                              app.requestFullscreen();
+                              requestFullScreen(app);
                             }
                           }
                         }}
@@ -289,16 +285,16 @@ export default function FullScreenPlayer(): ReactElement {
                       e.stopPropagation();
                       const app = document.getElementById("right");
                       if (app) {
-                        if (document.fullscreenElement) {
-                          document.exitFullscreen();
+                        if (isFullScreen()) {
+                          exitFullScreen();
                         } else {
-                          app.requestFullscreen();
+                          requestFullScreen(app);
                         }
-                        setDisplayInFullScreen(!document.fullscreenElement);
+                        setDisplayInFullScreen(!isFullScreen());
                       }
                     }}
                   >
-                    {isFullScreen ? <FullScreenExit /> : <FullScreen />}
+                    {isFullScreen() ? <FullScreenExit /> : <FullScreen />}
                   </button>
                 </div>
               </div>
@@ -424,10 +420,10 @@ export default function FullScreenPlayer(): ReactElement {
               color: #ffffffb3;
             }
             .navBar-Button.fullScreenButton {
-              color: ${isFullScreen ? "#1db954" : "#ffffffb3"};
+              color: ${isFullScreen() ? "#1db954" : "#ffffffb3"};
             }
             .navBar-Button.fullScreenButton:hover {
-              color: ${isFullScreen ? "#27da65" : "#fff"};
+              color: ${isFullScreen() ? "#27da65" : "#fff"};
             }
             .player__track__image {
               position: absolute;
