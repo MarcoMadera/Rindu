@@ -374,12 +374,12 @@ export default function FullScreenLyrics({
         }
         .lyrics-pip-button {
           position: fixed;
-          top: 50%;
+          top: calc(100% - 150px);
           transform: translateY(-50%);
           right: 30px;
           width: 40px;
           height: 40px;
-          margin: 0 32px;
+          margin: 0 0 0 32px;
           z-index: 999999999999900;
           padding: 10px;
           cursor: pointer;
@@ -505,6 +505,11 @@ export default function FullScreenLyrics({
           justify-content: center;
           align-items: center;
           height: 100%;
+        }
+        @media screen and (max-width: 1000px) {
+          div.lyrics-container .lyrics-pip-button {
+            top: calc(100% - 200px);
+          }
         }
       `}</style>
     </div>
