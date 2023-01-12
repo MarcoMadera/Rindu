@@ -16,6 +16,7 @@ import { AsType } from "types/heading";
 import useTranslations from "hooks/useTranslations";
 import ArtistList from "./ArtistList";
 import useOnSmallScreen from "hooks/useOnSmallScreen";
+import ScrollableText from "./ScrollableText";
 
 export default function PageHeader({
   type,
@@ -80,22 +81,26 @@ export default function PageHeader({
       )}
       <div className="playlistInfo">
         <Eyebrow>{headerTypeEyebrowText[type]}</Eyebrow>
-        <Heading
-          number={1}
-          fontSize={
-            isSmallScreen
-              ? "48px"
-              : title.length < 16
-              ? "96px"
-              : title.length < 21
-              ? "72px"
-              : title.length < 30
-              ? "64px"
-              : "48px"
-          }
-        >
-          {title}
-        </Heading>
+        <ScrollableText>
+          <span>
+            <Heading
+              number={1}
+              fontSize={
+                isSmallScreen
+                  ? "48px"
+                  : title.length < 16
+                  ? "96px"
+                  : title.length < 21
+                  ? "72px"
+                  : title.length < 30
+                  ? "64px"
+                  : "48px"
+              }
+            >
+              {title}
+            </Heading>
+          </span>
+        </ScrollableText>
         {description ? (
           <p className="description">{decode(description)}</p>
         ) : null}
@@ -193,7 +198,7 @@ export default function PageHeader({
           div h1,
           div h2,
           div p {
-            padding: ${banner ? "0px 0 15px 10px" : "0.08em 0px"};
+            padding: ${banner ? "0px 0 15px 0px" : "0.08em 0px"};
           }
           div.playlistInfo {
             align-self: flex-end;
@@ -264,6 +269,10 @@ export default function PageHeader({
             }
             #cover-image {
               margin: 0;
+              margin-top: -40px;
+            }
+            div.playlistInfo span {
+              margin: 0 auto;
             }
           }
         `}

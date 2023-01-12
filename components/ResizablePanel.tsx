@@ -15,7 +15,9 @@ export function PanelGroup({
   children,
 }: PropsWithChildren<PanelGroupProps>): ReactElement {
   return (
-    <div style={{ display: "flex", flexDirection: direction }}>{children}</div>
+    <div style={{ display: "flex", flexDirection: direction, width: "100%" }}>
+      {children}
+    </div>
   );
 }
 
