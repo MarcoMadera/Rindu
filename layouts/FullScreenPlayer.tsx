@@ -354,6 +354,7 @@ export default function FullScreenPlayer(): ReactElement {
               transition-property: background-color;
               transition-duration: 0.5s;
               transition-timing-function: ease-in-out;
+              user-select: none;
             }
             .player-container {
               position: absolute;
@@ -503,6 +504,7 @@ export default function FullScreenPlayer(): ReactElement {
               transition-property: background-color;
               transition-duration: 0.5s;
               transition-timing-function: ease-in-out;
+              user-select: none;
             }
             .player_header__left {
               display: flex;

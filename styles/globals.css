@@ -65,6 +65,9 @@ p {
 small {
   font-size: 0.85rem;
 }
+img {
+  user-select: none;
+}
 @media screen and (max-width: 768px) {
   ::-webkit-scrollbar {
     height: 12px;
