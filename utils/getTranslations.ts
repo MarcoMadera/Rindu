@@ -352,6 +352,7 @@ export const translations = {
       about: "About",
       concertSetlistOn: "Concert setlists on",
       strBiography: "strBiographyEN",
+      by: "By",
     },
     [Page.Search]: {
       ...sideBarTranslations[Language.EN],
@@ -439,6 +440,7 @@ export const translations = {
       ...pageHeaderTranslations[Language.EN],
       title: "User",
       followers: "followers",
+      by: "By",
     },
     [Page.CollectionTracks]: {
       ...sideBarTranslations[Language.EN],
@@ -560,6 +562,7 @@ export const translations = {
       about: "Sobre",
       concertSetlistOn: "Lista de conciertos en",
       strBiography: "strBiographyES",
+      by: "De",
     },
     [Page.Search]: {
       ...sideBarTranslations[Language.ES],
@@ -648,6 +651,7 @@ export const translations = {
       ...pageHeaderTranslations[Language.ES],
       title: "User",
       followers: "seguidores",
+      by: "De",
     },
     [Page.CollectionTracks]: {
       ...sideBarTranslations[Language.ES],
