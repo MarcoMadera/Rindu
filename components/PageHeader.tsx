@@ -81,26 +81,28 @@ export default function PageHeader({
       )}
       <div className="playlistInfo">
         <Eyebrow>{headerTypeEyebrowText[type]}</Eyebrow>
-        <ScrollableText>
-          <span>
-            <Heading
-              number={1}
-              fontSize={
-                isSmallScreen
-                  ? "48px"
-                  : title.length < 16
-                  ? "96px"
-                  : title.length < 21
-                  ? "72px"
-                  : title.length < 30
-                  ? "64px"
-                  : "48px"
-              }
-            >
-              {title}
-            </Heading>
-          </span>
-        </ScrollableText>
+        <div className="title-container">
+          <ScrollableText>
+            <span>
+              <Heading
+                number={1}
+                fontSize={
+                  isSmallScreen
+                    ? "48px"
+                    : title.length < 16
+                    ? "96px"
+                    : title.length < 21
+                    ? "72px"
+                    : title.length < 30
+                    ? "64px"
+                    : "48px"
+                }
+              >
+                {title}
+              </Heading>
+            </span>
+          </ScrollableText>
+        </div>
         {description ? (
           <p className="description">{decode(description)}</p>
         ) : null}
@@ -206,12 +208,19 @@ export default function PageHeader({
             margin-right: 50px;
             width: 100%;
           }
+          .title-container :global(.text) {
+            white-space: pre-wrap;
+          }
+          .title-container :global(h1) {
+            line-break: auto;
+          }
           p.description {
             margin-bottom: 4px;
             font-size: 14px;
             word-spacing: 2px;
             line-height: 1.4;
           }
+          .trackArtists,
           .userLink {
             display: inline-block;
             font-size: 14px;
