@@ -27,8 +27,7 @@ import { unfollowPlaylist } from "utils/spotifyCalls/unfollowPlaylist";
 import { HeaderType } from "types/pageHeader";
 import ContentContainer from "components/ContentContainer";
 import Heading from "components/Heading";
-import { createPlaylist } from "utils/spotifyCalls/createPlaylist";
-import { addCustomPlaylistImage } from "utils/spotifyCalls/addCustomPlaylistImage";
+import { handleSaveToPlaylistClick } from "./utils";
 
 const Playlist: NextPage<
   PlaylistProps & { isLibrary: boolean; isGeneratedPlaylist?: boolean }
@@ -52,6 +51,7 @@ const Playlist: NextPage<
     setPageDetails,
     setAllTracks,
     allTracks,
+    setPlaylists,
   } = useSpotify();
   const { setElement } = useHeader();
   const [isPin, setIsPin] = useState(false);
@@ -184,41 +184,17 @@ const Playlist: NextPage<
               {isGeneratedPlaylist && (
                 <div>
                   <button
-                    className="save-concert-to-playlist-button"
-                    onClick={async (e) => {
-                      e.stopPropagation();
-                      try {
-                        const playlist = await createPlaylist(user?.id, {
-                          name: pageDetails?.name,
-                        });
-                        if (!playlist) {
-                          addToast({
-                            message: "Error creating playlist",
-                            variant: "error",
-                          });
-                          return;
-                        }
-                        await addCustomPlaylistImage(
-                          user?.id,
-                          playlist.id,
-                          accessToken
-                        );
-                        const uris = allTracks
-                          .map((track) => track.uri)
-                          .filter((uri) => uri) as string[];
-                        await addItemsToPlaylist(playlist.id, uris);
-                        addToast({
-                          message: "Playlist created",
-                          variant: "success",
-                        });
-                        await router.push(`/playlist/${playlist.id}`);
-                      } catch (e) {
-                        console.error(e);
-                        addToast({
-                          message: "Error creating playlist",
-                          variant: "error",
-                        });
-                      }
+                    className="save-to-playlist-button"
+                    onClick={() => {
+                      handleSaveToPlaylistClick({
+                        allTracks,
+                        addToast,
+                        accessToken,
+                        pageDetails,
+                        router,
+                        setPlaylists,
+                        user,
+                      });
                     }}
                   >
                     {translations.saveAsPlaylist}
@@ -422,7 +398,7 @@ const Playlist: NextPage<
         />
       ) : null}
       <style jsx>{`
-        .save-concert-to-playlist-button {
+        .save-to-playlist-button {
           border-radius: 500px;
           text-decoration: none;
           color: #fff;
@@ -441,13 +417,13 @@ const Playlist: NextPage<
           border: 1px solid #ffffffb3;
           will-change: transform;
         }
-        .save-concert-to-playlist-button:focus,
-        .save-concert-to-playlist-button:hover {
+        .save-to-playlist-button:focus,
+        .save-to-playlist-button:hover {
           transform: scale(1.06);
           background-color: #000;
           border: 1px solid #fff;
         }
-        .save-concert-to-playlist-button:active {
+        .save-to-playlist-button:active {
           transform: scale(1);
         }
         .info :global(button) {
