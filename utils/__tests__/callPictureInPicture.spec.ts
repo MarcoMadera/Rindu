@@ -55,7 +55,7 @@ describe("callPictureInPicture", () => {
   });
 
   it("should call requestPictureInPicture", async () => {
-    expect.assertions(4);
+    expect.assertions(3);
     setupMediaSession();
     Object.defineProperty(Image.prototype, "decode", {
       writable: true,
@@ -73,12 +73,12 @@ describe("callPictureInPicture", () => {
     const video = {
       play: jest.fn().mockResolvedValue({}),
       requestPictureInPicture: jest.fn().mockResolvedValue({}),
+      readyState: 2,
     } as unknown as HTMLVideoElement;
 
     await callPictureInPicture(canvas, video);
     expect(canvas.getContext).toHaveBeenCalledWith("2d");
     expect(drawImage).toHaveBeenCalledWith(expect.anything(), 0, 0, 512, 512);
     expect(video.requestPictureInPicture).toHaveBeenCalledWith();
-    expect(video.play).toHaveBeenCalledWith();
   });
 });
