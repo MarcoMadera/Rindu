@@ -37,7 +37,7 @@ export default function TrackListHeader({
     const cachedRef = ref.current,
       observer = new IntersectionObserver(
         ([e]) => {
-          if (e.intersectionRect.top >= 60) {
+          if (e.intersectionRect.top >= 59) {
             setIsPin(true);
           } else {
             setIsPin(false);

@@ -9,6 +9,7 @@ import {
   useState,
   CSSProperties,
   ReactElement,
+  memo,
 } from "react";
 import { ITrack } from "types/spotify";
 import { formatTime } from "utils/formatTime";
@@ -49,7 +50,7 @@ interface CardTrackProps {
   allTracks: ITrack[];
 }
 
-export default function CardTrack({
+function CardTrack({
   accessToken,
   track,
   playlistUri,
@@ -693,3 +694,4 @@ export default function CardTrack({
     </div>
   );
 }
+export default memo(CardTrack, (pre, next) => pre.track?.id === next.track?.id);
