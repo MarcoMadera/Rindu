@@ -48,12 +48,12 @@ export default function useMediaSession({
     if (player && "mediaSession" in navigator) {
       try {
         navigator.mediaSession.setActionHandler("play", function () {
+          setIsPlaying(true);
           if (!isPremium) {
             player?.togglePlay();
             return;
           }
           (player as Spotify.Player)?.resume();
-          setIsPlaying(true);
         });
         navigator.mediaSession.setActionHandler("pause", function () {
           player?.pause();
@@ -88,6 +88,7 @@ export default function useMediaSession({
         console.log(error);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentlyPlayingPosition, isPremium, player, user, setIsPlaying]);
 
   useEffect(() => {
@@ -102,7 +103,13 @@ export default function useMediaSession({
         navigator.mediaSession.playbackState = "none";
       }
     }
-  }, [currentlyPlaying, isPlaying]);
+
+    if (isPlaying) {
+      videoRef.current?.play();
+    } else {
+      videoRef.current?.pause();
+    }
+  }, [currentlyPlaying, isPlaying, videoRef]);
 
   useEffect(() => {
     if (currentlyPlaying && "mediaSession" in navigator) {
@@ -131,5 +138,5 @@ export default function useMediaSession({
       callPictureInPicture(pictureInPictureCanvas.current, videoRef.current);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentlyPlaying, isPictureInPictureLyircsCanvas]);
+  }, [currentlyPlaying, isPictureInPictureLyircsCanvas, isPlaying]);
 }

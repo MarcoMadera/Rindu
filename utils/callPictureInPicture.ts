@@ -4,6 +4,13 @@ export async function callPictureInPicture(
 ): Promise<void> {
   if (!navigator.mediaSession?.metadata?.artwork) return;
   const artwork = navigator.mediaSession.metadata.artwork;
+  async function onLoadedData() {
+    video.removeEventListener("loadedmetadata", onLoadedData);
+
+    await video.play();
+    video.requestPictureInPicture();
+    video.pause();
+  }
 
   try {
     const image = new Image();
@@ -20,9 +27,11 @@ export async function callPictureInPicture(
       pictureInPictureCanvas.height
     );
     ctx?.drawImage(image, 0, 0, 512, 512);
-
-    await video?.play();
-    await video?.requestPictureInPicture();
+    if (video.readyState >= 2) {
+      video.requestPictureInPicture();
+    } else {
+      video.addEventListener("loadedmetadata", onLoadedData);
+    }
   } catch (err) {
     console.error(err);
   }
