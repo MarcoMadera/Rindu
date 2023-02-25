@@ -126,8 +126,9 @@ export default function PageHeader({
                       ? "artist"
                       : "user"
                   }/${ownerId}`}
+                  className="userLink"
                 >
-                  <a className="userLink">{decode(ownerDisplayName)}</a>
+                  {decode(ownerDisplayName)}
                 </Link>
               )
             )}
@@ -221,7 +222,7 @@ export default function PageHeader({
             line-height: 1.4;
           }
           .trackArtists,
-          .userLink {
+          :global(.userLink) {
             display: inline-block;
             font-size: 14px;
             font-weight: 700;
@@ -231,8 +232,8 @@ export default function PageHeader({
             color: #fff;
             text-decoration: none;
           }
-          .userLink:hover,
-          .userLink:focus {
+          :global(.userLink:hover),
+          :global(.userLink:focus) {
             text-decoration: underline;
           }
           button {

@@ -1,12 +1,14 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import CardTrack from "components/CardTrack";
+import CardTrack, { CardType } from "components/CardTrack";
 import { IUtilsMocks } from "types/mocks";
 import { AppProviders } from "./mocks";
 import useOnScreen from "hooks/useOnScreen";
 import { playCurrentTrack } from "utils/playCurrentTrack";
 import type { IToast } from "types/toast";
+import { NextRouter } from "next/router";
 
-jest.mock("next/router", () => ({
+jest.mock<NextRouter>("next/router", () => ({
+  ...jest.requireActual("next/router"),
   useRouter: jest.fn().mockImplementation(() => ({
     asPath: "/",
     push: jest.fn(),
@@ -36,7 +38,7 @@ describe("cardTrack", () => {
       <AppProviders>
         <CardTrack
           track={cardTrackName}
-          type="presentation"
+          type={CardType.presentation}
           position={0}
           accessToken=""
           style={{ margin: "50px" }}
@@ -45,7 +47,6 @@ describe("cardTrack", () => {
           playlistUri=""
           uri=""
           onClickAdd={onClickAdd}
-          allTracks={[cardTrackName]}
         />
       </AppProviders>
     );
@@ -65,7 +66,7 @@ describe("cardTrack", () => {
       <AppProviders value={{ setPlayedSource, player }}>
         <CardTrack
           track={track}
-          type="presentation"
+          type={CardType.presentation}
           position={0}
           accessToken=""
           style={{}}
@@ -74,7 +75,6 @@ describe("cardTrack", () => {
           playlistUri=""
           uri=""
           onClickAdd={onClickAdd}
-          allTracks={[track]}
         />
       </AppProviders>
     );
@@ -108,7 +108,7 @@ describe("cardTrack", () => {
       <AppProviders value={{ toasts, setToasts, player, setReconnectionError }}>
         <CardTrack
           track={track}
-          type="presentation"
+          type={CardType.presentation}
           position={0}
           accessToken=""
           style={{}}
@@ -117,7 +117,6 @@ describe("cardTrack", () => {
           playlistUri=""
           uri=""
           onClickAdd={onClickAdd}
-          allTracks={[track]}
         />
       </AppProviders>
     );
@@ -159,7 +158,7 @@ describe("cardTrack", () => {
       <AppProviders value={{ toasts, setToasts, setReconnectionError, player }}>
         <CardTrack
           track={track}
-          type="presentation"
+          type={CardType.presentation}
           position={0}
           accessToken=""
           style={{}}
@@ -168,7 +167,6 @@ describe("cardTrack", () => {
           playlistUri=""
           uri=""
           onClickAdd={onClickAdd}
-          allTracks={[track]}
         />
       </AppProviders>
     );
@@ -204,7 +202,7 @@ describe("cardTrack", () => {
       <AppProviders value={{ toasts, setToasts, setReconnectionError }}>
         <CardTrack
           track={{ ...track, corruptedTrack: true }}
-          type="presentation"
+          type={CardType.presentation}
           position={0}
           accessToken=""
           style={{}}
@@ -213,7 +211,6 @@ describe("cardTrack", () => {
           playlistUri=""
           uri=""
           onClickAdd={onClickAdd}
-          allTracks={[track]}
         />
       </AppProviders>
     );
@@ -247,7 +244,7 @@ describe("cardTrack", () => {
       <AppProviders value={{ toasts, setToasts, setReconnectionError }}>
         <CardTrack
           track={{ ...track, is_playable: false }}
-          type="presentation"
+          type={CardType.presentation}
           position={0}
           accessToken=""
           style={{}}
@@ -256,7 +253,6 @@ describe("cardTrack", () => {
           playlistUri=""
           uri=""
           onClickAdd={onClickAdd}
-          allTracks={[track]}
         />
       </AppProviders>
     );
@@ -283,7 +279,7 @@ describe("cardTrack", () => {
             ...track,
             artists: [{ name: "Artist name", id: "artistId" }],
           }}
-          type="presentation"
+          type={CardType.presentation}
           position={0}
           accessToken=""
           style={{}}
@@ -292,7 +288,6 @@ describe("cardTrack", () => {
           playlistUri=""
           uri=""
           onClickAdd={onClickAdd}
-          allTracks={[track]}
         />
       </AppProviders>
     );

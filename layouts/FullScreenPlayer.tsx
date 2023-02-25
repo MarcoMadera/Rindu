@@ -165,27 +165,22 @@ export default function FullScreenPlayer(): ReactElement {
                         href={`/${currentlyPlaying.type ?? "track"}/${
                           currentlyPlaying.id
                         }`}
+                        className="trackName"
+                        onContextMenu={(e) => {
+                          e.preventDefault();
+                          const x = e.pageX;
+                          const y = e.pageY;
+                          addContextMenu({
+                            type: "cardTrack",
+                            data: currentlyPlaying,
+                            position: { x, y },
+                          });
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
                       >
-                        <a
-                          className="trackName"
-                          onContextMenu={(e) => {
-                            e.preventDefault();
-                            const x = e.pageX;
-                            const y = e.pageY;
-                            addContextMenu({
-                              type: "cardTrack",
-                              data: currentlyPlaying,
-                              position: { x, y },
-                            });
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                          }}
-                        >
-                          <ScrollableText>
-                            {currentlyPlaying.name}
-                          </ScrollableText>
-                        </a>
+                        <ScrollableText>{currentlyPlaying.name}</ScrollableText>
                       </Link>
                     ) : (
                       <ScrollableText>{currentlyPlaying?.name}</ScrollableText>

@@ -699,7 +699,7 @@ export const translations = {
   },
 };
 
-export type Translations = typeof translations[Language];
+export type Translations = (typeof translations)[Language];
 
 export function getTranslations<T extends Page>(
   country: string,

@@ -1,10 +1,11 @@
 import { CardContent, CardType, ICardContent } from "components/CardContent";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import useOnScreen from "hooks/useOnScreen";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
 
-jest.mock("next/router", () => ({
+jest.mock<NextRouter>("next/router", () => ({
+  ...jest.requireActual("next/router"),
   useRouter: jest.fn(),
 }));
 jest.mock("hooks/useOnScreen");

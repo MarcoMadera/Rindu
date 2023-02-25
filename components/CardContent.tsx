@@ -1,5 +1,4 @@
-import useContextMenu from "hooks/useContextMenu";
-import useOnScreen from "hooks/useOnScreen";
+import { useContextMenu, useOnScreen } from "hooks";
 import { decode } from "html-entities";
 import { useRouter } from "next/router";
 import { useRef } from "react";

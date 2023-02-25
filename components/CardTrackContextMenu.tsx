@@ -8,7 +8,6 @@ import useAuth from "hooks/useAuth";
 import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
 import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
 import { addItemsToPlaylist } from "utils/spotifyCalls/addItemsToPlaylist";
-import { useRouter } from "next/router";
 import { getSiteUrl } from "utils/environment";
 import { menuContextStyles } from "styles/menuContextStyles";
 import { ITrack } from "types/spotify";
@@ -22,7 +21,6 @@ export function CardTrackContextMenu({
   const { addToast } = useToast();
   const { deviceId, playlists } = useSpotify();
   const { accessToken } = useAuth();
-  const router = useRouter();
   const { removeContextMenu } = useContextMenu();
 
   const availableStations = ["track", "artist", "genre"];
@@ -149,62 +147,66 @@ export function CardTrackContextMenu({
       </li>
       {isStationAvailable && (
         <li>
-          <button
-            type="button"
+          <Link
+            href={`${getSiteUrl()}/station/${track.type ?? "track"}/${
+              track?.id || ""
+            }`}
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                e.stopPropagation();
+                removeContextMenu();
+              }
+            }}
+            role="link"
             onClick={() => {
-              router.push(
-                `${getSiteUrl()}/station/${track.type ?? "track"}/${
-                  track?.id || ""
-                }`
-              );
               removeContextMenu();
             }}
           >
             Go to {type} Radio
-          </button>
+          </Link>
         </li>
       )}
       {track?.artists && track.artists?.length > 0 && track.artists?.[0].id && (
         <li>
-          <Link href={`/artist/${track.artists[0].id}`}>
-            <a
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  removeContextMenu();
-                }
-              }}
-              role="link"
-              onClick={() => {
+          <Link
+            href={`/artist/${track.artists[0].id}`}
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                e.stopPropagation();
                 removeContextMenu();
-              }}
-            >
-              Go to artist
-            </a>
+              }
+            }}
+            role="link"
+            onClick={() => {
+              removeContextMenu();
+            }}
+          >
+            Go to artist
           </Link>
         </li>
       )}
       {track?.album?.id && (
         <li>
-          <Link href={`/${track?.album?.type ?? "album"}/${track?.album?.id}`}>
-            <a
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  removeContextMenu();
-                }
-              }}
-              role="link"
-              onClick={() => {
+          <Link
+            href={`/${track?.album?.type ?? "album"}/${track?.album?.id}`}
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                e.stopPropagation();
                 removeContextMenu();
-              }}
-            >
-              Go to {track?.album?.type ?? "album"}
-            </a>
+              }
+            }}
+            role="link"
+            onClick={() => {
+              removeContextMenu();
+            }}
+          >
+            Go to {track?.album?.type ?? "album"}
           </Link>
         </li>
       )}

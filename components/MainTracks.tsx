@@ -53,7 +53,6 @@ export default function MainTracks({
                     type={CardType.presentation}
                     position={index}
                     isSingleTrack
-                    allTracks={allTracks}
                   />
                 );
               })}

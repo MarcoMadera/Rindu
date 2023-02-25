@@ -63,18 +63,16 @@ export default function NowPlaying(): ReactElement | null {
         </button>
         {playedSource && type && id ? (
           <Link href={`/${type}/${id}`}>
-            <a>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={
-                  currentlyPlaying.album?.images[2]?.url ??
-                  currentlyPlaying.album?.images[1]?.url
-                }
-                alt={currentlyPlaying.album?.name}
-                width={64}
-                height={64}
-              />
-            </a>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={
+                currentlyPlaying.album?.images[2]?.url ??
+                currentlyPlaying.album?.images[1]?.url
+              }
+              alt={currentlyPlaying.album?.name}
+              width={64}
+              height={64}
+            />
           </Link>
         ) : (
           <>
@@ -95,22 +93,19 @@ export default function NowPlaying(): ReactElement | null {
         {currentlyPlaying.id ? (
           <Link
             href={`/${currentlyPlaying.type ?? "track"}/${currentlyPlaying.id}`}
+            className="trackName"
+            onContextMenu={(e) => {
+              e.preventDefault();
+              const x = e.pageX;
+              const y = e.pageY;
+              addContextMenu({
+                type: "cardTrack",
+                data: currentlyPlaying,
+                position: { x, y },
+              });
+            }}
           >
-            <a
-              className="trackName"
-              onContextMenu={(e) => {
-                e.preventDefault();
-                const x = e.pageX;
-                const y = e.pageY;
-                addContextMenu({
-                  type: "cardTrack",
-                  data: currentlyPlaying,
-                  position: { x, y },
-                });
-              }}
-            >
-              <ScrollableText>{currentlyPlaying.name}</ScrollableText>
-            </a>
+            <ScrollableText>{currentlyPlaying.name}</ScrollableText>
           </Link>
         ) : (
           <ScrollableText>{currentlyPlaying.name}</ScrollableText>
@@ -222,11 +217,11 @@ export default function NowPlaying(): ReactElement | null {
           margin: 0px;
           text-align: left;
         }
-        a {
+        .navBar-left :global(a) {
           text-decoration: none;
           color: inherit;
         }
-        a:hover {
+        .navBar-left (a:hover) {
           color: #fff;
           text-decoration: underline;
         }

@@ -30,7 +30,7 @@ export const menuContextStyles = css`
     align-items: center;
     width: 100%;
   }
-  li > :first-child {
+  li > :global(:first-child) {
     background: none;
     border: none;
     padding: 8px 10px;

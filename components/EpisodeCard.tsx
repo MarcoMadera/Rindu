@@ -87,11 +87,9 @@ export default function EpisodeCard({
         </div>
         <div className="header">
           <Link href={`/episode/${item.id}`}>
-            <a>
-              <Heading number={5} as={AsType.SPAN}>
-                {item.name}
-              </Heading>
-            </a>
+            <Heading number={5} as={AsType.SPAN}>
+              {item.name}
+            </Heading>
           </Link>
         </div>
         <div className="description">
@@ -281,11 +279,11 @@ export default function EpisodeCard({
           flex-direction: column;
           position: relative;
         }
-        .header a {
+        .header :global(a) {
           color: #fff;
           text-decoration: none;
         }
-        .header a:hover {
+        .header :global(a:hover) {
           text-decoration: underline;
         }
         .description {

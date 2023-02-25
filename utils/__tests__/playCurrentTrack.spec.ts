@@ -3,12 +3,15 @@ import { IUtilsMocks } from "types/mocks";
 import { playCurrentTrack } from "utils/playCurrentTrack";
 import { play } from "utils/spotifyCalls/play";
 
-jest.mock("utils/spotifyCalls/play", () => ({
-  play: jest.fn().mockResolvedValue({
-    status: 200,
-    ok: true,
-  }),
-}));
+jest.mock<typeof import("utils/spotifyCalls/play")>(
+  "utils/spotifyCalls/play",
+  () => ({
+    play: jest.fn().mockResolvedValue({
+      status: 200,
+      ok: true,
+    }),
+  })
+);
 
 const { track, user, accessToken } = jest.requireActual<IUtilsMocks>(
   "./__mocks__/mocks.ts"

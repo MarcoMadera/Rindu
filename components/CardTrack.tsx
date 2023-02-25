@@ -1,34 +1,36 @@
 import { Pause, Play, Playing } from "components/icons";
 import { Heart } from "components/icons/Heart";
 import ThreeDots from "components/icons/ThreeDots";
-import useSpotify from "hooks/useSpotify";
-import { getTimeAgo } from "utils/getTimeAgo";
 import {
+  useAuth,
+  useContextMenu,
+  useOnScreen,
+  useOnSmallScreen,
+  useSpotify,
+  useToast,
+} from "hooks";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import {
+  CSSProperties,
+  memo,
   MutableRefObject,
+  ReactElement,
   useRef,
   useState,
-  CSSProperties,
-  ReactElement,
-  memo,
 } from "react";
 import { ITrack } from "types/spotify";
-import { formatTime } from "utils/formatTime";
-import Link from "next/link";
-import useAuth from "hooks/useAuth";
-import useToast from "hooks/useToast";
-import { playCurrentTrack } from "utils/playCurrentTrack";
-import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibrary";
-import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
-import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFromLibrary";
-import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
-import useContextMenu from "hooks/useContextMenu";
-import useOnScreen from "hooks/useOnScreen";
-import ExplicitSign from "./ExplicitSign";
-import { useRouter } from "next/router";
-import { spanishCountries } from "utils/getTranslations";
 import { getSiteUrl } from "utils/environment";
+import { formatTime } from "utils/formatTime";
+import { getTimeAgo } from "utils/getTimeAgo";
+import { spanishCountries } from "utils/getTranslations";
+import { playCurrentTrack } from "utils/playCurrentTrack";
+import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFromLibrary";
+import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibrary";
+import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
+import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
 import ArtistList from "./ArtistList";
-import useOnSmallScreen from "hooks/useOnSmallScreen";
+import ExplicitSign from "./ExplicitSign";
 
 export enum CardType {
   presentation = "presentation",
@@ -47,7 +49,6 @@ interface CardTrackProps {
   onClickAdd?: () => void;
   uri?: string;
   visualPosition?: number;
-  allTracks: ITrack[];
 }
 
 function CardTrack({
@@ -62,9 +63,9 @@ function CardTrack({
   onClickAdd,
   uri,
   visualPosition,
-  allTracks,
 }: CardTrackProps): ReactElement | null {
   const {
+    allTracks,
     deviceId,
     currentlyPlaying,
     player,
@@ -328,9 +329,12 @@ function CardTrack({
           )
         ) : null}
         <div className="trackArtistsContainer">
-          {track.id ? (
-            <Link href={`/${track.type ?? "track"}/${track.id}`}>
-              <a className="trackName">{`${track.name ?? ""}`}</a>
+          {track.id && track.name ? (
+            <Link
+              href={`/${track.type ?? "track"}/${track.id}`}
+              className="trackName"
+            >
+              {track.name}
             </Link>
           ) : null}
           <span className="trackArtists">
@@ -343,14 +347,12 @@ function CardTrack({
         <>
           <section>
             <p className="trackArtists">
-              <Link href={`/${track.album.type ?? "album"}/${track.album.id}`}>
-                <a
-                  // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-                  tabIndex={isVisible ? 0 : -1}
-                  aria-hidden={isVisible ? "false" : "true"}
-                >
-                  {track.album.name}
-                </a>
+              <Link
+                href={`/${track.album.type ?? "album"}/${track.album.id}`} // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+                tabIndex={isVisible ? 0 : -1}
+                aria-hidden={isVisible ? "false" : "true"}
+              >
+                {track.album.name}
               </Link>
             </p>
           </section>
@@ -470,8 +472,7 @@ function CardTrack({
         .trackItem :global(.trackHeart) {
           opacity: ${isLikedTrack || isFocusing || mouseEnter ? "1" : "0"};
         }
-        .trackArtists :global(a),
-        a {
+        .trackArtists :global(a) {
           color: ${mouseEnter || isFocusing ? "#fff" : "inherit"};
         }
         .trackItem {
@@ -481,7 +482,7 @@ function CardTrack({
           width: ${type !== "presentation" ? "32" : "40"}px;
           height: ${type !== "presentation" ? "32" : "40"}px;
         }
-        a.trackName {
+        .trackItem :global(a.trackName) {
           color: ${isTheSameAsCurrentlyPlaying ? "#1db954" : "#fff"};
         }
         section:nth-of-type(2) {
@@ -572,7 +573,7 @@ function CardTrack({
           color: #ffffff;
         }
         p,
-        a.trackName,
+        .trackItem :global(.trackName),
         span {
           margin: 0px;
           overflow: hidden;
@@ -623,10 +624,12 @@ function CardTrack({
             16px 0 0 0 #88898c, 20px 0 0 0 #88898c, 24px 0 0 0 #88898c,
             28px 0 0 0 #88898c, 32px 0 0 0 #88898c;
         }
-        a {
+        :global(.trackName),
+        .trackArtists :global(a) {
           text-decoration: none;
         }
-        a:hover {
+        :global(.trackName:hover),
+        .trackArtists :global(a:hover) {
           text-decoration: underline;
         }
 
@@ -638,7 +641,7 @@ function CardTrack({
           border: none;
           margin: 0 15px 0 15px;
         }
-        a.trackName {
+        :global(.trackName) {
           margin: 0;
           padding: 0;
         }
@@ -694,4 +697,15 @@ function CardTrack({
     </div>
   );
 }
-export default memo(CardTrack, (pre, next) => pre.track?.id === next.track?.id);
+
+export default memo(CardTrack, (prevProps, nextProps) => {
+  return (
+    prevProps.track?.id === nextProps.track?.id &&
+    prevProps.accessToken === nextProps.accessToken &&
+    prevProps.playlistUri === nextProps.playlistUri &&
+    prevProps.isTrackInLibrary === nextProps.isTrackInLibrary &&
+    prevProps.isSingleTrack === nextProps.isSingleTrack &&
+    prevProps.type === nextProps.type &&
+    prevProps.position === nextProps.position
+  );
+});

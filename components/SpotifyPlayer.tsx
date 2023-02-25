@@ -1,20 +1,22 @@
-import useAuth from "hooks/useAuth";
+import PlaybackExtraControls from "components/PlaybackExtraControls";
+import PlayerControls from "components/PlayerControls";
+import {
+  useAuth,
+  useOnSmallScreen,
+  useSpotify,
+  useSpotifyPlayer,
+  useToast,
+  useTranslations,
+} from "hooks";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import Script from "next/script";
 import { ReactElement, useEffect } from "react";
-import NowPlaying from "./NowPlaying";
-import useToast from "hooks/useToast";
-import PlayerControls from "components/PlayerControls";
-import PlaybackExtraControls from "components/PlaybackExtraControls";
-import useSpotifyPlayer from "hooks/useSpotifyPlayer";
-import Link from "next/link";
-import Home from "./icons/Home";
-import useTranslations from "hooks/useTranslations";
-import Search from "./icons/Search";
-import Library from "./icons/Library";
-import { useRouter } from "next/router";
-import useSpotify from "hooks/useSpotify";
-import useOnSmallScreen from "hooks/useOnSmallScreen";
 import { DisplayInFullScreen } from "types/spotify";
+import Home from "./icons/Home";
+import Library from "./icons/Library";
+import Search from "./icons/Search";
+import NowPlaying from "./NowPlaying";
 
 export default function SpotifyPlayer(): ReactElement {
   const { user } = useAuth();
@@ -77,23 +79,17 @@ export default function SpotifyPlayer(): ReactElement {
             <PlayerControls />
           </div>
           <nav>
-            <Link href="/dashboard">
-              <a className="dashboard">
-                <Home fill="#ffffffb3" />
-                {translations?.home}
-              </a>
+            <Link href="/dashboard" className="dashboard">
+              <Home fill="#ffffffb3" />
+              {translations?.home}
             </Link>
-            <Link href="/search">
-              <a className="search">
-                <Search fill="#ffffffb3" />
-                {translations?.search}
-              </a>
+            <Link href="/search" className="search">
+              <Search fill="#ffffffb3" />
+              {translations?.search}
             </Link>
-            <Link href="/collection">
-              <a className="collection">
-                <Library fill="#ffffffb3" />
-                {translations?.collection}
-              </a>
+            <Link href="/collection" className="collection">
+              <Library fill="#ffffffb3" />
+              {translations?.collection}
             </Link>
           </nav>
         </section>
@@ -117,14 +113,14 @@ export default function SpotifyPlayer(): ReactElement {
           color: ${router.pathname === "/library" ? "#fff" : "inherit"};
           fill: ${router.pathname === "/library" ? "#fff" : "#ffffffb3"};
         }
-        a:hover,
-        a:active,
-        a:focus {
+        nav :global(a:hover),
+        nav :global(a:active),
+        nav :global(a:focus) {
           color: #fff;
         }
-        a:hover :global(path),
-        a:active :global(path),
-        a:focus :global(path) {
+        nav :global(a:hover path),
+        nav :global(a:active path),
+        nav :global(a:focus path) {
           fill: #fff;
         }
         footer {
@@ -186,7 +182,7 @@ export default function SpotifyPlayer(): ReactElement {
         nav {
           margin: 8px auto;
         }
-        a {
+        nav :global(a) {
           display: flex;
           flex-direction: column;
           align-items: center;

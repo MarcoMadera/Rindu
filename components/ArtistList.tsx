@@ -1,6 +1,4 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-import useOnScreen from "hooks/useOnScreen";
+import { useOnScreen } from "hooks";
 import Link from "next/link";
 import { Fragment, ReactElement, useRef } from "react";
 import { ITrack } from "types/spotify";
@@ -44,28 +42,25 @@ export default function ArtistList({
               href={`/${
                 artist.type ?? getIdFromUri(artist.uri, "type") ?? "artist"
               }/${id}`}
+              tabIndex={isVisible ? 0 : -1}
+              aria-hidden={isVisible ? "false" : "true"}
+              ref={artistsRef}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onClick) onClick(e);
+              }}
+              className="ArtistList"
             >
-              <a
-                // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-                tabIndex={isVisible ? 0 : -1}
-                aria-hidden={isVisible ? "false" : "true"}
-                ref={artistsRef}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (onClick) onClick(e);
-                }}
-              >
-                {artist.name}
-              </a>
+              {artist.name}
             </Link>
             {i !== (artists?.length && artists?.length - 1) ? ", " : null}
             <style jsx>{`
-              a {
+              :global(.ArtistList) {
                 color: inherit;
                 text-decoration: none;
               }
-              a:hover,
-              a:focus {
+              :global(.ArtistList:hover),
+              :global(.ArtistList:focus) {
                 text-decoration: underline;
               }
             `}</style>

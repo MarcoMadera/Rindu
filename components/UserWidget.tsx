@@ -1,3 +1,5 @@
+import { ExternalLink } from "components/icons/ExternalLink";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
@@ -7,8 +9,6 @@ import {
   REFRESH_TOKEN_COOKIE,
 } from "../utils/constants";
 import { eatCookie } from "../utils/cookies";
-import Link from "next/link";
-import { ExternalLink } from "components/icons/ExternalLink";
 
 interface UserConfigProps {
   name: string | undefined;
@@ -76,10 +76,13 @@ export default function UserWidget({
         </div>
         <div role="presentation">
           {user?.id ? (
-            <Link href={`/user/${user.id}`}>
-              <a role="menuitem" tabIndex={-1} className="option">
-                Profile
-              </a>
+            <Link
+              href={`/user/${user.id}`}
+              role="menuitem"
+              tabIndex={-1}
+              className="option"
+            >
+              Profile
             </Link>
           ) : null}
         </div>
@@ -120,92 +123,86 @@ export default function UserWidget({
       </section>
       <style jsx>{`
         div.container {
-          position: relative;
           margin-left: 16px;
+          position: relative;
         }
         section {
-          position: absolute;
-          top: calc(100% + 4px);
-          right: 0;
-          display: ${openSettings ? "block" : "none"};
-          border-radius: 5px;
           background-color: #282828;
+          border-radius: 5px;
           box-shadow: 0px 2px 9px 0px rgb(0 0 0 / 5%);
-          padding: 3px;
+          display: ${openSettings ? "block" : "none"};
           min-width: 100%;
+          padding: 3px;
+          position: absolute;
+          right: 0;
+          top: calc(100% + 4px);
         }
-        .option {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 8px 10px;
-          border-radius: 2px;
-          height: 40px;
-        }
-        .option :global(svg) {
+        .container :global(.option svg) {
           margin-left: 16px;
         }
-        .option {
-          background-color: transparent;
-          width: max-content;
-          min-width: 100%;
-          border: none;
-          display: flex;
+        .container :global(.option) {
           align-content: center;
-          font-weight: 400;
-          font-size: 14px;
-          line-height: 16px;
+          align-items: center;
+          background-color: transparent;
+          border-radius: 3px;
+          border: none;
           color: #ffffffe6;
-          cursor: pointer;
+          cursor: default;
+          display: flex;
+          font-size: 14px;
+          font-weight: 400;
+          height: 40px;
+          justify-content: space-between;
+          line-height: 16px;
+          min-width: 100%;
+          padding: 8px 10px;
           text-align: start;
           text-decoration: none;
-          cursor: default;
-          border-radius: 3px;
-          align-items: center;
+          width: max-content;
         }
-        .option:hover,
-        .option:focus {
+        .container :global(.option:hover),
+        .container :global(.option:focus) {
           outline: none;
           background-color: #ffffff1a;
         }
         .pill {
-          display: flex;
-          justify-content: center;
           align-items: center;
           background-color: ${openSettings ? "#161616" : "#000000b3"};
-          border: none;
-          cursor: pointer;
           border-radius: 30px;
-          text-decoration: none;
-          padding: 2px;
-          gap: 8px;
+          border: none;
           color: #e5e5e5;
+          cursor: pointer;
+          display: flex;
+          gap: 8px;
+          justify-content: center;
           min-height: 28px;
+          padding: 2px;
+          text-decoration: none;
         }
         .pill:hover {
           background-color: #161616;
         }
         .img {
-          width: 28px;
-          height: 28px;
           border-radius: 50%;
+          height: 28px;
           object-fit: cover;
+          width: 28px;
         }
         p {
-          margin: 0;
           font-family: "Lato";
+          font-family: sans-serif;
+          font-size: 14px;
+          font-weight: 700;
+          letter-spacing: normal;
+          line-height: 16px;
           line-height: 28px;
+          margin: 0;
           max-width: 110px;
           overflow: hidden;
           pointer-events: none;
           text-overflow: ellipsis;
-          white-space: nowrap;
-          font-size: 14px;
-          font-family: sans-serif;
-          font-weight: 700;
-          letter-spacing: normal;
-          line-height: 16px;
           text-transform: none;
+          white-space: nowrap;
         }
         svg {
           margin-right: 6px;
