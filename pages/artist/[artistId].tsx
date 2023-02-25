@@ -1,44 +1,43 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { useRouter } from "next/router";
-import useAuth from "hooks/useAuth";
-import useAnalytics from "hooks/useAnalytics";
-import { useEffect, useState, ReactElement } from "react";
-import { serverRedirect } from "utils/serverRedirect";
-import { getAuth } from "utils/getAuth";
-import { getArtistById } from "utils/spotifyCalls/getArtistById";
-import useHeader from "hooks/useHeader";
-import { getArtistTopTracks } from "utils/spotifyCalls/getArtistTopTracks";
-import CardTrack from "components/CardTrack";
-import useSpotify from "hooks/useSpotify";
+import { CardType } from "components/CardContent";
+import CardTrack, { CardType as TrackCardType } from "components/CardTrack";
+import Carousel from "components/Carousel";
+import ContentContainer from "components/ContentContainer";
+import Heading from "components/Heading";
+import PageHeader from "components/PageHeader";
+import { PlayButton } from "components/PlayButton";
 import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
+import PresentationCard from "components/PresentationCard";
+import SubTitle from "components/SubtTitle";
+import useAnalytics from "hooks/useAnalytics";
+import useAuth from "hooks/useAuth";
+import useHeader from "hooks/useHeader";
+import useSpotify from "hooks/useSpotify";
+import useTranslations from "hooks/useTranslations";
+import { NextApiRequest, NextApiResponse } from "next";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { ReactElement, useEffect, useState } from "react";
+import { HeaderType } from "types/pageHeader";
+import { conjuction } from "utils/conjuction";
+import { getSiteUrl } from "utils/environment";
+import { fullFilledValue } from "utils/fullFilledValue";
+import { Artist, getArtistInfo } from "utils/getArtistInfo";
+import { getAuth } from "utils/getAuth";
+import { getMonth } from "utils/getMonth";
+import { getSetLists, SetLists } from "utils/getSetLists";
+import { getTranslations, Page } from "utils/getTranslations";
+import { serverRedirect } from "utils/serverRedirect";
+import { checkIfUserFollowArtistUser } from "utils/spotifyCalls/checkIfUserFollowArtistUser";
+import { follow, Follow_type } from "utils/spotifyCalls/follow";
 import {
   getArtistAlbums,
   Include_groups,
 } from "utils/spotifyCalls/getArtistAlbums";
-import PresentationCard from "components/PresentationCard";
+import { getArtistById } from "utils/spotifyCalls/getArtistById";
+import { getArtistTopTracks } from "utils/spotifyCalls/getArtistTopTracks";
 import { getRelatedArtists } from "utils/spotifyCalls/getRelatedArtists";
-import { PlayButton } from "components/PlayButton";
-import { follow, Follow_type } from "utils/spotifyCalls/follow";
 import { unFollow } from "utils/spotifyCalls/unFollow";
-import { checkIfUserFollowArtistUser } from "utils/spotifyCalls/checkIfUserFollowArtistUser";
-import PageHeader from "../../components/PageHeader";
-import { HeaderType } from "types/pageHeader";
-import { getSiteUrl } from "utils/environment";
-import Carousel from "components/Carousel";
-import SubTitle from "components/SubtTitle";
-import { getSetLists, SetLists } from "utils/getSetLists";
-import { getArtistInfo, Artist } from "utils/getArtistInfo";
-import { conjuction } from "utils/conjuction";
-import { CardType } from "components/CardContent";
-import { CardType as TrackCardType } from "components/CardTrack";
-import ContentContainer from "components/ContentContainer";
-import Heading from "components/Heading";
-import { getMonth } from "utils/getMonth";
-import { getTranslations, Page } from "utils/getTranslations";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import useTranslations from "hooks/useTranslations";
-import Link from "next/link";
-import { fullFilledValue } from "utils/fullFilledValue";
 
 interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
@@ -246,7 +245,6 @@ export default function ArtistPage({
                       isSingleTrack
                       position={i}
                       type={TrackCardType.playlist}
-                      allTracks={allTracks}
                     />
                   );
                 })}
@@ -282,28 +280,27 @@ export default function ArtistPage({
                     <Link
                       href={`/concert/${currentArtist.id}.${set.id}`}
                       key={set.id}
+                      className="set"
                     >
-                      <a className="set">
-                        <div className="set-date">
-                          <span className="month">
-                            {getMonth(Number(month) - 1)}
-                          </span>
-                          <span className="day">{day}</span>
-                          <span className="year">{year}</span>
-                        </div>
-                        <div className="set-info">
-                          <Heading number={5} as="h4">
-                            {set.venue?.name}
-                          </Heading>
-                          <span>
-                            {conjuction([
-                              set.venue?.city.name,
-                              set.venue?.city.state,
-                              set.venue?.city.country.code,
-                            ])}
-                          </span>
-                        </div>
-                      </a>
+                      <div className="set-date">
+                        <span className="month">
+                          {getMonth(Number(month) - 1)}
+                        </span>
+                        <span className="day">{day}</span>
+                        <span className="year">{year}</span>
+                      </div>
+                      <div className="set-info">
+                        <Heading number={5} as="h4">
+                          {set.venue?.name}
+                        </Heading>
+                        <span>
+                          {conjuction([
+                            set.venue?.city.name,
+                            set.venue?.city.state,
+                            set.venue?.city.country.code,
+                          ])}
+                        </span>
+                      </div>
                     </Link>
                   );
                 })}
@@ -494,18 +491,19 @@ export default function ArtistPage({
           color: #ffffffb3;
           margin: 0;
         }
-        a,
+        .set-info span,
+        .attribution a,
         .about :global(a) {
           color: #ffffffb3;
         }
-        .set {
+        .set-list-content :global(a) {
           display: flex;
           padding: 8px;
           cursor: pointer;
           width: 100%;
           text-decoration: none;
         }
-        .set:hover {
+        .set-list-content :global(a:hover) {
           border-radius: 3px;
           background: #c6ccd317;
         }

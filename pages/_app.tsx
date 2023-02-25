@@ -16,10 +16,7 @@ import { Analytics } from "@vercel/analytics/react";
 const MyApp = ({
   Component,
   pageProps,
-}: {
-  Component: AppProps["Component"];
-  pageProps: AppProps["pageProps"] & TranslationsContextProviderProps;
-}): ReactElement => {
+}: AppProps<TranslationsContextProviderProps>): ReactElement => {
   return (
     <TranslationsContext.Provider
       value={{

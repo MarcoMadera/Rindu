@@ -46,27 +46,19 @@ export default function SideBar(): ReactElement {
   return (
     <>
       <nav>
-        <div className="logo">
-          <Logo color="#fff" />
-        </div>
+        <Logo color="#fff" />
         <section>
-          <Link href="/dashboard">
-            <a className="dashboard">
-              <Home fill="#ffffffb3" />
-              {translations?.home}
-            </a>
+          <Link href="/dashboard" className="dashboard">
+            <Home fill="#ffffffb3" />
+            {translations?.home}
           </Link>
-          <Link href="/search">
-            <a className="search">
-              <Search fill="#ffffffb3" />
-              {translations?.search}
-            </a>
+          <Link href="/search" className="search">
+            <Search fill="#ffffffb3" />
+            {translations?.search}
           </Link>
-          <Link href="/collection">
-            <a className="collection">
-              <Library fill="#ffffffb3" />
-              {translations?.collection}
-            </a>
+          <Link href="/collection" className="collection">
+            <Library fill="#ffffffb3" />
+            {translations?.collection}
           </Link>
         </section>
         <section className="section-2">
@@ -93,13 +85,14 @@ export default function SideBar(): ReactElement {
             </div>
             {translations?.createPlaylist}
           </button>
-          <Link href="/collection/tracks">
-            <a className={playlistPlayingId === "tracks" ? "green" : ""}>
-              <div>
-                <Heart active={true} style={{ width: 28, height: 28 }} />
-              </div>
-              {translations?.likedSongs}
-            </a>
+          <Link
+            href="/collection/tracks"
+            className={playlistPlayingId === "tracks" ? "green" : ""}
+          >
+            <div>
+              <Heart active={true} style={{ width: 28, height: 28 }} />
+            </div>
+            {translations?.likedSongs}
           </Link>
           <hr />
         </section>
@@ -136,16 +129,14 @@ export default function SideBar(): ReactElement {
               </button>
               {playedSource && type && id ? (
                 <Link href={`/${type}/${id}`}>
-                  <a>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={
-                        currentlyPlaying.album?.images[0]?.url ??
-                        currentlyPlaying.album?.images[1]?.url
-                      }
-                      alt={currentlyPlaying.album?.name}
-                    />
-                  </a>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={
+                      currentlyPlaying.album?.images[0]?.url ??
+                      currentlyPlaying.album?.images[1]?.url
+                    }
+                    alt={currentlyPlaying.album?.name}
+                  />
                 </Link>
               ) : (
                 <>
@@ -164,15 +155,15 @@ export default function SideBar(): ReactElement {
         </section>
       </nav>
       <style jsx>{`
-        section:nth-of-type(1) .dashboard {
+        section:nth-of-type(1) :global(.dashboard) {
           color: ${router.pathname === "/dashboard" ? "#fff" : "inherit"};
           background: ${router.pathname === "/dashboard" ? "#282828" : "unset"};
         }
-        section:nth-of-type(1) .search {
+        section:nth-of-type(1) :global(.search) {
           color: ${router.pathname === "/search" ? "#fff" : "inherit"};
           background: ${router.pathname === "/search" ? "#282828" : "unset"};
         }
-        section:nth-of-type(1) .library {
+        section:nth-of-type(1) :global(.library) {
           color: ${router.pathname === "/library" ? "#fff" : "inherit"};
           background: ${router.pathname === "/library" ? "#282828" : "unset"};
         }
@@ -233,7 +224,7 @@ export default function SideBar(): ReactElement {
           display: grid;
           grid-template-rows: 86px 130px minmax(0, 120px) minmax(0, 1fr) min-content;
         }
-        .section-2 .green {
+        .section-2 :global(.green) {
           color: #1db954;
         }
         section {
@@ -247,7 +238,7 @@ export default function SideBar(): ReactElement {
         section:nth-of-type(1) :global(svg) {
           margin-right: 10px;
         }
-        section:nth-of-type(1) a {
+        section:nth-of-type(1) :global(a) {
           margin-right: 10px;
           display: flex;
           align-items: center;
@@ -258,17 +249,17 @@ export default function SideBar(): ReactElement {
           font-size: 13px;
         }
 
-        section:nth-of-type(1) a:hover {
+        section:nth-of-type(1) :global(a:hover) {
           color: #fff;
         }
-        section:nth-of-type(1) a:hover :global(svg path) {
+        section:nth-of-type(1) :global(a:hover svg path) {
           fill: #fff;
         }
         section:nth-of-type(2) {
           padding: 16px 24px;
         }
         section:nth-of-type(2) button,
-        section:nth-of-type(2) a {
+        section:nth-of-type(2) :global(a) {
           align-items: center;
           display: flex;
           width: 100%;
@@ -282,7 +273,7 @@ export default function SideBar(): ReactElement {
           font-family: "Lato";
         }
         section:nth-of-type(2) button:hover,
-        section:nth-of-type(2) a:hover {
+        section:nth-of-type(2) :global(a:hover) {
           color: #fff;
         }
         hr {
@@ -294,7 +285,7 @@ export default function SideBar(): ReactElement {
           background: #fff;
         }
         section:nth-of-type(2) button div,
-        section:nth-of-type(2) a div {
+        section:nth-of-type(2) :global(a) div {
           align-items: center;
           border-radius: 1px;
           color: #000;
@@ -309,11 +300,11 @@ export default function SideBar(): ReactElement {
         section:nth-of-type(2) button div {
           background: #ffffffb3;
         }
-        section:nth-of-type(2) a div {
+        section:nth-of-type(2) :global(a) div {
           background: linear-gradient(135deg, #450af5, #c4efd9);
           opacity: 0.7;
         }
-        section:nth-of-type(2) a:hover div {
+        section:nth-of-type(2) :global(a:hover) div {
           opacity: 1;
         }
         section:nth-of-type(3) {
@@ -321,7 +312,7 @@ export default function SideBar(): ReactElement {
           padding: 0 8px 20px 24px;
           height: 100%;
         }
-        a {
+        section :global(a) {
           display: block;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -330,11 +321,11 @@ export default function SideBar(): ReactElement {
           text-decoration: none;
           color: #ffffffb3;
         }
-        a:hover {
+        nav :global(a:hover) {
           color: #fff;
         }
 
-        .logo {
+        nav :global(.Logo) {
           width: 100%;
           padding: 24px 24px 18px 24px;
         }

@@ -15,19 +15,22 @@ export default function BrowseCategories({
     <Grid>
       {categories?.items.map(({ name, id, icons }, i) => {
         return (
-          <Link key={id} href={`/genre/${id}`}>
-            <a style={{ backgroundColor: colors[i] }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={icons[0].url} alt={name} />
-              <Heading number={3} as="h2">
-                {name}
-              </Heading>
-            </a>
+          <Link
+            key={id}
+            href={`/genre/${id}`}
+            style={{ backgroundColor: colors[i] }}
+            className="BrowseCategories-category"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={icons[0].url} alt={name} />
+            <Heading number={3} as="h2">
+              {name}
+            </Heading>
           </Link>
         );
       })}
       <style jsx>{`
-        a {
+        :global(.BrowseCategories-category) {
           border: none;
           border-radius: 8px;
           overflow: hidden;
@@ -35,12 +38,12 @@ export default function BrowseCategories({
           width: 100%;
           color: #fff;
         }
-        a::after {
+        :global(.BrowseCategories-category::after) {
           content: "";
           display: block;
           padding-bottom: 100%;
         }
-        a :global(h2) {
+        :global(.BrowseCategories-category h2) {
           padding: 16px;
           position: absolute;
         }

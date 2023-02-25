@@ -12,28 +12,20 @@ export default function NavigationTopBarExtraField({
     <nav className="extraField-nav">
       <ul>
         <li>
-          <Link href="/collection/playlists">
-            <a>Playlists</a>
-          </Link>
+          <Link href="/collection/playlists">Playlists</Link>
         </li>
         <li>
-          <Link href="/collection/podcasts">
-            <a>Podcasts</a>
-          </Link>
+          <Link href="/collection/podcasts">Podcasts</Link>
         </li>
         <li>
-          <Link href="/collection/artists">
-            <a>Artists</a>
-          </Link>
+          <Link href="/collection/artists">Artists</Link>
         </li>
         <li>
-          <Link href="/collection/albums">
-            <a>Albums</a>
-          </Link>
+          <Link href="/collection/albums">Albums</Link>
         </li>
       </ul>
       <style jsx>{`
-        li:nth-of-type(${selected}) a {
+        li:nth-of-type(${selected}) :global(a) {
           background-color: #343434;
         }
       `}</style>
@@ -43,7 +35,7 @@ export default function NavigationTopBarExtraField({
           column-gap: 8px;
           margin-left: 24px;
         }
-        a {
+        li :global(a) {
           padding: 12px 18px;
           color: white;
           text-decoration: none;

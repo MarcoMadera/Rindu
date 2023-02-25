@@ -143,7 +143,6 @@ export default function VirtualizedList({
                             isSingleTrack={isGeneratedPlaylist}
                             type={type}
                             position={allTracks?.[index]?.position}
-                            allTracks={allTracks}
                           />
                         );
                       }}

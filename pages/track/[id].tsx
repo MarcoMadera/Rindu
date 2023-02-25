@@ -57,7 +57,6 @@ export default function TrackPage({
   const { setPageDetails, setAllTracks, isPlaying, allTracks } = useSpotify();
   const [artistInfo, setArtistInfo] =
     useState<SpotifyApi.SingleArtistResponse | null>(null);
-  const [sameTrackIndex, setSameTrackIndex] = useState(-1);
   const { addToast } = useToast();
   const { translations } = useTranslations();
 
@@ -78,16 +77,13 @@ export default function TrackPage({
         uri: track.uri,
       });
 
-      const sameTrackIdx = artistTopTracks.findIndex(
-        (artistTrack) => artistTrack.uri === track.uri
-      );
-
-      setSameTrackIndex(sameTrackIdx);
-
       setAllTracks([track, ...artistTopTracks]);
     }
     setElement(() => (
-      <PlaylistTopBarExtraField isSingle track={track ?? undefined} />
+      <PlaylistTopBarExtraField
+        isSingle={allTracks.length === 1}
+        track={track ?? undefined}
+      />
     ));
 
     return () => {
@@ -100,6 +96,7 @@ export default function TrackPage({
     setHeaderColor,
     setPageDetails,
     track,
+    allTracks.length,
   ]);
 
   useEffect(() => {
@@ -162,7 +159,7 @@ export default function TrackPage({
           <PlayButton
             size={56}
             centerSize={28}
-            isSingle
+            isSingle={allTracks.length === 1}
             track={track ?? undefined}
             allTracks={allTracks}
           />
@@ -229,18 +226,20 @@ export default function TrackPage({
               if (i >= maxToShow) {
                 return null;
               }
+
               const isTheSameAsTrack = artistTrack.uri
                 ? artistTrack.uri === track?.uri
                 : false;
+              const sameTrackIndex = artistTopTracks.findIndex(
+                (artistTrack) => artistTrack.uri === track?.uri
+              );
               const mainTrackExistInArtistTopTracks = sameTrackIndex >= 0;
-              const isValidPosition = i - sameTrackIndex > 0;
-              const mainTrackIsFirstPosition = isTheSameAsTrack && i === 0;
-              const position =
-                mainTrackExistInArtistTopTracks && isValidPosition
-                  ? i
-                  : isTheSameAsTrack || mainTrackIsFirstPosition
-                  ? 0
-                  : i + 1;
+              const isValidPosition = i - sameTrackIndex >= 0;
+              const position = isTheSameAsTrack
+                ? 0
+                : mainTrackExistInArtistTopTracks && isValidPosition
+                ? i
+                : i + 1;
 
               return (
                 <CardTrack
@@ -253,7 +252,6 @@ export default function TrackPage({
                   position={position}
                   visualPosition={i + 1}
                   isSingleTrack
-                  allTracks={allTracks}
                 />
               );
             })}

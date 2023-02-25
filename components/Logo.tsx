@@ -12,18 +12,18 @@ export default function Logo({ color }: LogoProps): ReactElement {
   const { isLogin } = useAuth();
   return (
     <>
-      <Link href={isLogin ? "/dashboard" : "/"}>
-        <a
-          translate="no"
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          Rindu
-        </a>
+      <Link
+        href={isLogin ? "/dashboard" : "/"}
+        translate="no"
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        className="Logo"
+      >
+        Rindu
       </Link>
       <style jsx>{`
-        a {
+        :global(.Logo) {
           font-size: 36px;
           font-family: "Lato";
           width: 148px;
@@ -32,7 +32,7 @@ export default function Logo({ color }: LogoProps): ReactElement {
           text-decoration: none;
         }
         @media screen and (min-width: 0px) and (max-width: 780px) {
-          a {
+          :global(.Logo) {
             width: 124px;
           }
         }

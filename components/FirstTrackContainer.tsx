@@ -61,32 +61,31 @@ export default function FirstTrackContainer({
     >
       <div className="bg-12"></div>
       {track.id ? (
-        <Link href={`/track/${track.id}`}>
-          <a
-            className="firstTrack"
-            ref={cardRef}
-            aria-hidden={isVisible ? "false" : "true"}
-            // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-            tabIndex={isVisible ? 0 : -1}
+        <Link
+          href={`/track/${track.id}`}
+          className="firstTrack"
+          ref={cardRef}
+          aria-hidden={isVisible ? "false" : "true"}
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+          tabIndex={isVisible ? 0 : -1}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={track.album?.images[1].url}
+            width={100}
+            height={100}
+            alt=""
+            id={`cover-image-${track.id}`}
+          />
+          <Heading
+            number={2}
+            as="h3"
+            fontSize="32px"
+            margin="1rem 0"
+            multiline={1}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={track.album?.images[1].url}
-              width={100}
-              height={100}
-              alt=""
-              id={`cover-image-${track.id}`}
-            />
-            <Heading
-              number={2}
-              as="h3"
-              fontSize="32px"
-              margin="1rem 0"
-              multiline={1}
-            >
-              {track.name}
-            </Heading>
-          </a>
+            {track.name}
+          </Heading>
         </Link>
       ) : (
         <>
@@ -129,7 +128,7 @@ export default function FirstTrackContainer({
           position: relative;
           z-index: 32293;
         }
-        .firstTrack {
+        :global(.firstTrack) {
           text-decoration: none;
           color: inherit;
           display: block;
@@ -190,7 +189,7 @@ export default function FirstTrackContainer({
         .firstTrack-Container :global(h3) {
           max-width: 80%;
         }
-        .firstTrack-Container a {
+        .firstTrack-Container :global(a) {
           color: #ffffffb3;
           text-decoration: none;
         }

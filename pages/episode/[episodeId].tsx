@@ -162,9 +162,7 @@ export default function EpisodePage({
         </Heading>
         <p>{episode?.description}</p>
         {episode?.show?.id ? (
-          <Link href={`/show/${episode.show.id}`}>
-            <a>SEE ALL EPISODES</a>
-          </Link>
+          <Link href={`/show/${episode.show.id}`}>SEE ALL EPISODES</Link>
         ) : null}
       </div>
       <style jsx>{`

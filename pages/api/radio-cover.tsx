@@ -6,7 +6,7 @@ import { getRandomColor } from "utils/colors";
 import { hexToHsl } from "utils/hexToHsl";
 
 export const config = {
-  runtime: "experimental-edge",
+  runtime: "edge",
 };
 
 const font = fetch(
