@@ -32,24 +32,34 @@ export default function useIsThisPlaybackPlaying({
   const isConcert = router.pathname.includes("/concert/");
   const stationTrackId = isStationTrack
     ? (router.query.trackId as string)
-    : trackId;
-  const concertId = isConcert ? (router.query.id as string) : uriId;
+    : null;
+  const concertId = isConcert ? (router.query.id as string) : null;
 
   useEffect(() => {
     const updateIsThisTrackPlaying = () => {
-      if (trackId) {
-        const isTheSameTrackAsPlaying = trackId === currentlyPlaying?.id;
-        setIsThisTrackPlaying(isTheSameTrackAsPlaying && isPlaying);
+      if (!trackId) {
+        setIsThisTrackPlaying(false);
+        return;
       }
+      const isTheSameTrackAsPlaying = trackId === currentlyPlaying?.id;
+      setIsThisTrackPlaying(isTheSameTrackAsPlaying && isPlaying);
     };
 
     const updateIsThisArtistPlaying = () => {
+      if (!uri) {
+        setIsThisArtistPlaying(false);
+        return;
+      }
       const isTheSameArtistPlaying =
         uri === currentlyPlaying?.artists?.[0]?.uri;
       setIsThisArtistPlaying(isTheSameArtistPlaying && isPlaying);
     };
 
     const updateIsThisPlaylistPlaying = () => {
+      if (!uriId) {
+        setIsThisPlaylistPlaying(false);
+        return;
+      }
       const isTheSamePlaylistPlaying = !!(
         playlistPlayingId &&
         playlistPlayingId === uriId &&
@@ -59,18 +69,26 @@ export default function useIsThisPlaybackPlaying({
     };
 
     const updateIsThisStationPlaying = () => {
+      if (!stationTrackId) {
+        setIsThisStationPlaying(false);
+        return;
+      }
       const stationTrackIdIsInAllTracks = allTracksToPlay
         ?.map((track) => track.id)
-        ?.includes(stationTrackId as string);
+        ?.includes(stationTrackId);
       const stationTrackIdIsInAllTracksFromSpotify = allTracks
         ?.map((track) => track.id)
-        ?.includes(stationTrackId as string);
+        ?.includes(stationTrackId);
       const isTheSameTracksPlaying =
         allTracksToPlay?.join("") === allTracks?.join("");
+      const nowPlayingIsStationTrack = !!allTracks
+        ?.map((track) => track.id)
+        ?.includes(currentlyPlaying?.id);
       const isTheSameStationTracks = !!(
         stationTrackIdIsInAllTracks &&
         stationTrackIdIsInAllTracksFromSpotify &&
-        isTheSameTracksPlaying
+        isTheSameTracksPlaying &&
+        nowPlayingIsStationTrack
       );
       const isTheSameStationPlaying =
         !playlistPlayingId || playlistPlayingId === stationTrackId;
@@ -80,6 +98,10 @@ export default function useIsThisPlaybackPlaying({
     };
 
     const updateIsThisConcertPlaying = () => {
+      if (!concertId) {
+        setIsThisConcertPlaying(false);
+        return;
+      }
       const isTheSameConcertTracks = !!allTracksToPlay
         ?.map((track) => track.id)
         .includes(currentlyPlaying?.id);
@@ -107,6 +129,7 @@ export default function useIsThisPlaybackPlaying({
     trackId,
     uri,
     uriId,
+    router.asPath,
   ]);
 
   return (
