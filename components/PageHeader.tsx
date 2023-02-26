@@ -58,6 +58,7 @@ export default function PageHeader({
     [HeaderType.podcast]: translations.pageHeaderPodcast,
     [HeaderType.episode]: translations.pageHeaderEpisode,
     [HeaderType.radio]: translations.pageHeaderRadio,
+    [HeaderType.top]: translations.pageHeaderTop,
   };
 
   useEffect(() => {

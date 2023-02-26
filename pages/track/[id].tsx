@@ -74,7 +74,6 @@ export default function TrackPage({
         id: track.id,
         images: track.album.images,
         type: "playlist",
-        uri: track.uri,
       });
 
       setAllTracks([track, ...artistTopTracks]);

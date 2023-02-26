@@ -161,6 +161,8 @@ const Playlist: NextPage<
             ? HeaderType.episode
             : pageDetails?.type === "podcast"
             ? HeaderType.podcast
+            : pageDetails?.type === "top"
+            ? HeaderType.top
             : HeaderType.playlist
         }
         title={pageDetails?.name ?? ""}
@@ -384,7 +386,7 @@ const Playlist: NextPage<
           playListTracks.length === 0 ? (
           <div className="noTracks">
             <Heading number={3} as="h2" margin="1rem 0">
-              {translations.noTracksFoundForConcert}
+              {translations.noTracksFound}
             </Heading>
           </div>
         ) : null}

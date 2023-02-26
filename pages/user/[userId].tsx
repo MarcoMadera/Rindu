@@ -19,6 +19,9 @@ import useUserPlaylists from "hooks/useUserPlaylists";
 import PresentationCard from "components/PresentationCard";
 import { CardType } from "components/CardContent";
 import { decode } from "html-entities";
+import { getTopTracksCards } from "utils/getTopTracksCards";
+import Carousel from "components/Carousel";
+import Heading from "components/Heading";
 
 interface CurrentUserProps {
   currentUser: SpotifyApi.UserObjectPublic | null;
@@ -76,6 +79,26 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
       />
       {isThisUser && (
         <ContentContainer>
+          <Carousel title={translations.topTracksPlaylistHeading} gap={24}>
+            {getTopTracksCards(user, translations).map((item) => {
+              if (!item) return null;
+              const { images, name, id, subTitle, url } = item;
+              return (
+                <PresentationCard
+                  type={CardType.SIMPLE}
+                  key={name}
+                  images={images}
+                  title={name}
+                  id={id}
+                  subTitle={subTitle}
+                  url={url}
+                />
+              );
+            })}
+          </Carousel>
+          <Heading id={"title-playlist"} number={2}>
+            {translations.yourPlaylists}
+          </Heading>
           <Grid>
             {playlists?.length > 0
               ? playlists.map(({ images, name, description, id, owner }) => {
