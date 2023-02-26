@@ -36,6 +36,7 @@ import {
   searchPlaylist,
   searchTrack,
 } from "utils/spotifyCalls/search";
+import { getTopTracksCards } from "utils/getTopTracksCards";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
@@ -147,6 +148,23 @@ const Dashboard: NextPage<DashboardProps> = ({
           })}
         </Carousel>
       ) : null}
+      <Carousel title={translations.topTracksPlaylistHeading} gap={24}>
+        {getTopTracksCards(user, translations).map((item) => {
+          if (!item) return null;
+          const { images, name, id, subTitle, url } = item;
+          return (
+            <PresentationCard
+              type={CardType.SIMPLE}
+              key={name}
+              images={images}
+              title={name}
+              id={id}
+              subTitle={subTitle}
+              url={url}
+            />
+          );
+        })}
+      </Carousel>
       {artistOfTheWeek && artistOfTheWeek.length > 0 ? (
         <Carousel title={translations.artistOfTheWeekHeading} gap={24}>
           {artistOfTheWeek.map((artist) => {

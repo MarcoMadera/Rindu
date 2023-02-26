@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { getSiteUrl } from "utils/environment";
 
 export enum CardType {
+  SIMPLE = "simple",
   PLAYLIST = "playlist",
   ALBUM = "album",
   ARTIST = "artist",
@@ -22,6 +23,7 @@ export interface ICardContent {
   title: string;
   subTitle: string | JSX.Element;
   type: CardType;
+  url?: string;
 }
 
 export const CardContent: React.FC<ICardContent> = ({
@@ -30,6 +32,7 @@ export const CardContent: React.FC<ICardContent> = ({
   images,
   title,
   subTitle,
+  url,
 }) => {
   const router = useRouter();
   const handlerRef = useRef<HTMLDivElement>(null);
@@ -45,6 +48,10 @@ export const CardContent: React.FC<ICardContent> = ({
         className="handler"
         onClick={() => {
           if (!type) return;
+          if (type === CardType.SIMPLE && url) {
+            router.push(url);
+            return;
+          }
           router.push(`/${type}/${encodeURIComponent(id)}`);
         }}
         onKeyDown={(e) => {
@@ -54,6 +61,7 @@ export const CardContent: React.FC<ICardContent> = ({
           }
         }}
         onContextMenu={(e) => {
+          if (type === CardType.SIMPLE && url) return;
           e.preventDefault();
           const x = e.pageX;
           const y = e.pageY;

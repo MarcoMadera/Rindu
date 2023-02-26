@@ -28,7 +28,8 @@ export interface IPageDetails {
     | "concert"
     | "radio"
     | "episode"
-    | "podcast";
+    | "podcast"
+    | "top";
   name?: string;
   description?: string | null;
   tracks?: { total?: number };

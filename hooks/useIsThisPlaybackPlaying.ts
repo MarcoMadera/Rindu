@@ -25,6 +25,8 @@ export default function useIsThisPlaybackPlaying({
   const [isThisArtistPlaying, setIsThisArtistPlaying] = useState(false);
   const [isThisStationPlaying, setIsThisStationPlaying] = useState(false);
   const [isThisConcertPlaying, setIsThisConcertPlaying] = useState(false);
+  const [isLikedTracksPlaying, setIsLikedTracksPlaying] = useState(false);
+  const [isSameTracksPlaying, setIsSameTracksPlaying] = useState(false);
   const { isPlaying, currentlyPlaying, playlistPlayingId, allTracks } =
     useSpotify();
   const router = useRouter();
@@ -111,6 +113,32 @@ export default function useIsThisPlaybackPlaying({
       setIsThisConcertPlaying(isTheSameConcertPlaying && isPlaying);
     };
 
+    const updateIsLikedTracksPlaying = () => {
+      const isLikedTracksPlaying = playlistPlayingId === "tracks" && isPlaying;
+      setIsLikedTracksPlaying(isLikedTracksPlaying);
+    };
+
+    const updateIsSameTracksPlaying = () => {
+      if (!allTracksToPlay?.length || !allTracks?.length || uri || uriId) {
+        setIsSameTracksPlaying(false);
+        return;
+      }
+      const isTheSameTracksPlaying =
+        allTracksToPlay?.join("") === allTracks?.join("");
+      const isTrackPlayingInTracks = !!allTracksToPlay
+        ?.map((track) => track.id)
+        .includes(currentlyPlaying?.id);
+      setIsSameTracksPlaying(
+        isTheSameTracksPlaying &&
+          isTrackPlayingInTracks &&
+          !playlistPlayingId &&
+          !isSingle &&
+          isPlaying
+      );
+    };
+
+    updateIsSameTracksPlaying();
+    updateIsLikedTracksPlaying();
     updateIsThisTrackPlaying();
     updateIsThisArtistPlaying();
     updateIsThisPlaylistPlaying();
@@ -130,6 +158,7 @@ export default function useIsThisPlaybackPlaying({
     uri,
     uriId,
     router.asPath,
+    currentlyPlaying?.uri,
   ]);
 
   return (
@@ -140,6 +169,8 @@ export default function useIsThisPlaybackPlaying({
       !isThisTrackPlaying &&
       !track) ||
     isThisStationPlaying ||
-    isThisConcertPlaying
+    isThisConcertPlaying ||
+    isLikedTracksPlaying ||
+    isSameTracksPlaying
   );
 }

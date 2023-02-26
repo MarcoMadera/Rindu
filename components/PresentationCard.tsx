@@ -14,6 +14,7 @@ export interface PresentationCardProps {
   subTitle: string | JSX.Element;
   track?: ITrack;
   isSingle?: boolean;
+  url?: string;
 }
 
 function PresentationCard({
@@ -24,6 +25,7 @@ function PresentationCard({
   type,
   isSingle,
   track,
+  url,
   ...props
 }: PresentationCardProps & HTMLAttributes<HTMLAnchorElement>): ReactElement {
   const unsupportedUris = ["genre", "user"];
@@ -44,18 +46,21 @@ function PresentationCard({
         images={images}
         title={title}
         subTitle={subTitle}
+        url={url}
       />
       <span>
-        <PlayButton
-          uri={uri}
-          track={track}
-          isSingle={isSingle}
-          centerSize={24}
-          size={48}
-          tabIndex={props.tabIndex}
-          aria-hidden={props["aria-hidden"]}
-          allTracks={allTracks}
-        />
+        {!url && (
+          <PlayButton
+            uri={uri}
+            track={track}
+            isSingle={isSingle}
+            centerSize={24}
+            size={48}
+            tabIndex={props.tabIndex}
+            aria-hidden={props["aria-hidden"]}
+            allTracks={allTracks}
+          />
+        )}
       </span>
       <style jsx>{`
         .container {

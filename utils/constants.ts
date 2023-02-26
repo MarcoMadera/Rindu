@@ -37,3 +37,6 @@ export const SCOPES = [
   "playlist-modify-public",
 ] as const;
 export const SPOTIFY_AUTH_LOGIN_RESPONSE_TYPE = "code";
+export const TOP_TRACKS_LONG_TERM_COLOR = "rgb(211, 62, 79)";
+export const TOP_TRACKS_MEDIUM_TERM_COLOR = "rgb(250, 230, 45)";
+export const TOP_TRACKS_SHORT_TERM_COLOR = "rgb(176, 153, 199)";
