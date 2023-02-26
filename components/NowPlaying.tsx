@@ -209,7 +209,7 @@ export default function NowPlaying(): ReactElement | null {
           color: #ffffffb3;
         }
         .navBar-Button:hover,
-        .trackName {
+        section :global(a.trackName) {
           color: #fff;
         }
         p,
@@ -217,11 +217,11 @@ export default function NowPlaying(): ReactElement | null {
           margin: 0px;
           text-align: left;
         }
-        .navBar-left :global(a) {
+        .navBar-left :global(a.trackName) {
           text-decoration: none;
           color: inherit;
         }
-        .navBar-left (a:hover) {
+        .navBar-left :global(a.trackName:hover) {
           color: #fff;
           text-decoration: underline;
         }

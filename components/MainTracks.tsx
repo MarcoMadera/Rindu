@@ -42,6 +42,9 @@ export default function MainTracks({
                   return null;
                 }
                 const index = i * 5 + chunkIndex;
+                const uris = tracksRecommendations?.map(
+                  (track) => track.uri || ""
+                );
 
                 return (
                   <CardTrack
@@ -53,6 +56,7 @@ export default function MainTracks({
                     type={CardType.presentation}
                     position={index}
                     isSingleTrack
+                    uris={uris}
                   />
                 );
               })}

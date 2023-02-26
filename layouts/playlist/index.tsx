@@ -83,9 +83,7 @@ const Playlist: NextPage<
     if (!pageDetails) {
       router.push("/");
     }
-    if (!isGeneratedPlaylist) {
-      setElement(() => <PlaylistTopBarExtraField uri={pageDetails?.uri} />);
-    }
+    setElement(() => <PlaylistTopBarExtraField uri={pageDetails?.uri} />);
     setPageDetails(pageDetails);
     trackWithGoogleAnalytics();
     setAllTracks(tracks);
@@ -181,27 +179,7 @@ const Playlist: NextPage<
         {allTracks.length > 0 ? (
           <>
             <div className="options">
-              {isGeneratedPlaylist && (
-                <div>
-                  <button
-                    className="save-to-playlist-button"
-                    onClick={() => {
-                      handleSaveToPlaylistClick({
-                        allTracks,
-                        addToast,
-                        accessToken,
-                        pageDetails,
-                        router,
-                        setPlaylists,
-                        user,
-                      });
-                    }}
-                  >
-                    {translations.saveAsPlaylist}
-                  </button>
-                </div>
-              )}
-              {!isGeneratedPlaylist && (
+              {
                 <>
                   <PlayButton
                     uri={pageDetails?.uri}
@@ -223,41 +201,64 @@ const Playlist: NextPage<
                         <Broom width={32} height={32} />
                       </button>
                     ) : (
-                      <Heart
-                        active={isFollowingThisPlaylist}
-                        handleLike={async () => {
-                          const followRes = await followPlaylist(
-                            pageDetails?.id
-                          );
-                          if (followRes) {
-                            setIsFollowingThisPlaylist(true);
-                            addToast({
-                              variant: "success",
-                              message: translations.playlistAddedToLibrary,
-                            });
-                            return true;
-                          }
-                          return null;
-                        }}
-                        handleDislike={async () => {
-                          const unfollowRes = await unfollowPlaylist(
-                            pageDetails?.id
-                          );
-                          if (unfollowRes) {
-                            setIsFollowingThisPlaylist(false);
-                            addToast({
-                              variant: "success",
-                              message: translations.playlistRemovedFromLibrary,
-                            });
-                            return true;
-                          }
-                          return null;
-                        }}
-                        style={{ width: 80, height: 80 }}
-                      />
+                      !isGeneratedPlaylist && (
+                        <Heart
+                          active={isFollowingThisPlaylist}
+                          handleLike={async () => {
+                            const followRes = await followPlaylist(
+                              pageDetails?.id
+                            );
+                            if (followRes) {
+                              setIsFollowingThisPlaylist(true);
+                              addToast({
+                                variant: "success",
+                                message: translations.playlistAddedToLibrary,
+                              });
+                              return true;
+                            }
+                            return null;
+                          }}
+                          handleDislike={async () => {
+                            const unfollowRes = await unfollowPlaylist(
+                              pageDetails?.id
+                            );
+                            if (unfollowRes) {
+                              setIsFollowingThisPlaylist(false);
+                              addToast({
+                                variant: "success",
+                                message:
+                                  translations.playlistRemovedFromLibrary,
+                              });
+                              return true;
+                            }
+                            return null;
+                          }}
+                          style={{ width: 80, height: 80 }}
+                        />
+                      )
                     )}
                   </div>
                 </>
+              }
+              {isGeneratedPlaylist && (
+                <div>
+                  <button
+                    className="save-to-playlist-button"
+                    onClick={() => {
+                      handleSaveToPlaylistClick({
+                        allTracks,
+                        addToast,
+                        accessToken,
+                        pageDetails,
+                        router,
+                        setPlaylists,
+                        user,
+                      });
+                    }}
+                  >
+                    {translations.saveAsPlaylist}
+                  </button>
+                </div>
               )}
             </div>
             <div className="trc">
@@ -450,6 +451,7 @@ const Playlist: NextPage<
           align-items: center;
           margin: 16px 0;
           flex-direction: row;
+          gap: 16px;
         }
         .tracksContainer {
           padding: 0 32px;

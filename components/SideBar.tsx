@@ -42,6 +42,7 @@ export default function SideBar(): ReactElement {
 
   const type = playedSource?.split(":")?.[1];
   const id = playedSource?.split(":")?.[2];
+  const isCollectionPath = router.pathname.startsWith("/collection");
 
   return (
     <>
@@ -163,9 +164,9 @@ export default function SideBar(): ReactElement {
           color: ${router.pathname === "/search" ? "#fff" : "inherit"};
           background: ${router.pathname === "/search" ? "#282828" : "unset"};
         }
-        section:nth-of-type(1) :global(.library) {
-          color: ${router.pathname === "/library" ? "#fff" : "inherit"};
-          background: ${router.pathname === "/library" ? "#282828" : "unset"};
+        section:nth-of-type(1) :global(.collection) {
+          color: ${isCollectionPath ? "#fff" : "inherit"};
+          background: ${isCollectionPath ? "#282828" : "unset"};
         }
       `}</style>
       <style jsx>{`
