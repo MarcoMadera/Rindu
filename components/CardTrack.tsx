@@ -49,6 +49,7 @@ interface CardTrackProps {
   onClickAdd?: () => void;
   uri?: string;
   visualPosition?: number;
+  uris?: string[];
 }
 
 function CardTrack({
@@ -63,6 +64,7 @@ function CardTrack({
   onClickAdd,
   uri,
   visualPosition,
+  uris,
 }: CardTrackProps): ReactElement | null {
   const {
     allTracks,
@@ -125,6 +127,7 @@ function CardTrack({
       position,
       setAccessToken,
       uri,
+      uris,
     }).then((status) => {
       if (status === 404) {
         (player as Spotify.Player).disconnect();
@@ -273,9 +276,10 @@ function CardTrack({
         className="playButton"
         aria-label={isPlaying && isTheSameAsCurrentlyPlaying ? "Pause" : "Play"}
         onClick={() => {
-          if (isPlaying && isTheSameAsCurrentlyPlaying && isPlayable) {
-            player?.pause();
-            setIsPlaying(false);
+          if (isSmallScreen) return;
+          if (isTheSameAsCurrentlyPlaying && isPlayable) {
+            player?.togglePlay();
+            setIsPlaying(!isPlaying);
             return;
           }
           if (isPlayable) {

@@ -48,13 +48,14 @@ export function PlayButton({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const isVisible = useOnScreen(buttonRef);
 
-  const { isThisTrackPlaying, isThisPlaylistPlaying, isThisArtistPlaying } =
-    useIsThisPlaybackPlaying({
-      trackId: track?.id,
-      uri,
-      isSingle,
-      uriId,
-    });
+  const isThisPlaying = useIsThisPlaybackPlaying({
+    track,
+    trackId: track?.id,
+    uri,
+    isSingle,
+    uriId,
+    allTracksToPlay: allTracks,
+  });
 
   return (
     <>
@@ -69,6 +70,10 @@ export function PlayButton({
             return;
           }
           if (isPremium && deviceId) {
+            if (isThisPlaying) {
+              player?.pause();
+              return;
+            }
             handlePremiumPlay(
               player as Spotify.Player,
               deviceId,
@@ -92,8 +97,7 @@ export function PlayButton({
           }
           handleNonPremiumPlay(
             player as AudioPlayer,
-            isThisTrackPlaying,
-            isThisPlaylistPlaying,
+            isThisPlaying,
             setIsPlaying,
             setCurrentlyPlaying,
             setPlaylistPlayingId,
@@ -107,12 +111,7 @@ export function PlayButton({
         tabIndex={isVisible ? 0 : -1}
         {...props}
       >
-        {(isThisTrackPlaying && !isThisPlaylistPlaying) ||
-        isThisArtistPlaying ||
-        (isThisPlaylistPlaying &&
-          !isThisArtistPlaying &&
-          !isThisTrackPlaying &&
-          !track) ? (
+        {isThisPlaying ? (
           <Pause fill="#000" width={centerSize} height={centerSize} />
         ) : (
           <Play fill="#000" width={centerSize} height={centerSize} />

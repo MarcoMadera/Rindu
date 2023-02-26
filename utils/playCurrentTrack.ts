@@ -17,6 +17,7 @@ interface Config {
   position?: number;
   setAccessToken: Dispatch<SetStateAction<string | undefined>>;
   uri?: string | undefined;
+  uris?: string[] | undefined;
 }
 
 export async function playCurrentTrack(
@@ -35,6 +36,7 @@ export async function playCurrentTrack(
     position,
     setAccessToken,
     uri,
+    uris,
   }: Config
 ): Promise<number> {
   const isPremium = user?.product === "premium";
@@ -49,11 +51,11 @@ export async function playCurrentTrack(
   }
 
   if (accessToken && track && deviceId) {
-    const uris: string[] = [];
+    const allTracksUris: string[] = [];
     const positionOfTracksWithoutUri: number[] = [];
     allTracks.forEach((track, i) => {
       if (track.uri) {
-        uris.push(track.uri);
+        allTracksUris.push(track.uri);
       } else {
         positionOfTracksWithoutUri.push(i);
       }
@@ -65,7 +67,7 @@ export async function playCurrentTrack(
 
     const playConfig = isSingleTrack
       ? {
-          uris: uri ? [uri] : uris,
+          uris: uris ?? (uri ? [uri] : allTracksUris),
           offset: uri ? 0 : positionInUrisArray,
         }
       : {

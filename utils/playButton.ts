@@ -36,14 +36,15 @@ export function getPlayOptions(
   position?: number,
   allTracks?: ITrack[]
 ): { context_uri?: string; uris?: string[]; offset?: number } {
-  if (track || isSingle) {
+  if (uri || pageDetails?.uri) {
     return {
-      uris: getUris(isSingle, allTracks, track?.uri, uri),
-      offset: position ?? 0,
+      context_uri: uri ?? pageDetails?.uri,
     };
   }
+
   return {
-    context_uri: uri ?? pageDetails?.uri,
+    uris: getUris(isSingle, allTracks, track?.uri, uri),
+    offset: position ?? 0,
   };
 }
 
@@ -139,8 +140,7 @@ export async function handlePremiumPlay(
 
 export function handleNonPremiumPlay(
   player: AudioPlayer | undefined,
-  isThisTrackPlaying: boolean,
-  isThisPlaylistPlaying: boolean,
+  isThisPlaying: boolean,
   setIsPlaying: Dispatch<SetStateAction<boolean>>,
   setCurrentlyPlaying: Dispatch<SetStateAction<ITrack | undefined>>,
   setPlaylistPlayingId: Dispatch<SetStateAction<string | undefined>>,
@@ -149,7 +149,7 @@ export function handleNonPremiumPlay(
   track?: ITrack
 ): void {
   if (!player) return;
-  if (isThisTrackPlaying || (pageDetails && isThisPlaylistPlaying && !track)) {
+  if (isThisPlaying || (pageDetails && !track)) {
     player?.togglePlay();
     return;
   }

@@ -20,14 +20,14 @@ export default function ArtistList({
   if (!artists) return null;
 
   return (
-    <>
+    <span>
       {artists.map((artist, i) => {
         if (maxArtistsToShow && i > maxArtistsToShow) return null;
         const id = artist.id || getIdFromUri(artist.uri, "id");
         if (!id) {
           if (artist.name) {
             return (
-              <span key={artist.name} ref={artistsRef}>
+              <span key={artist.name} ref={artistsRef} className="ArtistList">
                 {artist.name}
                 {i !== (artists?.length || 0) - 1 ? ", " : ""}
               </span>
@@ -54,19 +54,19 @@ export default function ArtistList({
               {artist.name}
             </Link>
             {i !== (artists?.length && artists?.length - 1) ? ", " : null}
-            <style jsx>{`
-              :global(.ArtistList) {
-                color: inherit;
-                text-decoration: none;
-              }
-              :global(.ArtistList:hover),
-              :global(.ArtistList:focus) {
-                text-decoration: underline;
-              }
-            `}</style>
           </Fragment>
         );
       })}
-    </>
+      <style jsx>{`
+        span :global(.ArtistList) {
+          color: inherit;
+          text-decoration: none;
+        }
+        span :global(.ArtistList:hover),
+        span :global(.ArtistList:focus) {
+          text-decoration: underline;
+        }
+      `}</style>
+    </span>
   );
 }
