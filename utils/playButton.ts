@@ -36,7 +36,7 @@ export function getPlayOptions(
   position?: number,
   allTracks?: ITrack[]
 ): { context_uri?: string; uris?: string[]; offset?: number } {
-  if (uri || pageDetails?.uri) {
+  if ((uri || pageDetails?.uri) && !isSingle) {
     return {
       context_uri: uri ?? pageDetails?.uri,
     };
