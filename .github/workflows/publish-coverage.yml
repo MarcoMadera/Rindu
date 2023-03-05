@@ -22,8 +22,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@4.1.3
         with:
           branch: gh-pages
-          folder: rindu/coverage/lcov-report
-          baseDir: rindu
+          folder: coverage/lcov-report
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Checkout branches
