@@ -25,6 +25,14 @@ jobs:
           folder: coverage/lcov-report
           baseDir: rindu/coverage
 
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+
+      - name: Copy scripts directory
+        run: cp -R scripts gh-pages/
+
       - name: Create CNAME file
         run: |
           mkdir -p rindu
