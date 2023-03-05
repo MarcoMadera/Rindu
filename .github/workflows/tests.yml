@@ -4,8 +4,6 @@
 name: Tests
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -29,4 +27,4 @@ jobs:
     - run: npm install --force
     - run: npm run test:ci
     - name: Run eslint
-      run: npx eslint --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore .
+      run: npm run lint
