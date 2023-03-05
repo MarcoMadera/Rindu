@@ -1,0 +1,26 @@
+name: Publish Coverage Report
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate coverage report
+        run: npm run test:ci
+
+      - name: Publish coverage report
+        uses: JamesIves/github-pages-deploy-action@4.1.3
+        with:
+          branch: gh-pages
+          folder: coverage/lcov-report
+          baseDir: rindu/coverage
