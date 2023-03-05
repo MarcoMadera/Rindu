@@ -18,12 +18,14 @@ jobs:
       - name: Generate coverage report
         run: npm run test:ci
 
-      - name: Create CNAME file
-        run: echo 'coverage.marcomadera.com' > rindu/CNAME
-
       - name: Publish coverage report
         uses: JamesIves/github-pages-deploy-action@4.1.3
         with:
           branch: gh-pages
           folder: coverage/lcov-report
           baseDir: rindu/coverage
+
+      - name: Create CNAME file
+        run: |
+          mkdir -p rindu
+          echo 'coverage.marcomadera.com' > rindu/CNAME
