@@ -1,5 +1,10 @@
 import Router from "next/router";
-import { NextPage } from "next";
+import {
+  GetStaticPropsResult,
+  NextApiRequest,
+  NextApiResponse,
+  NextPage,
+} from "next";
 import { takeCookie } from "../utils/cookies";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "../utils/constants";
 import useAuth from "../hooks/useAuth";
@@ -17,6 +22,7 @@ import { getSpotifyLoginURL } from "utils/getSpotifyLoginURL";
 import { Hero } from "../components/Hero";
 import { FeatureCard } from "../components/FeatureCard";
 import { CardContainer } from "../components/CardContainer";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 
 interface HomeProps {
   accessToken?: string | null;
@@ -101,30 +107,30 @@ const Home: NextPage<HomeProps> = ({ translations }) => {
             display: block;
             margin: 0 auto;
           }
-          main :global(.info) {
+          main :global(section.info) {
             background-color: #fff;
             color: #000;
           }
           main :global(.info) div {
             padding: 0;
           }
-          main :global(.info) h2 {
+          main :global(section.info) h2 {
             color: #000;
             font-size: 24px;
             font-weight: 800;
             letter-spacing: 0.5px;
           }
-          main :global(.info) p {
+          main :global(section.info) p {
             font-size: 24px;
             font-weight: 600;
             letter-spacing: 0.6px;
             word-spacing: 1.4px;
             line-height: 1.6;
           }
-          main :global(.info div:nth-child(1)) {
+          main :global(section.info div:nth-child(1)) {
             grid-column: 1 / 6;
           }
-          main :global(.info div:nth-child(2)) {
+          main :global(section.info div:nth-child(2)) {
             grid-column: 7 / 13;
           }
           main :global(.conclude) div:nth-child(2) {
@@ -135,19 +141,19 @@ const Home: NextPage<HomeProps> = ({ translations }) => {
             padding: 0;
           }
           @media screen and (min-width: 0px) and (max-width: 1100px) {
-            main :global(.info) {
+            main :global(section.info) {
               display: block;
               padding: 10px;
             }
-            main :global(.info) h2 {
+            main :global(section.info) h2 {
               color: #000;
               font-size: 1.4rem;
               line-height: 2.4rem;
             }
-            main :global(.info) {
+            main :global(section.info) {
               background-color: #fff;
             }
-            main :global(.info) p {
+            main :global(section.info) p {
               font-size: 20px;
             }
           }
@@ -159,13 +165,21 @@ const Home: NextPage<HomeProps> = ({ translations }) => {
 
 export default Home;
 
-Home.getInitialProps = async ({ res, req, query }): Promise<HomeProps> => {
-  const country = (query.country || "US") as string;
+export async function getServerSideProps({
+  res,
+  req,
+  query,
+}: {
+  res: NextApiResponse;
+  req: NextApiRequest;
+  query: NextParsedUrlQuery & { country?: string };
+}): Promise<GetStaticPropsResult<HomeProps>> {
+  const country = query?.country || "US";
   const translations = getTranslations(country, Page.Home);
   const cookies = req?.headers?.cookie;
 
   if (!cookies) {
-    return { accessToken: null, translations };
+    return { props: { accessToken: null, translations } };
   }
   const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE, cookies);
 
@@ -174,7 +188,7 @@ Home.getInitialProps = async ({ res, req, query }): Promise<HomeProps> => {
 
     if (!access_token) {
       removeTokensFromCookieServer(res);
-      return { accessToken: null, translations };
+      return { props: { accessToken: null, translations } };
     }
 
     const expireCookieDate = new Date();
@@ -192,10 +206,9 @@ Home.getInitialProps = async ({ res, req, query }): Promise<HomeProps> => {
     } else {
       Router.replace("/dashboard");
     }
-
-    return { accessToken: access_token, translations };
+    return { props: { accessToken: access_token, translations } };
   }
   removeTokensFromCookieServer(res);
 
-  return { accessToken: null, translations };
-};
+  return { props: { accessToken: null, translations } };
+}

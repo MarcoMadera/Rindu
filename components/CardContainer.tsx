@@ -15,7 +15,7 @@ export function CardContainer({
     <section {...props}>
       {children}
       <style jsx>{`
-      section {
+        section {
           max-width: 1568px;
           padding: 64px;
           display: grid;
@@ -23,8 +23,7 @@ export function CardContainer({
           position: relative;
           margin: 0 auto;
         }
-      }
-      section:nth-child(odd),
+        section:nth-child(odd),
         section:nth-child(odd) :global(a) {
           background-color: rgb(253, 186, 239);
           color: #000;
