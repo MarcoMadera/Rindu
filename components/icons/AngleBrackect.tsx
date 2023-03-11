@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 
-export function AngleBrackect({
+export default function AngleBrackect({
   angle,
   ...props
 }: {

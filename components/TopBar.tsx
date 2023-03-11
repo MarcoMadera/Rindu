@@ -1,20 +1,16 @@
-import useAuth from "hooks/useAuth";
 import { MutableRefObject, ReactElement, useState } from "react";
-import UserWidget from "./UserWidget";
-import RouterButtons from "./RouterButtons";
-import useHeader from "hooks/useHeader";
-import useRouterEvents from "hooks/useRouterEvents";
-import Logo from "./Logo";
-import LoginButton from "./LoginButton";
+
 import { useRouter } from "next/router";
+
+import { LoginButton, Logo, RouterButtons, UserWidget } from "components";
+import { Chevron } from "components/icons/";
+import { useAuth, useHeader, useRouterEvents, useSpotify } from "hooks";
+import { DisplayInFullScreen } from "types/spotify";
 import {
   calculateBannerOpacity,
   calculateHeaderOpacity,
   setOpacityStyles,
-} from "utils/topBar";
-import useSpotify from "hooks/useSpotify";
-import { DisplayInFullScreen } from "types/spotify";
-import { Chevron } from "./icons/Chevron";
+} from "utils";
 
 interface TopBarProps {
   appRef?: MutableRefObject<HTMLDivElement | undefined>;

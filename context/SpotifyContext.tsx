@@ -1,11 +1,3 @@
-import useMediaSession from "hooks/useMediaSession";
-import usePictureInPicture from "hooks/usePictureInPicture";
-import useRecentlyPlayed from "hooks/useRecentlyPlayed";
-import useReconnectSpotifyPlayer from "hooks/useReconnectSpotifyPlayer";
-import useShortcuts from "hooks/useShortCuts";
-import { AudioPlayer } from "hooks/useSpotifyPlayer";
-import useToggle from "hooks/useToggle";
-import Head from "next/head";
 import {
   createContext,
   PropsWithChildren,
@@ -14,13 +6,25 @@ import {
   useRef,
   useState,
 } from "react";
+
+import Head from "next/head";
+
+import {
+  useMediaSession,
+  usePictureInPicture,
+  useRecentlyPlayed,
+  useReconnectSpotifyPlayer,
+  useShortCuts,
+  useToggle,
+} from "hooks";
+import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import {
   DisplayInFullScreen,
   ISpotifyContext,
   ITrack,
   PlaylistItems,
 } from "types/spotify";
-import { removeTracksFromPlaylist } from "utils/spotifyCalls/removeTracksFromPlaylist";
+import { removeTracksFromPlaylist } from "utils/spotifyCalls";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const SpotifyContext = createContext<ISpotifyContext>(null!);
@@ -92,7 +96,7 @@ export function SpotifyContextProvider({
     pictureInPictureCanvas,
     isPictureInPictureLyircsCanvas,
   });
-  useShortcuts({
+  useShortCuts({
     ignoreShortcuts,
     setDisplayInFullScreen,
     player,

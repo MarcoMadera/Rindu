@@ -1,13 +1,16 @@
-import { useRouter } from "next/router";
 import { useEffect } from "react";
+
+import { useRouter } from "next/router";
+
+import { useAuth } from "hooks";
 import {
   ACCESS_TOKEN_COOKIE,
   EXPIRE_TOKEN_COOKIE,
+  makeCookie,
   REFRESH_TOKEN_COOKIE,
-} from "utils/constants";
-import { makeCookie, takeCookie } from "utils/cookies";
-import { refreshAccessToken } from "utils/spotifyCalls/refreshAccessToken";
-import useAuth from "./useAuth";
+  takeCookie,
+} from "utils";
+import { refreshAccessToken } from "utils/spotifyCalls";
 
 export default function useRefreshAccessToken(): void {
   const router = useRouter();

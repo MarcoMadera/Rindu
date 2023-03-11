@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import BigPill from "components/BigPill";
+
+import { BigPill } from "components";
 
 describe("billPill", () => {
   it("renders", () => {

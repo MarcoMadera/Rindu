@@ -1,5 +1,5 @@
-import { Modify } from "./customTypes";
-import { ITrack } from "./spotify";
+import { Modify } from "types/customTypes";
+import { ITrack } from "types/spotify";
 
 export enum HeaderType {
   song = "SONG",

@@ -1,5 +1,6 @@
 import { NextApiResponse } from "next";
-import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "./constants";
+
+import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "utils";
 
 export function serverRedirect(
   res: NextApiResponse,

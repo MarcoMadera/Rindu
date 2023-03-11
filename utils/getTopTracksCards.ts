@@ -1,9 +1,9 @@
 import {
+  getSiteUrl,
   TOP_TRACKS_LONG_TERM_COLOR,
   TOP_TRACKS_MEDIUM_TERM_COLOR,
   TOP_TRACKS_SHORT_TERM_COLOR,
-} from "./constants";
-import { getSiteUrl } from "./environment";
+} from "utils";
 
 interface TopTracksCard {
   name: string;

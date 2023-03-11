@@ -1,4 +1,4 @@
-export async function getMyArtists(
+export default async function getMyArtists(
   accessToken: string
 ): Promise<SpotifyApi.UsersFollowedArtistsResponse | null> {
   const res = await fetch(

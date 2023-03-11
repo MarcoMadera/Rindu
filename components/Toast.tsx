@@ -1,7 +1,9 @@
-import { createPortal } from "react-dom";
 import { ReactPortal, useEffect, useState } from "react";
-import useToast from "hooks/useToast";
-import ToastCard from "./ToastCard";
+
+import { createPortal } from "react-dom";
+
+import { ToastCard } from "components";
+import { useToast } from "hooks";
 
 export default function Toast(): ReactPortal | null {
   const [targetNode, setTargetNode] = useState<Element | null>();

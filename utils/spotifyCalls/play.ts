@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction } from "react";
-import { refreshAccessToken } from "utils/spotifyCalls/refreshAccessToken";
 
-export async function play(
+import { refreshAccessToken } from "utils/spotifyCalls";
+
+export default async function play(
   accessToken: string,
   deviceId: string,
   options: { context_uri?: string; uris?: string[]; offset?: number },

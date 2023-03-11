@@ -1,9 +1,10 @@
-import ContentContainer from "components/ContentContainer";
-import Heading from "components/Heading";
-import useAnalytics from "hooks/useAnalytics";
+import { ReactElement, useEffect } from "react";
+
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ReactElement, useEffect } from "react";
+
+import { ContentContainer, Heading } from "components";
+import { useAnalytics } from "hooks";
 
 export default function Custom500(): ReactElement {
   const { pathname } = useRouter();

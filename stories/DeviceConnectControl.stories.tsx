@@ -1,16 +1,18 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import DeviceConnectControl from "../components/DeviceConnectControl";
-import UserContext, { IUserContext } from "context/UserContext";
-import { ToastContextProvider } from "context/ToastContext";
+
+import {
+  optionsKnob as options,
+  text,
+  withKnobs,
+} from "@storybook/addon-knobs";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { DeviceConnectControl } from "components";
+import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import { SpotifyContextProvider } from "context/SpotifyContext";
-import { ContextMenuContextProvider } from "context/ContextMenuContext";
-import {
-  withKnobs,
-  text,
-  optionsKnob as options,
-} from "@storybook/addon-knobs";
+import { ToastContextProvider } from "context/ToastContext";
+import UserContext, { IUserContext } from "context/UserContext";
 
 export default {
   title: "Components/DeviceConnectControl",

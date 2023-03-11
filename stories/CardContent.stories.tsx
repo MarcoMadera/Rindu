@@ -1,20 +1,21 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import PresentationCard from "../components/PresentationCard";
-import UserContext from "context/UserContext";
-import { ToastContextProvider } from "context/ToastContext";
+
+import {
+  boolean,
+  optionsKnob as options,
+  text,
+  withKnobs,
+} from "@storybook/addon-knobs";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { PresentationCard, SubTitle } from "components";
+import { CardType } from "components/CardContent";
+import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import SpotifyContext from "context/SpotifyContext";
-import { ContextMenuContextProvider } from "context/ContextMenuContext";
-import SubTitle from "components/SubtTitle";
-import {
-  withKnobs,
-  text,
-  optionsKnob as options,
-  boolean,
-} from "@storybook/addon-knobs";
+import { ToastContextProvider } from "context/ToastContext";
+import UserContext from "context/UserContext";
 import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
-import { CardType } from "components/CardContent";
 
 export default {
   title: "Components/CardContent",

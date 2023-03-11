@@ -1,4 +1,4 @@
-import { Range } from "./customTypes";
+import { Range } from "types/customTypes";
 
 export enum AsType {
   H1 = "h1",

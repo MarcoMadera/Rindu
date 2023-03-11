@@ -41,7 +41,7 @@ function VolumeOff() {
   );
 }
 
-export function Volume({ volume }: { volume: number }): ReactElement {
+export default function Volume({ volume }: { volume: number }): ReactElement {
   if (volume > 0.75) {
     return <HightVolume />;
   }

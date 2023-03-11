@@ -1,14 +1,12 @@
-import { PlayButton } from "components/PlayButton";
-import useAuth from "hooks/useAuth";
-import useContextMenu from "hooks/useContextMenu";
-import useOnScreen from "hooks/useOnScreen";
+import { ReactElement, useEffect, useRef, useState } from "react";
+
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactElement, useEffect, useRef, useState } from "react";
+
+import { ArtistList, Heading, PlayButton } from "components";
+import { useAuth, useContextMenu, useOnScreen } from "hooks";
 import { ITrack } from "types/spotify";
-import { getMainColorFromImage } from "utils/getMainColorFromImage";
-import ArtistList from "./ArtistList";
-import Heading from "./Heading";
+import { getMainColorFromImage } from "utils";
 
 interface FirstTrackContainerProps {
   preview?: string | null;

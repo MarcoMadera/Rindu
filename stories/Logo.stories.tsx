@@ -1,8 +1,10 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+
+import { boolean, withKnobs } from "@storybook/addon-knobs";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { Logo } from "components";
 import UserContext, { IUserContext } from "context/UserContext";
-import Logo from "../components/Logo";
-import { withKnobs, boolean } from "@storybook/addon-knobs";
 
 export default {
   title: "Components/Logo",

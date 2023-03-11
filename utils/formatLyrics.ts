@@ -12,7 +12,7 @@ export interface IFormatLyricsResponse {
   syncType: ISyncedLyricsResponse["lyrics"]["syncType"];
 }
 
-export default function formaLyrics(
+export function formatLyrics(
   lyricsData: GetLyrics
 ): IFormatLyricsResponse | null {
   if (lyricsData?.isFullscreen === undefined) return null;

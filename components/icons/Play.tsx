@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 
-export function Play({
+export default function Play({
   ...props
 }: {
   [x: string]: string | number;

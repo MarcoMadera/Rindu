@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
-import { rgbToHex } from "utils/rgbToHex";
+
+import { rgbToHex } from "utils";
 
 export function getMainColorFromImage(
   imageId: string,

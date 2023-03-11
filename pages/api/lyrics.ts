@@ -1,8 +1,9 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { AnyNode, Cheerio, load } from "cheerio";
 import levenshtein from "fast-levenshtein";
 import _ from "lodash";
-import { getSiteUrl } from "utils/environment";
+import type { NextApiRequest, NextApiResponse } from "next";
+
+import { getSiteUrl } from "utils";
 
 async function getLyrics(
   artistName: string,

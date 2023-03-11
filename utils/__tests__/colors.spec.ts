@@ -1,4 +1,4 @@
-import { getRandomColor, colors } from "utils/colors";
+import { colors, getRandomColor } from "utils";
 
 describe("colors", () => {
   it("should return a color", () => {

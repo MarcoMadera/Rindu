@@ -1,17 +1,19 @@
 import "../styles/globals.css";
-import { UserContextProvider } from "../context/UserContext";
-import { SpotifyContextProvider } from "../context/SpotifyContext";
-import { HeaderContextProvider } from "../context/HeaderContext";
-import { ToastContextProvider } from "context/ToastContext";
+import { ReactElement } from "react";
+
+import { Analytics } from "@vercel/analytics/react";
+import type { AppProps } from "next/app";
+
+import { Seo } from "components";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
+import { HeaderContextProvider } from "context/HeaderContext";
+import { SpotifyContextProvider } from "context/SpotifyContext";
+import { ToastContextProvider } from "context/ToastContext";
 import TranslationsContext, {
   TranslationsContextProviderProps,
 } from "context/TranslationsContext";
-import type { AppProps } from "next/app";
-import { ReactElement } from "react";
-import MainLayout from "../layouts/MainLayout";
-import Seo from "../components/Seo";
-import { Analytics } from "@vercel/analytics/react";
+import { UserContextProvider } from "context/UserContext";
+import MainLayout from "layouts/MainLayout";
 
 const MyApp = ({
   Component,

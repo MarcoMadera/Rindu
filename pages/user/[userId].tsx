@@ -1,27 +1,31 @@
-import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { useRouter } from "next/router";
-import useAuth from "hooks/useAuth";
-import useAnalytics from "hooks/useAnalytics";
 import { useEffect } from "react";
-import { serverRedirect } from "utils/serverRedirect";
-import { getAuth } from "utils/getAuth";
-import { getUserById } from "utils/spotifyCalls/getUserById";
-import { getPlaylistsFromUser } from "utils/spotifyCalls/getPlaylistsFromUser";
-import PageHeader from "components/PageHeader";
-import { HeaderType } from "types/pageHeader";
-import ContentContainer from "components/ContentContainer";
-import { getSiteUrl } from "utils/environment";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import { getTranslations, Page } from "utils/getTranslations";
-import { fullFilledValue } from "utils/fullFilledValue";
-import Grid from "components/Grid";
-import useUserPlaylists from "hooks/useUserPlaylists";
-import PresentationCard from "components/PresentationCard";
-import { CardType } from "components/CardContent";
+
 import { decode } from "html-entities";
-import { getTopTracksCards } from "utils/getTopTracksCards";
-import Carousel from "components/Carousel";
-import Heading from "components/Heading";
+import { NextApiRequest, NextApiResponse, NextPage } from "next";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { useRouter } from "next/router";
+
+import {
+  Carousel,
+  ContentContainer,
+  Grid,
+  Heading,
+  PageHeader,
+  PresentationCard,
+} from "components";
+import { CardType } from "components/CardContent";
+import { useAnalytics, useAuth, useUserPlaylists } from "hooks";
+import { HeaderType } from "types/pageHeader";
+import {
+  fullFilledValue,
+  getAuth,
+  getSiteUrl,
+  getTopTracksCards,
+  getTranslations,
+  Page,
+  serverRedirect,
+} from "utils";
+import { getPlaylistsFromUser, getUserById } from "utils/spotifyCalls";
 
 interface CurrentUserProps {
   currentUser: SpotifyApi.UserObjectPublic | null;

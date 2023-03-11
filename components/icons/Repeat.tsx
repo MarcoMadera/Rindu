@@ -18,7 +18,7 @@ function RepeatTrack({
   );
 }
 
-export function Repeat({
+export default function Repeat({
   fill,
   state,
   ...props

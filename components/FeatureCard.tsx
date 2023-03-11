@@ -1,5 +1,6 @@
 import { ReactElement } from "react";
-import { CardContainer } from "./CardContainer";
+
+import { CardContainer } from "components";
 
 interface IFeatureCard {
   eyeBrowText: string;
@@ -11,7 +12,7 @@ interface IFeatureCard {
   anchorText: string;
 }
 
-export function FeatureCard({
+export default function FeatureCard({
   eyeBrowText,
   titleText,
   description,

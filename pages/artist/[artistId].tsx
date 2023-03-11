@@ -1,43 +1,56 @@
-import { CardType } from "components/CardContent";
-import CardTrack, { CardType as TrackCardType } from "components/CardTrack";
-import Carousel from "components/Carousel";
-import ContentContainer from "components/ContentContainer";
-import Heading from "components/Heading";
-import PageHeader from "components/PageHeader";
-import { PlayButton } from "components/PlayButton";
-import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
-import PresentationCard from "components/PresentationCard";
-import SubTitle from "components/SubtTitle";
-import useAnalytics from "hooks/useAnalytics";
-import useAuth from "hooks/useAuth";
-import useHeader from "hooks/useHeader";
-import useSpotify from "hooks/useSpotify";
-import useTranslations from "hooks/useTranslations";
+import { ReactElement, useEffect, useState } from "react";
+
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactElement, useEffect, useState } from "react";
-import { HeaderType } from "types/pageHeader";
-import { conjuction } from "utils/conjuction";
-import { getSiteUrl } from "utils/environment";
-import { fullFilledValue } from "utils/fullFilledValue";
-import { Artist, getArtistInfo } from "utils/getArtistInfo";
-import { getAuth } from "utils/getAuth";
-import { getMonth } from "utils/getMonth";
-import { getSetLists, SetLists } from "utils/getSetLists";
-import { getTranslations, Page } from "utils/getTranslations";
-import { serverRedirect } from "utils/serverRedirect";
-import { checkIfUserFollowArtistUser } from "utils/spotifyCalls/checkIfUserFollowArtistUser";
-import { follow, Follow_type } from "utils/spotifyCalls/follow";
+
 import {
+  CardTrack,
+  Carousel,
+  ContentContainer,
+  Heading,
+  PageHeader,
+  PlayButton,
+  PlaylistTopBarExtraField,
+  PresentationCard,
+  SubTitle,
+} from "components";
+import { CardType } from "components/CardContent";
+import { CardType as TrackCardType } from "components/CardTrack";
+import {
+  useAnalytics,
+  useAuth,
+  useHeader,
+  useSpotify,
+  useTranslations,
+} from "hooks";
+import { HeaderType } from "types/pageHeader";
+import {
+  Artist,
+  conjuction,
+  fullFilledValue,
+  getArtistInfo,
+  getAuth,
+  getMonth,
+  getSetLists,
+  getSiteUrl,
+  getTranslations,
+  Page,
+  serverRedirect,
+  SetLists,
+} from "utils";
+import {
+  checkIfUserFollowArtistUser,
+  follow,
   getArtistAlbums,
-  Include_groups,
-} from "utils/spotifyCalls/getArtistAlbums";
-import { getArtistById } from "utils/spotifyCalls/getArtistById";
-import { getArtistTopTracks } from "utils/spotifyCalls/getArtistTopTracks";
-import { getRelatedArtists } from "utils/spotifyCalls/getRelatedArtists";
-import { unFollow } from "utils/spotifyCalls/unFollow";
+  getArtistById,
+  getArtistTopTracks,
+  getRelatedArtists,
+  unFollow,
+} from "utils/spotifyCalls";
+import { Follow_type } from "utils/spotifyCalls/follow";
+import { Include_groups } from "utils/spotifyCalls/getArtistAlbums";
 
 interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;

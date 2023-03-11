@@ -1,28 +1,30 @@
-import Router from "next/router";
+import { useEffect } from "react";
+
 import {
   GetStaticPropsResult,
   NextApiRequest,
   NextApiResponse,
   NextPage,
 } from "next";
-import { takeCookie } from "../utils/cookies";
-import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "../utils/constants";
-import useAuth from "../hooks/useAuth";
-import { useEffect } from "react";
-import { refreshAccessToken } from "../utils/spotifyCalls/refreshAccessToken";
-import useAnalytics from "../hooks/useAnalytics";
-import { removeTokensFromCookieServer } from "utils/removeTokensFromCookieServer";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import Router from "next/router";
+
+import { CardContainer, FeatureCard, Hero } from "components";
+import { useAnalytics, useAuth } from "hooks";
+import {
+  ACCESS_TOKEN_COOKIE,
+  getSpotifyLoginURL,
+  REFRESH_TOKEN_COOKIE,
+  removeTokensFromCookieServer,
+  takeCookie,
+} from "utils";
 import {
   getTranslations,
   IFeaturesTranslations,
   Page,
   Translations,
 } from "utils/getTranslations";
-import { getSpotifyLoginURL } from "utils/getSpotifyLoginURL";
-import { Hero } from "../components/Hero";
-import { FeatureCard } from "../components/FeatureCard";
-import { CardContainer } from "../components/CardContainer";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { refreshAccessToken } from "utils/spotifyCalls";
 
 interface HomeProps {
   accessToken?: string | null;

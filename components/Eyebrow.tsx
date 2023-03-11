@@ -4,7 +4,7 @@ interface EyebrowProps {
   size?: "small" | "medium" | "large";
 }
 
-export function Eyebrow({
+export default function Eyebrow({
   children,
   size = "small",
 }: PropsWithChildren<EyebrowProps>): ReactElement {

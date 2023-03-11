@@ -1,5 +1,5 @@
 import { ITrack } from "types/spotify";
-import { isCorruptedTrack } from "./isCorruptedTrack";
+import { isCorruptedTrack } from "utils";
 
 export async function getAllTracksFromPlaylist(
   id: string | undefined,

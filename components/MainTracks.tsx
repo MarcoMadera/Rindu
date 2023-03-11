@@ -1,11 +1,11 @@
-import useAuth from "hooks/useAuth";
 import { ReactElement } from "react";
+
+import { CardTrack, Carousel, FirstTrackContainer } from "components";
+import { CardType } from "components/CardTrack";
+import { useAuth } from "hooks";
 import { ITrack } from "types/spotify";
-import { divideArray } from "utils/divideArray";
-import { isCorruptedTrack } from "utils/isCorruptedTrack";
-import CardTrack, { CardType } from "./CardTrack";
-import Carousel from "./Carousel";
-import FirstTrackContainer from "./FirstTrackContainer";
+import { divideArray, isCorruptedTrack } from "utils";
+
 interface MainTracksProps {
   title: string;
   tracksRecommendations: ITrack[];

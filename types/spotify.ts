@@ -1,6 +1,7 @@
+import { Dispatch, MutableRefObject, SetStateAction } from "react";
+
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { IUseToggleHandlers } from "hooks/useToggle";
-import { Dispatch, MutableRefObject, SetStateAction } from "react";
 
 export interface RefreshTokenResponse {
   access_token: string;

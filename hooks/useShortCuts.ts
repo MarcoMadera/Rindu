@@ -1,8 +1,9 @@
 import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
-import { DisplayInFullScreen, ITrack } from "types/spotify";
-import { AudioPlayer } from "./useSpotifyPlayer";
 
-export default function useShortcuts({
+import { AudioPlayer } from "hooks/useSpotifyPlayer";
+import { DisplayInFullScreen, ITrack } from "types/spotify";
+
+export default function useShortCuts({
   ignoreShortcuts,
   setDisplayInFullScreen,
   player,

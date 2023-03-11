@@ -1,14 +1,16 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import ContextMenu from "../components/ContextMenu";
-import UserContext, { IUserContext } from "context/UserContext";
-import { ToastContextProvider } from "context/ToastContext";
+
+import { number, withKnobs } from "@storybook/addon-knobs";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { ContextMenu } from "components";
+import ContextMenuContext from "context/ContextMenuContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import SpotifyContext from "context/SpotifyContext";
-import ContextMenuContext from "context/ContextMenuContext";
+import { ToastContextProvider } from "context/ToastContext";
+import UserContext, { IUserContext } from "context/UserContext";
 import { ContextMenuContextProviderProps } from "types/contextMenu";
 import { ISpotifyContext } from "types/spotify";
-import { number, withKnobs } from "@storybook/addon-knobs";
 
 export default {
   title: "Components/ContextMenu",

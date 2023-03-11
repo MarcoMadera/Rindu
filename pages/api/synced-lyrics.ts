@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getSiteUrl } from "utils/environment";
+
+import { getSiteUrl } from "utils";
 import { ISyncedLyricsResponse } from "utils/getLyrics";
 
 async function getToken(): Promise<string | null> {

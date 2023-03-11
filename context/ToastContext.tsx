@@ -1,12 +1,13 @@
-import Toast from "components/Toast";
 import {
-  useState,
   createContext,
   Dispatch,
-  SetStateAction,
-  ReactElement,
   PropsWithChildren,
+  ReactElement,
+  SetStateAction,
+  useState,
 } from "react";
+
+import { Toast } from "components";
 import type { IToast } from "types/toast";
 
 const ToastContext = createContext<ToastContextProviderProps | undefined>(

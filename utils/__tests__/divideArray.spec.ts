@@ -1,4 +1,4 @@
-import { divideArray } from "utils/divideArray";
+import { divideArray } from "utils";
 
 describe("divideArray", () => {
   it("should divide an array into two halves", () => {

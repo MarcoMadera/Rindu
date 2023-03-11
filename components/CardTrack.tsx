@@ -1,16 +1,3 @@
-import { Pause, Play, Playing } from "components/icons";
-import { Heart } from "components/icons/Heart";
-import ThreeDots from "components/icons/ThreeDots";
-import {
-  useAuth,
-  useContextMenu,
-  useOnScreen,
-  useOnSmallScreen,
-  useSpotify,
-  useToast,
-} from "hooks";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import {
   CSSProperties,
   memo,
@@ -19,18 +6,34 @@ import {
   useRef,
   useState,
 } from "react";
+
+import Link from "next/link";
+import { useRouter } from "next/router";
+
+import { ArtistList, ExplicitSign } from "components";
+import { Heart, Pause, Play, Playing, ThreeDots } from "components/icons";
+import {
+  useAuth,
+  useContextMenu,
+  useOnScreen,
+  useOnSmallScreen,
+  useSpotify,
+  useToast,
+} from "hooks";
 import { ITrack } from "types/spotify";
-import { getSiteUrl } from "utils/environment";
-import { formatTime } from "utils/formatTime";
-import { getTimeAgo } from "utils/getTimeAgo";
-import { spanishCountries } from "utils/getTranslations";
-import { playCurrentTrack } from "utils/playCurrentTrack";
-import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFromLibrary";
-import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibrary";
-import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
-import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
-import ArtistList from "./ArtistList";
-import ExplicitSign from "./ExplicitSign";
+import {
+  formatTime,
+  getSiteUrl,
+  getTimeAgo,
+  playCurrentTrack,
+  spanishCountries,
+} from "utils";
+import {
+  removeEpisodesFromLibrary,
+  removeTracksFromLibrary,
+  saveEpisodesToLibrary,
+  saveTracksToLibrary,
+} from "utils/spotifyCalls";
 
 export enum CardType {
   presentation = "presentation",

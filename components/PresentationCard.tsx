@@ -1,10 +1,11 @@
-import { CardContent, CardType } from "./CardContent";
 import { HTMLAttributes, ReactElement } from "react";
-import { PlayButton } from "components/PlayButton";
-import useAuth from "hooks/useAuth";
-import { ITrack } from "types/spotify";
+
 import { useRouter } from "next/router";
-import useSpotify from "hooks/useSpotify";
+
+import { CardContent, PlayButton } from "components";
+import { CardType } from "components/CardContent";
+import { useAuth, useSpotify } from "hooks";
+import { ITrack } from "types/spotify";
 
 export interface PresentationCardProps {
   type: CardType;

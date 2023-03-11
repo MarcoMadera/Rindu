@@ -1,24 +1,24 @@
-import useSpotify from "hooks/useSpotify";
-import { search } from "utils/spotifyCalls/search";
 import {
   Dispatch,
-  SetStateAction,
+  MutableRefObject,
   ReactElement,
+  SetStateAction,
+  useEffect,
   useRef,
   useState,
-  useEffect,
-  MutableRefObject,
 } from "react";
-import Search from "./icons/Search";
-import { isCorruptedTrack } from "utils/isCorruptedTrack";
-import useTranslations from "hooks/useTranslations";
+
+import { Search } from "components/icons";
+import { useSpotify, useTranslations } from "hooks";
+import { isCorruptedTrack } from "utils";
+import { search } from "utils/spotifyCalls";
 
 interface InputElementProps {
   setData: Dispatch<SetStateAction<SpotifyApi.SearchResponse | null>>;
   source: "search" | "playlist";
 }
 
-export function SearchInputElement({
+export default function SearchInputElement({
   setData,
   source,
 }: InputElementProps): ReactElement {

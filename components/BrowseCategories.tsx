@@ -1,8 +1,9 @@
-import Link from "next/link";
 import { ReactElement } from "react";
-import { colors } from "utils/colors";
-import Grid from "./Grid";
-import Heading from "./Heading";
+
+import Link from "next/link";
+
+import { Grid, Heading } from "components";
+import { colors } from "utils";
 
 interface BrowseCategoriesProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;

@@ -1,6 +1,8 @@
 import { ReactElement, SVGProps } from "react";
 
-export function PictureInPicture(props: SVGProps<SVGSVGElement>): ReactElement {
+export default function PictureInPicture(
+  props: SVGProps<SVGSVGElement>
+): ReactElement {
   return (
     <svg role="img" height="16" width="16" viewBox="0 0 16 16" {...props}>
       <g fill="currentColor" fillRule="evenodd">

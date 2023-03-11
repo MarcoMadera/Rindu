@@ -1,6 +1,7 @@
 import { useContext } from "react";
+
+import SpotifyContext from "context/SpotifyContext";
 import { ISpotifyContext } from "types/spotify";
-import SpotifyContext from "../context/SpotifyContext";
 
 export default function useSpotify(): ISpotifyContext {
   const context = useContext(SpotifyContext);

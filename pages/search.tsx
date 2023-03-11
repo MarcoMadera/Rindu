@@ -1,26 +1,29 @@
-import Head from "next/head";
-import useHeader from "hooks/useHeader";
-import { useEffect, ReactElement, useState } from "react";
-import { NextApiRequest, NextApiResponse } from "next";
-import useAuth from "hooks/useAuth";
-import PresentationCard from "components/PresentationCard";
+import { ReactElement, useEffect, useState } from "react";
+
 import { decode } from "html-entities";
-import { getAuth } from "utils/getAuth";
-import { getCategories } from "utils/spotifyCalls/getCategories";
-import { serverRedirect } from "utils/serverRedirect";
-import { getYear } from "utils/getYear";
-import Carousel from "components/Carousel";
-import { SearchInputElement } from "components/SearchInputElement";
-import useSpotify from "hooks/useSpotify";
-import { CardType } from "components/CardContent";
-import ContentContainer from "components/ContentContainer";
-import Heading from "components/Heading";
-import MainTracks from "components/MainTracks";
-import BrowseCategories from "components/BrowseCategories";
-import { getTranslations, Page } from "utils/getTranslations";
+import { NextApiRequest, NextApiResponse } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import useTranslations from "hooks/useTranslations";
-import useOnSmallScreen from "hooks/useOnSmallScreen";
+import Head from "next/head";
+
+import {
+  BrowseCategories,
+  Carousel,
+  ContentContainer,
+  Heading,
+  MainTracks,
+  PresentationCard,
+  SearchInputElement,
+} from "components";
+import { CardType } from "components/CardContent";
+import {
+  useAuth,
+  useHeader,
+  useOnSmallScreen,
+  useSpotify,
+  useTranslations,
+} from "hooks";
+import { getAuth, getTranslations, getYear, Page, serverRedirect } from "utils";
+import { getCategories } from "utils/spotifyCalls";
 
 interface SearchPageProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;

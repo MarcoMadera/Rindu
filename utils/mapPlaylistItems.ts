@@ -1,5 +1,5 @@
 import { ITrack } from "types/spotify";
-import { isCorruptedTrack } from "./isCorruptedTrack";
+import { isCorruptedTrack } from "utils";
 
 export function mapPlaylistItems(
   items: SpotifyApi.PlaylistTrackObject[] | undefined | null,

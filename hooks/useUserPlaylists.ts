@@ -1,8 +1,8 @@
 import { useEffect } from "react";
+
+import { useAuth, useSpotify } from "hooks";
 import { PlaylistItems } from "types/spotify";
-import { getCurrentUserPlaylists } from "utils/getAllMyPlaylists";
-import useAuth from "./useAuth";
-import useSpotify from "./useSpotify";
+import { getAllMyPlaylists } from "utils";
 
 export default function useUserPlaylists(): PlaylistItems {
   const { playlists, setPlaylists } = useSpotify();
@@ -10,7 +10,7 @@ export default function useUserPlaylists(): PlaylistItems {
 
   useEffect(() => {
     if (!playlists) {
-      getCurrentUserPlaylists(accessToken as string).then((playlists) => {
+      getAllMyPlaylists(accessToken as string).then((playlists) => {
         if (playlists) {
           setPlaylists(playlists.items);
         }

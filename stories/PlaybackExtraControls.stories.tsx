@@ -1,16 +1,18 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import PlaybackExtraControls from "../components/PlaybackExtraControls";
-import { ToastContextProvider } from "context/ToastContext";
-import UserContext, { IUserContext } from "context/UserContext";
+
+import {
+  optionsKnob as options,
+  text,
+  withKnobs,
+} from "@storybook/addon-knobs";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { PlaybackExtraControls } from "components";
+import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import SpotifyContext from "context/SpotifyContext";
-import { ContextMenuContextProvider } from "context/ContextMenuContext";
-import {
-  withKnobs,
-  text,
-  optionsKnob as options,
-} from "@storybook/addon-knobs";
+import { ToastContextProvider } from "context/ToastContext";
+import UserContext, { IUserContext } from "context/UserContext";
 import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
 export default {
   title: "Components/PlaybackExtraControls",

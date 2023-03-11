@@ -1,8 +1,10 @@
-import { useOnScreen } from "hooks";
-import Link from "next/link";
 import { Fragment, ReactElement, useRef } from "react";
+
+import Link from "next/link";
+
+import { useOnScreen } from "hooks";
 import { ITrack } from "types/spotify";
-import { getIdFromUri } from "utils/getIdFromUri";
+import { getIdFromUri } from "utils";
 
 interface IAritstListProps {
   artists: ITrack["artists"];

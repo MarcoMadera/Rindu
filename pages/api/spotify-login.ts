@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+
 import { AuthorizationResponse } from "types/spotify";
-import { getMe } from "utils/spotifyCalls/getMe";
+import { getMe } from "utils/spotifyCalls";
 
 interface ILoginBody {
   accessToken?: string;

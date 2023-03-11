@@ -1,7 +1,8 @@
-import Link from "next/link";
 import { ReactElement } from "react";
-import { Eyebrow } from "./Eyebrow";
-import Heading from "./Heading";
+
+import Link from "next/link";
+
+import { Eyebrow, Heading } from "components";
 
 interface BigPillProps {
   img?: string;

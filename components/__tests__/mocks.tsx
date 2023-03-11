@@ -1,20 +1,20 @@
-import ContextMenu from "components/ContextMenu";
+import { PropsWithChildren, ReactElement } from "react";
+
+import { ContextMenu } from "components";
 import ContextMenuContext from "context/ContextMenuContext";
 import HeaderContext, { IHeaderContext } from "context/HeaderContext";
 import SpotifyContext from "context/SpotifyContext";
 import ToastContext, { ToastContextProviderProps } from "context/ToastContext";
 import UserContext, { IUserContext } from "context/UserContext";
-import { PropsWithChildren, ReactElement } from "react";
 import { ContextMenuContextProviderProps } from "types/contextMenu";
 import { ISpotifyContext } from "types/spotify";
-
 // eslint-disable-next-line jest/no-mocks-import
 import {
+  accessToken,
+  simplePlaylist,
+  track,
   trackFull,
   user,
-  accessToken,
-  track,
-  simplePlaylist,
 } from "utils/__tests__/__mocks__/mocks";
 
 type AppContext = IUserContext &

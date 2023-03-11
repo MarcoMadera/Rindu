@@ -1,7 +1,9 @@
+import { ReactElement } from "react";
+
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ReactElement } from "react";
-import { getSiteUrl } from "../utils/environment";
+
+import { getSiteUrl } from "utils";
 
 export default function Seo(): ReactElement {
   const router = useRouter();

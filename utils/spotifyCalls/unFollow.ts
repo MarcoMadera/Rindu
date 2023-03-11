@@ -1,12 +1,11 @@
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
-import { takeCookie } from "utils/cookies";
+import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
 export enum Follow_type {
   artist = "artist",
   user = "user",
 }
 
-export async function unFollow(
+export default async function unFollow(
   type: Follow_type,
   id?: string,
   accessToken?: string,

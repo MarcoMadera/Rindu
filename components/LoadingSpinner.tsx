@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 
-export function LoadingSpinner(): ReactElement {
+export default function LoadingSpinner(): ReactElement {
   return (
     <div className="loading-spinner">
       <div className="lds-ellipsis">

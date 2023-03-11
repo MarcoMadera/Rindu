@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 
-export function ExternalLink({
+export default function ExternalLink({
   fill,
   ...props
 }: {

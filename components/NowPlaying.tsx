@@ -1,20 +1,18 @@
 import { ReactElement, useEffect, useState } from "react";
+
 import Link from "next/link";
-import { Heart } from "components/icons/Heart";
-import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibrary";
-import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
-import useAuth from "hooks/useAuth";
-import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
-import useSpotify from "hooks/useSpotify";
-import { Chevron } from "components/icons/Chevron";
-import useToast from "hooks/useToast";
-import { checkEpisodesInLibrary } from "utils/spotifyCalls/checkEpisodesInLibrary";
-import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFromLibrary";
-import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
-import useContextMenu from "hooks/useContextMenu";
-import PictureInPictureButton from "./PictureInPictureButton";
-import ArtistList from "./ArtistList";
-import ScrollableText from "./ScrollableText";
+
+import { ArtistList, PictureInPictureButton, ScrollableText } from "components";
+import { Chevron, Heart } from "components/icons";
+import { useAuth, useContextMenu, useSpotify, useToast } from "hooks";
+import {
+  checkEpisodesInLibrary,
+  checkTracksInLibrary,
+  removeEpisodesFromLibrary,
+  removeTracksFromLibrary,
+  saveEpisodesToLibrary,
+  saveTracksToLibrary,
+} from "utils/spotifyCalls";
 
 export default function NowPlaying(): ReactElement | null {
   const [isLikedTrack, setIsLikedTrack] = useState(false);

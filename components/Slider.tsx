@@ -1,5 +1,6 @@
 import {
   Dispatch,
+  MouseEvent,
   MutableRefObject,
   ReactElement,
   SetStateAction,
@@ -7,7 +8,6 @@ import {
   useEffect,
   useRef,
   useState,
-  MouseEvent,
 } from "react";
 
 interface SliderProps {

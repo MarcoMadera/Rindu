@@ -1,6 +1,8 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import TrackListHeader from "../components/TrackListHeader";
+
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { TrackListHeader } from "components";
 import { CardType } from "components/CardTrack";
 
 export default {

@@ -1,20 +1,13 @@
-import useSpotify from "hooks/useSpotify";
 import { ReactElement, useEffect } from "react";
-import Logo from "./Logo";
+
 import Link from "next/link";
-import Home from "./icons/Home";
-import Search from "./icons/Search";
-import Library from "./icons/Library";
 import { useRouter } from "next/router";
-import Add from "./icons/Add";
-import { Heart } from "./icons/Heart";
-import useAuth from "hooks/useAuth";
-import { Chevron } from "components/icons/Chevron";
-import { createPlaylist } from "utils/spotifyCalls/createPlaylist";
-import useToast from "hooks/useToast";
-import { getCurrentUserPlaylists } from "utils/getAllMyPlaylists";
-import PlaylistText from "./PlaylistText";
-import useTranslations from "hooks/useTranslations";
+
+import { Logo, PlaylistText } from "components";
+import { Add, Chevron, Heart, Home, Library, Search } from "components/icons";
+import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
+import { getAllMyPlaylists } from "utils";
+import { createPlaylist } from "utils/spotifyCalls";
 
 export default function SideBar(): ReactElement {
   const {
@@ -33,7 +26,7 @@ export default function SideBar(): ReactElement {
 
   useEffect(() => {
     if (!accessToken) return;
-    getCurrentUserPlaylists(accessToken).then((res) => {
+    getAllMyPlaylists(accessToken).then((res) => {
       if (res) {
         setPlaylists(res.items);
       }

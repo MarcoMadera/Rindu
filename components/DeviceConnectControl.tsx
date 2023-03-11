@@ -1,12 +1,9 @@
-import useAuth from "hooks/useAuth";
-import useSpotify from "hooks/useSpotify";
-import useToast from "hooks/useToast";
 import { ReactElement, useState } from "react";
-import { getAvailableDevices } from "utils/spotifyCalls/getAvailableDevices";
-import { transferPlayback } from "utils/spotifyCalls/transferPlayback";
-import Heading from "./Heading";
-import { Playing } from "./icons";
-import DeviceConnect from "./icons/DeviceConnect";
+
+import { Heading } from "components";
+import { DeviceConnect, Playing } from "components/icons";
+import { useAuth, useSpotify, useToast } from "hooks";
+import { getAvailableDevices, transferPlayback } from "utils/spotifyCalls";
 
 export default function DeviceConnectControl(): ReactElement {
   const { user, accessToken } = useAuth();

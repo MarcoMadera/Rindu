@@ -1,11 +1,14 @@
 import { NextRouter } from "next/router";
+
 import { IPageDetails, ITrack, PlaylistItems } from "types/spotify";
 import { UseToast } from "types/toast";
-import { getCurrentUserPlaylists } from "utils/getAllMyPlaylists";
-import { addCustomPlaylistImage } from "utils/spotifyCalls/addCustomPlaylistImage";
-import { addItemsToPlaylist } from "utils/spotifyCalls/addItemsToPlaylist";
-import { createPlaylist } from "utils/spotifyCalls/createPlaylist";
-import { getPlaylistDetails } from "utils/spotifyCalls/getPlaylistDetails";
+import { getAllMyPlaylists } from "utils";
+import {
+  addCustomPlaylistImage,
+  addItemsToPlaylist,
+  createPlaylist,
+  getPlaylistDetails,
+} from "utils/spotifyCalls";
 
 export async function handleSaveToPlaylistClick({
   addToast,
@@ -102,7 +105,7 @@ async function addTracksToPlaylist({
 > & { playlistId: SpotifyApi.PlaylistObjectSimplified["id"]; uris: string[] }) {
   await addItemsToPlaylist(playlistId, uris);
 
-  const userPlaylists = await getCurrentUserPlaylists(accessToken || "");
+  const userPlaylists = await getAllMyPlaylists(accessToken || "");
   if (userPlaylists) {
     setPlaylists(userPlaylists.items);
   }

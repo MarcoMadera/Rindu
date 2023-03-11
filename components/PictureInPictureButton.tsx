@@ -1,7 +1,8 @@
-import useSpotify from "hooks/useSpotify";
 import { ReactElement } from "react";
-import { callPictureInPicture } from "utils/callPictureInPicture";
-import { PictureInPicture } from "./icons/PictureInPicture";
+
+import { PictureInPicture } from "components/icons";
+import { useSpotify } from "hooks";
+import { callPictureInPicture } from "utils";
 
 export default function PictureInPictureButton(): ReactElement {
   const {

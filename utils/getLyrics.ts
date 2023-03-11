@@ -1,4 +1,4 @@
-import { getSiteUrl } from "./environment";
+import { getSiteUrl } from "utils";
 
 export enum LyricsAction {
   Fullscreen = "FULLSCREEN_LYRICS",

@@ -1,5 +1,3 @@
-import TopBar from "components/TopBar";
-import SideBar from "components/SideBar";
 import {
   MutableRefObject,
   PropsWithChildren,
@@ -8,18 +6,20 @@ import {
   useRef,
   useState,
 } from "react";
-import useSpotify from "hooks/useSpotify";
-import FullScreenLyrics from "components/FullScreenLyrics";
+
 import {
+  FullScreenLyrics,
+  FullScreenQueue,
   Panel,
   PanelGroup,
   PanelResizeHandle,
-} from "components/ResizablePanel";
+  SideBar,
+  TopBar,
+} from "components";
+import { useOnSmallScreen, useSpotify } from "hooks";
+import FullScreenPlayer from "layouts/FullScreenPlayer";
 import { DisplayInFullScreen } from "types/spotify";
-import FullScreenQueue from "../components/FullScreenQueue";
-import FullScreenPlayer from "./FullScreenPlayer";
-import useOnSmallScreen from "hooks/useOnSmallScreen";
-import { requestFullScreen } from "utils/fullScreen";
+import { requestFullScreen } from "utils";
 
 export function AppContainer({ children }: PropsWithChildren): ReactElement {
   const appRef = useRef<HTMLDivElement>();

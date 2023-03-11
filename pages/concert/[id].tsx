@@ -1,15 +1,20 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { PlaylistProps } from "pages/playlist/[playlist]";
-import PlaylistLayout from "layouts/playlist";
-import { getAuth } from "utils/getAuth";
-import { serverRedirect } from "utils/serverRedirect";
-import { getSetList, SetList } from "utils/getSetList";
-import { ITrack } from "types/spotify";
-import { getTranslations, Page } from "utils/getTranslations";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import { getSiteUrl } from "utils/environment";
-import { getArtistById } from "utils/spotifyCalls/getArtistById";
-import { fullFilledValue } from "utils/fullFilledValue";
+
+import PlaylistLayout from "layouts/playlist";
+import { PlaylistProps } from "pages/playlist/[playlist]";
+import { ITrack } from "types/spotify";
+import {
+  fullFilledValue,
+  getAuth,
+  getSetList,
+  getSiteUrl,
+  getTranslations,
+  Page,
+  serverRedirect,
+  SetList,
+} from "utils";
+import { getArtistById } from "utils/spotifyCalls";
 
 interface ConcertProps extends PlaylistProps {
   setList: SetList | null;

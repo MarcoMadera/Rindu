@@ -1,6 +1,6 @@
 import { IUtilsMocks } from "types/mocks";
 import { ITrack } from "types/spotify";
-import { findDuplicateSongs } from "utils/findDuplicateSongs";
+import { findDuplicateSongs } from "utils";
 
 const { track } = jest.requireActual<IUtilsMocks>("./__mocks__/mocks.ts");
 

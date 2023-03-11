@@ -1,12 +1,11 @@
-import Slider from "components/Slider";
-import useAuth from "hooks/useAuth";
-import useSpotify from "hooks/useSpotify";
-import { AudioPlayer } from "hooks/useSpotifyPlayer";
-import useToast from "hooks/useToast";
 import { ReactElement, useEffect, useState } from "react";
-import { formatTime } from "utils/formatTime";
 
-export function ProgressBar(): ReactElement {
+import { Slider } from "components";
+import { useAuth, useSpotify, useToast } from "hooks";
+import { AudioPlayer } from "hooks/useSpotifyPlayer";
+import { formatTime } from "utils";
+
+export default function ProgressBar(): ReactElement {
   const {
     currentlyPlayingDuration,
     currentlyPlayingPosition,

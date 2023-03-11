@@ -1,7 +1,9 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import RouterButtons from "../components/RouterButtons";
+
 import { withKnobs } from "@storybook/addon-knobs";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { RouterButtons } from "components";
 
 export default {
   title: "Components/RouterButtons",

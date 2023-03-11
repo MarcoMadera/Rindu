@@ -1,4 +1,3 @@
-import { createPortal } from "react-dom";
 import {
   ReactPortal,
   useEffect,
@@ -6,13 +5,13 @@ import {
   useRef,
   useState,
 } from "react";
-import useContextMenu from "hooks/useContextMenu";
+
+import { createPortal } from "react-dom";
+
+import { CardContentContextMenu, CardTrackContextMenu } from "components";
+import type { ICardContentContextMenu } from "components/CardContentContextMenu";
+import { useContextMenu } from "hooks";
 import { ITrack } from "types/spotify";
-import { CardTrackContextMenu } from "./CardTrackContextMenu";
-import {
-  CardContentContextMenu,
-  ICardContentContextMenu,
-} from "./CardContentContextMenu";
 
 export default function ContextMenu(): ReactPortal | null {
   const [targetNode, setTargetNode] = useState<Element | null>();

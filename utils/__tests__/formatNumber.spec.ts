@@ -1,4 +1,4 @@
-import formatNumber from "utils/formatNumber";
+import { formatNumber } from "utils";
 
 describe("formatNumber", () => {
   it("should return a string", () => {

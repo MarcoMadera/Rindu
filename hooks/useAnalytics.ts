@@ -1,6 +1,7 @@
 import { useCallback } from "react";
-import { makeCookie, takeCookie } from "utils/cookies";
-import { dataToSendType, Fields, UseAnalyticsParams } from "../types/analytics";
+
+import { dataToSendType, Fields, UseAnalyticsParams } from "types/analytics";
+import { makeCookie, takeCookie } from "utils";
 
 export default function useAnalytics(): UseAnalyticsParams {
   const trackWithGoogleAnalytics: UseAnalyticsParams["trackWithGoogleAnalytics"] =

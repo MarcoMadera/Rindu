@@ -1,13 +1,8 @@
 import { IUtilsMocks } from "types/mocks";
-import { getAllAlbums } from "utils/getAllAlbums";
-import { getMyAlbums } from "utils/spotifyCalls/getMyAlbums";
+import { getAllAlbums } from "utils";
+import { getMyAlbums } from "utils/spotifyCalls";
 
-jest.mock<typeof import("utils/spotifyCalls/getMyAlbums")>(
-  "utils/spotifyCalls/getMyAlbums",
-  () => ({
-    getMyAlbums: jest.fn(),
-  })
-);
+jest.mock("utils/spotifyCalls");
 
 const { savedAlbum, paginObject, accessToken } =
   jest.requireActual<IUtilsMocks>("./__mocks__/mocks.ts");

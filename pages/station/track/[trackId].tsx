@@ -1,14 +1,20 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { IPageDetails, ITrack } from "types/spotify";
-import PlaylistLayout from "layouts/playlist";
-import { getAuth } from "utils/getAuth";
-import { serverRedirect } from "utils/serverRedirect";
-import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
-import { getTranslations, Page } from "utils/getTranslations";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import { getRecommendations } from "utils/spotifyCalls/getRecommendations";
-import { getTrack } from "utils/spotifyCalls/getTrack";
-import { fullFilledValue } from "utils/fullFilledValue";
+
+import PlaylistLayout from "layouts/playlist";
+import { IPageDetails, ITrack } from "types/spotify";
+import {
+  fullFilledValue,
+  getAuth,
+  getTranslations,
+  Page,
+  serverRedirect,
+} from "utils";
+import {
+  checkTracksInLibrary,
+  getRecommendations,
+  getTrack,
+} from "utils/spotifyCalls";
 
 export interface PlaylistProps {
   pageDetails: IPageDetails | null;

@@ -1,8 +1,8 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-import useAuth from "hooks/useAuth";
-import Link from "next/link";
 import { ReactElement } from "react";
+
+import Link from "next/link";
+
+import { useAuth } from "hooks";
 
 interface LogoProps {
   color: string;

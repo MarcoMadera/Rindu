@@ -1,7 +1,6 @@
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
-import { takeCookie } from "utils/cookies";
+import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export async function getUserById(
+export default async function getUserById(
   id: string,
   accessToken?: string
 ): Promise<SpotifyApi.UserObjectPublic | null> {

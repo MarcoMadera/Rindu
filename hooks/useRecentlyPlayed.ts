@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
+
+import { useAuth } from "hooks";
+import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { ITrack } from "types/spotify";
-import useAuth from "./useAuth";
-import { AudioPlayer } from "./useSpotifyPlayer";
 
 export default function useRecentlyPlayed({
   setRecentlyPlayed,

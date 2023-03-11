@@ -1,4 +1,4 @@
-import { formatTime } from "utils/formatTime";
+import { formatTime } from "utils";
 
 describe("formatTime", () => {
   it("should format Time for seconds", () => {

@@ -1,6 +1,6 @@
-import { getUserPlaylists } from "./spotifyCalls/getUserPlaylists";
+import { getUserPlaylists } from "utils/spotifyCalls";
 
-export async function getCurrentUserPlaylists(
+export async function getAllMyPlaylists(
   accessToken: string
 ): Promise<SpotifyApi.ListOfCurrentUsersPlaylistsResponse | null> {
   const limit = 50;

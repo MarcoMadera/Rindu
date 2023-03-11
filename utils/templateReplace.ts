@@ -1,9 +1,9 @@
 import { cloneElement, isValidElement, ReactNode } from "react";
 
-export const templateReplace = (
+export function templateReplace(
   template: string,
   replacements: ReactNode[]
-): string | ReactNode[] => {
+): string | ReactNode[] {
   const pattern = /\{(\w+)\}/g;
   const result: ReactNode[] = [];
 
@@ -35,4 +35,4 @@ export const templateReplace = (
   result.push(tail);
 
   return isReact ? result : result.join("");
-};
+}

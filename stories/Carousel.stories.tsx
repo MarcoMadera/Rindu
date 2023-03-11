@@ -1,7 +1,9 @@
 import React, { PropsWithChildren } from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import Carousel from "../components/Carousel";
+
 import { number, withKnobs } from "@storybook/addon-knobs";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { Carousel } from "components";
 
 export default {
   title: "Components/Carousel",

@@ -1,7 +1,8 @@
-import useSpotify from "hooks/useSpotify";
 import { ReactElement, useCallback, useState } from "react";
-import { Volume } from "./icons/Volume";
-import Slider from "./Slider";
+
+import { Slider } from "components";
+import { Volume } from "components/icons";
+import { useSpotify } from "hooks";
 
 export default function VolumeControl(): ReactElement {
   const { player, volume, setVolume, lastVolume, setLastVolume } = useSpotify();

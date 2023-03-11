@@ -1,6 +1,6 @@
+import { ITrack } from "types/spotify";
 import { Artist } from "utils/getArtistInfo";
 import { IRefreshAccessTokenResponse } from "utils/spotifyCalls/refreshAccessToken";
-import { ITrack } from "./spotify";
 
 export interface IUtilsMocks {
   accessToken: string;

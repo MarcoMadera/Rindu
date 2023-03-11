@@ -1,26 +1,33 @@
-import Head from "next/head";
-import useHeader from "hooks/useHeader";
-import { useEffect, ReactElement, useState, useMemo } from "react";
+import { ReactElement, useEffect, useMemo, useState } from "react";
+
 import { NextApiRequest, NextApiResponse } from "next";
-import useAuth from "hooks/useAuth";
-import { getAuth } from "utils/getAuth";
-import { serverRedirect } from "utils/serverRedirect";
-import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
-import PageHeader from "../../components/PageHeader";
-import { PlayButton } from "components/PlayButton";
-import { getEpisodeById } from "utils/spotifyCalls/getEpisodeById";
-import { getSiteUrl } from "utils/environment";
-import { HeaderType } from "types/pageHeader";
-import Link from "next/link";
-import { checkEpisodesInLibrary } from "utils/spotifyCalls/checkEpisodesInLibrary";
-import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFromLibrary";
-import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
-import useSpotify from "hooks/useSpotify";
-import ContentContainer from "components/ContentContainer";
-import Heading from "components/Heading";
-import { ITrack } from "types/spotify";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import { getTranslations, Page } from "utils/getTranslations";
+import Head from "next/head";
+import Link from "next/link";
+
+import {
+  ContentContainer,
+  Heading,
+  PageHeader,
+  PlayButton,
+  PlaylistTopBarExtraField,
+} from "components";
+import { useAuth, useHeader, useSpotify } from "hooks";
+import { HeaderType } from "types/pageHeader";
+import { ITrack } from "types/spotify";
+import {
+  getAuth,
+  getSiteUrl,
+  getTranslations,
+  Page,
+  serverRedirect,
+} from "utils";
+import {
+  checkEpisodesInLibrary,
+  getEpisodeById,
+  removeEpisodesFromLibrary,
+  saveEpisodesToLibrary,
+} from "utils/spotifyCalls";
 
 interface EpisodePageProps {
   episode: SpotifyApi.EpisodeObject | null;

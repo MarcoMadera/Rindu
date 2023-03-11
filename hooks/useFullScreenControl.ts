@@ -1,6 +1,7 @@
 import { useState } from "react";
+
+import { useSpotify } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
-import useSpotify from "./useSpotify";
 
 export default function useFullScreenControl(
   displayInFullScreen: DisplayInFullScreen

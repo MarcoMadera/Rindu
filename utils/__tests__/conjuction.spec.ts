@@ -1,4 +1,4 @@
-import { conjuction } from "utils/conjuction";
+import { conjuction } from "utils";
 
 describe("conjuction", () => {
   it("should return a string", () => {

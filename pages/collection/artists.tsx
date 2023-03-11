@@ -1,21 +1,26 @@
-import Head from "next/head";
-import useHeader from "hooks/useHeader";
-import { useEffect, ReactElement, useState } from "react";
-import PresentationCard from "components/PresentationCard";
-import useAuth from "hooks/useAuth";
-import { getMyArtists } from "utils/spotifyCalls/getMyArtists";
-import useSpotify from "hooks/useSpotify";
-import { CardType } from "components/CardContent";
-import NavigationTopBarExtraField from "components/NavigationTopBarExtraField";
-import ContentContainer from "components/ContentContainer";
-import Heading from "components/Heading";
-import Grid from "components/Grid";
-import { NextApiResponse, NextApiRequest } from "next";
+import { ReactElement, useEffect, useState } from "react";
+
+import { NextApiRequest, NextApiResponse } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import { getAuth } from "utils/getAuth";
-import { getTranslations, Page, Translations } from "utils/getTranslations";
-import { serverRedirect } from "utils/serverRedirect";
-import useAnalytics from "hooks/useAnalytics";
+import Head from "next/head";
+
+import {
+  ContentContainer,
+  Grid,
+  Heading,
+  NavigationTopBarExtraField,
+  PresentationCard,
+} from "components";
+import { CardType } from "components/CardContent";
+import { useAnalytics, useAuth, useHeader, useSpotify } from "hooks";
+import {
+  getAuth,
+  getTranslations,
+  Page,
+  serverRedirect,
+  Translations,
+} from "utils";
+import { getMyArtists } from "utils/spotifyCalls";
 
 interface CollectionArtistProps {
   accessToken: string | null;

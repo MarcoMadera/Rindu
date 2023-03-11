@@ -6,7 +6,11 @@ interface IHero {
   imgAlt: string;
 }
 
-export function Hero({ heroTitle, imgSrc, imgAlt }: IHero): ReactElement {
+export default function Hero({
+  heroTitle,
+  imgSrc,
+  imgAlt,
+}: IHero): ReactElement {
   return (
     <section>
       {/* eslint-disable-next-line @next/next/no-img-element */}

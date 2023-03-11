@@ -1,11 +1,11 @@
-import useContextMenu from "hooks/useContextMenu";
-import useHeader from "hooks/useHeader";
-import useSpotify from "hooks/useSpotify";
+import { ReactElement, useEffect, useState } from "react";
+
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactElement, useEffect, useState } from "react";
-import { getMainColorFromImage } from "utils/getMainColorFromImage";
-import { PlayButton } from "./PlayButton";
+
+import { PlayButton } from "components";
+import { useContextMenu, useHeader, useSpotify } from "hooks";
+import { getMainColorFromImage } from "utils";
 
 interface ISingleTrackCard {
   track: SpotifyApi.TrackObjectFull;

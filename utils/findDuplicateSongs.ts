@@ -62,3 +62,5 @@ export function findDuplicateSongs(allTracks: ITrack[]): {
 
   return duplicateSongs;
 }
+
+export default findDuplicateSongs;

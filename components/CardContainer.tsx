@@ -5,7 +5,7 @@ import {
   ReactElement,
 } from "react";
 
-export function CardContainer({
+export default function CardContainer({
   children,
   ...props
 }: PropsWithChildren<

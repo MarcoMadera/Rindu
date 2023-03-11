@@ -1,12 +1,13 @@
-import useSpotify from "hooks/useSpotify";
 import { ReactElement } from "react";
+
+import {
+  DeviceConnectControl,
+  FullScreenControl,
+  VolumeControl,
+} from "components";
+import { FullScreen, Lyrics, Queue } from "components/icons";
+import { useSpotify } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
-import DeviceConnectControl from "./DeviceConnectControl";
-import FullScreenControl from "./FullScreenControl";
-import FullScreen from "./icons/FullScreen";
-import Lyrics from "./icons/Lyrics";
-import Queue from "./icons/Queue";
-import VolumeControl from "./VolumeControl";
 
 export default function PlaybackExtraControls(): ReactElement {
   const { currentlyPlaying } = useSpotify();

@@ -5,12 +5,10 @@ import {
   useEffect,
   useRef,
 } from "react";
+
+import { useAuth, useSpotify, useToast } from "hooks";
 import { ITrack } from "types/spotify";
-import useAuth from "./useAuth";
-import useToast from "./useToast";
-import useSpotify from "./useSpotify";
-import { refreshAccessToken } from "utils/spotifyCalls/refreshAccessToken";
-import { transferPlayback } from "utils/spotifyCalls/transferPlayback";
+import { refreshAccessToken, transferPlayback } from "utils/spotifyCalls";
 
 export interface AudioPlayer extends HTMLAudioElement {
   nextTrack: () => void;

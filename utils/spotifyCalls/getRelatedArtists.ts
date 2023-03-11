@@ -1,7 +1,6 @@
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
-import { takeCookie } from "utils/cookies";
+import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export async function getRelatedArtists(
+export default async function getRelatedArtists(
   id: string,
   accessToken?: string,
   cookies?: string

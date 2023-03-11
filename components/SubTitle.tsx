@@ -1,7 +1,7 @@
 import { ReactElement, useRef } from "react";
-import { capitalizeFirstLetter } from "utils/capitalizeFirstLetter";
-import { getYear } from "utils/getYear";
-import ArtistList from "./ArtistList";
+
+import { ArtistList } from "components";
+import { capitalizeFirstLetter, getYear } from "utils";
 
 export default function SubTitle({
   artists,

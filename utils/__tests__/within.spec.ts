@@ -1,5 +1,5 @@
 import { IUtilsMocks } from "types/mocks";
-import { within } from "utils/whitin";
+import { within } from "utils";
 
 const { resolvePromise, rejectPromise } = jest.requireActual<IUtilsMocks>(
   "./__mocks__/mocks.ts"

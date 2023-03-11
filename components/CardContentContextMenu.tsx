@@ -1,15 +1,19 @@
-import { useContextMenu, useToast } from "hooks";
-import { useRouter } from "next/router";
 import { ReactElement } from "react";
+
+import { useRouter } from "next/router";
+
+import { CardType } from "components/CardContent";
+import { useContextMenu, useToast } from "hooks";
 import { menuContextStyles } from "styles/menuContextStyles";
 import { ICardContentContextMenuData } from "types/contextMenu";
-import { capitalizeFirstLetter } from "utils/capitalizeFirstLetter";
-import { getSiteUrl } from "utils/environment";
-import { follow, Follow_type } from "utils/spotifyCalls/follow";
-import { followAlbums } from "utils/spotifyCalls/followAlbums";
-import { followPlaylist } from "utils/spotifyCalls/followPlaylist";
-import { saveShowsToLibrary } from "utils/spotifyCalls/saveShowsToLibrary";
-import { CardType } from "./CardContent";
+import { capitalizeFirstLetter, getSiteUrl } from "utils";
+import {
+  follow,
+  followAlbums,
+  followPlaylist,
+  saveShowsToLibrary,
+} from "utils/spotifyCalls";
+import { Follow_type } from "utils/spotifyCalls/follow";
 
 type SaveFunctionTypes =
   | CardType.ALBUM
@@ -46,7 +50,7 @@ function saveFunction(type: SaveFunctionTypes, id: string): void {
 export interface ICardContentContextMenu {
   data: ICardContentContextMenuData["data"];
 }
-export function CardContentContextMenu({
+export default function CardContentContextMenu({
   data,
 }: ICardContentContextMenu): ReactElement {
   const { removeContextMenu } = useContextMenu();

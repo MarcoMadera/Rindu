@@ -1,4 +1,5 @@
-import React, { useState, useEffect, ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
+
 import type { IToast } from "types/toast";
 
 export default function ToastCard({
