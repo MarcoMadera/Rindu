@@ -1,14 +1,16 @@
-import { ExternalLink } from "components/icons/ExternalLink";
+import { ReactElement, useEffect, useState } from "react";
+
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactElement, useEffect, useState } from "react";
-import useAuth from "../hooks/useAuth";
+
+import { ExternalLink } from "components/icons";
+import { useAuth } from "hooks";
 import {
   ACCESS_TOKEN_COOKIE,
+  eatCookie,
   EXPIRE_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
-} from "../utils/constants";
-import { eatCookie } from "../utils/cookies";
+} from "utils";
 
 interface UserConfigProps {
   name: string | undefined;

@@ -1,7 +1,6 @@
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
-import { takeCookie } from "utils/cookies";
+import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export async function addCustomPlaylistImage(
+export default async function addCustomPlaylistImage(
   user_id: string | undefined,
   playlist_id: string | undefined,
   accessToken?: string,

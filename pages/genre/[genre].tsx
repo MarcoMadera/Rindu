@@ -1,21 +1,23 @@
-import Head from "next/head";
 import { ReactElement, useEffect } from "react";
+
 import { NextApiRequest, NextApiResponse } from "next";
-import PresentationCard from "components/PresentationCard";
-import useAuth from "hooks/useAuth";
-import { serverRedirect } from "utils/serverRedirect";
-import { getAuth } from "utils/getAuth";
-import { getCategoryPlaylists } from "utils/spotifyCalls/getCategoryPlaylists";
-import useHeader from "hooks/useHeader";
-import { getSingleCategoryInfo } from "utils/spotifyCalls/getSingleCategoryInfo";
-import useSpotify from "hooks/useSpotify";
-import { CardType } from "components/CardContent";
-import ContentContainer from "components/ContentContainer";
-import Heading from "components/Heading";
-import Grid from "components/Grid";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import { getTranslations, Page } from "utils/getTranslations";
-import { fullFilledValue } from "utils/fullFilledValue";
+import Head from "next/head";
+
+import { ContentContainer, Grid, Heading, PresentationCard } from "components";
+import { CardType } from "components/CardContent";
+import { useAuth, useHeader, useSpotify } from "hooks";
+import {
+  fullFilledValue,
+  getAuth,
+  getTranslations,
+  Page,
+  serverRedirect,
+} from "utils";
+import {
+  getCategoryPlaylists,
+  getSingleCategoryInfo,
+} from "utils/spotifyCalls";
 
 interface CategoryProps {
   categoryInfo: SpotifyApi.SingleCategoryResponse | null;

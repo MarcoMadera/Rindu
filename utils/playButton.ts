@@ -1,8 +1,9 @@
-import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { Dispatch, SetStateAction } from "react";
-import { ITrack, IPageDetails } from "types/spotify";
+
+import { AudioPlayer } from "hooks/useSpotifyPlayer";
+import { IPageDetails, ITrack } from "types/spotify";
 import { NewToast } from "types/toast";
-import { play } from "./spotifyCalls/play";
+import { play } from "utils/spotifyCalls";
 
 export function getUris(
   isSingle?: boolean,

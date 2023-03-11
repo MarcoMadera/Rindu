@@ -13,7 +13,7 @@
     "build-storybook": "build-storybook",
     "build-storybook-docs": "build-storybook --docs",
     "show-coverage": "sh scripts/open-coverage-report.sh",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --format=summary"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --format=stylish --max-warnings=0"
   },
   "overrides": {
     "@types/react": "^18.0.28"

@@ -1,11 +1,13 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import PageHeader from "../components/PageHeader";
-import { UserContextProvider } from "context/UserContext";
-import { ToastContextProvider } from "context/ToastContext";
+
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { PageHeader } from "components";
+import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import { SpotifyContextProvider } from "context/SpotifyContext";
-import { ContextMenuContextProvider } from "context/ContextMenuContext";
+import { ToastContextProvider } from "context/ToastContext";
+import { UserContextProvider } from "context/UserContext";
 import { HeaderType } from "types/pageHeader";
 
 export default {

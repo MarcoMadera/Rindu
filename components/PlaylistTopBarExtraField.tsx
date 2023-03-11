@@ -1,6 +1,7 @@
 import { ReactElement } from "react";
-import useSpotify from "hooks/useSpotify";
-import { PlayButton } from "./PlayButton";
+
+import { PlayButton } from "components";
+import { useSpotify } from "hooks";
 import { ITrack } from "types/spotify";
 
 interface PlaylistTopBarExtraFieldProps {

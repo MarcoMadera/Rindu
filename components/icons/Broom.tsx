@@ -1,6 +1,6 @@
 import { ReactElement, SVGProps } from "react";
 
-export function Broom(props: SVGProps<SVGSVGElement>): ReactElement {
+export default function Broom(props: SVGProps<SVGSVGElement>): ReactElement {
   return (
     <svg width="1em" height="1em" viewBox="0 0 24 24" {...props}>
       <path

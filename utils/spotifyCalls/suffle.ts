@@ -1,7 +1,6 @@
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
-import { takeCookie } from "utils/cookies";
+import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export async function suffle(
+export default async function suffle(
   state: boolean,
   deviceId: string,
   accessToken?: string

@@ -1,4 +1,4 @@
-import { getMyAlbums } from "./spotifyCalls/getMyAlbums";
+import { getMyAlbums } from "utils/spotifyCalls";
 
 export async function getAllAlbums(
   accessToken: string

@@ -1,13 +1,16 @@
-import React, { HTMLAttributes, ReactElement, useRef } from "react";
-import useAuth from "hooks/useAuth";
-import useSpotify from "hooks/useSpotify";
+import { HTMLAttributes, ReactElement, useRef } from "react";
+
 import { Pause, Play } from "components/icons";
-import { AudioPlayer } from "hooks/useSpotifyPlayer";
-import useToast from "hooks/useToast";
-import useOnScreen from "hooks/useOnScreen";
+import {
+  useAuth,
+  useIsThisPlaybackPlaying,
+  useOnScreen,
+  useSpotify,
+  useToast,
+} from "hooks";
+import type { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { ITrack } from "types/spotify";
-import useIsThisPlaybackPlaying from "hooks/useIsThisPlaybackPlaying";
-import { handleNonPremiumPlay, handlePremiumPlay } from "utils/playButton";
+import { handleNonPremiumPlay, handlePremiumPlay } from "utils";
 
 interface PlayButtonProps {
   size: number;
@@ -19,7 +22,7 @@ interface PlayButtonProps {
   allTracks: ITrack[];
 }
 
-export function PlayButton({
+export default function PlayButton({
   size,
   centerSize,
   track,

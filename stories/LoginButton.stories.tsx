@@ -1,6 +1,8 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import LoginButton from "../components/LoginButton";
+
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { LoginButton } from "components";
 
 export default {
   title: "Components/LoginButton",

@@ -1,5 +1,5 @@
 import { IUtilsMocks } from "types/mocks";
-import { getArtistInfo } from "utils/getArtistInfo";
+import { getArtistInfo } from "utils";
 
 const { artistInfo, mockFetchSuccess } = jest.requireActual<IUtilsMocks>(
   "./__mocks__/mocks.ts"

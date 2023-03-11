@@ -1,7 +1,6 @@
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
-import { takeCookie } from "utils/cookies";
+import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export async function getMyEpisodes(
+export default async function getMyEpisodes(
   accessToken?: string,
   cookies?: string
 ): Promise<SpotifyApi.UsersSavedEpisodesResponse | null> {

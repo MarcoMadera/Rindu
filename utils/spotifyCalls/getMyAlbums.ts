@@ -1,4 +1,4 @@
-export async function getMyAlbums(
+export default async function getMyAlbums(
   offset: number,
   accessToken: string
 ): Promise<SpotifyApi.UsersSavedAlbumsResponse | null> {

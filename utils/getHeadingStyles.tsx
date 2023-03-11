@@ -1,4 +1,5 @@
 import css from "styled-jsx/css";
+
 import type { AsType, Heading, HeadingStyles } from "types/heading";
 import { Color } from "types/heading";
 

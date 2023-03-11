@@ -1,6 +1,8 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import ExplicitSign from "../components/ExplicitSign";
+
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { ExplicitSign } from "components";
 
 export default {
   title: "Components/ExplicitSign",

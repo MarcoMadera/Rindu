@@ -1,4 +1,4 @@
-import { getMyShows } from "./spotifyCalls/getMyShows";
+import { getMyShows } from "utils/spotifyCalls";
 
 export async function getAllMyShows(
   accessToken: string

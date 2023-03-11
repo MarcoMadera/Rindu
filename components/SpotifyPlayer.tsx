@@ -1,5 +1,11 @@
-import PlaybackExtraControls from "components/PlaybackExtraControls";
-import PlayerControls from "components/PlayerControls";
+import { ReactElement, useEffect } from "react";
+
+import Link from "next/link";
+import { useRouter } from "next/router";
+import Script from "next/script";
+
+import { NowPlaying, PlaybackExtraControls, PlayerControls } from "components";
+import { Home, Library, Search } from "components/icons";
 import {
   useAuth,
   useOnSmallScreen,
@@ -8,15 +14,7 @@ import {
   useToast,
   useTranslations,
 } from "hooks";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import Script from "next/script";
-import { ReactElement, useEffect } from "react";
 import { DisplayInFullScreen } from "types/spotify";
-import Home from "./icons/Home";
-import Library from "./icons/Library";
-import Search from "./icons/Search";
-import NowPlaying from "./NowPlaying";
 
 export default function SpotifyPlayer(): ReactElement {
   const { user } = useAuth();

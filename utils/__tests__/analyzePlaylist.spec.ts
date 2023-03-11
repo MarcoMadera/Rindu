@@ -3,12 +3,13 @@ import { ITrack } from "types/spotify";
 import { analyzePlaylist } from "utils/analyzePlaylist";
 import { getAllTracksFromPlaylist } from "utils/getAllTracksFromPlaylist";
 
-jest.mock<typeof import("utils/getAllTracksFromPlaylist")>(
-  "utils/getAllTracksFromPlaylist",
-  () => ({
-    getAllTracksFromPlaylist: jest.fn(),
-  })
-);
+jest.mock<typeof import("utils")>("utils/getAllTracksFromPlaylist", () => ({
+  ...jest.requireActual<typeof import("utils")>(
+    "utils/getAllTracksFromPlaylist"
+  ),
+  getAllTracksFromPlaylist: jest.fn(),
+}));
+
 const { track, accessToken } = jest.requireActual<IUtilsMocks>(
   "./__mocks__/mocks.ts"
 );

@@ -1,29 +1,35 @@
-import { NextApiRequest, NextApiResponse, NextPage } from "next";
 import { useEffect, useMemo, useState } from "react";
-import { getAuth } from "utils/getAuth";
-import { serverRedirect } from "utils/serverRedirect";
-import { getShow } from "utils/spotifyCalls/getShow";
-import { ITrack } from "types/spotify";
-import { HeaderType } from "types/pageHeader";
-import { getSiteUrl } from "utils/environment";
-import PageHeader from "components/PageHeader";
-import { PlayButton } from "components/PlayButton";
-import { Heart } from "components/icons/Heart";
-import { removeShowsFromLibrary } from "utils/spotifyCalls/removeShowsFromLibrary";
-import { saveShowsToLibrary } from "utils/spotifyCalls/saveShowsToLibrary";
-import useAuth from "hooks/useAuth";
-import { checkIfUserFollowShows } from "utils/spotifyCalls/checkIfUserFollowShows";
-import useSpotify from "hooks/useSpotify";
-import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
-import useHeader from "hooks/useHeader";
-import useToast from "hooks/useToast";
-import EpisodeCard from "components/EpisodeCard";
-import ContentContainer from "components/ContentContainer";
-import Heading from "components/Heading";
+
+import { NextApiRequest, NextApiResponse, NextPage } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import { getTranslations, Page } from "utils/getTranslations";
+
+import {
+  ContentContainer,
+  EpisodeCard,
+  Heading,
+  PageHeader,
+  PlayButton,
+  PlaylistTopBarExtraField,
+} from "components";
+import { Heart } from "components/icons";
+import { useAuth, useHeader, useSpotify, useToast } from "hooks";
 import { AsType } from "types/heading";
-import { checkEpisodesInLibrary } from "utils/spotifyCalls/checkEpisodesInLibrary";
+import { HeaderType } from "types/pageHeader";
+import { ITrack } from "types/spotify";
+import {
+  getAuth,
+  getSiteUrl,
+  getTranslations,
+  Page,
+  serverRedirect,
+} from "utils";
+import {
+  checkEpisodesInLibrary,
+  checkIfUserFollowShows,
+  getShow,
+  removeShowsFromLibrary,
+  saveShowsToLibrary,
+} from "utils/spotifyCalls";
 
 interface PlaylistProps {
   show: SpotifyApi.SingleShowResponse | null;

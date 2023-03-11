@@ -1,6 +1,3 @@
-import Clock from "components/icons/Clock";
-import useOnSmallScreen from "hooks/useOnSmallScreen";
-import useTranslations from "hooks/useTranslations";
 import {
   Dispatch,
   MutableRefObject,
@@ -10,7 +7,10 @@ import {
   useRef,
   useState,
 } from "react";
+
 import { CardType } from "./CardTrack";
+import { Clock } from "components/icons";
+import { useOnSmallScreen, useTranslations } from "hooks";
 
 export default function TrackListHeader({
   isPin,

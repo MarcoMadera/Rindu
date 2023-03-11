@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
-import Heading from "./Heading";
-import SingleTrackCard from "./SingleTrackCard";
+
+import { Heading, SingleTrackCard } from "components";
 
 interface TopTracksProps {
   topTracks: SpotifyApi.UsersTopTracksResponse;

@@ -1,40 +1,48 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { ReactElement, useEffect } from "react";
-import useSpotify from "hooks/useSpotify";
-import { DisplayInFullScreen } from "types/spotify";
-import ContentContainer from "components/ContentContainer";
-import useTranslations from "hooks/useTranslations";
-import Heading from "components/Heading";
-import ArtistList from "components/ArtistList";
-import ScrollableText from "components/ScrollableText";
-import { Heart } from "components/icons/Heart";
-import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFromLibrary";
-import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibrary";
-import useAuth from "hooks/useAuth";
-import useToast from "hooks/useToast";
-import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
-import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
-import useContextMenu from "hooks/useContextMenu";
+
 import Link from "next/link";
-import Player from "components/Player";
-import { ProgressBar } from "components/ProgressBar";
-import FullScreenControl from "components/FullScreenControl";
-import Lyrics from "components/icons/Lyrics";
-import Queue from "components/icons/Queue";
-import FullScreen from "components/icons/FullScreen";
-import { getMainColorFromImage } from "utils/getMainColorFromImage";
-import useHeader from "hooks/useHeader";
-import useFullScreenControl from "hooks/useFullScreenControl";
-import VolumeControl from "components/VolumeControl";
-import FullScreenExit from "components/icons/FullScreenExit";
-import Logo from "components/Logo";
-import useClickPreventionOnDoubleClick from "hooks/useClickPreventionOnDoubleClick";
+
 import {
-  requestFullScreen,
-  isFullScreen,
+  ArtistList,
+  ContentContainer,
+  FullScreenControl,
+  Heading,
+  Logo,
+  Player,
+  ProgressBar,
+  ScrollableText,
+  VolumeControl,
+} from "components";
+import {
+  FullScreen,
+  FullScreenExit,
+  Heart,
+  Lyrics,
+  Queue,
+} from "components/icons";
+import {
+  useAuth,
+  useClickPreventionOnDoubleClick,
+  useContextMenu,
+  useFullScreenControl,
+  useHeader,
+  useSpotify,
+  useToast,
+  useTranslations,
+} from "hooks";
+import { DisplayInFullScreen } from "types/spotify";
+import {
   exitFullScreen,
-} from "utils/fullScreen";
+  getMainColorFromImage,
+  isFullScreen,
+  requestFullScreen,
+} from "utils";
+import {
+  removeEpisodesFromLibrary,
+  removeTracksFromLibrary,
+  saveEpisodesToLibrary,
+  saveTracksToLibrary,
+} from "utils/spotifyCalls";
 
 export default function FullScreenPlayer(): ReactElement {
   const { accessToken } = useAuth();

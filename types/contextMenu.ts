@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
-import { ITrack } from "./spotify";
-import { ICardContent } from "../components/CardContent";
+
+import { ICardContent } from "components/CardContent";
+import { ITrack } from "types/spotify";
 
 export interface ICardTrackContextMenuData {
   type: "cardTrack";

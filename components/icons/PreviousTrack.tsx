@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 
-export function PreviousTrack({
+export default function PreviousTrack({
   fill,
   ...props
 }: {

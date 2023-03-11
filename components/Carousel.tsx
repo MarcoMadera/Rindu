@@ -1,17 +1,18 @@
 import {
   Children,
+  cloneElement,
+  HTMLAttributes,
+  isValidElement,
+  PropsWithChildren,
   ReactElement,
   useEffect,
+  useId,
   useRef,
   useState,
-  isValidElement,
-  cloneElement,
-  useId,
-  PropsWithChildren,
-  HTMLAttributes,
 } from "react";
-import Heading from "./Heading";
-import { Chevron } from "./icons/Chevron";
+
+import { Heading } from "components";
+import { Chevron } from "components/icons";
 
 interface CarouselProps {
   title?: string;

@@ -1,8 +1,10 @@
-import { useContextMenu, useOnScreen } from "hooks";
+import { ReactElement, useRef } from "react";
+
 import { decode } from "html-entities";
 import { useRouter } from "next/router";
-import { useRef } from "react";
-import { getSiteUrl } from "utils/environment";
+
+import { useContextMenu, useOnScreen } from "hooks";
+import { getSiteUrl } from "utils";
 
 export enum CardType {
   SIMPLE = "simple",
@@ -26,14 +28,14 @@ export interface ICardContent {
   url?: string;
 }
 
-export const CardContent: React.FC<ICardContent> = ({
+export default function CardContent({
   id,
   type,
   images,
   title,
   subTitle,
   url,
-}) => {
+}: ICardContent): ReactElement {
   const router = useRouter();
   const handlerRef = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(handlerRef, "-150px");
@@ -179,4 +181,4 @@ export const CardContent: React.FC<ICardContent> = ({
       `}</style>
     </article>
   );
-};
+}

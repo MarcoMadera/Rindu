@@ -1,42 +1,46 @@
+import { useEffect, useState } from "react";
+
+import { decode } from "html-entities";
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import React, { useEffect, useState } from "react";
-import PresentationCard from "components/PresentationCard";
-import useAuth from "hooks/useAuth";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { useRouter } from "next/router";
+
+import {
+  Carousel,
+  ContentContainer,
+  MainTracks,
+  PresentationCard,
+  SubTitle,
+  TopTracks,
+} from "components";
+import { CardType } from "components/CardContent";
+import { useAuth, useHeader, useSpotify } from "hooks";
+import { AuthorizationResponse, ITrack } from "types/spotify";
 import {
   ACCESS_TOKEN_COOKIE,
   EXPIRE_TOKEN_COOKIE,
+  fullFilledValue,
+  getAuth,
+  getTopTracksCards,
+  getTranslations,
+  Page,
   REFRESH_TOKEN_COOKIE,
-} from "../utils/constants";
-import { decode } from "html-entities";
-import { getAuth } from "utils/getAuth";
-import { serverRedirect } from "utils/serverRedirect";
-import { getAuthorizationByCode } from "utils/spotifyCalls/getAuthorizationByCode";
-import useHeader from "hooks/useHeader";
-import { useRouter } from "next/router";
-import { getRecommendations } from "utils/spotifyCalls/getRecommendations";
-import { getMyTop, TopType } from "utils/spotifyCalls/getMyTop";
-import { getFeaturedPlaylists } from "utils/spotifyCalls/getFeaturedPlaylists";
-import { getNewReleases } from "utils/spotifyCalls/getNewReleases";
-import { getCategories } from "utils/spotifyCalls/getCategories";
-import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
-import useSpotify from "hooks/useSpotify";
-import { takeCookie } from "utils/cookies";
-import { AuthorizationResponse, ITrack } from "types/spotify";
-import Carousel from "components/Carousel";
-import SubTitle from "components/SubtTitle";
-import { CardType } from "components/CardContent";
-import ContentContainer from "components/ContentContainer";
-import TopTracks from "components/TopTracks";
-import MainTracks from "components/MainTracks";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import { getTranslations, Page } from "utils/getTranslations";
-import { fullFilledValue } from "utils/fullFilledValue";
+  serverRedirect,
+  takeCookie,
+} from "utils";
 import {
+  checkTracksInLibrary,
+  getAuthorizationByCode,
+  getCategories,
+  getFeaturedPlaylists,
+  getMyTop,
+  getNewReleases,
+  getRecommendations,
   searchArtist,
   searchPlaylist,
   searchTrack,
-} from "utils/spotifyCalls/search";
-import { getTopTracksCards } from "utils/getTopTracksCards";
+} from "utils/spotifyCalls";
+import { TopType } from "utils/spotifyCalls/getMyTop";
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;

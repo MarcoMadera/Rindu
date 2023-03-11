@@ -1,22 +1,16 @@
-import useAuth from "hooks/useAuth";
-import useContextMenu from "hooks/useContextMenu";
-import useSpotify from "hooks/useSpotify";
-import useToast from "hooks/useToast";
-import Link from "next/link";
 import { ReactElement, useEffect, useState } from "react";
+
+import Link from "next/link";
+
+import { ExplicitSign, Heading } from "components";
+import { Add, Pause, Play, Share, ThreeDots } from "components/icons";
+import { useAuth, useContextMenu, useSpotify, useToast } from "hooks";
 import { AsType } from "types/heading";
-import { getSiteUrl } from "utils/environment";
-import { formatTime } from "utils/formatTime";
-import { getTimeAgo } from "utils/getTimeAgo";
-import { playCurrentTrack } from "utils/playCurrentTrack";
-import { removeEpisodesFromLibrary } from "utils/spotifyCalls/removeEpisodesFromLibrary";
-import { saveEpisodesToLibrary } from "utils/spotifyCalls/saveEpisodesToLibrary";
-import ExplicitSign from "./ExplicitSign";
-import Heading from "./Heading";
-import { Pause, Play } from "./icons";
-import Add from "./icons/Add";
-import { Share } from "./icons/Share";
-import ThreeDots from "./icons/ThreeDots";
+import { formatTime, getSiteUrl, getTimeAgo, playCurrentTrack } from "utils";
+import {
+  removeEpisodesFromLibrary,
+  saveEpisodesToLibrary,
+} from "utils/spotifyCalls";
 
 interface EpisodeCardProps {
   item: SpotifyApi.EpisodeObjectSimplified;

@@ -1,9 +1,9 @@
 import React, {
-  useState,
-  useRef,
   PropsWithChildren,
   ReactElement,
   useEffect,
+  useRef,
+  useState,
 } from "react";
 
 interface PanelGroupProps {

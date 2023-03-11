@@ -1,9 +1,10 @@
-import useContextMenu from "hooks/useContextMenu";
-import useHeader from "hooks/useHeader";
+import { PropsWithChildren, ReactElement, useEffect } from "react";
+
 import { useRouter } from "next/router";
-import React, { PropsWithChildren, ReactElement, useEffect } from "react";
+
+import { useContextMenu, useHeader } from "hooks";
 import { ITrack } from "types/spotify";
-import { getMainColorFromImage } from "utils/getMainColorFromImage";
+import { getMainColorFromImage } from "utils";
 
 interface PageDetailsProps {
   data?:

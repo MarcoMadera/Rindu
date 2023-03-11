@@ -1,16 +1,17 @@
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { IUtilsMocks } from "types/mocks";
 import { playCurrentTrack } from "utils/playCurrentTrack";
-import { play } from "utils/spotifyCalls/play";
+import { play } from "utils/spotifyCalls";
 
-jest.mock<typeof import("utils/spotifyCalls/play")>(
-  "utils/spotifyCalls/play",
-  () => ({
-    play: jest.fn().mockResolvedValue({
-      status: 200,
-      ok: true,
-    }),
-  })
+jest.mock<typeof import("utils/spotifyCalls")>(
+  "utils/spotifyCalls",
+  () =>
+    ({
+      play: jest.fn().mockResolvedValue({
+        status: 200,
+        ok: true,
+      }),
+    } as unknown as typeof import("utils/spotifyCalls"))
 );
 
 const { track, user, accessToken } = jest.requireActual<IUtilsMocks>(

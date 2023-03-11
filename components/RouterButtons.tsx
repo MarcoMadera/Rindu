@@ -1,5 +1,7 @@
-import { useRouter } from "next/router";
 import { ReactElement, useEffect, useRef, useState } from "react";
+
+import { useRouter } from "next/router";
+
 import { AngleBrackect } from "./icons";
 
 interface HistoryState {

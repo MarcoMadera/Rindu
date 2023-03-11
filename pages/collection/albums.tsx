@@ -1,22 +1,27 @@
-import Head from "next/head";
-import useHeader from "hooks/useHeader";
-import useAuth from "hooks/useAuth";
-import { useEffect, ReactElement, useState } from "react";
-import PresentationCard from "components/PresentationCard";
-import { getYear } from "utils/getYear";
-import { getAllAlbums } from "utils/getAllAlbums";
-import useSpotify from "hooks/useSpotify";
-import { CardType } from "components/CardContent";
-import NavigationTopBarExtraField from "components/NavigationTopBarExtraField";
-import ContentContainer from "components/ContentContainer";
-import Heading from "components/Heading";
-import Grid from "components/Grid";
+import { ReactElement, useEffect, useState } from "react";
+
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import { getTranslations, Page, Translations } from "utils/getTranslations";
-import { getAuth } from "utils/getAuth";
-import { serverRedirect } from "utils/serverRedirect";
-import useAnalytics from "hooks/useAnalytics";
+import Head from "next/head";
+
+import {
+  ContentContainer,
+  Grid,
+  Heading,
+  NavigationTopBarExtraField,
+  PresentationCard,
+} from "components";
+import { CardType } from "components/CardContent";
+import { useAnalytics, useAuth, useHeader, useSpotify } from "hooks";
+import {
+  getAllAlbums,
+  getAuth,
+  getTranslations,
+  getYear,
+  Page,
+  serverRedirect,
+  Translations,
+} from "utils";
 
 interface CollectionAlbumProps {
   accessToken: string | null;

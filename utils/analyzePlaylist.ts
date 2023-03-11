@@ -1,6 +1,6 @@
 import { ITrack } from "types/spotify";
-import { findDuplicateSongs } from "./findDuplicateSongs";
-import { getAllTracksFromPlaylist } from "./getAllTracksFromPlaylist";
+import { findDuplicateSongs } from "utils/findDuplicateSongs";
+import { getAllTracksFromPlaylist } from "utils/getAllTracksFromPlaylist";
 
 export async function analyzePlaylist(
   id: string | undefined,
@@ -54,3 +54,5 @@ export async function analyzePlaylist(
     tracksToRemove,
   };
 }
+
+export default analyzePlaylist;

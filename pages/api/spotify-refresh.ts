@@ -1,12 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { ApiError } from "next/dist/server/api-utils";
+
+import { RefreshTokenResponse } from "types/spotify";
 import {
   ACCESS_TOKEN_COOKIE,
   EXPIRE_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
-} from "../../utils/constants";
-import { ApiError } from "next/dist/server/api-utils";
-import { takeCookie } from "../../utils/cookies";
-import { RefreshTokenResponse } from "types/spotify";
+  takeCookie,
+} from "utils";
 
 interface IRefreshBody {
   refreshToken?: string;

@@ -1,6 +1,7 @@
-import useTranslations from "hooks/useTranslations";
 import { ReactElement } from "react";
-import { getSpotifyLoginURL } from "utils/getSpotifyLoginURL";
+
+import { useTranslations } from "hooks";
+import { getSpotifyLoginURL } from "utils";
 
 export default function LoginButton(): ReactElement {
   const { translations } = useTranslations();

@@ -1,4 +1,5 @@
 import { PropsWithChildren } from "react";
+
 import { Color } from "types/heading";
 import { getHeadingStyles } from "utils/getHeadingStyles";
 

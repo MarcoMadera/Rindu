@@ -1,8 +1,3 @@
-import useAuth from "hooks/useAuth";
-import useHeader from "hooks/useHeader";
-import useLyrics from "hooks/useLyrics";
-import useSpotify from "hooks/useSpotify";
-import useToast from "hooks/useToast";
 import {
   MutableRefObject,
   ReactElement,
@@ -10,14 +5,19 @@ import {
   useLayoutEffect,
   useState,
 } from "react";
+
+import { LoadingSpinner } from "components";
+import { PictureInPicture } from "components/icons";
+import { useAuth, useHeader, useLyrics, useSpotify, useToast } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
-import { colorCodedToHex, colorCodedToRGB } from "utils/colorCoded";
-import { getRandomColor } from "utils/colors";
-import { getLinesFittingCanvas } from "utils/getLinesFittingCanvas";
-import { hexToHsl } from "utils/hexToHsl";
-import { rgbToHex } from "utils/rgbToHex";
-import { PictureInPicture } from "./icons/PictureInPicture";
-import { LoadingSpinner } from "./LoadingSpinner";
+import {
+  colorCodedToHex,
+  colorCodedToRGB,
+  getLinesFittingCanvas,
+  getRandomColor,
+  hexToHsl,
+  rgbToHex,
+} from "utils";
 
 interface FullScreenLyricsProps {
   appRef?: MutableRefObject<HTMLDivElement | undefined>;

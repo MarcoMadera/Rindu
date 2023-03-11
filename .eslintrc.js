@@ -67,6 +67,37 @@ module.exports = {
         "@typescript-eslint/restrict-plus-operands": "error",
         "@typescript-eslint/restrict-template-expressions": "error",
         "@typescript-eslint/no-for-in-array": "error",
+        "import/order": [
+          "error",
+          {
+            groups: [
+              ["builtin", "external"],
+              ["internal", "parent", "sibling", "index"],
+            ],
+            "newlines-between": "always",
+            alphabetize: {
+              order: "asc",
+              caseInsensitive: true,
+              orderImportKind: "asc",
+            },
+            pathGroups: [
+              {
+                pattern: "react",
+                group: "builtin",
+                position: "before",
+              },
+            ],
+            pathGroupsExcludedImportTypes: ["react"],
+          },
+        ],
+        "sort-imports": [
+          "error",
+          {
+            ignoreDeclarationSort: true,
+            ignoreCase: true,
+            memberSyntaxSortOrder: ["none", "all", "multiple", "single"],
+          },
+        ],
       },
       parserOptions: {
         project: ["./tsconfig.json"],

@@ -1,10 +1,15 @@
-import useAuth from "hooks/useAuth";
-import useSpotify from "hooks/useSpotify";
-import useToast from "hooks/useToast";
 import { ReactElement } from "react";
-import { repeat } from "utils/spotifyCalls/repeat";
-import { suffle } from "utils/spotifyCalls/suffle";
-import { Suffle, PreviousTrack, Pause, Play, NextTrack, Repeat } from "./icons";
+
+import {
+  NextTrack,
+  Pause,
+  Play,
+  PreviousTrack,
+  Repeat,
+  Suffle,
+} from "components/icons";
+import { useAuth, useSpotify, useToast } from "hooks";
+import { repeat, suffle } from "utils/spotifyCalls";
 
 export default function Player(): ReactElement {
   const {

@@ -1,6 +1,6 @@
-import useFullScreenControl from "hooks/useFullScreenControl";
-import useSpotify from "hooks/useSpotify";
 import { ReactElement, SVGProps } from "react";
+
+import { useFullScreenControl, useSpotify } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
 
 type Props = {

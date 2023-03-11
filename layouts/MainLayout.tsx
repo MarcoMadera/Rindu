@@ -1,11 +1,10 @@
-import { useRouter } from "next/router";
-import Footer from "components/Footer";
-import TopBar from "components/TopBar";
-import SpotifyPlayer from "components/SpotifyPlayer";
 import { PropsWithChildren, ReactElement, useEffect } from "react";
-import useRefreshAccessToken from "hooks/useRefreshAccessToken";
-import useDisableGlobalContextMenu from "hooks/useDisableGlobalContextMenu";
-import { AppContainer } from "./AppContainer";
+
+import { useRouter } from "next/router";
+
+import { Footer, SpotifyPlayer, TopBar } from "components";
+import { useDisableGlobalContextMenu, useRefreshAccessToken } from "hooks";
+import { AppContainer } from "layouts/AppContainer";
 
 export default function MainLayout({
   children,

@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
-import Player from "./Player";
-import { ProgressBar } from "./ProgressBar";
+
+import { Player, ProgressBar } from "components";
 
 export default function PlayerControls(): ReactElement {
   return (

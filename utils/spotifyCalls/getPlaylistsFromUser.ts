@@ -1,7 +1,6 @@
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
-import { takeCookie } from "utils/cookies";
+import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export async function getPlaylistsFromUser(
+export default async function getPlaylistsFromUser(
   userId: string,
   accessToken?: string
 ): Promise<SpotifyApi.ListOfUsersPlaylistsResponse | null> {

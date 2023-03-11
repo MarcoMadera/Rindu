@@ -1,7 +1,9 @@
 import { useCallback, useContext, useId } from "react";
-import ToastContext from "context/ToastContext";
-import type { UseToast, IToast } from "types/toast";
+
 import { uniqueId } from "lodash";
+
+import ToastContext from "context/ToastContext";
+import type { IToast, UseToast } from "types/toast";
 
 export default function useToast(): UseToast {
   const context = useContext(ToastContext);

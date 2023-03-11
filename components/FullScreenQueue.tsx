@@ -1,10 +1,8 @@
-import useSpotify from "hooks/useSpotify";
-import CardTrack, { CardType } from "components/CardTrack";
-import useAuth from "hooks/useAuth";
-import ContentContainer from "components/ContentContainer";
-import Heading from "components/Heading";
-import useTranslations from "hooks/useTranslations";
 import { ReactElement } from "react";
+
+import { CardTrack, ContentContainer, Heading } from "components";
+import { CardType } from "components/CardTrack";
+import { useAuth, useSpotify, useTranslations } from "hooks";
 
 export default function FullScreenQueue(): ReactElement {
   const { previousTracks, currentlyPlaying, nextTracks, playlistPlayingId } =

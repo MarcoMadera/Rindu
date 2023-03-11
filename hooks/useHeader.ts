@@ -1,5 +1,6 @@
-import HeaderContext, { IHeaderContext } from "context/HeaderContext";
 import { useContext, useEffect } from "react";
+
+import HeaderContext, { IHeaderContext } from "context/HeaderContext";
 
 export default function useHeader(
   options?: Partial<{

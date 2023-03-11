@@ -1,15 +1,21 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { ISpotifyContext, ITrack } from "types/spotify";
-import PlaylistLayout from "layouts/playlist";
-import { getAuth } from "utils/getAuth";
-import { serverRedirect } from "utils/serverRedirect";
-import { getPlaylistDetails } from "utils/spotifyCalls/getPlaylistDetails";
-import { getTracksFromPlaylist } from "utils/spotifyCalls/getTracksFromPlayList";
-import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
-import { mapPlaylistItems } from "utils/mapPlaylistItems";
-import { getTranslations, Page } from "utils/getTranslations";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import { fullFilledValue } from "utils/fullFilledValue";
+
+import PlaylistLayout from "layouts/playlist";
+import { ISpotifyContext, ITrack } from "types/spotify";
+import {
+  fullFilledValue,
+  getAuth,
+  getTranslations,
+  mapPlaylistItems,
+  Page,
+  serverRedirect,
+} from "utils";
+import {
+  checkTracksInLibrary,
+  getPlaylistDetails,
+  getTracksFromPlaylist,
+} from "utils/spotifyCalls";
 
 export interface PlaylistProps {
   pageDetails: ISpotifyContext["pageDetails"] | null;

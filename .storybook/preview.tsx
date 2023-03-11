@@ -1,12 +1,12 @@
-import { RouterContext } from "next/dist/shared/lib/router-context";
-import * as NextImage from "next/image";
-import "../styles/globals.css";
-import "./preview.css";
 import { addDecorator } from "@storybook/react";
 import { themes } from "@storybook/theming";
+import { RouterContext } from "next/dist/shared/lib/router-context";
+import * as NextImage from "next/image";
 import React from "react";
 import TranslationsContext from "../context/TranslationsContext";
+import "../styles/globals.css";
 import { translations } from "../utils/getTranslations";
+import "./preview.css";
 
 const allENTranslations: Record<string, string>[] = Object.values(
   translations.EN

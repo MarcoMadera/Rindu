@@ -1,11 +1,15 @@
-import useSpotify from "hooks/useSpotify";
 import { ReactElement, useCallback } from "react";
+
 import { useRouter } from "next/router";
-import useAuth from "hooks/useAuth";
-import { Volume } from "./icons/Volume";
-import { play } from "utils/spotifyCalls/play";
-import useClickPreventionOnDoubleClick from "hooks/useClickPreventionOnDoubleClick";
-import useToast from "hooks/useToast";
+
+import { Volume } from "components/icons";
+import {
+  useAuth,
+  useClickPreventionOnDoubleClick,
+  useSpotify,
+  useToast,
+} from "hooks";
+import { play } from "utils/spotifyCalls";
 
 interface PlaylistTextProps {
   id: string;

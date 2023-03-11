@@ -5,9 +5,11 @@ import {
   PropsWithChildren,
   ReactElement,
 } from "react";
-import type { HeadingProps } from "types/heading";
-import { getHeadingStyles } from "utils/getHeadingStyles";
+
 import css from "styled-jsx/css";
+
+import type { HeadingProps } from "types/heading";
+import { getHeadingStyles } from "utils";
 
 export default function Heading({
   number,

@@ -1,8 +1,10 @@
-import { useLottie } from "lottie-react";
 import { ReactElement } from "react";
+
+import { useLottie } from "lottie-react";
+
 import playingAnimation from "animations/playing.json";
 
-export function Playing(): ReactElement {
+export default function Playing(): ReactElement {
   const { View } = useLottie(
     {
       animationData: playingAnimation,

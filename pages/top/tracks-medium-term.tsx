@@ -1,15 +1,19 @@
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { IPageDetails, ITrack } from "types/spotify";
-import PlaylistLayout from "layouts/playlist";
-import { getAuth } from "utils/getAuth";
-import { serverRedirect } from "utils/serverRedirect";
-import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
-import { getTranslations, Page } from "utils/getTranslations";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import { fullFilledValue } from "utils/fullFilledValue";
-import { getMyTop, TopType } from "utils/spotifyCalls/getMyTop";
-import { getSiteUrl } from "utils/environment";
-import { TOP_TRACKS_MEDIUM_TERM_COLOR } from "utils/constants";
+
+import PlaylistLayout from "layouts/playlist";
+import { IPageDetails, ITrack } from "types/spotify";
+import {
+  fullFilledValue,
+  getAuth,
+  getSiteUrl,
+  getTranslations,
+  Page,
+  serverRedirect,
+  TOP_TRACKS_MEDIUM_TERM_COLOR,
+} from "utils";
+import { checkTracksInLibrary, getMyTop } from "utils/spotifyCalls";
+import { TopType } from "utils/spotifyCalls/getMyTop";
 
 export interface PlaylistProps {
   pageDetails: IPageDetails | null;

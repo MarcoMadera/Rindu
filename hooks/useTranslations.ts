@@ -1,7 +1,8 @@
 import { useContext } from "react";
+
 import TranslationsContext, {
   TranslationsContextProviderProps,
-} from "../context/TranslationsContext";
+} from "context/TranslationsContext";
 
 export default function useTranslations(): TranslationsContextProviderProps {
   const context = useContext(TranslationsContext);

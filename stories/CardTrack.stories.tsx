@@ -1,13 +1,15 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+
+import { boolean, text, withKnobs } from "@storybook/addon-knobs";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
 import CardTrack, { CardType } from "../components/CardTrack";
-import UserContext from "context/UserContext";
-import { ToastContextProvider } from "context/ToastContext";
+import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import SpotifyContext from "context/SpotifyContext";
-import { ContextMenuContextProvider } from "context/ContextMenuContext";
+import { ToastContextProvider } from "context/ToastContext";
+import UserContext from "context/UserContext";
 import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
-import { withKnobs, text, boolean } from "@storybook/addon-knobs";
 export default {
   title: "Components/CardTrack",
   component: CardTrack,

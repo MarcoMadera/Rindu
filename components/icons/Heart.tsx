@@ -7,12 +7,14 @@ import {
   useMemo,
   useState,
 } from "react";
-import { LottieOptions, useLottie } from "lottie-react";
-import likeAnimation from "animations/like.json";
-import dislikeAnimation from "animations/dislike.json";
-import { wait } from "utils/wait";
 
-export function Heart({
+import { LottieOptions, useLottie } from "lottie-react";
+
+import dislikeAnimation from "animations/dislike.json";
+import likeAnimation from "animations/like.json";
+import { wait } from "utils";
+
+export default function Heart({
   active,
   handleLike,
   handleDislike,

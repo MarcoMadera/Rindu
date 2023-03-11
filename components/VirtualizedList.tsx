@@ -1,7 +1,5 @@
-import CardTrack, { CardType } from "components/CardTrack";
-import useAuth from "hooks/useAuth";
-import useSpotify from "hooks/useSpotify";
 import { ReactElement, useCallback, useState } from "react";
+
 import {
   AutoSizer,
   IndexRange,
@@ -9,12 +7,16 @@ import {
   List,
   WindowScroller,
 } from "react-virtualized";
+
+import { CardTrack } from "components";
+import { CardType } from "components/CardTrack";
+import { useAuth, useSpotify } from "hooks";
 import { ITrack } from "types/spotify";
-import { isServer } from "utils/environment";
-import { getTracksFromLibrary } from "utils/getTracksFromLibrary";
-import { mapPlaylistItems } from "utils/mapPlaylistItems";
-import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
-import { getTracksFromPlaylist } from "utils/spotifyCalls/getTracksFromPlayList";
+import { getTracksFromLibrary, isServer, mapPlaylistItems } from "utils";
+import {
+  checkTracksInLibrary,
+  getTracksFromPlaylist,
+} from "utils/spotifyCalls";
 
 interface Props {
   type: CardType;

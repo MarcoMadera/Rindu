@@ -1,23 +1,25 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import TopBar from "../components/TopBar";
-import UserContext, {
-  IUserContext,
-  UserContextProvider,
-} from "context/UserContext";
-import { ToastContextProvider } from "context/ToastContext";
+
+import {
+  optionsKnob as options,
+  text,
+  withKnobs,
+} from "@storybook/addon-knobs";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { TopBar } from "components";
+import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
+import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import HeaderContext, {
   IHeaderContext as HContext,
   HeaderContextProvider,
 } from "context/HeaderContext";
 import SpotifyContext, { SpotifyContextProvider } from "context/SpotifyContext";
-import { ContextMenuContextProvider } from "context/ContextMenuContext";
-import {
-  withKnobs,
-  text,
-  optionsKnob as options,
-} from "@storybook/addon-knobs";
-import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
+import { ToastContextProvider } from "context/ToastContext";
+import UserContext, {
+  IUserContext,
+  UserContextProvider,
+} from "context/UserContext";
 import { ISpotifyContext, PlaylistItems } from "types/spotify";
 
 export default {

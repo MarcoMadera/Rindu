@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 
-export function Pause({
+export default function Pause({
   fill,
   ...props
 }: {

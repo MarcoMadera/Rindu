@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
-import formaLyrics, { IFormatLyricsResponse } from "utils/formatLyrics";
-import { GetLyrics, getLyrics, LyricsAction } from "utils/getLyrics";
-import { within } from "utils/whitin";
-import useToggle from "./useToggle";
+
+import { useToggle } from "hooks";
+import {
+  formatLyrics,
+  getLyrics,
+  GetLyrics,
+  IFormatLyricsResponse,
+  LyricsAction,
+  within,
+} from "utils";
 
 export default function useLyrics({
   artist,
@@ -81,7 +87,7 @@ export default function useLyrics({
     }
 
     setLyricsError(null);
-    setLyrics(formaLyrics(res.data));
+    setLyrics(formatLyrics(res.data));
   }, [artist, res, setLoading, title]);
 
   return {

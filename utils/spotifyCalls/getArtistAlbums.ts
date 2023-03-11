@@ -1,5 +1,4 @@
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
-import { takeCookie } from "utils/cookies";
+import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
 export enum Include_groups {
   album = "album",
@@ -8,7 +7,7 @@ export enum Include_groups {
   compilation = "compilation",
 }
 
-export async function getArtistAlbums(
+export default async function getArtistAlbums(
   id: string,
   market: string,
   include_groups: Include_groups,

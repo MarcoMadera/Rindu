@@ -1,22 +1,25 @@
-import React, { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect } from "react";
+
 import { decode } from "html-entities";
 import Link from "next/link";
-import formatNumber from "utils/formatNumber";
-import PageDetails from "./PageDetails";
-import useHeader from "hooks/useHeader";
-import { getMainColorFromImage } from "utils/getMainColorFromImage";
-import { formatTime } from "utils/formatTime";
-import { HeaderType } from "types/pageHeader";
-import { getYear } from "utils/getYear";
 import { useRouter } from "next/router";
-import { HeaderProps } from "types/pageHeader";
-import Heading from "./Heading";
-import { Eyebrow } from "./Eyebrow";
+
+import {
+  ArtistList,
+  Eyebrow,
+  Heading,
+  PageDetails,
+  ScrollableText,
+} from "components";
+import { useHeader, useOnSmallScreen, useTranslations } from "hooks";
 import { AsType } from "types/heading";
-import useTranslations from "hooks/useTranslations";
-import ArtistList from "./ArtistList";
-import useOnSmallScreen from "hooks/useOnSmallScreen";
-import ScrollableText from "./ScrollableText";
+import { HeaderProps, HeaderType } from "types/pageHeader";
+import {
+  formatNumber,
+  formatTime,
+  getMainColorFromImage,
+  getYear,
+} from "utils";
 
 export default function PageHeader({
   type,

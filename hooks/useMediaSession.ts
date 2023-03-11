@@ -1,8 +1,9 @@
 import { Dispatch, MutableRefObject, SetStateAction, useEffect } from "react";
+
+import { useAuth } from "hooks";
+import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { ITrack } from "types/spotify";
-import { callPictureInPicture } from "utils/callPictureInPicture";
-import useAuth from "./useAuth";
-import { AudioPlayer } from "./useSpotifyPlayer";
+import { callPictureInPicture } from "utils";
 
 export default function useMediaSession({
   currentlyPlaying,

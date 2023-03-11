@@ -1,6 +1,9 @@
-import { useLottie } from "lottie-react";
 import { ReactElement, SVGProps, useEffect, useState } from "react";
+
+import { useLottie } from "lottie-react";
+
 import AddAnimation from "animations/add-circle.json";
+
 export default function Add(
   props: SVGProps<SVGSVGElement> & {
     handleClick?: () => Promise<boolean>;

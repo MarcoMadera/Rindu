@@ -2,8 +2,8 @@
 /* eslint-disable jsx-a11y/alt-text */
 import { ImageResponse } from "@vercel/og";
 import { NextRequest } from "next/server";
-import { getRandomColor } from "utils/colors";
-import { hexToHsl } from "utils/hexToHsl";
+
+import { getRandomColor, hexToHsl } from "utils";
 
 export const config = {
   runtime: "edge",

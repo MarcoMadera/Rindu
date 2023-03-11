@@ -1,7 +1,9 @@
-import { useRouter } from "next/router";
 import { MutableRefObject, useEffect } from "react";
+
+import { useRouter } from "next/router";
+
+import { useSpotify } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
-import useSpotify from "./useSpotify";
 
 export default function useRouterEvents(
   onAppScroll: () => void,

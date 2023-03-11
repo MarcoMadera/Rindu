@@ -1,6 +1,6 @@
 import { ReactElement, SVGProps } from "react";
 
-export function Suffle({
+export default function Suffle({
   fill,
   ...props
 }: SVGProps<SVGSVGElement>): ReactElement {

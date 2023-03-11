@@ -1,10 +1,10 @@
 import {
-  SPOTIFY_CLIENT_ID,
-  SPOTIFY_AUTH_LOGIN_RESPONSE_TYPE,
-  SPOTIFY_REDIRECT_URL,
-  SCOPES,
   API_AUTH_URL,
-} from "./constants";
+  SCOPES,
+  SPOTIFY_AUTH_LOGIN_RESPONSE_TYPE,
+  SPOTIFY_CLIENT_ID,
+  SPOTIFY_REDIRECT_URL,
+} from "utils";
 
 export function getSpotifyLoginURL(): string {
   const paramsData = {

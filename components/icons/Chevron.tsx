@@ -1,6 +1,6 @@
 import { ReactElement, SVGProps } from "react";
 
-export function Chevron({
+export default function Chevron({
   rotation,
   ...props
 }: { rotation?: string } & SVGProps<SVGSVGElement>): ReactElement {

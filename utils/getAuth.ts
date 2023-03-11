@@ -1,10 +1,9 @@
 import { NextApiResponse } from "next";
-import { AuthorizationResponse } from "types/spotify";
+
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "./constants";
-import { takeCookie } from "./cookies";
-import { serverRedirect } from "./serverRedirect";
-import { getMe } from "./spotifyCalls/getMe";
-import { refreshAccessToken } from "./spotifyCalls/refreshAccessToken";
+import { AuthorizationResponse } from "types/spotify";
+import { serverRedirect, takeCookie } from "utils";
+import { getMe, refreshAccessToken } from "utils/spotifyCalls";
 
 export async function getAuth(
   res: NextApiResponse,

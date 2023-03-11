@@ -1,32 +1,37 @@
+import { useEffect, useState } from "react";
+
 import { NextApiRequest, NextApiResponse, NextPage } from "next";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { useRouter } from "next/router";
+
+import {
+  ContentContainer,
+  PageHeader,
+  PlayButton,
+  PlaylistTopBarExtraField,
+  TrackListHeader,
+  VirtualizedList,
+} from "components";
+import { CardType } from "components/CardTrack";
+import { Heart } from "components/icons";
+import { useAnalytics, useAuth, useHeader, useSpotify, useToast } from "hooks";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
-import { useRouter } from "next/router";
-import useAuth from "hooks/useAuth";
-import useAnalytics from "hooks/useAnalytics";
-import { useEffect, useState } from "react";
-import VirtualizedList from "components/VirtualizedList";
-import { Heart } from "components/icons/Heart";
-import TrackListHeader from "components/TrackListHeader";
-import useSpotify from "hooks/useSpotify";
-import { PlayButton } from "components/PlayButton";
-import useHeader from "hooks/useHeader";
-import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
-import { serverRedirect } from "utils/serverRedirect";
-import { getAuth } from "utils/getAuth";
-import { getAlbumById } from "utils/spotifyCalls/getAlbumById";
-import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
-import { checkIfUserFollowAlbums } from "utils/spotifyCalls/checkIfUserFollowAlbums";
-import { unFollowAlbums } from "utils/spotifyCalls/unFollowAlbums";
-import { followAlbums } from "utils/spotifyCalls/followAlbums";
-import PageHeader from "components/PageHeader";
-import { getSiteUrl } from "utils/environment";
-import useToast from "hooks/useToast";
-import ContentContainer from "components/ContentContainer";
-import { isCorruptedTrack } from "utils/isCorruptedTrack";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import { getTranslations, Page } from "utils/getTranslations";
-import { CardType } from "components/CardTrack";
+import {
+  getAuth,
+  getSiteUrl,
+  getTranslations,
+  isCorruptedTrack,
+  Page,
+  serverRedirect,
+} from "utils";
+import {
+  checkIfUserFollowAlbums,
+  checkTracksInLibrary,
+  followAlbums,
+  getAlbumById,
+  unFollowAlbums,
+} from "utils/spotifyCalls";
 
 interface AlbumPageProps {
   album: SpotifyApi.SingleAlbumResponse | null;

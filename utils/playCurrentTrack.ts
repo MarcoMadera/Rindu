@@ -1,7 +1,8 @@
-import { AudioPlayer } from "hooks/useSpotifyPlayer";
-import { play } from "utils/spotifyCalls/play";
 import { Dispatch, SetStateAction } from "react";
+
+import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { ITrack } from "types/spotify";
+import { play } from "utils/spotifyCalls";
 
 interface Config {
   allTracks: ITrack[];

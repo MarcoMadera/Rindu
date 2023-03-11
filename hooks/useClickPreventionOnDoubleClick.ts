@@ -1,5 +1,5 @@
-import { wait } from "utils/wait";
-import useCancellablePromises from "./useCancellablePromises";
+import { useCancellablePromises } from "hooks";
+import { wait } from "utils";
 
 interface IRejectedPromiseInfo {
   error: Error;

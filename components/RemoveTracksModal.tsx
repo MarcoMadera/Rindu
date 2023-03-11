@@ -1,4 +1,3 @@
-import { createPortal } from "react-dom";
 import {
   Dispatch,
   ReactNode,
@@ -10,19 +9,20 @@ import {
   useRef,
   useState,
 } from "react";
-import useSpotify from "hooks/useSpotify";
-import useAuth from "hooks/useAuth";
-import { ITrack } from "types/spotify";
-import CardTrack, { CardType } from "./CardTrack";
-import { takeCookie } from "utils/cookies";
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
+
+import { createPortal } from "react-dom";
 import { List } from "react-virtualized";
-import { LoadingSpinner } from "./LoadingSpinner";
-import useToast from "hooks/useToast";
-import { analyzePlaylist } from "utils/analyzePlaylist";
-import Heading from "./Heading";
-import useTranslations from "hooks/useTranslations";
-import { templateReplace } from "utils/templateReplace";
+
+import { CardTrack, Heading, LoadingSpinner } from "components";
+import { CardType } from "components/CardTrack";
+import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
+import { ITrack } from "types/spotify";
+import {
+  ACCESS_TOKEN_COOKIE,
+  analyzePlaylist,
+  takeCookie,
+  templateReplace,
+} from "utils";
 
 interface RemoveTracksModalProps {
   openModal: boolean;

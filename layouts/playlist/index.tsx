@@ -1,33 +1,35 @@
+import { useEffect, useMemo, useState } from "react";
+
 import { NextPage } from "next";
-import { useRouter } from "next/router";
-import React, { useEffect, useMemo, useState } from "react";
-import { ITrack } from "types/spotify";
-import PageHeader from "../../components/PageHeader";
-import useAnalytics from "../../hooks/useAnalytics";
-import useAuth from "hooks/useAuth";
 import Head from "next/head";
-import useSpotify from "hooks/useSpotify";
-import useHeader from "hooks/useHeader";
-import { PlayButton } from "../../components/PlayButton";
-import TrackListHeader from "components/TrackListHeader";
-import VirtualizedList from "components/VirtualizedList";
-import { Broom } from "components/icons/Broom";
-import RemoveTracksModal from "components/RemoveTracksModal";
-import PlaylistTopBarExtraField from "../../components/PlaylistTopBarExtraField";
-import { Heart } from "components/icons/Heart";
-import { getSiteUrl } from "utils/environment";
-import { PlaylistProps } from "pages/playlist/[playlist]";
-import { SearchInputElement } from "components/SearchInputElement";
-import { addItemsToPlaylist } from "utils/spotifyCalls/addItemsToPlaylist";
-import useToast from "hooks/useToast";
-import CardTrack, { CardType } from "components/CardTrack";
-import { checkUsersFollowAPlaylist } from "utils/spotifyCalls/checkUsersFollowAPlaylist";
-import { followPlaylist } from "utils/spotifyCalls/followPlaylist";
-import { unfollowPlaylist } from "utils/spotifyCalls/unfollowPlaylist";
-import { HeaderType } from "types/pageHeader";
-import ContentContainer from "components/ContentContainer";
-import Heading from "components/Heading";
+import { useRouter } from "next/router";
+
 import { handleSaveToPlaylistClick } from "./utils";
+import {
+  CardTrack,
+  ContentContainer,
+  Heading,
+  PageHeader,
+  PlayButton,
+  PlaylistTopBarExtraField,
+  RemoveTracksModal,
+  SearchInputElement,
+  TrackListHeader,
+  VirtualizedList,
+} from "components";
+import { CardType } from "components/CardTrack";
+import { Broom, Heart } from "components/icons";
+import { useAnalytics, useAuth, useHeader, useSpotify, useToast } from "hooks";
+import { PlaylistProps } from "pages/playlist/[playlist]";
+import { HeaderType } from "types/pageHeader";
+import { ITrack } from "types/spotify";
+import { getSiteUrl } from "utils";
+import {
+  addItemsToPlaylist,
+  checkUsersFollowAPlaylist,
+  followPlaylist,
+  unfollowPlaylist,
+} from "utils/spotifyCalls";
 
 const Playlist: NextPage<
   PlaylistProps & { isLibrary: boolean; isGeneratedPlaylist?: boolean }

@@ -1,6 +1,6 @@
 import { ReactElement, SVGProps } from "react";
 
-export function Share(props: SVGProps<SVGSVGElement>): ReactElement {
+export default function Share(props: SVGProps<SVGSVGElement>): ReactElement {
   return (
     <svg role="img" height="24" width="24" viewBox="0 0 24 24" {...props}>
       <path

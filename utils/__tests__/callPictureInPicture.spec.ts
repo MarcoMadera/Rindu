@@ -1,5 +1,5 @@
 import { IUtilsMocks } from "types/mocks";
-import { callPictureInPicture } from "utils/callPictureInPicture";
+import { callPictureInPicture } from "utils";
 
 const { setupMediaSession } = jest.requireActual<IUtilsMocks>(
   "./__mocks__/mocks.ts"

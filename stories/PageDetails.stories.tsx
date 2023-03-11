@@ -1,18 +1,20 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import PageDetails from "../components/PageDetails";
-import { HeaderContextProvider } from "context/HeaderContext";
-import { ContextMenuContextProvider } from "context/ContextMenuContext";
-import { ToastContextProvider } from "context/ToastContext";
-import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
+
 import {
-  withKnobs,
-  text,
   boolean,
   optionsKnob as options,
+  text,
+  withKnobs,
 } from "@storybook/addon-knobs";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { PageDetails } from "components";
+import { ContextMenuContextProvider } from "context/ContextMenuContext";
+import { HeaderContextProvider } from "context/HeaderContext";
 import SpotifyContext from "context/SpotifyContext";
+import { ToastContextProvider } from "context/ToastContext";
 import UserContext, { IUserContext } from "context/UserContext";
+import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
 export default {
   title: "Components/PageDetails",
   component: PageDetails,

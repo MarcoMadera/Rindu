@@ -1,14 +1,16 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import EpisodeCard from "../components/EpisodeCard";
-import UserContext from "context/UserContext";
-import { ToastContextProvider } from "context/ToastContext";
+
+import { boolean, text, withKnobs } from "@storybook/addon-knobs";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { EpisodeCard } from "components";
+import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import { HeaderContextProvider } from "context/HeaderContext";
 import SpotifyContext from "context/SpotifyContext";
-import { ContextMenuContextProvider } from "context/ContextMenuContext";
-import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
-import { withKnobs, text, boolean } from "@storybook/addon-knobs";
+import { ToastContextProvider } from "context/ToastContext";
+import UserContext from "context/UserContext";
 import { HeaderType } from "types/pageHeader";
+import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
 export default {
   title: "Components/EpisodeCard",
   component: EpisodeCard,

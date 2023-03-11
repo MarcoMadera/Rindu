@@ -1,17 +1,19 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import NowPlaying from "../components/NowPlaying";
-import { ToastContextProvider } from "context/ToastContext";
-import UserContext, { IUserContext } from "context/UserContext";
-import { HeaderContextProvider } from "context/HeaderContext";
-import SpotifyContext from "context/SpotifyContext";
-import { ContextMenuContextProvider } from "context/ContextMenuContext";
+
 import {
-  withKnobs,
-  text,
   boolean,
   optionsKnob as options,
+  text,
+  withKnobs,
 } from "@storybook/addon-knobs";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { NowPlaying } from "components";
+import { ContextMenuContextProvider } from "context/ContextMenuContext";
+import { HeaderContextProvider } from "context/HeaderContext";
+import SpotifyContext from "context/SpotifyContext";
+import { ToastContextProvider } from "context/ToastContext";
+import UserContext, { IUserContext } from "context/UserContext";
 import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
 
 export default {

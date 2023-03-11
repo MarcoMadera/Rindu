@@ -4,7 +4,7 @@ import {
   EXPIRE_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
 } from "utils/constants";
-import { makeCookie, takeCookie, eatCookie } from "utils/cookies";
+import { eatCookie, makeCookie, takeCookie } from "utils/cookies";
 
 const { setupCookies } = jest.requireActual<IUtilsMocks>(
   "./__mocks__/mocks.ts"

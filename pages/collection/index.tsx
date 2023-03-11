@@ -1,14 +1,13 @@
 import { ReactElement, useEffect } from "react";
-import { useRouter } from "next/router";
-import Head from "next/head";
-import { getTranslations, Page, Translations } from "utils/getTranslations";
-import { serverRedirect } from "utils/serverRedirect";
-import { NextApiResponse, NextApiRequest } from "next";
+
+import { NextApiRequest, NextApiResponse } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import NavigationTopBarExtraField from "components/NavigationTopBarExtraField";
-import useHeader from "hooks/useHeader";
-import useOnSmallScreen from "hooks/useOnSmallScreen";
-import ContentContainer from "components/ContentContainer";
+import Head from "next/head";
+import { useRouter } from "next/router";
+
+import { ContentContainer, NavigationTopBarExtraField } from "components";
+import { useHeader, useOnSmallScreen } from "hooks";
+import { getTranslations, Page, serverRedirect, Translations } from "utils";
 
 interface ICollectionProps {
   translations: Translations["collection"];

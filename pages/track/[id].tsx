@@ -1,35 +1,48 @@
-import Head from "next/head";
-import useHeader from "hooks/useHeader";
-import { useEffect, ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
+
 import { NextApiRequest, NextApiResponse } from "next";
-import useAuth from "hooks/useAuth";
-import { getAuth } from "utils/getAuth";
-import { serverRedirect } from "utils/serverRedirect";
-import { getTrack } from "utils/spotifyCalls/getTrack";
-import { getLyrics, LyricsAction } from "utils/getLyrics";
-import PlaylistTopBarExtraField from "components/PlaylistTopBarExtraField";
-import useSpotify from "hooks/useSpotify";
-import PageHeader from "components/PageHeader";
-import { PlayButton } from "components/PlayButton";
-import { checkTracksInLibrary } from "utils/spotifyCalls/checkTracksInLibrary";
-import { Heart } from "components/icons/Heart";
-import { removeTracksFromLibrary } from "utils/spotifyCalls/removeTracksFromLibrary";
-import { saveTracksToLibrary } from "utils/spotifyCalls/saveTracksToLibrary";
-import CardTrack, { CardType } from "components/CardTrack";
-import { getArtistTopTracks } from "utils/spotifyCalls/getArtistTopTracks";
-import { getArtistById } from "utils/spotifyCalls/getArtistById";
-import { HeaderType } from "types/pageHeader";
-import { getSiteUrl } from "utils/environment";
-import useToast from "hooks/useToast";
-import BigPill from "components/BigPill";
-import { within } from "utils/whitin";
-import ContentContainer from "components/ContentContainer";
-import Heading from "components/Heading";
-import useToggle from "hooks/useToggle";
-import { getTranslations, Page } from "utils/getTranslations";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import useTranslations from "hooks/useTranslations";
-import { templateReplace } from "utils/templateReplace";
+import Head from "next/head";
+
+import {
+  BigPill,
+  CardTrack,
+  ContentContainer,
+  Heading,
+  PageHeader,
+  PlayButton,
+  PlaylistTopBarExtraField,
+} from "components";
+import { CardType } from "components/CardTrack";
+import { Heart } from "components/icons";
+import {
+  useAuth,
+  useHeader,
+  useSpotify,
+  useToast,
+  useToggle,
+  useTranslations,
+} from "hooks";
+import { HeaderType } from "types/pageHeader";
+import {
+  getAuth,
+  getLyrics,
+  getSiteUrl,
+  getTranslations,
+  LyricsAction,
+  Page,
+  serverRedirect,
+  templateReplace,
+  within,
+} from "utils";
+import {
+  checkTracksInLibrary,
+  getArtistById,
+  getArtistTopTracks,
+  getTrack,
+  removeTracksFromLibrary,
+  saveTracksToLibrary,
+} from "utils/spotifyCalls";
 
 interface TrackPageProps {
   track: SpotifyApi.TrackObjectFull | null;

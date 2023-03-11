@@ -1,11 +1,12 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import CardTrack, { CardType } from "components/CardTrack";
-import { IUtilsMocks } from "types/mocks";
-import { AppProviders } from "./mocks";
-import useOnScreen from "hooks/useOnScreen";
-import { playCurrentTrack } from "utils/playCurrentTrack";
-import type { IToast } from "types/toast";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { NextRouter } from "next/router";
+
+import { AppProviders } from "./mocks";
+import CardTrack, { CardType } from "components/CardTrack";
+import { useOnScreen } from "hooks";
+import { IUtilsMocks } from "types/mocks";
+import type { IToast } from "types/toast";
+import { playCurrentTrack } from "utils";
 
 jest.mock<NextRouter>("next/router", () => ({
   ...jest.requireActual("next/router"),

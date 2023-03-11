@@ -1,7 +1,6 @@
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
-import { takeCookie } from "utils/cookies";
+import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export async function repeat(
+export default async function repeat(
   state: "track" | "context" | "off",
   deviceId: string,
   accessToken?: string

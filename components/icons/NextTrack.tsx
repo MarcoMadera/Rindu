@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 
-export function NextTrack({
+export default function NextTrack({
   fill,
   ...props
 }: {

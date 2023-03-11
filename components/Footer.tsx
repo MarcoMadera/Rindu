@@ -1,5 +1,6 @@
-import useTranslations from "hooks/useTranslations";
 import { ReactElement } from "react";
+
+import { useTranslations } from "hooks";
 
 export default function Footer(): ReactElement {
   const { translations } = useTranslations();

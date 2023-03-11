@@ -1,5 +1,4 @@
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
-import { takeCookie } from "utils/cookies";
+import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
 interface IgetRecommendations {
   seed_tracks: string[];
@@ -8,7 +7,7 @@ interface IgetRecommendations {
   accessToken?: string | null;
 }
 
-export async function getRecommendations({
+export default async function getRecommendations({
   seed_tracks,
   limit,
   market,

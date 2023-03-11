@@ -1,9 +1,10 @@
 import { NextPageContext } from "next";
+
 import {
   ACCESS_TOKEN_COOKIE,
-  REFRESH_TOKEN_COOKIE,
   EXPIRE_TOKEN_COOKIE,
-} from "./constants";
+  REFRESH_TOKEN_COOKIE,
+} from "utils";
 
 export function removeTokensFromCookieServer(
   serverResponse: NextPageContext["res"] | undefined

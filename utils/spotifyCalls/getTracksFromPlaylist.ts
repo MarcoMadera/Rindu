@@ -1,7 +1,6 @@
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
-import { takeCookie } from "utils/cookies";
+import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export async function getTracksFromPlaylist(
+export default async function getTracksFromPlaylist(
   playlistId: string,
   offset = 0,
   accessToken?: string | undefined,

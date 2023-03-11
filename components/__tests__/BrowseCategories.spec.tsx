@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+
 import BrowseCategories from "components/BrowseCategories";
 import { IUtilsMocks } from "types/mocks";
 

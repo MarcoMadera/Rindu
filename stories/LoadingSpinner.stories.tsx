@@ -1,6 +1,8 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { LoadingSpinner } from "../components/LoadingSpinner";
+
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { LoadingSpinner } from "components";
 
 export default {
   title: "Components/LoadingSpinner",

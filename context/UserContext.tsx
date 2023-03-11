@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import {
   createContext,
   Dispatch,
@@ -8,6 +7,8 @@ import {
   useEffect,
   useState,
 } from "react";
+
+import { useRouter } from "next/router";
 
 export interface IUserContext {
   isLogin: boolean;
