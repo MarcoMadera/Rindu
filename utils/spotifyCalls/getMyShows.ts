@@ -1,4 +1,4 @@
-export default async function getMyShows(
+export async function getMyShows(
   offset: number,
   accessToken: string
 ): Promise<SpotifyApi.UsersSavedShowsResponse | null> {

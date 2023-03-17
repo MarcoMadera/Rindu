@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactElement } from "react";
+import { PropsWithChildren, ReactElement, useMemo } from "react";
 
 import { ContextMenu } from "components";
 import ContextMenuContext from "context/ContextMenuContext";
@@ -30,73 +30,70 @@ export const AppProviders = ({
   children,
   value,
 }: PropsWithChildren<Partial<ContextValues>>): ReactElement => {
+  const toastValue = useMemo(() => ({ toasts: [], ...value }), [value]);
+  const userValue = useMemo(
+    () => ({ user, accessToken, isLogin: true, ...value }),
+    [value]
+  );
+  const headerValue = useMemo(
+    () => ({
+      alwaysDisplayColor: true,
+      headerColor: "#ccc",
+      element: null,
+      disableBackground: true,
+      disableOpacityChange: true,
+      displayOnFixed: true,
+      ...value,
+    }),
+    [value]
+  );
+  const spotifyValue = useMemo(
+    () => ({
+      deviceId: "deviceId",
+      playlists: [simplePlaylist],
+      allTracks: [trackFull],
+      currentlyPlaying: track,
+      isPlaying: false,
+      currentlyPlayingDuration: 4000,
+      currentlyPlayingPosition: 30,
+      isPip: false,
+      isShowingSideBarImg: true,
+      lastVolume: 0.5,
+      pageDetails: {},
+      playedSource: "",
+      totalPlaylists: 1,
+      player: {
+        disconnect: () => {
+          console.log("disconnect");
+        },
+      },
+      ...value,
+    }),
+    [value]
+  );
+  const contextMenuValue = useMemo(
+    () => ({
+      contextMenuData: {
+        data: track,
+        position: { x: 0, y: 0 },
+        type: "cardTrack",
+      },
+      ...value,
+    }),
+    [value]
+  );
+
   return (
     <div id="root">
       <div id="tracksModal" />
       <div id="toast" />
       <div id="contextMenu" />
-      <ToastContext.Provider
-        value={{ toasts: [], ...value } as ToastContextProviderProps}
-      >
-        <UserContext.Provider
-          value={
-            {
-              user: user,
-              accessToken,
-              isLogin: true,
-              ...value,
-            } as IUserContext
-          }
-        >
-          <HeaderContext.Provider
-            value={
-              {
-                alwaysDisplayColor: true,
-                headerColor: "#ccc",
-                element: null,
-                disableBackground: true,
-                disableOpacityChange: true,
-                displayOnFixed: true,
-                ...value,
-              } as IHeaderContext
-            }
-          >
-            <SpotifyContext.Provider
-              value={
-                {
-                  deviceId: "deviceId",
-                  playlists: [simplePlaylist],
-                  allTracks: [trackFull],
-                  currentlyPlaying: track,
-                  isPlaying: false,
-                  currentlyPlayingDuration: 4000,
-                  currentlyPlayingPosition: 30,
-                  isPip: false,
-                  isShowingSideBarImg: true,
-                  lastVolume: 0.5,
-                  pageDetails: {},
-                  playedSource: "",
-                  totalPlaylists: 1,
-                  player: {
-                    disconnect: () => {
-                      console.log("disconnect");
-                    },
-                  },
-                  ...value,
-                } as ISpotifyContext
-              }
-            >
+      <ToastContext.Provider value={toastValue as ToastContextProviderProps}>
+        <UserContext.Provider value={userValue as IUserContext}>
+          <HeaderContext.Provider value={headerValue as IHeaderContext}>
+            <SpotifyContext.Provider value={spotifyValue as ISpotifyContext}>
               <ContextMenuContext.Provider
-                value={
-                  {
-                    contextMenuData: {
-                      data: track,
-                      position: { x: 0, y: 0 },
-                      type: "cardTrack",
-                    },
-                    ...value,
-                  } as ContextMenuContextProviderProps
-                }
+                value={contextMenuValue as ContextMenuContextProviderProps}
               >
                 <ContextMenu />
                 {children}

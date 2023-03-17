@@ -17,8 +17,8 @@ interface Config {
   isSingleTrack?: boolean;
   position?: number;
   setAccessToken: Dispatch<SetStateAction<string | undefined>>;
-  uri?: string | undefined;
-  uris?: string[] | undefined;
+  uri?: string;
+  uris?: string[];
 }
 
 export async function playCurrentTrack(

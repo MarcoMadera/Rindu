@@ -12,7 +12,7 @@ import {
 } from "utils";
 import { refreshAccessToken } from "utils/spotifyCalls";
 
-export default function useRefreshAccessToken(): void {
+export function useRefreshAccessToken(): void {
   const router = useRouter();
   const { user, setAccessToken } = useAuth();
 

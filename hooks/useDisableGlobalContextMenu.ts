@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export default function useDisableGlobalContextMenu(): void {
+export function useDisableGlobalContextMenu(): void {
   useEffect(() => {
     window.addEventListener("contextmenu", (e) => e.preventDefault());
 

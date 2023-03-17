@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function getSingleCategoryInfo(
+export async function getSingleCategoryInfo(
   category: string,
   accessToken?: string,
   cookies?: string

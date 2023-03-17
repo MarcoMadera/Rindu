@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 
-import { Heading, SingleTrackCard } from "components";
+import { Grid, Heading, SingleTrackCard } from "components";
 
 interface TopTracksProps {
   topTracks: SpotifyApi.UsersTopTracksResponse;
@@ -14,24 +14,13 @@ export default function TopTracks({
   return (
     <>
       <Heading number={2}>{heading}</Heading>
-      <section>
+      <Grid minWidthItem="max(270px, 25%)" marginBottom="50px">
         {topTracks &&
           topTracks.items?.map((track, i) => {
             if (i >= 9) return null;
             return <SingleTrackCard key={track.id} track={track} />;
           })}
-      </section>
-      <style jsx>{`
-        section {
-          grid-gap: 16px 24px;
-          display: grid;
-          grid-template: auto/repeat(auto-fill, minmax(max(270px, 25%), 1fr));
-          grid-gap: 24px;
-          margin: 20px 0 50px 0;
-          justify-content: space-between;
-          transition: 400ms ease-in;
-        }
-      `}</style>
+      </Grid>
     </>
   );
 }

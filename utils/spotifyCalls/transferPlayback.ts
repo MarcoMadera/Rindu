@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function transferPlayback(
+export async function transferPlayback(
   device_ids: string[],
   options:
     | { play?: boolean; accessToken?: string; cookies?: string }

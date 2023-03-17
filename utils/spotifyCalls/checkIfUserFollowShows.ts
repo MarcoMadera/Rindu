@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function checkIfUserFollowShows(
+export async function checkIfUserFollowShows(
   showIds?: string[],
   accessToken?: string
 ): Promise<boolean[] | null> {

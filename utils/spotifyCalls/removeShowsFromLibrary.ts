@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function removeShowsFromLibrary(
+export async function removeShowsFromLibrary(
   showIds: string[],
   accessToken?: string
 ): Promise<boolean> {

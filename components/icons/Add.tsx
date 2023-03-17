@@ -4,7 +4,7 @@ import { useLottie } from "lottie-react";
 
 import AddAnimation from "animations/add-circle.json";
 
-export default function Add(
+export function Add(
   props: SVGProps<SVGSVGElement> & {
     handleClick?: () => Promise<boolean>;
     isAdded?: boolean;

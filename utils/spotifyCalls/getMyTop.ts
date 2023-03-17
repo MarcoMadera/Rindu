@@ -5,7 +5,7 @@ export enum TopType {
   ARTISTS = "artists",
 }
 
-export default async function getMyTop<T extends TopType>(
+export async function getMyTop<T extends TopType>(
   type: TopType | T,
   accessToken?: string | null,
   limit?: number,

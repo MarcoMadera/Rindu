@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function saveShowsToLibrary(
+export async function saveShowsToLibrary(
   showIds: string[] | string,
   accessToken?: string
 ): Promise<boolean> {

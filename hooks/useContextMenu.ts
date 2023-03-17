@@ -3,7 +3,7 @@ import { useCallback, useContext } from "react";
 import ContextMenuContext from "context/ContextMenuContext";
 import type { UseContextMenu } from "types/contextMenu";
 
-export default function useContextMenu(): UseContextMenu {
+export function useContextMenu(): UseContextMenu {
   const context = useContext(ContextMenuContext);
 
   if (context === undefined) {

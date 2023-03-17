@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function checkEpisodesInLibrary(
+export async function checkEpisodesInLibrary(
   ids: string[],
   accessToken?: string,
   cookies?: string

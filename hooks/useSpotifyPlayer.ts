@@ -20,7 +20,7 @@ export interface AudioPlayer extends HTMLAudioElement {
   sliderBusy: boolean;
 }
 
-export default function useSpotifyPlayer({ name }: { name: string }): {
+export function useSpotifyPlayer({ name }: { name: string }): {
   deviceId: string | undefined;
   player: MutableRefObject<Spotify.Player | undefined>;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;

@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { DisplayInFullScreen, ITrack } from "types/spotify";
 
-export default function useShortCuts({
+export function useShortCuts({
   ignoreShortcuts,
   setDisplayInFullScreen,
   player,

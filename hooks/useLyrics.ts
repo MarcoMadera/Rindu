@@ -10,7 +10,7 @@ import {
   within,
 } from "utils";
 
-export default function useLyrics({
+export function useLyrics({
   artist,
   title,
   trackId,

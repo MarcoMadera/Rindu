@@ -5,7 +5,7 @@ import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { ITrack } from "types/spotify";
 import { callPictureInPicture } from "utils";
 
-export default function useMediaSession({
+export function useMediaSession({
   currentlyPlaying,
   currentlyPlayingPosition,
   player,

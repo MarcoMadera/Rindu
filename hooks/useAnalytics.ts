@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { dataToSendType, Fields, UseAnalyticsParams } from "types/analytics";
 import { makeCookie, takeCookie } from "utils";
 
-export default function useAnalytics(): UseAnalyticsParams {
+export function useAnalytics(): UseAnalyticsParams {
   const trackWithGoogleAnalytics: UseAnalyticsParams["trackWithGoogleAnalytics"] =
     useCallback((hitType = "pageview", fields: Fields) => {
       function addAnalyticsCookie() {

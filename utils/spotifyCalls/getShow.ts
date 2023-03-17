@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function getShow(
+export async function getShow(
   id: string,
   accessToken: string | undefined
 ): Promise<SpotifyApi.ShowObject | null> {

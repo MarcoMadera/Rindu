@@ -1,4 +1,4 @@
-export default async function getUserPlaylists(
+export async function getUserPlaylists(
   accessToken: string,
   offset = 0,
   limit = 50

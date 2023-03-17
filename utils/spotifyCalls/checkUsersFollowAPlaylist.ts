@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function checkUsersFollowAPlaylist(
+export async function checkUsersFollowAPlaylist(
   userIds?: string[],
   playlistId?: string,
   accessToken?: string

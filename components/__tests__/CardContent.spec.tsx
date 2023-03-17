@@ -4,13 +4,34 @@ import { NextRouter, useRouter } from "next/router";
 import { CardContent } from "components";
 import { CardType, ICardContent } from "components/CardContent";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
-import useOnScreen from "hooks/useOnScreen";
+import { ToastContextProvider } from "context/ToastContext";
+import { useOnScreen } from "hooks";
 
 jest.mock<NextRouter>("next/router", () => ({
   ...jest.requireActual("next/router"),
   useRouter: jest.fn(),
 }));
-jest.mock("hooks/useOnScreen");
+
+jest.mock<typeof import("hooks")>("hooks", () => ({
+  ...jest.requireActual("hooks"),
+  useOnScreen: jest.fn(),
+  useContextMenu: jest.fn().mockReturnValue({
+    contextMenuData: {
+      position: { x: 0, y: 0 },
+      data: { id: "id", type: "track" },
+      type: "cardContent",
+    },
+    removeContextMenu: jest.fn(),
+    addContextMenu: jest.fn(),
+  }),
+  useSpotify: jest.fn().mockReturnValue({
+    deviceId: "deviceId",
+    playlists: [],
+  }),
+  useAuth: jest.fn().mockReturnValue({
+    accessToken: "accessToken",
+  }),
+}));
 
 describe("cardContent", () => {
   const defaultProps: ICardContent = {
@@ -34,12 +55,17 @@ describe("cardContent", () => {
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
     const contextMenu = document.createElement("div");
     contextMenu.setAttribute("id", "contextMenu");
+    const toastDiv = document.createElement("div");
+    toastDiv.setAttribute("id", "toast");
     document.body.appendChild(contextMenu);
+    document.body.appendChild(toastDiv);
 
     return render(
-      <ContextMenuContextProvider>
-        <CardContent {...defaultProps} {...props} />
-      </ContextMenuContextProvider>
+      <ToastContextProvider>
+        <ContextMenuContextProvider>
+          <CardContent {...defaultProps} {...props} />
+        </ContextMenuContextProvider>
+      </ToastContextProvider>
     );
   };
 

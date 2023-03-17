@@ -3,6 +3,7 @@ import {
   memo,
   MutableRefObject,
   ReactElement,
+  useId,
   useRef,
   useState,
 } from "react";
@@ -158,10 +159,13 @@ function CardTrack({
     });
   }
 
+  const id = useId();
+
   if (!track) return null;
 
   return (
     <div
+      key={`${track.id || ""}-${id}`}
       style={style}
       className="trackItem"
       onClick={() => {

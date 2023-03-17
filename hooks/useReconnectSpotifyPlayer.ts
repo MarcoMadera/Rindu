@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { useAuth } from "hooks";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 
-export default function useReconnectSpotifyPlayer({
+export function useReconnectSpotifyPlayer({
   reconnect,
   player,
   setReconnectionError,

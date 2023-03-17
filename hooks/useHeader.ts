@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 
 import HeaderContext, { IHeaderContext } from "context/HeaderContext";
 
-export default function useHeader(
+export function useHeader(
   options?: Partial<{
     showOnFixed: boolean;
     alwaysDisplayColor: boolean;

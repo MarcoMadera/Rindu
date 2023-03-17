@@ -1,11 +1,7 @@
+import { Follow_type } from "./follow";
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export enum Follow_type {
-  artist = "artist",
-  user = "user",
-}
-
-export default async function unFollow(
+export async function unFollow(
   type: Follow_type,
   id?: string,
   accessToken?: string,

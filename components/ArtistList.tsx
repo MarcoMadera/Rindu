@@ -3,7 +3,7 @@ import { Fragment, ReactElement, useRef } from "react";
 import Link from "next/link";
 
 import { useOnScreen } from "hooks";
-import { ITrack } from "types/spotify";
+import { ITrack, ITrackArtist } from "types/spotify";
 import { getIdFromUri } from "utils";
 
 interface IAritstListProps {
@@ -11,6 +11,9 @@ interface IAritstListProps {
   maxArtistsToShow?: number;
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
+
+const getArtistId = (artist: ITrackArtist) =>
+  artist.id || getIdFromUri(artist.uri, "id");
 
 export default function ArtistList({
   artists,
@@ -20,26 +23,25 @@ export default function ArtistList({
   const artistsRef = useRef<HTMLAnchorElement>(null);
   const isVisible = useOnScreen(artistsRef);
   if (!artists) return null;
+  const { length } = artists || [];
 
   return (
     <span>
       {artists.map((artist, i) => {
-        if (maxArtistsToShow && i > maxArtistsToShow) return null;
-        const id = artist.id || getIdFromUri(artist.uri, "id");
-        if (!id) {
-          if (artist.name) {
-            return (
-              <span key={artist.name} ref={artistsRef} className="ArtistList">
-                {artist.name}
-                {i !== (artists?.length || 0) - 1 ? ", " : ""}
-              </span>
-            );
-          }
+        const id = getArtistId(artist);
+        if ((maxArtistsToShow && i > maxArtistsToShow) || !id) return null;
 
-          return null;
+        if (!id && artist.name) {
+          return (
+            <span key={artist.name} ref={artistsRef} className="ArtistList">
+              {artist.name}
+              {i !== length - 1 ? ", " : ""}
+            </span>
+          );
         }
+
         return (
-          <Fragment key={artist.id || artist.uri}>
+          <Fragment key={id}>
             <Link
               href={`/${
                 artist.type ?? getIdFromUri(artist.uri, "type") ?? "artist"
@@ -55,7 +57,7 @@ export default function ArtistList({
             >
               {artist.name}
             </Link>
-            {i !== (artists?.length && artists?.length - 1) ? ", " : null}
+            {i !== length - 1 ? ", " : null}
           </Fragment>
         );
       })}

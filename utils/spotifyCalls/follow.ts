@@ -5,7 +5,7 @@ export enum Follow_type {
   user = "user",
 }
 
-export default async function follow(
+export async function follow(
   type: Follow_type,
   id?: string,
   accessToken?: string,

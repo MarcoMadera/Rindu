@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function getCategoryPlaylists(
+export async function getCategoryPlaylists(
   category: string,
   country?: string,
   accessToken?: string,

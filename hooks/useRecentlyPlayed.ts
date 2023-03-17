@@ -4,7 +4,7 @@ import { useAuth } from "hooks";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { ITrack } from "types/spotify";
 
-export default function useRecentlyPlayed({
+export function useRecentlyPlayed({
   setRecentlyPlayed,
   currentlyPlaying,
   playedSource,

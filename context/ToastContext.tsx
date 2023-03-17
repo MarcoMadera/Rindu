@@ -7,7 +7,8 @@ import {
   useState,
 } from "react";
 
-import { Toast } from "components";
+import dynamic from "next/dynamic";
+
 import type { IToast } from "types/toast";
 
 const ToastContext = createContext<ToastContextProviderProps | undefined>(
@@ -18,6 +19,11 @@ export interface ToastContextProviderProps {
   toasts: IToast[];
   setToasts: Dispatch<SetStateAction<ToastContextProviderProps["toasts"]>>;
 }
+
+// dinamic import the Toast component
+const Toast = dynamic(() => import("components/Toast"), {
+  ssr: false,
+});
 
 export function ToastContextProvider({
   children,

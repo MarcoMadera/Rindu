@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useState } from "react";
 
-export default function useOnScreen(
+export function useOnScreen(
   ref: RefObject<HTMLElement>,
   rootMargin?: string
 ): boolean {

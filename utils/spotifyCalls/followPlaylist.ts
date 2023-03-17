@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function followPlaylist(
+export async function followPlaylist(
   id?: string,
   accessToken?: string
 ): Promise<boolean | null> {

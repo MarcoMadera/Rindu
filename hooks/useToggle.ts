@@ -7,9 +7,7 @@ export interface IUseToggleHandlers {
   reset: () => void;
 }
 
-export default function useToggle(
-  initialValue = false
-): [boolean, IUseToggleHandlers] {
+export function useToggle(initialValue = false): [boolean, IUseToggleHandlers] {
   const [value, setValue] = useState(initialValue);
 
   const handlers: IUseToggleHandlers = useMemo(

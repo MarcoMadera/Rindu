@@ -3,7 +3,7 @@ import { ReactPortal, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { ToastCard } from "components";
-import { useToast } from "hooks";
+import { useToast } from "hooks/useToast";
 
 export default function Toast(): ReactPortal | null {
   const [targetNode, setTargetNode] = useState<Element | null>();

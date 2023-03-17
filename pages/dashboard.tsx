@@ -374,7 +374,7 @@ export async function getServerSideProps({
   req: NextApiRequest;
   query: NextParsedUrlQuery & { code?: string };
 }): Promise<{
-  props: DashboardProps;
+  props: Partial<DashboardProps>;
 }> {
   const country = (query.country || "US") as string;
   const translations = getTranslations(country, Page.Dashboard);
@@ -393,6 +393,11 @@ export async function getServerSideProps({
     }
     if (!tokens.access_token) {
       serverRedirect(res, "/");
+      return {
+        props: {
+          translations,
+        },
+      };
     }
 
     const expireCookieDate = new Date();
@@ -579,7 +584,6 @@ export async function getServerSideProps({
       if (!isDuplicate) {
         thisPlaylistsResult.push(playlists[0]);
       }
-      return;
     }
   });
 

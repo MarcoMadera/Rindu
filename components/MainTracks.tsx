@@ -5,7 +5,6 @@ import { CardType } from "components/CardTrack";
 import { useAuth } from "hooks";
 import { ITrack } from "types/spotify";
 import { divideArray, isCorruptedTrack } from "utils";
-
 interface MainTracksProps {
   title: string;
   tracksRecommendations: ITrack[];
@@ -25,11 +24,16 @@ export default function MainTracks({
       corruptedTrack: isCorruptedTrack(track),
     };
   });
+
   return (
     <Carousel title={title} gap={24}>
       {divideArray(tracksRecommendations, 5).map((tracks, i) => {
+        const tracksId = tracks
+          .slice(0, i)
+          .map((track) => track.id)
+          .join("-");
         return (
-          <div className="tracks" key={i}>
+          <div className="tracks" key={`${tracksId}-${i}}`}>
             <FirstTrackContainer
               track={tracks?.[0]}
               preview={tracks?.[0]?.preview_url}
@@ -52,7 +56,7 @@ export default function MainTracks({
                     isTrackInLibrary={tracksInLibrary?.[index] ?? false}
                     playlistUri=""
                     track={track}
-                    key={track.id}
+                    key={`${tracksId}-${index}-${chunkIndex}}`}
                     type={CardType.presentation}
                     position={index}
                     isSingleTrack

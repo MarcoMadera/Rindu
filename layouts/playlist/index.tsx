@@ -111,7 +111,6 @@ const Playlist: NextPage<
         .then((e) => {
           if (e?.context.uri === pageDetails?.uri) {
             setPlaylistPlayingId(pageDetails?.id);
-            return;
           }
         })
         .catch((err) => {

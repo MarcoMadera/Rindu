@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function getAvailableDevices(
+export async function getAvailableDevices(
   accessToken?: string,
   cookies?: string
 ): Promise<SpotifyApi.UserDevicesResponse | null> {
