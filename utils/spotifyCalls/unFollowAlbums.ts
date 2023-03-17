@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function unFollowAlbums(
+export async function unFollowAlbums(
   ids?: string[],
   accessToken?: string
 ): Promise<boolean | null> {

@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function addToQueue(
+export async function addToQueue(
   uri: string,
   device_id: string,
   accessToken?: string,

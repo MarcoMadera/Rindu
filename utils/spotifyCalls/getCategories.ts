@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function getCategories(
+export async function getCategories(
   country: string,
   limit?: number,
   accessToken?: string,

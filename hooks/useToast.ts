@@ -1,11 +1,9 @@
 import { useCallback, useContext, useId } from "react";
 
-import { uniqueId } from "lodash";
-
 import ToastContext from "context/ToastContext";
 import type { IToast, UseToast } from "types/toast";
 
-export default function useToast(): UseToast {
+export function useToast(): UseToast {
   const context = useContext(ToastContext);
   const id = useId();
 
@@ -36,7 +34,7 @@ export default function useToast(): UseToast {
 
       const newToast: IToast = {
         ...toast,
-        id: uniqueId(id),
+        id,
         displayTime,
         timeOut: setTimeout(() => {
           removeToast(newToast.id);

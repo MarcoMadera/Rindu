@@ -23,9 +23,22 @@ const { track } = jest.requireActual<IUtilsMocks>(
   "utils/__tests__/__mocks__/mocks.ts"
 );
 jest.mock("hooks/useOnScreen");
-jest.mock("utils/playCurrentTrack");
+jest.mock<typeof import("utils")>("utils", () => ({
+  ...jest.requireActual<typeof import("utils")>("utils"),
+  playCurrentTrack: jest.fn(),
+}));
 
 describe("cardTrack", () => {
+  // eslint-disable-next-line jest/require-hook
+  let toasts: IToast[] = [];
+  const setToasts = (toastArray: IToast[] | ((toasts: IToast[]) => void)) => {
+    if (typeof toastArray === "function") {
+      toastArray(toasts);
+    } else {
+      toasts = toastArray;
+    }
+  };
+
   const onClickAdd = jest.fn();
   it("renders", () => {
     expect.assertions(1);
@@ -90,20 +103,11 @@ describe("cardTrack", () => {
     expect.assertions(4);
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
     (playCurrentTrack as jest.Mock<Promise<number>>).mockResolvedValue(404);
-    let toasts: IToast[] = [];
     const player = {
       disconnect: jest.fn(),
       activateElement: jest.fn().mockResolvedValue(200),
     } as unknown as Spotify.Player;
     const setReconnectionError = jest.fn();
-    const setToasts = (toastArray: IToast[] | ((toasts: IToast[]) => void)) => {
-      // eslint-disable-next-line jest/no-conditional-in-test
-      if (typeof toastArray === "function") {
-        toastArray(toasts);
-      } else {
-        toasts = toastArray;
-      }
-    };
 
     render(
       <AppProviders value={{ toasts, setToasts, player, setReconnectionError }}>
@@ -141,16 +145,7 @@ describe("cardTrack", () => {
     expect.assertions(2);
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
     (playCurrentTrack as jest.Mock<Promise<number>>).mockResolvedValue(400);
-    let toasts: IToast[] = [];
     const setReconnectionError = jest.fn();
-    const setToasts = (toastArray: IToast[] | ((toasts: IToast[]) => void)) => {
-      // eslint-disable-next-line jest/no-conditional-in-test
-      if (typeof toastArray === "function") {
-        toastArray(toasts);
-      } else {
-        toasts = toastArray;
-      }
-    };
     const player = {
       activateElement: jest.fn().mockResolvedValue(200),
     } as unknown as Spotify.Player;
@@ -188,16 +183,7 @@ describe("cardTrack", () => {
   it("should add toast with error if is corrupted track", () => {
     expect.assertions(1);
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
-    let toasts: IToast[] = [];
     const setReconnectionError = jest.fn();
-    const setToasts = (toastArray: IToast[] | ((toasts: IToast[]) => void)) => {
-      // eslint-disable-next-line jest/no-conditional-in-test
-      if (typeof toastArray === "function") {
-        toastArray(toasts);
-      } else {
-        toasts = toastArray;
-      }
-    };
 
     render(
       <AppProviders value={{ toasts, setToasts, setReconnectionError }}>
@@ -230,16 +216,7 @@ describe("cardTrack", () => {
   it("should add toast with info no content available", () => {
     expect.assertions(1);
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
-    let toasts: IToast[] = [];
     const setReconnectionError = jest.fn();
-    const setToasts = (toastArray: IToast[] | ((toasts: IToast[]) => void)) => {
-      // eslint-disable-next-line jest/no-conditional-in-test
-      if (typeof toastArray === "function") {
-        toastArray(toasts);
-      } else {
-        toasts = toastArray;
-      }
-    };
 
     render(
       <AppProviders value={{ toasts, setToasts, setReconnectionError }}>

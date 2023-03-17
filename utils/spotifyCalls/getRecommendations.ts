@@ -7,7 +7,7 @@ interface IgetRecommendations {
   accessToken?: string | null;
 }
 
-export default async function getRecommendations({
+export async function getRecommendations({
   seed_tracks,
   limit,
   market,

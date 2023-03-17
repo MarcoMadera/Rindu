@@ -1,38 +1,38 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect } from "react";
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 import {
   CardTrack,
-  Carousel,
+  CarouselCards,
   ContentContainer,
+  FollowButton,
   Heading,
   PageHeader,
   PlayButton,
   PlaylistTopBarExtraField,
-  PresentationCard,
-  SubTitle,
+  SetList,
 } from "components";
 import { CardType } from "components/CardContent";
 import { CardType as TrackCardType } from "components/CardTrack";
+import TextToggleButton from "components/TextToggleButton";
 import {
   useAnalytics,
   useAuth,
   useHeader,
   useSpotify,
+  useToggle,
   useTranslations,
 } from "hooks";
 import { HeaderType } from "types/pageHeader";
 import {
   Artist,
-  conjuction,
   fullFilledValue,
   getArtistInfo,
   getAuth,
-  getMonth,
+  getCarouselItems,
   getSetLists,
   getSiteUrl,
   getTranslations,
@@ -41,13 +41,10 @@ import {
   SetLists,
 } from "utils";
 import {
-  checkIfUserFollowArtistUser,
-  follow,
   getArtistAlbums,
   getArtistById,
   getArtistTopTracks,
   getRelatedArtists,
-  unFollow,
 } from "utils/spotifyCalls";
 import { Follow_type } from "utils/spotifyCalls/follow";
 import { Include_groups } from "utils/spotifyCalls/getArtistAlbums";
@@ -90,9 +87,8 @@ export default function ArtistPage({
   });
   const router = useRouter();
   const { setPageDetails, setAllTracks, allTracks } = useSpotify();
-  const [showMoreTopTracks, setShowMoreTopTracks] = useState(false);
-  const [isFollowingThisArtist, setIsFollowingThisArtist] = useState(false);
-  const [showMoreAbout, setShowMoreAbout] = useState(false);
+  const [showMoreTopTracks, setShowMoreTopTracks] = useToggle();
+  const [showMoreAbout, setShowMoreAbout] = useToggle();
   const { translations } = useTranslations();
 
   useEffect(() => {
@@ -113,16 +109,6 @@ export default function ArtistPage({
     trackWithGoogleAnalytics,
     user,
   ]);
-
-  useEffect(() => {
-    checkIfUserFollowArtistUser(
-      Follow_type.artist,
-      currentArtist?.id,
-      accessToken
-    ).then((res) => {
-      setIsFollowingThisArtist(res);
-    });
-  }, [accessToken, currentArtist?.id, router]);
 
   useEffect(() => {
     setElement(() => <PlaylistTopBarExtraField uri={currentArtist?.uri} />);
@@ -178,6 +164,34 @@ export default function ArtistPage({
 
   const artistBiography = artistInfo?.bio?.content;
 
+  const carousels = [
+    {
+      type: CardType.ALBUM,
+      title: translations.albumsCarouselTitle,
+      items: albums,
+    },
+    {
+      type: CardType.ALBUM,
+      title: translations.singleAlbumsCarouselTitle,
+      items: singleAlbums,
+    },
+    {
+      type: CardType.ALBUM,
+      title: translations.appearAlbumsCarouselTitle,
+      items: appearAlbums,
+    },
+    {
+      type: CardType.ALBUM,
+      title: translations.compilationsCarouselTitle,
+      items: compilations,
+    },
+    {
+      type: CardType.ARTIST,
+      title: translations.relatedArtistsCarouselTitle,
+      items: relatedArtists,
+    },
+  ];
+
   return (
     <ContentContainer hasPageHeader>
       <PageHeader
@@ -202,38 +216,7 @@ export default function ArtistPage({
           centerSize={28}
           allTracks={allTracks}
         />
-        <div className="info button-inof">
-          <button
-            type="button"
-            className="follow-button"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (isFollowingThisArtist) {
-                unFollow(
-                  Follow_type.artist,
-                  currentArtist?.id,
-                  accessToken
-                ).then((res) => {
-                  if (res) {
-                    setIsFollowingThisArtist(false);
-                  }
-                });
-              } else {
-                follow(Follow_type.artist, currentArtist?.id, accessToken).then(
-                  (res) => {
-                    if (res) {
-                      setIsFollowingThisArtist(true);
-                    }
-                  }
-                );
-              }
-            }}
-          >
-            {isFollowingThisArtist
-              ? translations.following
-              : translations.follow}
-          </button>
-        </div>
+        <FollowButton type={Follow_type.artist} id={currentArtist?.id} />
       </div>
       <div className="content">
         {topTracks?.tracks && topTracks?.tracks?.length > 0 ? (
@@ -241,202 +224,47 @@ export default function ArtistPage({
         ) : null}
         <div className="popular-content">
           <div className="topTracks">
-            <div>
-              {topTracks?.tracks &&
-                topTracks?.tracks?.map((track, i) => {
-                  const maxToShow = showMoreTopTracks ? 10 : 5;
-                  if (i >= maxToShow) {
-                    return null;
-                  }
-                  return (
-                    <CardTrack
-                      accessToken={accessToken ?? ""}
-                      isTrackInLibrary={false}
-                      playlistUri=""
-                      track={track}
-                      key={track.id}
-                      isSingleTrack
-                      position={i}
-                      type={TrackCardType.playlist}
-                    />
-                  );
-                })}
-            </div>
-            <button
-              type="button"
-              className="show-more"
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowMoreTopTracks((prev) => !prev);
-              }}
-            >
-              {showMoreTopTracks
-                ? translations.showLess
-                : translations.showMore}
-            </button>
+            {topTracks?.tracks &&
+              topTracks?.tracks?.map((track, i) => {
+                const maxToShow = showMoreTopTracks ? 10 : 5;
+                if (i >= maxToShow) {
+                  return null;
+                }
+                return (
+                  <CardTrack
+                    accessToken={accessToken ?? ""}
+                    isTrackInLibrary={false}
+                    playlistUri=""
+                    track={track}
+                    key={track.id}
+                    isSingleTrack
+                    position={i}
+                    type={TrackCardType.playlist}
+                  />
+                );
+              })}
+            <TextToggleButton
+              isToggle={showMoreTopTracks}
+              toggleHandlers={setShowMoreTopTracks}
+              activeText={translations.showLess}
+              inactiveText={translations.showMore}
+            />
           </div>
-          {currentArtist?.id &&
-          setLists?.setlist &&
-          setLists?.setlist?.length > 0 ? (
-            <div className="set-list">
-              <div className="set-list-content">
-                <Heading number={2}>{translations.concerts}</Heading>
-                {setLists?.setlist?.map((set, i) => {
-                  if (i > 4) return null;
-                  const date = set.eventDate.split("-");
-
-                  const year = date[2];
-                  const month = date[1];
-                  const day = date[0];
-
-                  return (
-                    <Link
-                      href={`/concert/${currentArtist.id}.${set.id}`}
-                      key={set.id}
-                      className="set"
-                    >
-                      <div className="set-date">
-                        <span className="month">
-                          {getMonth(Number(month) - 1)}
-                        </span>
-                        <span className="day">{day}</span>
-                        <span className="year">{year}</span>
-                      </div>
-                      <div className="set-info">
-                        <Heading number={5} as="h4">
-                          {set.venue?.name}
-                        </Heading>
-                        <span>
-                          {conjuction([
-                            set.venue?.city.name,
-                            set.venue?.city.state,
-                            set.venue?.city.country.code,
-                          ])}
-                        </span>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          ) : null}
+          <SetList setLists={setLists} artistId={currentArtist?.id} />
         </div>
-        {albums && albums.items?.length > 0 ? (
-          <Carousel title={translations.albumsCarouselTitle} gap={24}>
-            {albums.items?.map((item) => {
-              if (!item) return null;
-              const { images, name, id, artists, release_date, album_type } =
-                item;
-              return (
-                <PresentationCard
-                  type={CardType.ALBUM}
-                  key={id}
-                  images={images}
-                  title={name}
-                  subTitle={
-                    <SubTitle
-                      artists={artists}
-                      albumType={album_type}
-                      releaseYear={release_date}
-                    />
-                  }
-                  id={id}
-                />
-              );
-            })}
-          </Carousel>
-        ) : null}
-        {singleAlbums && singleAlbums.items?.length > 0 ? (
-          <Carousel title={translations.singleAlbumsCarouselTitle} gap={24}>
-            {singleAlbums.items?.map((item) => {
-              if (!item) return null;
-              const { images, name, id, artists, release_date, album_type } =
-                item;
-              return (
-                <PresentationCard
-                  type={CardType.ALBUM}
-                  key={id}
-                  images={images}
-                  title={name}
-                  subTitle={
-                    <SubTitle
-                      artists={artists}
-                      albumType={album_type}
-                      releaseYear={release_date}
-                    />
-                  }
-                  id={id}
-                />
-              );
-            })}
-          </Carousel>
-        ) : null}
-        {appearAlbums && appearAlbums.items?.length > 0 ? (
-          <Carousel title={translations.appearAlbumsCarouselTitle} gap={24}>
-            {appearAlbums.items?.map(
-              ({ images, name, id, artists, release_date, album_type }) => {
-                return (
-                  <PresentationCard
-                    type={CardType.ALBUM}
-                    key={id}
-                    images={images}
-                    title={name}
-                    subTitle={
-                      <SubTitle
-                        artists={artists}
-                        albumType={album_type}
-                        releaseYear={release_date}
-                      />
-                    }
-                    id={id}
-                  />
-                );
-              }
-            )}
-          </Carousel>
-        ) : null}
-        {compilations && compilations.items?.length > 0 ? (
-          <Carousel title={translations.compilationsCarouselTitle} gap={24}>
-            {compilations.items?.map(
-              ({ images, name, id, artists, release_date, album_type }) => {
-                return (
-                  <PresentationCard
-                    type={CardType.ALBUM}
-                    key={id}
-                    images={images}
-                    title={name}
-                    subTitle={
-                      <SubTitle
-                        artists={artists}
-                        albumType={album_type}
-                        releaseYear={release_date}
-                      />
-                    }
-                    id={id}
-                  />
-                );
-              }
-            )}
-          </Carousel>
-        ) : null}
-        {relatedArtists && relatedArtists.artists?.length > 0 ? (
-          <Carousel title={translations.relatedArtistsCarouselTitle} gap={24}>
-            {relatedArtists.artists?.map((item) => {
-              if (!item) return null;
-              const { images, name, id } = item;
-              return (
-                <PresentationCard
-                  type={CardType.ARTIST}
-                  key={id}
-                  images={images}
-                  title={name}
-                  subTitle={translations.artist}
-                  id={id}
-                />
-              );
-            })}
-          </Carousel>
-        ) : null}
+        {carousels.map(({ title, items, type }) => {
+          if (!items) return null;
+          const carouselItems = getCarouselItems(type, items);
+          return (
+            <CarouselCards
+              key={title}
+              title={title}
+              items={carouselItems}
+              type={type}
+              translations={translations}
+            />
+          );
+        })}
         {artistBiography && (
           <section className="about">
             <div>
@@ -452,16 +280,12 @@ export default function ArtistPage({
                   dangerouslySetInnerHTML={{ __html: artistInfo?.bio?.summary }}
                 ></p>
               )}
-              <button
-                type="button"
-                className="read-more"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowMoreAbout((prev) => !prev);
-                }}
-              >
-                {showMoreAbout ? translations.readLess : translations.readMore}
-              </button>
+              <TextToggleButton
+                isToggle={showMoreAbout}
+                toggleHandlers={setShowMoreAbout}
+                activeText={translations.readLess}
+                inactiveText={translations.readMore}
+              />
             </div>
             <div className="artist-about-img-container">
               {artistInfo?.thumb && (
@@ -495,6 +319,10 @@ export default function ArtistPage({
           margin-top: 16px;
           padding-bottom: 24px;
         }
+        .attribution a,
+        .about :global(a) {
+          color: #ffffffb3;
+        }
         .attribution p {
           font-size: 0.6875rem;
           line-height: 1rem;
@@ -503,71 +331,6 @@ export default function ArtistPage({
           font-weight: 400;
           color: #ffffffb3;
           margin: 0;
-        }
-        .set-info span,
-        .attribution a,
-        .about :global(a) {
-          color: #ffffffb3;
-        }
-        .set-list-content :global(a) {
-          display: flex;
-          padding: 8px;
-          cursor: pointer;
-          width: 100%;
-          text-decoration: none;
-        }
-        .set-list-content :global(a:hover) {
-          border-radius: 3px;
-          background: #c6ccd317;
-        }
-        .set-info {
-          margin-left: 18px;
-          display: flex;
-          flex-direction: column;
-        }
-        .set-info span {
-          margin: 0;
-          font-size: 14px;
-        }
-        .set-list {
-          margin-left: 20px;
-          flex: 40%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          z-index: 999999;
-        }
-        .set-list-content :global(h2) {
-          margin-left: 8px;
-        }
-        .month {
-          text-align: left;
-          text-transform: uppercase;
-          font-weight: bold;
-          font-size: 12px;
-        }
-        .day {
-          font-weight: normal;
-          color: inherit;
-          text-transform: none;
-          text-align: left;
-          font-size: 24px;
-        }
-        .year {
-          font-weight: normal;
-          color: inherit;
-          text-transform: none;
-          text-align: left;
-          font-size: 12px;
-        }
-        .set-date {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          line-height: 1;
-          font-size: 16px;
-          width: fit-content;
-          color: #ffffff;
         }
         .content .read-more {
           margin-top: 16px;
@@ -607,54 +370,9 @@ export default function ArtistPage({
           padding-top: 16px;
           padding-right: 20px;
         }
-        button {
-          background: none;
-          border: none;
-        }
-        button.read-more,
-        button.show-more {
-          color: rgba(255, 255, 255, 0.7);
-          padding: 18px;
-          font-weight: bold;
-        }
-        button.show-more:hover,
-        button:hover {
-          color: white;
-        }
-        div.info {
-          align-self: flex-end;
-          width: calc(100% - 310px);
-        }
-        .info.button-inof {
-          align-self: center;
-        }
-        .info button {
-          margin-left: 20px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 56px;
-          height: 56px;
-          min-width: 56px;
-          min-height: 56px;
-          background-color: transparent;
-          border: none;
-          min-height: 20px;
-          max-height: min-content;
-        }
-        .info .follow-button {
-          height: min-content;
-        }
-        .info button:focus,
-        .info button:hover {
-          border-color: #fff;
-        }
-        .info button:active {
-          border-color: #fff;
-        }
         .options {
           display: flex;
-          padding: 24px 0;
+          padding: 0 32px;
           position: relative;
           width: 100%;
           align-items: center;
@@ -663,32 +381,11 @@ export default function ArtistPage({
           z-index: 999999;
           position: relative;
         }
-        .options,
-        .trc {
-          padding: 0 32px;
-        }
-        .info button {
-          background-color: transparent;
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          border-radius: 4px;
-          box-sizing: border-box;
-          color: #fff;
-          font-size: 16px;
-          width: auto;
-          font-weight: 700;
-          letter-spacing: 0.1em;
-          line-height: 16px;
-          padding: 7px 15px;
-          text-align: center;
-          text-transform: uppercase;
-          font-weight: bold;
-          margin-right: 24px;
-        }
         .content {
           padding: 32px;
           padding-bottom: 30px;
           position: relative;
-          background-color: ${banner ? "#121212" : "transparent"};
+          background-color: transparent;
         }
         .topTracks {
           display: flex;
@@ -698,6 +395,9 @@ export default function ArtistPage({
           position: relative;
           flex: 60%;
           height: fit-content;
+        }
+        .topTracks > :global(:last-child) {
+          padding: 0 18px;
         }
         @media (max-width: 768px) {
           .options {

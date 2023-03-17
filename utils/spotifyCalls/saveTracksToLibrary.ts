@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function saveTracksToLibrary(
+export async function saveTracksToLibrary(
   tracksIds: string[],
   accessToken?: string
 ): Promise<boolean> {

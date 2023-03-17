@@ -7,7 +7,7 @@ interface UserNearScreen {
   observe: boolean;
 }
 
-export default function useNearScreen({
+export function useNearScreen({
   distance = "100px",
   externalRef,
   once = true,

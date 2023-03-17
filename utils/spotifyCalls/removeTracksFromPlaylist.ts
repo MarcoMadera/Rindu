@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function removeTracksFromPlaylist(
+export async function removeTracksFromPlaylist(
   playlistId: string | undefined | null,
   positions: number[],
   snapshotId: string | undefined | null,

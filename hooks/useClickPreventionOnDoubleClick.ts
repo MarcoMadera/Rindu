@@ -24,7 +24,7 @@ export const cancellablePromise = (
   };
 };
 
-const useClickPreventionOnDoubleClick = (
+export const useClickPreventionOnDoubleClick = (
   onClick: () => void,
   onDoubleClick: () => void
 ): (() => void)[] => {
@@ -55,5 +55,3 @@ const useClickPreventionOnDoubleClick = (
 
   return [handleClick, handleDoubleClick];
 };
-
-export default useClickPreventionOnDoubleClick;

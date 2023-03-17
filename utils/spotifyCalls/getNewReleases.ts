@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function getNewReleases(
+export async function getNewReleases(
   country: string,
   limit?: number,
   accessToken?: string | null,

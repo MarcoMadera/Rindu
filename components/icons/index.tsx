@@ -1,4 +1,4 @@
-export { default as Add } from "./Add";
+export * from "./Add";
 export { default as AngleBrackect } from "./AngleBrackect";
 export { default as Broom } from "./Broom";
 export { default as Chevron } from "./Chevron";

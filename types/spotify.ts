@@ -40,6 +40,13 @@ export interface IPageDetails {
   images?: { url?: string }[];
 }
 
+export interface ITrackArtist {
+  name?: string;
+  id?: string;
+  uri?: string;
+  type?: "artist";
+}
+
 export interface ITrack {
   uri?: string;
   preview_url?: string | null;
@@ -53,12 +60,7 @@ export interface ITrack {
     uri?: string;
     release_date?: string;
   };
-  artists?: {
-    name?: string;
-    id?: string;
-    uri?: string;
-    type?: "artist" | undefined;
-  }[];
+  artists?: ITrackArtist[];
   type?: "track" | "episode" | "ad";
   is_local?: boolean;
   duration_ms?: number;

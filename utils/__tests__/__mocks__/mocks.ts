@@ -181,8 +181,7 @@ export const mediaSession: MediaSession = {
   },
   playbackState: "playing",
   setActionHandler: (action, handler) => {
-    action;
-    handler;
+    console.log("setActionHandler: ", action, handler);
   },
   setPositionState: (state) => {
     console.log("setPositionState: ", state);

@@ -109,16 +109,23 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
     setElement,
   ]);
 
+  function getPageHeaderByAlbumType(
+    album_type?: SpotifyApi.AlbumObjectSimplified["album_type"]
+  ) {
+    switch (album_type) {
+      case "single":
+        return HeaderType.single;
+      case "compilation":
+        return HeaderType.compilation;
+      default:
+        return HeaderType.album;
+    }
+  }
+
   return (
     <ContentContainer hasPageHeader>
       <PageHeader
-        type={
-          album?.album_type === "single"
-            ? HeaderType.single
-            : album?.album_type === "compilation"
-            ? HeaderType.compilation
-            : HeaderType.album
-        }
+        type={getPageHeaderByAlbumType(album?.album_type)}
         title={album?.name ?? ""}
         coverImg={
           album?.images?.[0]?.url ??
@@ -180,8 +187,8 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
             initialTracksInLibrary={tracksInLibrary}
           />
           <div className="copy">
-            {album?.copyrights?.map(({ text }, i) => {
-              return <p key={i}>{text}</p>;
+            {album?.copyrights?.map(({ text }) => {
+              return <p key={text}>{text}</p>;
             })}
           </div>
         </div>

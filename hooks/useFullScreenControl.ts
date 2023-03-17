@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useSpotify } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
 
-export default function useFullScreenControl(
+export function useFullScreenControl(
   displayInFullScreen: DisplayInFullScreen
 ): {
   setDisplayInFullScreen: (visible: boolean) => void;

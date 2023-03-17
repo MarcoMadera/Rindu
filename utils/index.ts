@@ -48,3 +48,5 @@ export * from "./templateReplace";
 export * from "./topBar";
 export * from "./wait";
 export * from "./within";
+export * from "./carousels";
+export * from "./contextMenu";

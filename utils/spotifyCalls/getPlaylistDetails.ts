@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function getPlaylistDetails(
+export async function getPlaylistDetails(
   playlist_id: string,
   accessToken?: string | null,
   cookies?: string | undefined

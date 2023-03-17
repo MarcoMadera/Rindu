@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function getAlbumById(
+export async function getAlbumById(
   id: string,
   market: string,
   accessToken?: string,

@@ -10,17 +10,24 @@ import { createPortal } from "react-dom";
 
 import { CardContentContextMenu, CardTrackContextMenu } from "components";
 import type { ICardContentContextMenu } from "components/CardContentContextMenu";
-import { useContextMenu } from "hooks";
+import { useContextMenu, useEventListener } from "hooks";
 import { ITrack } from "types/spotify";
+import {
+  calculateContextMenuPosition,
+  CONTEXT_MENU_SIDE_OFFSET,
+  positionContextMenu,
+} from "utils";
 
 export default function ContextMenu(): ReactPortal | null {
   const [targetNode, setTargetNode] = useState<Element | null>();
   const { contextMenuData, removeContextMenu } = useContextMenu();
-  const [isDifferentPosX, setIsDifferentPosX] = useState<boolean>(false);
-  const [isDifferentPosY, setIsDifferentPosY] = useState<boolean>(false);
   const [contextMenuPos, setContextMenuPos] = useState({
     x: (contextMenuData?.position.x ?? 0) - 30,
     y: (contextMenuData?.position.y ?? 0) - 40,
+  });
+  const [isContextMenuOffscreen, setIsContextMenuOffscreen] = useState({
+    x: false,
+    y: false,
   });
   const contextMenuRef = useRef<HTMLElement>(null);
 
@@ -28,62 +35,23 @@ export default function ContextMenu(): ReactPortal | null {
     setTargetNode(document.querySelector("#contextMenu"));
   }, []);
 
-  useEffect(() => {
-    if (!contextMenuData) return;
-
-    document
-      .querySelector("#__next")
-      ?.addEventListener("click", removeContextMenu, { once: true });
-    return () => {
-      document
-        .querySelector("#__next")
-        ?.removeEventListener("click", removeContextMenu);
-    };
-  }, [contextMenuData, removeContextMenu]);
+  useEventListener({
+    target: document.querySelector("#__next"),
+    type: "click",
+    listener: removeContextMenu,
+    options: { once: true },
+    ignore: !contextMenuData?.data,
+  });
 
   useLayoutEffect(() => {
-    if (
-      (!contextMenuData?.position.x && !contextMenuData?.position.y) ||
-      !contextMenuRef.current
-    ) {
-      setIsDifferentPosX(false);
-      setIsDifferentPosY(false);
-      return;
-    }
-    const contextMenuRectWidth =
-      contextMenuRef.current.getClientRects()[0]?.width || 0;
-    const contextMenuRectHeight =
-      contextMenuRef.current.getClientRects()[0]?.height || 0;
-    const isContextMenuWidthOffScreen =
-      contextMenuData.position.x &&
-      innerWidth - contextMenuData.position.x < contextMenuRectWidth;
-    const isContextMenuHeightOffScreen =
-      contextMenuData.position.y &&
-      innerHeight - contextMenuData.position.y < contextMenuRectHeight;
-    if (isContextMenuWidthOffScreen) {
-      setContextMenuPos((prevState) => ({
-        ...prevState,
-        x: innerWidth - contextMenuRectWidth - 30,
-      }));
-      setIsDifferentPosX(true);
-    }
-    if (isContextMenuHeightOffScreen) {
-      setContextMenuPos((prevState) => ({
-        ...prevState,
-        y: innerHeight - contextMenuRectHeight - 10,
-      }));
-      setIsDifferentPosY(true);
-    }
-    if (!isContextMenuWidthOffScreen && !isContextMenuHeightOffScreen) {
-      setIsDifferentPosX(false);
-      setIsDifferentPosY(false);
-    }
-
-    return () => {
-      setIsDifferentPosX(false);
-      setIsDifferentPosY(false);
-    };
-  }, [contextMenuData?.position?.x, contextMenuData?.position?.y]);
+    positionContextMenu({
+      positionData: contextMenuData,
+      elementRef: contextMenuRef,
+      setPosition: setContextMenuPos,
+      setIsOffScreen: setIsContextMenuOffscreen,
+      offsets: { x: 30, y: 10 },
+    });
+  }, [contextMenuData]);
 
   if (targetNode === null) {
     throw new Error("ContextMenu needs a target element with id: contextMenu");
@@ -93,25 +61,21 @@ export default function ContextMenu(): ReactPortal | null {
     return null;
   }
 
-  const top = isDifferentPosY
-    ? contextMenuPos.y
-    : !contextMenuData.position.y || contextMenuData.position.y < 45
-    ? 50
-    : contextMenuData.position.y;
-  const left = isDifferentPosX
-    ? contextMenuPos.x
-    : !contextMenuData.position.x || contextMenuData.position.x < 45
-    ? 50
-    : contextMenuData.position.x;
+  const top = calculateContextMenuPosition(
+    isContextMenuOffscreen.y,
+    contextMenuPos.y,
+    contextMenuData.position.y,
+    CONTEXT_MENU_SIDE_OFFSET
+  );
+  const left = calculateContextMenuPosition(
+    isContextMenuOffscreen.x,
+    contextMenuPos.x,
+    contextMenuData.position.x,
+    CONTEXT_MENU_SIDE_OFFSET
+  );
 
   return createPortal(
-    <section
-      ref={contextMenuRef}
-      style={{
-        left: `${left}px`,
-        top: `${top}px`,
-      }}
-    >
+    <section ref={contextMenuRef} style={{ top, left }}>
       {contextMenuData.data?.type === "track" ||
       contextMenuData.data?.type === "episode" ? (
         <CardTrackContextMenu track={contextMenuData.data as ITrack} />

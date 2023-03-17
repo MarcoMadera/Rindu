@@ -4,7 +4,7 @@ import TranslationsContext, {
   TranslationsContextProviderProps,
 } from "context/TranslationsContext";
 
-export default function useTranslations(): TranslationsContextProviderProps {
+export function useTranslations(): TranslationsContextProviderProps {
   const context = useContext(TranslationsContext);
 
   if (!context) {

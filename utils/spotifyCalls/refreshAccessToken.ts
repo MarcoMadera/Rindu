@@ -6,7 +6,7 @@ export interface IRefreshAccessTokenResponse {
   expires_in: string;
 }
 
-export default async function refreshAccessToken(
+export async function refreshAccessToken(
   refreshToken?: string
 ): Promise<IRefreshAccessTokenResponse | null> {
   const res = await fetch(`${getSiteUrl()}/api/spotify-refresh`, {

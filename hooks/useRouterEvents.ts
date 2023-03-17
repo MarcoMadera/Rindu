@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useSpotify } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
 
-export default function useRouterEvents(
+export function useRouterEvents(
   onAppScroll: () => void,
   appRef?: MutableRefObject<HTMLDivElement | undefined>
 ): void {

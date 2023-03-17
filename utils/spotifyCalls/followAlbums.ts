@@ -1,6 +1,7 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { ACCESS_TOKEN_COOKIE } from "utils/constants";
+import { takeCookie } from "utils/cookies";
 
-export default async function followAlbums(
+export async function followAlbums(
   ids?: string[] | string,
   accessToken?: string
 ): Promise<boolean | undefined> {

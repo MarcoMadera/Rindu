@@ -7,7 +7,7 @@ export enum Include_groups {
   compilation = "compilation",
 }
 
-export default async function getArtistAlbums(
+export async function getArtistAlbums(
   id: string,
   market: string,
   include_groups: Include_groups,

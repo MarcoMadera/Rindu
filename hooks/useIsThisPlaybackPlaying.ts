@@ -14,7 +14,7 @@ interface IUseIsThisPlaybackPlaying {
   allTracksToPlay?: ITrack[];
 }
 
-export default function useIsThisPlaybackPlaying({
+export function useIsThisPlaybackPlaying({
   trackId,
   uri,
   isSingle,

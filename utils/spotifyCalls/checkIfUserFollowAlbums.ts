@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function checkIfUserFollowAlbums(
+export async function checkIfUserFollowAlbums(
   albumIds?: string[],
   accessToken?: string
 ): Promise<boolean[] | null> {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function useOnSmallScreen(
+export function useOnSmallScreen(
   callback?: (isSmall: boolean) => void,
   width = 768
 ): boolean {

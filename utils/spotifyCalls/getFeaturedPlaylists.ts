@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function getFeaturedPlaylists(
+export async function getFeaturedPlaylists(
   country: string,
   limit: number,
   accessToken?: string,

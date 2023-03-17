@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function getMyLikedSongs(
+export async function getMyLikedSongs(
   market: string,
   accessToken?: string,
   cookies?: string | undefined

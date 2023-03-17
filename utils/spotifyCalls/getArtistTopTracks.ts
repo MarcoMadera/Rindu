@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function getArtistTopTracks(
+export async function getArtistTopTracks(
   id: string,
   market: string,
   accessToken?: string,

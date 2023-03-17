@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useAuth, useContextMenu, useSpotify, useToast } from "hooks";
 import { menuContextStyles } from "styles/menuContextStyles";
 import { ITrack } from "types/spotify";
-import { getSiteUrl } from "utils";
+import { getSiteUrl, positionSubMenu } from "utils";
 import {
   addItemsToPlaylist,
   addToQueue,
@@ -16,6 +16,7 @@ import {
 export interface ICardTrackContextMenu {
   track: ITrack;
 }
+
 export default function CardTrackContextMenu({
   track,
 }: ICardTrackContextMenu): ReactElement {
@@ -35,29 +36,23 @@ export default function CardTrackContextMenu({
   const userPlaylists = playlists.filter(
     (playlist) => playlist.owner.id === user?.id
   );
-  const calculatedTopRef = useRef<number | undefined>();
+  const containerRef = useRef<HTMLUListElement>(null);
+  const addToPlaylistOptionRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     if (!showAddPlaylistPopup) return;
-    const playlistsCount = userPlaylists.length;
-    const playlistsContainerHeight = playlistsCount * 44;
-    const playlistsContainer = playlistsRef.current;
-    const screenHeight = window.innerHeight;
+    const menuContainer = containerRef.current;
+    const subMenuContainer = playlistsRef.current;
+    const hoveredItem = addToPlaylistOptionRef.current;
+    const items = userPlaylists.length;
 
-    if (playlistsContainer) {
-      const playlistsRefPosition = playlistsContainer.getBoundingClientRect();
-      calculatedTopRef.current = -(playlistsRefPosition.top - 50);
-      if (playlistsContainerHeight > screenHeight) {
-        playlistsContainer.style.height = `${screenHeight - 100}px`;
-        if (calculatedTopRef.current) {
-          playlistsContainer.style.top = `${calculatedTopRef.current}px`;
-        }
-      }
+    if (subMenuContainer && menuContainer && hoveredItem) {
+      positionSubMenu(subMenuContainer, menuContainer, items, hoveredItem);
     }
-  }, [userPlaylists, showAddPlaylistPopup, track]);
+  }, [showAddPlaylistPopup, userPlaylists.length]);
 
   return (
-    <ul>
+    <ul ref={containerRef}>
       {track?.uri && deviceId && (
         <li>
           <button
@@ -86,18 +81,21 @@ export default function CardTrackContextMenu({
         </li>
       )}
       <li>
-        <div
-          onMouseEnter={() => {
-            setShowAddPlaylistPopup(true);
-          }}
-          onMouseLeave={() => {
-            setShowAddPlaylistPopup(false);
-          }}
-          role="button"
-          tabIndex={0}
-        >
-          Add to playlist
-        </div>
+        {userPlaylists.length > 0 && (
+          <div
+            onMouseEnter={() => {
+              setShowAddPlaylistPopup(true);
+            }}
+            onMouseLeave={() => {
+              setShowAddPlaylistPopup(false);
+            }}
+            role="button"
+            tabIndex={0}
+            ref={addToPlaylistOptionRef}
+          >
+            Add to playlist
+          </div>
+        )}
         {showAddPlaylistPopup && (
           <div
             ref={playlistsRef}

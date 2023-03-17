@@ -4,7 +4,7 @@ import { useAuth, useSpotify } from "hooks";
 import { PlaylistItems } from "types/spotify";
 import { getAllMyPlaylists } from "utils";
 
-export default function useUserPlaylists(): PlaylistItems {
+export function useUserPlaylists(): PlaylistItems {
   const { playlists, setPlaylists } = useSpotify();
   const { accessToken } = useAuth();
 

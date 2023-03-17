@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export default async function addItemsToPlaylist(
+export async function addItemsToPlaylist(
   playlist_id: string,
   uris: string[],
   accessToken?: string,

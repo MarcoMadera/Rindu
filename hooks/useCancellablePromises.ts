@@ -1,6 +1,6 @@
 import { useRef } from "react";
 
-function useCancellablePromises(): {
+export function useCancellablePromises(): {
   appendPendingPromise: (promise: {
     promise: Promise<unknown>;
     cancel: () => boolean;
@@ -42,5 +42,3 @@ function useCancellablePromises(): {
 
   return api;
 }
-
-export default useCancellablePromises;
