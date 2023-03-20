@@ -21,6 +21,7 @@ export enum Page {
   Collection = "collection",
   Radio = "radio",
   TopTracks = "topTracks",
+  Preferences = "preferences",
 }
 
 export enum Language {
@@ -64,7 +65,7 @@ const shortCutsTranslations = {
     playback: "Playback",
     playPause: "Play / Pause",
     like: "Like",
-    suffle: "Shuffle",
+    shuffle: "Shuffle",
     repeat: "Repeat",
     skipToPrevious: "Skip to previous",
     skipToNext: "Skip to next",
@@ -106,7 +107,7 @@ const shortCutsTranslations = {
     playback: "Reproducción",
     playPause: "Reproducir/Pausar",
     like: "Me gusta",
-    suffle: "Aleatorio",
+    shuffle: "Aleatorio",
     repeat: "Repetir",
     skipToPrevious: "Volver a la anterior",
     skipToNext: "Saltar a la siguiente",
@@ -147,6 +148,7 @@ const sideBarTranslations = {
     help: "Help",
     profile: "Profile",
     account: "Account",
+    preferences: "Settings",
     upgradeToPremium: "Upgrade to Premium",
     ...shortCutsTranslations[Language.EN],
   },
@@ -159,6 +161,7 @@ const sideBarTranslations = {
     help: "Ayuda",
     profile: "Perfil",
     account: "Cuenta",
+    preferences: "Preferencias",
     upgradeToPremium: "Actualizar a Premium",
     ...shortCutsTranslations[Language.ES],
   },
@@ -602,6 +605,17 @@ export const translations = {
       ...queueTranslations[Language.EN],
       title: "Collection",
     },
+    [Page.Preferences]: {
+      ...sideBarTranslations[Language.EN],
+      ...queueTranslations[Language.EN],
+      preferences: "Settings",
+      language: "Language",
+      languageLabel:
+        "Choose language - Changes will be applied after restarting the app",
+      spanish: "Spanish",
+      english: "English",
+      reload: "Reload",
+    },
   },
   [Language.ES]: {
     [Page.Home]: {
@@ -836,18 +850,31 @@ export const translations = {
       ...queueTranslations[Language.ES],
       title: "Colección",
     },
+    [Page.Preferences]: {
+      ...sideBarTranslations[Language.ES],
+      ...queueTranslations[Language.ES],
+      preferences: "Preferencias",
+      language: "Idioma",
+      languageLabel:
+        "Elige un idioma (los cambios se aplicarán cuando se reinicie la aplicación)",
+      spanish: "Español",
+      english: "Inglés",
+      reload: "Volver a cargar",
+    },
   },
 };
 
 export type Translations = (typeof translations)[Language];
 
+export function getLanguageByCountry(country: string): Language {
+  return spanishCountries.includes(country) ? Language.ES : Language.EN;
+}
+
 export function getTranslations<T extends Page>(
   country: string,
   page: T
 ): Translations[T] {
-  const language = spanishCountries.includes(country)
-    ? Language.ES
-    : Language.EN;
+  const language = getLanguageByCountry(country);
 
   return translations[language][page];
 }

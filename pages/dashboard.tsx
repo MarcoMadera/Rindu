@@ -648,7 +648,7 @@ export async function getServerSideProps({
       topTracks:
         deserialize(mappedTracksData(fullFilledValue(topTracks)?.items)) || [],
       topArtists: fullFilledValue(topArtists),
-      artistOfTheWeek: [],
+      artistOfTheWeek: artistResult,
       tracksOfTheWeek: deserialize(mappedTracksData(tracksResult)) || [],
       thisPlaylists: deserialize(mappedPlaylistData(thisPlaylistsResult)) || [],
       tracksRecommendations:
