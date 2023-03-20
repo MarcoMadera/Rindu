@@ -178,7 +178,7 @@ export default function EpisodePage({
           position: relative;
           z-index: 1;
         }
-        a {
+        .container :global(a) {
           margin: 40px 0 16px;
           background-color: transparent;
           border: 1px solid #535353;
@@ -200,7 +200,7 @@ export default function EpisodePage({
           text-decoration: none;
           touch-action: manipulation;
         }
-        a:hover {
+        .container :global(a:hover) {
           transform: scale(1.06);
         }
         p {

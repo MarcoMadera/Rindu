@@ -1,14 +1,25 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
-export async function addCustomPlaylistImage(
-  user_id: string | undefined,
-  playlist_id: string | undefined,
-  accessToken?: string,
-  cookies?: string
-): Promise<boolean> {
+interface IAddCustomPlaylistImage {
+  user_id: string | undefined;
+  playlist_id: string | undefined;
+  imageId?: string;
+  accessToken?: string;
+  cookies?: string;
+}
+
+export async function addCustomPlaylistImage({
+  user_id,
+  playlist_id,
+  imageId,
+  accessToken,
+  cookies,
+}: IAddCustomPlaylistImage): Promise<boolean> {
   if (!playlist_id || !user_id) return false;
   const getCoverData = () => {
-    const cover: HTMLElement | null = document.getElementById("cover-image");
+    const cover: HTMLElement | null = document.getElementById(
+      imageId ?? "cover-image"
+    );
     if (cover) {
       const canvas = document.createElement("canvas");
       canvas.width = cover.clientWidth;

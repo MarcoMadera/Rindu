@@ -2,6 +2,7 @@ import { ReactElement, useLayoutEffect, useRef, useState } from "react";
 
 import Link from "next/link";
 
+import EmbedModal from "./EmbedModal";
 import { useAuth, useContextMenu, useSpotify, useToast } from "hooks";
 import { menuContextStyles } from "styles/menuContextStyles";
 import { ITrack } from "types/spotify";
@@ -23,7 +24,7 @@ export default function CardTrackContextMenu({
   const { addToast } = useToast();
   const { deviceId, playlists } = useSpotify();
   const { accessToken } = useAuth();
-  const { removeContextMenu } = useContextMenu();
+  const { removeContextMenu, setModalData } = useContextMenu();
 
   const availableStations = ["track", "artist", "genre"];
   const type = track?.type ?? "track";
@@ -209,6 +210,20 @@ export default function CardTrackContextMenu({
           </Link>
         </li>
       )}
+      <li>
+        <button
+          onClick={() => {
+            if (!track.type || !track.id) return;
+            setModalData({
+              title: "Embed",
+              modalElement: <EmbedModal type={track.type} id={track.id} />,
+            });
+            removeContextMenu();
+          }}
+        >
+          Embed {track.type}
+        </button>
+      </li>
       {track && deviceId && (
         <li>
           <button

@@ -50,3 +50,5 @@ export * from "./wait";
 export * from "./within";
 export * from "./carousels";
 export * from "./contextMenu";
+export * from "./getArtistsOfTheWeek";
+export * from "./getTracksOfTheWeek";

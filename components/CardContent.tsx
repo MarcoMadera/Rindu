@@ -4,7 +4,7 @@ import { decode } from "html-entities";
 import { useRouter } from "next/router";
 
 import { useContextMenu, useOnScreen } from "hooks";
-import { getSiteUrl } from "utils";
+import { getSiteUrl } from "utils/environment";
 
 export enum CardType {
   SIMPLE = "simple",
@@ -40,6 +40,7 @@ export default function CardContent({
   const handlerRef = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(handlerRef, "-150px");
   const { addContextMenu } = useContextMenu();
+  const uri = `spotify:${type}:${id}`;
 
   return (
     <article>
@@ -68,8 +69,12 @@ export default function CardContent({
           const x = e.pageX;
           const y = e.pageY;
           addContextMenu({
-            type: "cardContent",
-            data: { id, type },
+            type: type === CardType.TRACK ? "cardTrack" : "cardContent",
+            data: {
+              id,
+              type,
+              uri,
+            },
             position: { x, y },
           });
         }}

@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useLayoutEffect, useState } from "react";
 
 import { decode } from "html-entities";
 import Link from "next/link";
@@ -6,12 +6,20 @@ import { useRouter } from "next/router";
 
 import {
   ArtistList,
+  EditPlaylistDetails,
   Eyebrow,
   Heading,
   PageDetails,
   ScrollableText,
 } from "components";
-import { useHeader, useOnSmallScreen, useTranslations } from "hooks";
+import {
+  useAuth,
+  useHeader,
+  useModal,
+  useOnSmallScreen,
+  useSpotify,
+  useTranslations,
+} from "hooks";
 import { AsType } from "types/heading";
 import { HeaderProps, HeaderType } from "types/pageHeader";
 import {
@@ -43,6 +51,25 @@ export default function PageHeader({
   const { setHeaderColor } = useHeader({ disableOpacityChange });
   const router = useRouter();
   const { translations } = useTranslations();
+  const { setModalData } = useModal();
+  const { user } = useAuth();
+  const { pageDetails } = useSpotify();
+  const isPlaylist = type === HeaderType.playlist;
+  const isOwner = user?.id === pageDetails?.owner?.id;
+  const enableEditPlaylist =
+    !!(pageDetails?.id && isPlaylist && isOwner) &&
+    router.asPath.includes("/playlist/");
+  const [pageHeaderImg, setPageHeaderImg] = useState(coverImg);
+  const [pageHeaderTitle, setPageHeaderTitle] = useState(title);
+  const [pageHeaderDescription, setPageHeaderDescription] =
+    useState(description);
+
+  useLayoutEffect(() => {
+    // This will reset page header image and title when navigating to a new page
+    setPageHeaderImg(coverImg);
+    setPageHeaderTitle(title);
+    setPageHeaderDescription(description);
+  }, [coverImg, title, description]);
 
   const isAlbumVariant =
     type === HeaderType.album ||
@@ -79,7 +106,7 @@ export default function PageHeader({
     >
       {coverImg && !banner ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={coverImg} alt="" id="cover-image" />
+        <img src={pageHeaderImg} alt="" id="cover-image" />
       ) : (
         !banner && <div id="cover-image"></div>
       )}
@@ -88,27 +115,53 @@ export default function PageHeader({
         <div className="title-container">
           <ScrollableText>
             <span>
-              <Heading
-                number={1}
-                fontSize={
-                  isSmallScreen
-                    ? "48px"
-                    : title.length < 16
-                    ? "96px"
-                    : title.length < 21
-                    ? "72px"
-                    : title.length < 30
-                    ? "64px"
-                    : "48px"
-                }
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  if (enableEditPlaylist) {
+                    setModalData({
+                      title: "Edit Details",
+                      modalElement: (
+                        <EditPlaylistDetails
+                          id={pageDetails?.id}
+                          name={pageHeaderTitle}
+                          description={pageHeaderDescription}
+                          coverImg={pageHeaderImg}
+                          setNewPlaylistDetaisl={(newDetails) => {
+                            setPageHeaderImg(newDetails.coverImg);
+                            setPageHeaderTitle(newDetails.name);
+                            setPageHeaderDescription(newDetails.description);
+                          }}
+                        />
+                      ),
+                    });
+                  }
+                }}
               >
-                {title}
-              </Heading>
+                <Heading
+                  number={1}
+                  fontSize={
+                    isSmallScreen
+                      ? "48px"
+                      : title.length < 16
+                      ? "96px"
+                      : title.length < 21
+                      ? "72px"
+                      : title.length < 30
+                      ? "64px"
+                      : "48px"
+                  }
+                >
+                  {pageHeaderTitle}
+                </Heading>
+              </button>
             </span>
           </ScrollableText>
         </div>
-        {description ? (
-          <p className="description">{decode(description)}</p>
+        {pageHeaderDescription ? (
+          <p className="description">{decode(pageHeaderDescription)}</p>
         ) : null}
         <div>
           <p>
@@ -242,11 +295,8 @@ export default function PageHeader({
           }
           button {
             border: none;
-            border-radius: 4px;
-            background-color: #e83636;
-            cursor: pointer;
-            padding: 4px 6px;
-            color: #fff;
+            background: transparent;
+            cursor: ${enableEditPlaylist ? "pointer" : "default"};
           }
           p {
             margin: 0;

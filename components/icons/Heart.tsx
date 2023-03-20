@@ -12,7 +12,7 @@ import { LottieOptions, useLottie } from "lottie-react";
 
 import dislikeAnimation from "animations/dislike.json";
 import likeAnimation from "animations/like.json";
-import { wait } from "utils";
+import { wait } from "utils/wait";
 
 export default function Heart({
   active,

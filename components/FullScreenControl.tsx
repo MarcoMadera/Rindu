@@ -29,6 +29,11 @@ export default function FullScreenControl({
         {icon({ fill: isVisible ? "#1db954" : "#ffffffb3" })}
       </button>
       <style jsx>{`
+        button {
+          color: ${isVisible ? "#1db954" : "#ffffffb3"};
+        }
+      `}</style>
+      <style jsx>{`
         .full-screen-control:hover :global(svg path) {
           fill: #fff;
         }

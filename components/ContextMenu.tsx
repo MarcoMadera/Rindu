@@ -8,8 +8,10 @@ import {
 
 import { createPortal } from "react-dom";
 
-import { CardContentContextMenu, CardTrackContextMenu } from "components";
-import type { ICardContentContextMenu } from "components/CardContentContextMenu";
+import CardContentContextMenu, {
+  ICardContentContextMenu,
+} from "./CardContentContextMenu";
+import CardTrackContextMenu from "./CardTrackContextMenu";
 import { useContextMenu, useEventListener } from "hooks";
 import { ITrack } from "types/spotify";
 import {

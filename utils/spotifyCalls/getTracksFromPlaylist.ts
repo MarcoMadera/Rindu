@@ -7,7 +7,7 @@ export async function getTracksFromPlaylist(
   cookies?: string | undefined
 ): Promise<SpotifyApi.PlaylistTrackResponse | null> {
   const res = await fetch(
-    `https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=${offset}&limit=50`,
+    `https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=${offset}&limit=50&fields=items(added_at,is_local,track(id,album(name,images,id),artists(name,id,type,uri),name,duration_ms,uri,explicit,is_playable,preview_url,type)),total`,
     {
       method: "GET",
       headers: {

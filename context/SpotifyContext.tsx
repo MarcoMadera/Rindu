@@ -120,7 +120,7 @@ export function SpotifyContextProvider({
         }
         return res.snapshot_id;
       } catch (err) {
-        console.log(err);
+        console.warn(err);
         return;
       }
     },

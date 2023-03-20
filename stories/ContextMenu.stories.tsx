@@ -96,6 +96,10 @@ export const Track: ComponentStory<typeof ContextMenu> = () => (
                 setContextMenuData: () => {
                   console.log("setContextMenuData");
                 },
+                modalData: null,
+                setModalData: () => {
+                  console.log("setModalData");
+                },
               } as ContextMenuContextProviderProps
             }
           >

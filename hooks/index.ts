@@ -25,3 +25,5 @@ export * from "./useToast";
 export * from "./useToggle";
 export * from "./useTranslations";
 export * from "./useUserPlaylists";
+export * from "./useModal";
+export * from "./useFocusTrap";

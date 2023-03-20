@@ -172,6 +172,8 @@ export default function SpotifyPlayer(): ReactElement {
           flex-direction: column;
           background-color: #181818;
           border-top: 1px solid #282828;
+          position: relative;
+          z-index: 99999999999999999999999999999999999999999999999999999999999999999999999999999;
         }
         nav,
         .playerControls-1 {

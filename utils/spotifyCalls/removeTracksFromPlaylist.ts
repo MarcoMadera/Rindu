@@ -24,6 +24,7 @@ export async function removeTracksFromPlaylist(
       }),
     }
   );
+
   if (res.ok) {
     const data =
       (await res.json()) as SpotifyApi.RemoveTracksFromPlaylistResponse;

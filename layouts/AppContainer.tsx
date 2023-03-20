@@ -58,6 +58,7 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
 
   return (
     <div className="container">
+      <div className="overlay"></div>
       <PanelGroup direction="row">
         <Panel
           defaultSize={`${leftPanelWidth}px`}

@@ -1,11 +1,10 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
 export async function removeTracksFromLibrary(
-  tracksIds: string[],
+  ids: string[],
   accessToken?: string
 ): Promise<boolean> {
-  const ids = tracksIds.join();
-  const res = await fetch(`https://api.spotify.com/v1/me/tracks?ids=${ids}`, {
+  const res = await fetch("https://api.spotify.com/v1/me/tracks", {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -13,6 +12,7 @@ export async function removeTracksFromLibrary(
         accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
       }`,
     },
+    body: JSON.stringify({ ids }),
   });
   return res.ok;
 }

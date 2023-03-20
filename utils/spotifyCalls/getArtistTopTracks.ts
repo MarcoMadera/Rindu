@@ -10,7 +10,7 @@ export async function getArtistTopTracks(
     return null;
   }
   const res = await fetch(
-    `https://api.spotify.com/v1/artists/${id}/top-tracks?market=${market}`,
+    `https://api.spotify.com/v1/artists/${id}/top-tracks?market=${market}&fields=items(added_at,is_local,track(id,album(name,images,id),artists(name,id,type,uri),name,duration_ms,uri,explicit,is_playable,preview_url,type)),total`,
     {
       method: "GET",
       headers: {

@@ -10,7 +10,8 @@ export function useContextMenu(): UseContextMenu {
     throw new Error("useContextMenu must be used within a ContextMenuProvider");
   }
 
-  const { contextMenuData, setContextMenuData } = context;
+  const { contextMenuData, setContextMenuData, setModalData, modalData } =
+    context;
 
   const removeContextMenu: UseContextMenu["removeContextMenu"] =
     useCallback(() => {
@@ -28,5 +29,7 @@ export function useContextMenu(): UseContextMenu {
     contextMenuData,
     addContextMenu,
     removeContextMenu,
+    setModalData,
+    modalData,
   };
 }

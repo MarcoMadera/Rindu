@@ -2,10 +2,11 @@ import { ReactElement } from "react";
 
 import { CardType } from "./CardContent";
 import SubTitle from "./SubTitle";
+import { IMappedAlbumItems } from "pages/artist/[artistId]";
 
 interface ICardSubTitle {
   type: CardType;
-  item: SpotifyApi.AlbumObjectSimplified | SpotifyApi.ArtistObjectFull;
+  item: IMappedAlbumItems | SpotifyApi.ArtistObjectFull;
   translations: Record<string, string>;
 }
 

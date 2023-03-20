@@ -4,6 +4,7 @@ import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import PlaylistLayout from "layouts/playlist";
 import { ISpotifyContext, ITrack } from "types/spotify";
 import {
+  deserialize,
   fullFilledValue,
   getAuth,
   getTranslations,
@@ -89,7 +90,7 @@ export async function getServerSideProps({
     props: {
       pageDetails: fullFilledValue(pageDetails),
       tracksInLibrary,
-      playListTracks,
+      playListTracks: deserialize(playListTracks),
       accessToken: accessToken ?? null,
       user: user ?? null,
       translations,

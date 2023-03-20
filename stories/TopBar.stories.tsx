@@ -14,6 +14,7 @@ import HeaderContext, {
   IHeaderContext as HContext,
   HeaderContextProvider,
 } from "context/HeaderContext";
+import { ModalContextProvider } from "context/ModalContext";
 import SpotifyContext, { SpotifyContextProvider } from "context/SpotifyContext";
 import { ToastContextProvider } from "context/ToastContext";
 import UserContext, {
@@ -115,7 +116,9 @@ const Template: ComponentStory<typeof TopBar> = () => (
       <HeaderContextProvider>
         <SpotifyContextProvider>
           <ContextMenuContextProvider>
-            <TopBar />
+            <ModalContextProvider>
+              <TopBar />
+            </ModalContextProvider>
           </ContextMenuContextProvider>
         </SpotifyContextProvider>
       </HeaderContextProvider>
@@ -155,7 +158,9 @@ const LoggedInTemplate: ComponentStory<typeof TopBar> = () => (
       <HeaderContextProvider>
         <SpotifyContextProvider>
           <ContextMenuContextProvider>
-            <TopBar />
+            <ModalContextProvider>
+              <TopBar />
+            </ModalContextProvider>
           </ContextMenuContextProvider>
         </SpotifyContextProvider>
       </HeaderContextProvider>
@@ -225,7 +230,9 @@ const LoggedInWithExtraFieldTemplate: ComponentStory<typeof TopBar> = () => (
           }
         >
           <ContextMenuContextProvider>
-            <TopBar />
+            <ModalContextProvider>
+              <TopBar />
+            </ModalContextProvider>
           </ContextMenuContextProvider>
         </SpotifyContext.Provider>
       </HeaderContext.Provider>

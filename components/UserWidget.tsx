@@ -3,8 +3,9 @@ import { ReactElement, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
+import { ShortCuts } from "components";
 import { ExternalLink } from "components/icons";
-import { useAuth } from "hooks";
+import { useAuth, useModal, useTranslations } from "hooks";
 import {
   ACCESS_TOKEN_COOKIE,
   eatCookie,
@@ -24,7 +25,9 @@ export default function UserWidget({
   const [openSettings, setOpenSettings] = useState(false);
   const router = useRouter();
   const { user, setUser, setIsLogin } = useAuth();
+  const { setModalData } = useModal();
   const isPremium = user?.product === "premium";
+  const { translations } = useTranslations();
 
   useEffect(() => {
     function handleClick() {
@@ -72,7 +75,7 @@ export default function UserWidget({
             rel="noopener noreferrer"
             target="_blank"
           >
-            Account
+            {translations.account}
             <ExternalLink width={16} height={16} fill="#fff" />
           </a>
         </div>
@@ -84,9 +87,35 @@ export default function UserWidget({
               tabIndex={-1}
               className="option"
             >
-              Profile
+              {translations.profile}
             </Link>
           ) : null}
+        </div>
+        <div role="presentation">
+          <a
+            role="menuitem"
+            tabIndex={-1}
+            className="option"
+            href="https://support.spotify.com/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {translations.help}
+            <ExternalLink width={16} height={16} fill="#fff" />
+          </a>
+        </div>
+        <div role="presentation">
+          <a
+            role="menuitem"
+            tabIndex={-1}
+            className="option"
+            href="https://www.spotify.com/download/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {translations.download}
+            <ExternalLink width={16} height={16} fill="#fff" />
+          </a>
         </div>
         {!isPremium ? (
           <div role="presentation">
@@ -98,12 +127,31 @@ export default function UserWidget({
               rel="noopener noreferrer"
               target="_blank"
             >
-              Upgrate to Premium
+              {translations.upgradeToPremium}
               <ExternalLink width={16} height={16} fill="#fff" />
             </a>
           </div>
         ) : null}
         <div role="presentation">
+          <button
+            type="button"
+            role="menuitem"
+            tabIndex={-1}
+            className="option"
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setModalData({
+                title: translations.shortCutsTitle,
+                modalElement: <ShortCuts />,
+              });
+              setOpenSettings(false);
+            }}
+          >
+            {translations.shortCutsTitle}
+          </button>
+        </div>
+        <div role="presentation" className="delimiter">
           <button
             type="button"
             role="menuitem"
@@ -119,7 +167,7 @@ export default function UserWidget({
               setIsLogin(false);
             }}
           >
-            Log out
+            {translations.logOut}
           </button>
         </div>
       </section>
@@ -130,11 +178,15 @@ export default function UserWidget({
         }
         section {
           background-color: #282828;
-          border-radius: 5px;
-          box-shadow: 0px 2px 9px 0px rgb(0 0 0 / 5%);
+          border-radius: 4px;
+          box-shadow: 0 16px 24px rgba(0, 0, 0, 0.3),
+            0 6px 8px rgba(0, 0, 0, 0.2);
           display: ${openSettings ? "block" : "none"};
-          min-width: 100%;
-          padding: 3px;
+          max-height: calc(100vh - 24px);
+          max-width: 350px;
+          min-width: 196px;
+          overflow-y: auto;
+          padding: 4px;
           position: absolute;
           right: 0;
           top: calc(100% + 4px);
@@ -161,6 +213,9 @@ export default function UserWidget({
           text-align: start;
           text-decoration: none;
           width: max-content;
+        }
+        .container :global(.delimiter) {
+          border-top: 1px solid hsla(0, 0%, 100%, 0.1);
         }
         .container :global(.option:hover),
         .container :global(.option:focus) {

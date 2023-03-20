@@ -16,7 +16,9 @@ export async function getRecommendations({
   const res = await fetch(
     `https://api.spotify.com/v1/recommendations?seed_tracks=${seed_tracks.join()}&market=${
       market || "from_token"
-    }&limit=${limit ?? 20}`,
+    }&limit=${
+      limit ?? 20
+    }&fields=items(added_at,is_local,track(id,album(name,images,id),artists(name,id,type,uri),name,duration_ms,uri,explicit,is_playable,preview_url,type)),total`,
     {
       method: "GET",
       headers: {

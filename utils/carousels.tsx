@@ -1,18 +1,17 @@
 import { CardType } from "components/CardContent";
+import { IMappedAlbums } from "pages/artist/[artistId]";
 
 export function getCarouselItems(
   type: CardType,
-  items:
-    | SpotifyApi.ArtistsAlbumsResponse
-    | SpotifyApi.ArtistsRelatedArtistsResponse
-): SpotifyApi.AlbumObjectSimplified[] | SpotifyApi.ArtistObjectFull[] {
+  items: IMappedAlbums | SpotifyApi.ArtistsRelatedArtistsResponse
+): IMappedAlbums["items"] | SpotifyApi.ArtistObjectFull[] {
   if (!items) return [];
 
-  if (type === CardType.ALBUM && "items" in items) {
+  if (type === "album" && "items" in items) {
     return items.items;
   }
 
-  if (type === CardType.ARTIST && "artists" in items) {
+  if (type === "artist" && "artists" in items) {
     return items.artists;
   }
   return [];

@@ -49,19 +49,32 @@ import {
 import { Follow_type } from "utils/spotifyCalls/follow";
 import { Include_groups } from "utils/spotifyCalls/getArtistAlbums";
 
+export interface IMappedAlbumItems {
+  id: string;
+  name: string;
+  images: SpotifyApi.ImageObject[];
+  artists: SpotifyApi.ArtistObjectSimplified[];
+  release_date: string;
+  album_type: "album" | "single" | "compilation";
+}
+export interface IMappedAlbums {
+  total: number;
+  items: IMappedAlbumItems[];
+}
+
 interface ArtistPageProps {
   currentArtist: SpotifyApi.SingleArtistResponse | null;
   topTracks: SpotifyApi.MultipleTracksResponse | null;
-  singleAlbums: SpotifyApi.ArtistsAlbumsResponse | null;
-  appearAlbums: SpotifyApi.ArtistsAlbumsResponse | null;
+  singleAlbums: IMappedAlbums | null;
+  appearAlbums: IMappedAlbums | null;
   relatedArtists: SpotifyApi.ArtistsRelatedArtistsResponse | null;
-  accessToken?: string;
+  accessToken?: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
   setLists: SetLists | null;
   artistInfo: Artist | null;
   translations: Record<string, string>;
-  albums: SpotifyApi.ArtistsAlbumsResponse | null;
-  compilations: SpotifyApi.ArtistsAlbumsResponse | null;
+  albums: IMappedAlbums | null;
+  compilations: IMappedAlbums | null;
 }
 
 export default function ArtistPage({
@@ -92,8 +105,9 @@ export default function ArtistPage({
   const { translations } = useTranslations();
 
   useEffect(() => {
-    if (!currentArtist) {
+    if (!currentArtist || !accessToken || !user) {
       router.push("/");
+      return;
     }
     trackWithGoogleAnalytics();
 
@@ -126,7 +140,6 @@ export default function ArtistPage({
       topTracks?.tracks.map((track) => ({
         ...track,
         added_at: "",
-        added_by: user,
         track: track,
         is_local: false,
       })) ?? [];
@@ -499,19 +512,36 @@ export async function getServerSideProps({
     compilationsProm,
   ]);
 
+  function mapAlbumData(album: SpotifyApi.ArtistsAlbumsResponse | null) {
+    if (!album) return null;
+    const items = album.items.map((item) => ({
+      id: item.id,
+      name: item.name,
+      images: item.images,
+      artists: item.artists,
+      release_date: item.release_date,
+      album_type: item.album_type,
+    }));
+
+    return {
+      items,
+      total: album.total,
+    };
+  }
+
   return {
     props: {
       currentArtist,
-      singleAlbums: fullFilledValue(singleAlbums),
-      appearAlbums: fullFilledValue(appearAlbums),
+      singleAlbums: mapAlbumData(fullFilledValue(singleAlbums)),
+      appearAlbums: mapAlbumData(fullFilledValue(appearAlbums)),
       topTracks: fullFilledValue(topTracks),
       relatedArtists: fullFilledValue(relatedArtists),
-      accessToken,
+      accessToken: accessToken ?? null,
       user: user ?? null,
       setLists: fullFilledValue(setLists),
       artistInfo: fullFilledValue(artistInfo),
-      albums: fullFilledValue(albums),
-      compilations: fullFilledValue(compilations),
+      albums: mapAlbumData(fullFilledValue(albums)),
+      compilations: mapAlbumData(fullFilledValue(compilations)),
       translations,
     },
   };
