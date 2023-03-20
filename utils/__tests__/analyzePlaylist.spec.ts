@@ -2,6 +2,7 @@ import { IUtilsMocks } from "types/mocks";
 import { ITrack } from "types/spotify";
 import { analyzePlaylist } from "utils/analyzePlaylist";
 import { getAllTracksFromPlaylist } from "utils/getAllTracksFromPlaylist";
+import { getTranslations, Page } from "utils/getTranslations";
 
 jest.mock<typeof import("utils")>("utils/getAllTracksFromPlaylist", () => ({
   ...jest.requireActual<typeof import("utils")>(
@@ -15,6 +16,7 @@ const { track, accessToken } = jest.requireActual<IUtilsMocks>(
 );
 
 describe("analyzePlaylist", () => {
+  const translations = getTranslations("US", Page.Playlist);
   it("should return null if no id or accessToken or totalTracks", async () => {
     expect.assertions(1);
 
@@ -22,7 +24,8 @@ describe("analyzePlaylist", () => {
       undefined,
       undefined,
       false,
-      accessToken
+      accessToken,
+      translations
     );
     expect(result).toBeNull();
   });
@@ -30,12 +33,19 @@ describe("analyzePlaylist", () => {
   it("should return empty array values if there are not tracks", async () => {
     expect.assertions(1);
     (getAllTracksFromPlaylist as jest.Mock).mockResolvedValue([]);
-    const result = await analyzePlaylist("id", 20, true, accessToken);
+    const result = await analyzePlaylist(
+      "id",
+      20,
+      true,
+      accessToken,
+      translations
+    );
     expect(result).toStrictEqual({
       corruptedSongsIndexes: [],
       duplicateTracksIndexes: [],
       tracks: [],
       tracksToRemove: [],
+      summary: "No corrupted or duplicated songs",
     });
   });
 
@@ -64,12 +74,19 @@ describe("analyzePlaylist", () => {
       getAllTracksFromPlaylist as jest.Mock<Promise<ITrack[]>>
     ).mockResolvedValue(tracks);
 
-    const result = await analyzePlaylist("id", 20, true, accessToken);
+    const result = await analyzePlaylist(
+      "id",
+      20,
+      true,
+      accessToken,
+      translations
+    );
     expect(result).toStrictEqual({
       corruptedSongsIndexes: [],
       duplicateTracksIndexes: [1, 2],
       tracks: tracks,
       tracksToRemove: [tracks[1], tracks[2]],
+      summary: "There are 2 duplicated songs",
     });
   });
 
@@ -94,7 +111,13 @@ describe("analyzePlaylist", () => {
       getAllTracksFromPlaylist as jest.Mock<Promise<ITrack[]>>
     ).mockResolvedValue(tracks);
 
-    const result = await analyzePlaylist("id", 20, true, accessToken);
+    const result = await analyzePlaylist(
+      "id",
+      20,
+      true,
+      accessToken,
+      translations
+    );
 
     expect(result?.tracksToRemove).toStrictEqual([
       tracks[0],
@@ -127,7 +150,13 @@ describe("analyzePlaylist", () => {
       getAllTracksFromPlaylist as jest.Mock<Promise<ITrack[]>>
     ).mockResolvedValue(tracks);
 
-    const result = await analyzePlaylist("id", 20, true, accessToken);
+    const result = await analyzePlaylist(
+      "id",
+      20,
+      true,
+      accessToken,
+      translations
+    );
     expect(result?.tracksToRemove).toStrictEqual([tracks[0]]);
   });
 });

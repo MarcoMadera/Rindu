@@ -7,8 +7,8 @@ const { playlistTrackResponse } = jest.requireActual<IUtilsMocks>(
 
 describe("mapPlaylistItems", () => {
   it("should map playlist items", () => {
-    expect.assertions(1);
-    const { track, ...res } = playlistTrackResponse;
+    expect.assertions(2);
+    const { track, added_by, ...res } = playlistTrackResponse;
     const mappedPlaylistItems = mapPlaylistItems([playlistTrackResponse], 0);
 
     expect(mappedPlaylistItems).toStrictEqual([
@@ -17,6 +17,16 @@ describe("mapPlaylistItems", () => {
         ...track,
         position: 0,
         corruptedTrack: false,
+      },
+    ]);
+
+    expect(mappedPlaylistItems).not.toStrictEqual([
+      {
+        ...res,
+        ...track,
+        position: 0,
+        corruptedTrack: false,
+        added_by,
       },
     ]);
   });

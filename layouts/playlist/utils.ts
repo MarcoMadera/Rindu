@@ -85,7 +85,11 @@ async function createCustomPlaylist({
     throw new Error("Error creating playlist");
   }
 
-  await addCustomPlaylistImage(user?.id, playlist.id, accessToken);
+  await addCustomPlaylistImage({
+    user_id: user?.id,
+    playlist_id: playlist.id,
+    accessToken,
+  });
 
   return getPlaylistDetails(playlist.id, accessToken);
 }

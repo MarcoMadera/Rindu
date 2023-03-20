@@ -2,6 +2,7 @@ import { ReactElement } from "react";
 
 import { useRouter } from "next/router";
 
+import EmbedModal from "./EmbedModal";
 import { CardType } from "components/CardContent";
 import { useContextMenu, useToast } from "hooks";
 import { menuContextStyles } from "styles/menuContextStyles";
@@ -22,10 +23,10 @@ type SaveFunctionTypes =
   | CardType.SHOW;
 
 const saveFunctions: { [key in SaveFunctionTypes]: (id: string) => void } = {
-  [CardType.ALBUM]: followAlbums,
-  [CardType.SHOW]: saveShowsToLibrary,
-  [CardType.ARTIST]: (id: string) => follow(Follow_type.artist, id),
-  [CardType.PLAYLIST]: followPlaylist,
+  album: followAlbums,
+  show: saveShowsToLibrary,
+  artist: (id: string) => follow(Follow_type.artist, id),
+  playlist: followPlaylist,
 };
 
 function saveFunction(type: SaveFunctionTypes, id: string): void {
@@ -53,7 +54,7 @@ export interface ICardContentContextMenu {
 export default function CardContentContextMenu({
   data,
 }: ICardContentContextMenu): ReactElement {
-  const { removeContextMenu } = useContextMenu();
+  const { removeContextMenu, setModalData } = useContextMenu();
   const router = useRouter();
   const { addToast } = useToast();
 
@@ -73,6 +74,22 @@ export default function CardContentContextMenu({
           Go to {data.type}
         </button>
       </li>
+      {data.type !== "genre" && (
+        <li>
+          <button
+            onClick={() => {
+              if (!data.type || !data.id) return;
+              setModalData({
+                title: "Embed",
+                modalElement: <EmbedModal type={data.type} id={data.id} />,
+              });
+              removeContextMenu();
+            }}
+          >
+            Embed {data.type}
+          </button>
+        </li>
+      )}
       {isSaveable && (
         <li>
           <button

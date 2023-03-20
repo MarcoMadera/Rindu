@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 
 import { ICardContent } from "components/CardContent";
+import { ModalContextProviderProps } from "context/ModalContext";
 import { ITrack } from "types/spotify";
 
 export interface ICardTrackContextMenuData {
@@ -17,8 +18,12 @@ export interface ICardTrackContextMenuData {
 }
 
 export interface ICardContentContextMenuData {
-  type: "cardContent";
-  data: { type: ICardContent["type"]; id: ICardContent["id"] };
+  type: "cardContent" | "cardTrack";
+  data: {
+    type: ICardContent["type"];
+    id: ICardContent["id"];
+    uri?: ITrack["uri"];
+  };
   position: { x: number; y: number };
 }
 export interface ContextMenuContextProviderProps {
@@ -29,6 +34,8 @@ export interface ContextMenuContextProviderProps {
   setContextMenuData: Dispatch<
     SetStateAction<ContextMenuContextProviderProps["contextMenuData"]>
   >;
+  modalData: ModalContextProviderProps["modalData"];
+  setModalData: ModalContextProviderProps["setModalData"];
 }
 
 export interface UseContextMenu {
@@ -37,4 +44,6 @@ export interface UseContextMenu {
     contextMenuData: ContextMenuContextProviderProps["contextMenuData"]
   ) => void;
   removeContextMenu: () => void;
+  modalData: ModalContextProviderProps["modalData"];
+  setModalData: ModalContextProviderProps["setModalData"];
 }

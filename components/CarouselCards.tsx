@@ -4,6 +4,7 @@ import { CardType } from "./CardContent";
 import Carousel from "./Carousel";
 import PresentationCard from "./PresentationCard";
 import { CardSubTitle } from "components";
+import { IMappedAlbums } from "pages/artist/[artistId]";
 
 export function CarouselCards({
   items,
@@ -11,7 +12,7 @@ export function CarouselCards({
   title,
   type,
 }: {
-  items: SpotifyApi.AlbumObjectSimplified[] | SpotifyApi.ArtistObjectFull[];
+  items: IMappedAlbums["items"] | SpotifyApi.ArtistObjectFull[];
   translations: Record<string, string>;
   title: string;
   type: CardType;

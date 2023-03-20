@@ -4,7 +4,8 @@ export const menuContextStyles = css`
   li :global(svg) {
     margin-left: 16px;
   }
-  li :global(a) {
+  li :global(a),
+  li :global(button) {
     text-decoration: none;
     color: #fff;
     cursor: default;

@@ -19,7 +19,14 @@ import {
 } from "components";
 import { CardType } from "components/CardTrack";
 import { Broom, Heart } from "components/icons";
-import { useAnalytics, useAuth, useHeader, useSpotify, useToast } from "hooks";
+import {
+  useAnalytics,
+  useAuth,
+  useHeader,
+  useModal,
+  useSpotify,
+  useToast,
+} from "hooks";
 import { PlaylistProps } from "pages/playlist/[playlist]";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
@@ -57,12 +64,12 @@ const Playlist: NextPage<
   } = useSpotify();
   const { setElement } = useHeader();
   const [isPin, setIsPin] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
   const isMyPlaylist = pageDetails?.owner?.id === user?.id;
   const [isFollowingThisPlaylist, setIsFollowingThisPlaylist] = useState(false);
   const [searchedData, setSearchedData] =
     useState<SpotifyApi.SearchResponse | null>(null);
   const { addToast } = useToast();
+  const { setModalData } = useModal();
 
   const tracks = useMemo(() => playListTracks ?? [], [playListTracks]);
 
@@ -198,7 +205,14 @@ const Playlist: NextPage<
                         className="broom"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setOpenModal(true);
+                          setModalData({
+                            title: "Playlist analysis",
+                            modalElement: (
+                              <RemoveTracksModal isLibrary={isLibrary} />
+                            ),
+                            minWidth: "860px",
+                            maxHeight: "80vh",
+                          });
                         }}
                       >
                         <Broom width={32} height={32} />
@@ -392,13 +406,6 @@ const Playlist: NextPage<
           </div>
         ) : null}
       </div>
-      {openModal ? (
-        <RemoveTracksModal
-          openModal={openModal}
-          setOpenModal={setOpenModal}
-          isLibrary={isLibrary}
-        />
-      ) : null}
       <style jsx>{`
         .save-to-playlist-button {
           border-radius: 500px;
@@ -438,6 +445,7 @@ const Playlist: NextPage<
         }
         .info button.broom {
           margin-left: 28px;
+          color: #fff;
         }
         .info button.broom:hover,
         .info button.broom:focus {

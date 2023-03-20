@@ -5,10 +5,11 @@ import { useRouter } from "next/router";
 
 import { PlayButton } from "components";
 import { useContextMenu, useHeader, useSpotify } from "hooks";
+import { ITrack } from "types/spotify";
 import { getMainColorFromImage } from "utils";
 
 interface ISingleTrackCard {
-  track: SpotifyApi.TrackObjectFull;
+  track: ITrack;
 }
 
 export default function SingleTrackCard({
@@ -21,12 +22,12 @@ export default function SingleTrackCard({
   const { allTracks } = useSpotify();
 
   useEffect(() => {
-    getMainColorFromImage(`cover-image-${track.id}`, setMainTrackColor);
+    getMainColorFromImage(`cover-image-${track.id || ""}`, setMainTrackColor);
   }, [track.id, router.asPath]);
 
   return (
     <Link
-      href={`/track/${track.id}`}
+      href={`/track/${track.id || ""}`}
       onMouseEnter={() => {
         setHeaderColor((prev) => {
           return mainTrackColor ?? prev;
@@ -46,9 +47,9 @@ export default function SingleTrackCard({
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={track.album.images[0].url}
+        src={track.album?.images[0].url}
         alt={track.name}
-        id={`cover-image-${track.id}`}
+        id={`cover-image-${track.id || ""}`}
       />
       <div>
         <p>{track.name}</p>

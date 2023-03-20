@@ -10,6 +10,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { UserWidget } from "components";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import { HeaderContextProvider } from "context/HeaderContext";
+import { ModalContextProvider } from "context/ModalContext";
 import { SpotifyContextProvider } from "context/SpotifyContext";
 import { ToastContextProvider } from "context/ToastContext";
 import UserContext, { IUserContext } from "context/UserContext";
@@ -56,17 +57,19 @@ const Template: ComponentStory<typeof UserWidget> = () => (
       <HeaderContextProvider>
         <SpotifyContextProvider>
           <ContextMenuContextProvider>
-            <div
-              style={{
-                padding: "2em",
-                maxWidth: "300px",
-              }}
-            >
-              <UserWidget
-                name="Marco Madera"
-                img="https://i.scdn.co/image/ab6775700000ee85483a9d1a47289376804a5234"
-              />
-            </div>
+            <ModalContextProvider>
+              <div
+                style={{
+                  padding: "2em",
+                  maxWidth: "300px",
+                }}
+              >
+                <UserWidget
+                  name="Marco Madera"
+                  img="https://i.scdn.co/image/ab6775700000ee85483a9d1a47289376804a5234"
+                />
+              </div>
+            </ModalContextProvider>
           </ContextMenuContextProvider>
         </SpotifyContextProvider>
       </HeaderContextProvider>

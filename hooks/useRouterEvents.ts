@@ -2,7 +2,7 @@ import { MutableRefObject, useEffect } from "react";
 
 import { useRouter } from "next/router";
 
-import { useSpotify } from "hooks";
+import { useModal, useSpotify } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
 
 export function useRouterEvents(
@@ -11,23 +11,24 @@ export function useRouterEvents(
 ): void {
   const router = useRouter();
   const { setDisplayInFullScreen } = useSpotify();
+  const { setModalData } = useModal();
 
   useEffect(() => {
     const app = appRef?.current;
 
-    router.events.on("routeChangeComplete", () => {
+    const handleRouteChange = () => {
       app?.scrollTo(0, 0);
       setDisplayInFullScreen(DisplayInFullScreen.App);
-    });
+      setModalData(null);
+    };
+
+    router.events.on("routeChangeComplete", handleRouteChange);
 
     app?.addEventListener("scroll", onAppScroll);
 
     return () => {
-      router.events.off("routeChangeComplete", () => {
-        app?.scrollTo(0, 0);
-        setDisplayInFullScreen(DisplayInFullScreen.App);
-      });
+      router.events.off("routeChangeComplete", handleRouteChange);
       app?.removeEventListener("scroll", onAppScroll);
     };
-  }, [router, appRef, onAppScroll, setDisplayInFullScreen]);
+  }, [router, appRef, onAppScroll, setDisplayInFullScreen, setModalData]);
 }

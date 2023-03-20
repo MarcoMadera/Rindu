@@ -7,6 +7,7 @@ import type { AppProps } from "next/app";
 import { Seo } from "components";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import { HeaderContextProvider } from "context/HeaderContext";
+import { ModalContextProvider } from "context/ModalContext";
 import { SpotifyContextProvider } from "context/SpotifyContext";
 import { ToastContextProvider } from "context/ToastContext";
 import TranslationsContext, {
@@ -30,11 +31,13 @@ const MyApp = ({
           <HeaderContextProvider>
             <SpotifyContextProvider>
               <ContextMenuContextProvider>
-                <Seo />
-                <MainLayout>
-                  <Component {...pageProps} />
-                  <Analytics />
-                </MainLayout>
+                <ModalContextProvider>
+                  <Seo />
+                  <MainLayout>
+                    <Component {...pageProps} />
+                    <Analytics />
+                  </MainLayout>
+                </ModalContextProvider>
               </ContextMenuContextProvider>
             </SpotifyContextProvider>
           </HeaderContextProvider>

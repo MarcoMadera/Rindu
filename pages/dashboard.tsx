@@ -18,10 +18,13 @@ import { useAuth, useHeader, useSpotify } from "hooks";
 import { AuthorizationResponse, ITrack } from "types/spotify";
 import {
   ACCESS_TOKEN_COOKIE,
+  deserialize,
   EXPIRE_TOKEN_COOKIE,
   fullFilledValue,
+  getArtistsOfTheWeek,
   getAuth,
   getTopTracksCards,
+  getTracksOfTheWeek,
   getTranslations,
   Page,
   REFRESH_TOKEN_COOKIE,
@@ -42,20 +45,37 @@ import {
 } from "utils/spotifyCalls";
 import { TopType } from "utils/spotifyCalls/getMyTop";
 
+interface MappedPlaylist {
+  id: string;
+  name: string;
+  description: string | null;
+  images: SpotifyApi.ImageObject[];
+  uri: string;
+  type: "playlist";
+  ownerDisplayName?: string;
+}
+
+interface FeaturedPlaylistsMapped {
+  message?: string | undefined;
+  playlists: {
+    items: MappedPlaylist[] | null;
+  };
+}
+
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
   accessToken: string | null;
-  featuredPlaylists: SpotifyApi.ListOfFeaturedPlaylistsResponse | null;
+  featuredPlaylists: FeaturedPlaylistsMapped | null;
   newReleases: SpotifyApi.ListOfNewReleasesResponse | null;
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
-  topTracks: SpotifyApi.UsersTopTracksResponse | null;
+  topTracks: ITrack[] | null;
   topArtists: SpotifyApi.UsersTopArtistsResponse | null;
   tracksRecommendations: ITrack[] | null;
   tracksInLibrary: boolean[] | null;
   translations: Record<string, string>;
   artistOfTheWeek: SpotifyApi.ArtistObjectFull[] | null;
-  tracksOfTheWeek: SpotifyApi.TrackObjectFull[] | null;
-  thisPlaylists: SpotifyApi.PlaylistObjectFull[] | null;
+  tracksOfTheWeek: ITrack[] | null;
+  thisPlaylists: MappedPlaylist[] | null;
 }
 
 const Dashboard: NextPage<DashboardProps> = ({
@@ -120,13 +140,15 @@ const Dashboard: NextPage<DashboardProps> = ({
 
   return (
     <ContentContainer>
-      {topTracks && topTracks.items.length > 0 ? (
+      {topTracks && topTracks.length > 0 ? (
         <TopTracks
           heading={translations.topTracksHeading}
           topTracks={topTracks}
         />
       ) : null}
-      {featuredPlaylists && featuredPlaylists.playlists?.items?.length > 0 ? (
+      {featuredPlaylists &&
+      featuredPlaylists.playlists?.items &&
+      featuredPlaylists.playlists?.items?.length > 0 ? (
         <Carousel
           title={
             featuredPlaylists.message ?? translations.featuredPlaylistsHeading
@@ -135,7 +157,7 @@ const Dashboard: NextPage<DashboardProps> = ({
         >
           {featuredPlaylists.playlists?.items?.map((item) => {
             if (!item) return null;
-            const { images, name, description, id, owner } = item;
+            const { images, name, description, id, ownerDisplayName } = item;
             return (
               <PresentationCard
                 type={CardType.PLAYLIST}
@@ -144,7 +166,7 @@ const Dashboard: NextPage<DashboardProps> = ({
                 title={name}
                 subTitle={
                   decode(description) ||
-                  `${translations.by} ${owner?.display_name ?? ""}`
+                  `${translations.by} ${ownerDisplayName ?? ""}`
                 }
                 id={id}
               />
@@ -253,7 +275,7 @@ const Dashboard: NextPage<DashboardProps> = ({
         <Carousel title={translations.thisPlaylistsHeading} gap={24}>
           {thisPlaylists?.map((item) => {
             if (!item) return null;
-            const { images, name, description, id, owner } = item;
+            const { images, name, description, id, ownerDisplayName } = item;
             return (
               <PresentationCard
                 type={CardType.PLAYLIST}
@@ -262,7 +284,7 @@ const Dashboard: NextPage<DashboardProps> = ({
                 title={name}
                 subTitle={
                   decode(description) ||
-                  `${translations.by} ${owner?.display_name ?? ""}`
+                  `${translations.by} ${ownerDisplayName ?? ""}`
                 }
                 id={id}
               />
@@ -331,39 +353,6 @@ const Dashboard: NextPage<DashboardProps> = ({
   );
 };
 export default Dashboard;
-
-interface IArtistOfTheWeek {
-  artists: {
-    artist: {
-      name: string;
-    }[];
-  };
-}
-async function getArtistsOfTheWeek(apiKey: string): Promise<IArtistOfTheWeek> {
-  const artistsOfTheWeekRes = await fetch(
-    `https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=${apiKey}&format=json`
-  );
-  const artistsOfTheWeek =
-    (await artistsOfTheWeekRes.json()) as IArtistOfTheWeek;
-  return artistsOfTheWeek;
-}
-interface ITracksOfTheWeek {
-  tracks: {
-    track: {
-      name: string;
-      artist: {
-        name: string;
-      };
-    }[];
-  };
-}
-async function getTracksOfTheWeek(apiKey: string): Promise<ITracksOfTheWeek> {
-  const tracksOfTheWeekRes = await fetch(
-    `https://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=${apiKey}&format=json`
-  );
-  const tracksOfTheWeek = (await tracksOfTheWeekRes.json()) as ITracksOfTheWeek;
-  return tracksOfTheWeek;
-}
 
 export async function getServerSideProps({
   res,
@@ -596,19 +585,74 @@ export async function getServerSideProps({
     cookies
   );
 
+  function mappedFeaturedPlaylists(
+    item: SpotifyApi.ListOfFeaturedPlaylistsResponse | null
+  ) {
+    if (!item) return null;
+    return {
+      message: item.message,
+      playlists: {
+        items: mappedPlaylistData(item.playlists.items),
+      },
+    };
+  }
+
+  function mappedPlaylistData(
+    items: SpotifyApi.PlaylistObjectSimplified[] | null | undefined
+  ) {
+    if (!items) return null;
+    return items.map((item) => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+      images: item.images,
+      uri: item.uri,
+      type: item.type,
+      ownerDisplayName: item.owner.display_name,
+    }));
+  }
+
+  function mappedTracksData(tracks?: ITrack[]): ITrack[] | null {
+    if (!tracks) return null;
+    return tracks.map((track) => ({
+      id: track.id,
+      name: track.name,
+      artists:
+        track?.artists?.map((artist) => {
+          return {
+            name: artist.name,
+            id: artist.id,
+            type: artist.type,
+            uri: artist.uri,
+          };
+        }) || [],
+      album: track.album,
+      duration_ms: track.duration_ms,
+      uri: track.uri,
+      explicit: track.explicit,
+      is_playable: !!track.is_playable,
+      preview_url: track.preview_url,
+      type: track.type,
+      is_local: track.is_local,
+    }));
+  }
+
   return {
     props: {
       user: user || null,
       accessToken: accessToken ?? null,
-      featuredPlaylists: fullFilledValue(featuredPlaylists),
+      featuredPlaylists:
+        mappedFeaturedPlaylists(fullFilledValue(featuredPlaylists)) || null,
       newReleases: fullFilledValue(newReleases),
       categories: fullFilledValue(categories),
-      topTracks: fullFilledValue(topTracks),
+      topTracks:
+        deserialize(mappedTracksData(fullFilledValue(topTracks)?.items)) || [],
       topArtists: fullFilledValue(topArtists),
-      artistOfTheWeek: artistResult,
-      tracksOfTheWeek: tracksResult,
-      thisPlaylists: thisPlaylistsResult || [],
-      tracksRecommendations,
+      artistOfTheWeek: [],
+      tracksOfTheWeek: deserialize(mappedTracksData(tracksResult)) || [],
+      thisPlaylists: deserialize(mappedPlaylistData(thisPlaylistsResult)) || [],
+      tracksRecommendations:
+        deserialize(mappedTracksData(tracksRecommendations)) || [],
       tracksInLibrary,
       translations,
     },

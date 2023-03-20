@@ -20,7 +20,6 @@ export interface ToastContextProviderProps {
   setToasts: Dispatch<SetStateAction<ToastContextProviderProps["toasts"]>>;
 }
 
-// dinamic import the Toast component
 const Toast = dynamic(() => import("components/Toast"), {
   ssr: false,
 });

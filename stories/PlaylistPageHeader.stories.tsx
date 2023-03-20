@@ -5,6 +5,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { PageHeader } from "components";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import { HeaderContextProvider } from "context/HeaderContext";
+import { ModalContextProvider } from "context/ModalContext";
 import { SpotifyContextProvider } from "context/SpotifyContext";
 import { ToastContextProvider } from "context/ToastContext";
 import { UserContextProvider } from "context/UserContext";
@@ -34,7 +35,9 @@ const Template: ComponentStory<typeof PageHeader> = (args) => (
       <HeaderContextProvider>
         <SpotifyContextProvider>
           <ContextMenuContextProvider>
-            <PageHeader {...args} />
+            <ModalContextProvider>
+              <PageHeader {...args} />
+            </ModalContextProvider>
           </ContextMenuContextProvider>
         </SpotifyContextProvider>
       </HeaderContextProvider>
