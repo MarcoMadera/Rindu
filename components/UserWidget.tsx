@@ -151,6 +151,16 @@ export default function UserWidget({
             {translations.shortCutsTitle}
           </button>
         </div>
+        <div role="presentation">
+          <Link
+            href={"/preferences"}
+            role="menuitem"
+            tabIndex={-1}
+            className="option"
+          >
+            {translations.preferences}
+          </Link>
+        </div>
         <div role="presentation" className="delimiter">
           <button
             type="button"
