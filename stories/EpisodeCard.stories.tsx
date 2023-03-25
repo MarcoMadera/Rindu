@@ -1,21 +1,20 @@
 import React from "react";
 
-import { boolean, text, withKnobs } from "@storybook/addon-knobs";
+import { withKnobs } from "@storybook/addon-knobs";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import { EpisodeCard } from "components";
-import { ContextMenuContextProvider } from "context/ContextMenuContext";
-import { HeaderContextProvider } from "context/HeaderContext";
-import SpotifyContext from "context/SpotifyContext";
-import { ToastContextProvider } from "context/ToastContext";
-import UserContext from "context/UserContext";
 import { HeaderType } from "types/pageHeader";
-import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
+
 export default {
   title: "Components/EpisodeCard",
   component: EpisodeCard,
   parameters: {
     layout: "fullscreen",
+    container: {
+      backgroundTheme: "dark",
+      style: { width: "fit-content" },
+    },
   },
   argTypes: {
     id: { control: "text" },
@@ -31,55 +30,7 @@ export default {
 } as ComponentMeta<typeof EpisodeCard>;
 
 const Template: ComponentStory<typeof EpisodeCard> = (args) => (
-  <ToastContextProvider>
-    <UserContext.Provider
-      value={{
-        isLogin: true,
-        user: {
-          product: "premium",
-        } as SpotifyApi.UserObjectPrivate,
-        accessToken: text("accessToken", "you need a token here"),
-        setAccessToken: () => "token",
-        setIsLogin: () => true,
-        setUser: () => ({}),
-      }}
-    >
-      <HeaderContextProvider>
-        <SpotifyContext.Provider
-          value={
-            {
-              deviceId: text("deviceId", ""),
-              playlists: [] as PlaylistItems,
-              allTracks: [{ uri: args.item.uri }] as ITrack[],
-              currentlyPlaying: {
-                uri: boolean("IsPlaying", false) ? args.item.uri : undefined,
-              } as ITrack,
-              isPlaying: boolean("IsPlaying", false),
-              setPlayedSource: (() => "") as React.Dispatch<
-                React.SetStateAction<string | undefined>
-              >,
-              setPlaylistPlayingId: (() => "") as React.Dispatch<
-                React.SetStateAction<string | undefined>
-              >,
-            } as ISpotifyContext
-          }
-        >
-          <ContextMenuContextProvider>
-            <div
-              style={{
-                margin: "2em",
-                background: "#121212",
-                minHeight: "180px",
-                padding: "30px",
-              }}
-            >
-              <EpisodeCard {...args} />
-            </div>
-          </ContextMenuContextProvider>
-        </SpotifyContext.Provider>
-      </HeaderContextProvider>
-    </UserContext.Provider>
-  </ToastContextProvider>
+  <EpisodeCard {...args} />
 );
 
 export const Default = Template.bind({});

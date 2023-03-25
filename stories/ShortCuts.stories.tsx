@@ -2,10 +2,10 @@ import React from "react";
 
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
-import { ModalContainer, RemoveTracksModal } from "components";
+import { ModalContainer, ShortCuts } from "components";
 export default {
-  title: "Components/RemoveTracksModal",
-  component: RemoveTracksModal,
+  title: "Components/ShortCuts",
+  component: ShortCuts,
   parameters: {
     layout: "fullscreen",
     container: {
@@ -13,9 +13,9 @@ export default {
       disablePadding: true,
     },
   },
-} as ComponentMeta<typeof RemoveTracksModal>;
+} as ComponentMeta<typeof ShortCuts>;
 
-const Template: ComponentStory<typeof RemoveTracksModal> = (args) => {
+const Template: ComponentStory<typeof ShortCuts> = () => {
   return (
     <ModalContainer
       title="Details"
@@ -24,12 +24,9 @@ const Template: ComponentStory<typeof RemoveTracksModal> = (args) => {
       }}
       minWidth="600px"
     >
-      <RemoveTracksModal {...args} />
+      <ShortCuts />
     </ModalContainer>
   );
 };
 
 export const Default = Template.bind({});
-Default.args = {
-  isLibrary: true,
-};

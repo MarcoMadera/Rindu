@@ -1,20 +1,18 @@
 import React from "react";
 
-import { boolean, text, withKnobs } from "@storybook/addon-knobs";
+import { withKnobs } from "@storybook/addon-knobs";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import CardTrack, { CardType } from "../components/CardTrack";
-import { ContextMenuContextProvider } from "context/ContextMenuContext";
-import { HeaderContextProvider } from "context/HeaderContext";
-import SpotifyContext from "context/SpotifyContext";
-import { ToastContextProvider } from "context/ToastContext";
-import UserContext from "context/UserContext";
-import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
+import { ITrack } from "types/spotify";
 export default {
   title: "Components/CardTrack",
   component: CardTrack,
   parameters: {
     layout: "fullscreen",
+    container: {
+      backgroundTheme: "dark",
+    },
   },
   decorators: [withKnobs],
   argTypes: {
@@ -25,55 +23,7 @@ export default {
 } as ComponentMeta<typeof CardTrack>;
 
 const Template: ComponentStory<typeof CardTrack> = (args) => (
-  <ToastContextProvider>
-    <UserContext.Provider
-      value={{
-        isLogin: true,
-        user: {
-          product: "premium",
-        } as SpotifyApi.UserObjectPrivate,
-        accessToken: text("accessToken", "you need a token here"),
-        setAccessToken: () => "token",
-        setIsLogin: () => true,
-        setUser: () => ({}),
-      }}
-    >
-      <HeaderContextProvider>
-        <SpotifyContext.Provider
-          value={
-            {
-              deviceId: text("deviceId", ""),
-              playlists: [] as PlaylistItems,
-              allTracks: [{ uri: args.track?.uri }] as ITrack[],
-              currentlyPlaying: {
-                uri: boolean("IsPlaying", false) ? args.track?.uri : undefined,
-              } as ITrack,
-              isPlaying: boolean("IsPlaying", false),
-              setPlayedSource: (() => "") as React.Dispatch<
-                React.SetStateAction<string | undefined>
-              >,
-              setPlaylistPlayingId: (() => "") as React.Dispatch<
-                React.SetStateAction<string | undefined>
-              >,
-            } as ISpotifyContext
-          }
-        >
-          <ContextMenuContextProvider>
-            <div
-              style={{
-                margin: "2em",
-                background: "#121212",
-                minHeight: "180px",
-                padding: "30px",
-              }}
-            >
-              <CardTrack {...args} />
-            </div>
-          </ContextMenuContextProvider>
-        </SpotifyContext.Provider>
-      </HeaderContextProvider>
-    </UserContext.Provider>
-  </ToastContextProvider>
+  <CardTrack {...args} />
 );
 
 const track = {

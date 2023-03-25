@@ -9,6 +9,9 @@ export default {
   component: BigPill,
   parameters: {
     layout: "fullscreen",
+    container: {
+      backgroundTheme: "dark",
+    },
   },
   argTypes: {
     title: { control: "text" },
@@ -19,16 +22,7 @@ export default {
 } as ComponentMeta<typeof BigPill>;
 
 const Template: ComponentStory<typeof BigPill> = (args) => (
-  <div
-    style={{
-      margin: "2em",
-      background: "#121212",
-      minHeight: "180px",
-      padding: "30px",
-    }}
-  >
-    <BigPill {...args} />
-  </div>
+  <BigPill {...args} />
 );
 
 export const Artist = Template.bind({});

@@ -5,6 +5,7 @@ import {
   ReactElement,
   SetStateAction,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -23,9 +24,14 @@ export interface IUserContext {
 const UserContext = createContext<IUserContext>(null!);
 export default UserContext;
 
+interface IUserContextProviderProps {
+  value?: IUserContext;
+}
+
 export function UserContextProvider({
   children,
-}: PropsWithChildren): ReactElement {
+  value: propsValue,
+}: PropsWithChildren<IUserContextProviderProps>): ReactElement {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [user, setUser] = useState<SpotifyApi.UserObjectPrivate | null>(null);
@@ -41,18 +47,26 @@ export function UserContextProvider({
     }
   }, [router, isLogin]);
 
-  return (
-    <UserContext.Provider
-      value={{
-        isLogin,
-        user,
-        setIsLogin,
-        setUser,
-        accessToken,
-        setAccessToken,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
+  const value = useMemo(
+    () => ({
+      isLogin,
+      user,
+      setIsLogin,
+      setUser,
+      accessToken,
+      setAccessToken,
+      ...propsValue,
+    }),
+    [
+      isLogin,
+      user,
+      setIsLogin,
+      setUser,
+      accessToken,
+      setAccessToken,
+      propsValue,
+    ]
   );
+
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }

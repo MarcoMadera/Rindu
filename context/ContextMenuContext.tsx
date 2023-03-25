@@ -2,41 +2,51 @@ import {
   createContext,
   PropsWithChildren,
   ReactElement,
+  useMemo,
   useState,
 } from "react";
 
 import dynamic from "next/dynamic";
 
-import { ModalContextProviderProps } from "./ModalContext";
+import { IModalContext } from "./ModalContext";
 import { ModalContainer } from "components";
-import { ContextMenuContextProviderProps } from "types/contextMenu";
+import { IContextMenuContext } from "types/contextMenu";
 
-const ContextMenuContext = createContext<
-  ContextMenuContextProviderProps | undefined
->(undefined);
+const ContextMenuContext = createContext<IContextMenuContext | undefined>(
+  undefined
+);
 
 const ContextMenu = dynamic(() => import("components/ContextMenu"), {
   ssr: false,
 });
 
+interface IContextMenuContextProviderProps {
+  value?: IContextMenuContext;
+}
+
 export function ContextMenuContextProvider({
   children,
-}: PropsWithChildren): ReactElement {
+  value: propsValue,
+}: PropsWithChildren<IContextMenuContextProviderProps>): ReactElement {
   const [contextMenuData, setContextMenuData] =
-    useState<ContextMenuContextProviderProps["contextMenuData"]>(undefined);
-  const [modalData, setModalData] = useState<
-    ModalContextProviderProps["modalData"] | null
-  >(null);
+    useState<IContextMenuContext["contextMenuData"]>(undefined);
+  const [modalData, setModalData] = useState<IModalContext["modalData"] | null>(
+    null
+  );
+
+  const value = useMemo(
+    () => ({
+      contextMenuData,
+      setContextMenuData,
+      modalData,
+      setModalData,
+      ...propsValue,
+    }),
+    [contextMenuData, setContextMenuData, modalData, setModalData, propsValue]
+  );
 
   return (
-    <ContextMenuContext.Provider
-      value={{
-        contextMenuData,
-        setContextMenuData,
-        modalData,
-        setModalData,
-      }}
-    >
+    <ContextMenuContext.Provider value={value}>
       <ContextMenu />
       {modalData && (
         <ModalContainer

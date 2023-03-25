@@ -10,6 +10,10 @@ export default {
   component: RouterButtons,
   parameters: {
     layout: "fullscreen",
+    container: {
+      backgroundTheme: "dark",
+      disablePadding: true,
+    },
   },
   decorators: [withKnobs],
 } as ComponentMeta<typeof RouterButtons>;

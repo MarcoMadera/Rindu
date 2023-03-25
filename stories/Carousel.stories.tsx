@@ -10,6 +10,9 @@ export default {
   component: Carousel,
   parameters: {
     layout: "fullscreen",
+    container: {
+      disablePadding: true,
+    },
   },
   argTypes: {
     title: { control: "text" },

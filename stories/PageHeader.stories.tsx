@@ -3,12 +3,6 @@ import React from "react";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import { PageHeader } from "components";
-import { ContextMenuContextProvider } from "context/ContextMenuContext";
-import { HeaderContextProvider } from "context/HeaderContext";
-import { ModalContextProvider } from "context/ModalContext";
-import { SpotifyContextProvider } from "context/SpotifyContext";
-import { ToastContextProvider } from "context/ToastContext";
-import { UserContextProvider } from "context/UserContext";
 import { HeaderType } from "types/pageHeader";
 
 export default {
@@ -16,6 +10,9 @@ export default {
   component: PageHeader,
   parameters: {
     layout: "fullscreen",
+    container: {
+      disablePadding: true,
+    },
   },
   argTypes: {
     id: { control: "text" },
@@ -30,19 +27,7 @@ export default {
 } as ComponentMeta<typeof PageHeader>;
 
 const Template: ComponentStory<typeof PageHeader> = (args) => (
-  <ToastContextProvider>
-    <UserContextProvider>
-      <HeaderContextProvider>
-        <SpotifyContextProvider>
-          <ContextMenuContextProvider>
-            <ModalContextProvider>
-              <PageHeader {...args} />
-            </ModalContextProvider>
-          </ContextMenuContextProvider>
-        </SpotifyContextProvider>
-      </HeaderContextProvider>
-    </UserContextProvider>
-  </ToastContextProvider>
+  <PageHeader {...args} />
 );
 
 export const Playlist = Template.bind({});

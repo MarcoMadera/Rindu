@@ -3,8 +3,7 @@ import { ReactElement, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-import { ContentContainer } from "components";
-import { Heading } from "components";
+import { ContentContainer, Heading } from "components";
 import { useAnalytics } from "hooks";
 
 export default function Custom404(): ReactElement {

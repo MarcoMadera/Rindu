@@ -10,15 +10,11 @@ import {
 
 import { ModalContainer } from "components";
 
-const ModalContext = createContext<ModalContextProviderProps | undefined>(
-  undefined
-);
+const ModalContext = createContext<IModalContext | undefined>(undefined);
 
-export interface ModalContextProviderProps {
+export interface IModalContext {
   modalData: IModalData | null;
-  setModalData: Dispatch<
-    SetStateAction<ModalContextProviderProps["modalData"]>
-  >;
+  setModalData: Dispatch<SetStateAction<IModalContext["modalData"]>>;
 }
 
 interface IModalData {
@@ -30,17 +26,23 @@ interface IModalData {
   minHeight?: string;
 }
 
+interface IModalContextProviderProps {
+  value?: IModalContext;
+}
+
 export function ModalContextProvider({
   children,
-}: PropsWithChildren): ReactElement {
+  value: propsValue,
+}: PropsWithChildren<IModalContextProviderProps>): ReactElement {
   const [modalData, setModalData] = useState<IModalData | null>(null);
 
   const value = useMemo(
     () => ({
       modalData,
       setModalData,
+      ...propsValue,
     }),
-    [modalData, setModalData]
+    [modalData, setModalData, propsValue]
   );
 
   return (

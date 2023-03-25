@@ -1,21 +1,9 @@
 import React from "react";
 
-import {
-  boolean,
-  optionsKnob as options,
-  text,
-  withKnobs,
-} from "@storybook/addon-knobs";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import { PresentationCard, SubTitle } from "components";
 import { CardType } from "components/CardContent";
-import { ContextMenuContextProvider } from "context/ContextMenuContext";
-import { HeaderContextProvider } from "context/HeaderContext";
-import SpotifyContext from "context/SpotifyContext";
-import { ToastContextProvider } from "context/ToastContext";
-import UserContext from "context/UserContext";
-import { ISpotifyContext, ITrack, PlaylistItems } from "types/spotify";
 
 export default {
   title: "Components/CardContent",
@@ -24,77 +12,43 @@ export default {
     layout: "fullscreen",
   },
   argTypes: {
-    id: { control: "text" },
-    title: { control: "text" },
-    subTitle: { control: "text", type: "string" },
+    id: {
+      control: "text",
+      type: "string",
+      description:
+        "id of the track or playlist, found in the url https://open.spotify.com/track/3EKqxoUzL0ly6lFcMdxi69 the id is 3EKqxoUzL0ly6lFcMdxi69",
+    },
+    title: {
+      control: "text",
+      type: "string",
+      description: "title of the card",
+    },
+    subTitle: { control: "text", type: "string", description: "subTitle" },
     images: { control: "array" },
     type: {
+      description: "type of card",
       options: CardType,
-      control: { type: "select" },
+      control: {
+        type: "select",
+        labels: CardType,
+        description: "type of card",
+      },
     },
-    track: { control: "object" },
-    isSingle: { control: "boolean" },
+    track: {
+      control: "object",
+      description: "track object",
+      type: "string",
+    },
+    isSingle: {
+      control: "boolean",
+      defaultValue: true,
+      description: "isSingle",
+    },
   },
-  decorators: [withKnobs],
 } as ComponentMeta<typeof PresentationCard>;
 
 const Template: ComponentStory<typeof PresentationCard> = (args) => (
-  <div style={{ maxWidth: "192px", margin: "2em" }}>
-    <ToastContextProvider>
-      <UserContext.Provider
-        value={{
-          isLogin: true,
-          user: {
-            product: options(
-              "product",
-              {
-                Premium: "premium",
-                Open: "open",
-              },
-              "premium",
-              {
-                display: "inline-radio",
-              }
-            ),
-          } as SpotifyApi.UserObjectPrivate,
-          accessToken: text("accessToken", "you need a token here"),
-          setAccessToken: () => "token",
-          setIsLogin: () => true,
-          setUser: () => ({}),
-        }}
-      >
-        <HeaderContextProvider>
-          <SpotifyContext.Provider
-            value={
-              {
-                deviceId: text("deviceId", ""),
-                playlists: [] as PlaylistItems,
-                currentlyPlaying: boolean("IsPlaying", false)
-                  ? ({
-                      id: args.id,
-                    } as ITrack)
-                  : undefined,
-                playlistPlayingId: boolean("IsPlaying", false)
-                  ? args.id
-                  : undefined,
-                isPlaying: boolean("IsPlaying", false),
-                setPlayedSource: (() => "") as React.Dispatch<
-                  React.SetStateAction<string | undefined>
-                >,
-                setPlaylistPlayingId: (() => "") as React.Dispatch<
-                  React.SetStateAction<string | undefined>
-                >,
-              } as ISpotifyContext
-            }
-          >
-            <ContextMenuContextProvider>
-              <PresentationCard {...args} />
-            </ContextMenuContextProvider>
-          </SpotifyContext.Provider>
-        </HeaderContextProvider>
-      </UserContext.Provider>
-    </ToastContextProvider>
-  </div>
+  <PresentationCard {...args} />
 );
 
 export const Playlist = Template.bind({});

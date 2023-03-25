@@ -9,20 +9,14 @@ export default {
   component: LoadingSpinner,
   parameters: {
     layout: "fullscreen",
+    container: {
+      backgroundTheme: "dark",
+    },
   },
 } as ComponentMeta<typeof LoadingSpinner>;
 
 const Template: ComponentStory<typeof LoadingSpinner> = () => {
-  return (
-    <div
-      style={{
-        padding: "2em",
-        background: "rgba(0, 0, 0, 0.9)",
-      }}
-    >
-      <LoadingSpinner />
-    </div>
-  );
+  return <LoadingSpinner />;
 };
 
 export const Default = Template.bind({});

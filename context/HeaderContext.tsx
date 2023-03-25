@@ -5,6 +5,7 @@ import {
   ReactElement,
   SetStateAction,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -27,9 +28,14 @@ export interface IHeaderContext {
 const HeaderContext = createContext<IHeaderContext>(null!);
 export default HeaderContext;
 
+interface IHeaderContextProviderProps {
+  value?: IHeaderContext;
+}
+
 export function HeaderContextProvider({
   children,
-}: PropsWithChildren): ReactElement {
+  value: propsValue,
+}: PropsWithChildren<IHeaderContextProviderProps>): ReactElement {
   const [displayOnFixed, setDisplayOnFixed] = useState<boolean>(false);
   const [alwaysDisplayColor, setAlwaysDisplayColor] = useState<boolean>(false);
   const [disableOpacityChange, setDisableOpacityChange] =
@@ -48,24 +54,40 @@ export function HeaderContextProvider({
     };
   }, [headerColor]);
 
+  const value = useMemo(
+    () => ({
+      displayOnFixed,
+      setDisplayOnFixed,
+      element,
+      setElement,
+      headerColor,
+      setHeaderColor,
+      alwaysDisplayColor,
+      setAlwaysDisplayColor,
+      disableOpacityChange,
+      setDisableOpacityChange,
+      disableBackground,
+      setDisableBackground,
+      ...propsValue,
+    }),
+    [
+      displayOnFixed,
+      setDisplayOnFixed,
+      element,
+      setElement,
+      headerColor,
+      setHeaderColor,
+      alwaysDisplayColor,
+      setAlwaysDisplayColor,
+      disableOpacityChange,
+      setDisableOpacityChange,
+      disableBackground,
+      setDisableBackground,
+      propsValue,
+    ]
+  );
+
   return (
-    <HeaderContext.Provider
-      value={{
-        displayOnFixed,
-        setDisplayOnFixed,
-        element,
-        setElement,
-        headerColor,
-        setHeaderColor,
-        alwaysDisplayColor,
-        setAlwaysDisplayColor,
-        disableOpacityChange,
-        setDisableOpacityChange,
-        disableBackground,
-        setDisableBackground,
-      }}
-    >
-      {children}
-    </HeaderContext.Provider>
+    <HeaderContext.Provider value={value}>{children}</HeaderContext.Provider>
   );
 }

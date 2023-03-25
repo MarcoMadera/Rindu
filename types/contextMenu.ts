@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 
 import { ICardContent } from "components/CardContent";
-import { ModalContextProviderProps } from "context/ModalContext";
+import { IModalContext } from "context/ModalContext";
 import { ITrack } from "types/spotify";
 
 export interface ICardTrackContextMenuData {
@@ -26,24 +26,24 @@ export interface ICardContentContextMenuData {
   };
   position: { x: number; y: number };
 }
-export interface ContextMenuContextProviderProps {
+export interface IContextMenuContext {
   contextMenuData:
     | ICardTrackContextMenuData
     | ICardContentContextMenuData
     | undefined;
   setContextMenuData: Dispatch<
-    SetStateAction<ContextMenuContextProviderProps["contextMenuData"]>
+    SetStateAction<IContextMenuContext["contextMenuData"]>
   >;
-  modalData: ModalContextProviderProps["modalData"];
-  setModalData: ModalContextProviderProps["setModalData"];
+  modalData: IModalContext["modalData"];
+  setModalData: IModalContext["setModalData"];
 }
 
 export interface UseContextMenu {
-  contextMenuData: ContextMenuContextProviderProps["contextMenuData"];
+  contextMenuData: IContextMenuContext["contextMenuData"];
   addContextMenu: (
-    contextMenuData: ContextMenuContextProviderProps["contextMenuData"]
+    contextMenuData: IContextMenuContext["contextMenuData"]
   ) => void;
   removeContextMenu: () => void;
-  modalData: ModalContextProviderProps["modalData"];
-  setModalData: ModalContextProviderProps["setModalData"];
+  modalData: IModalContext["modalData"];
+  setModalData: IModalContext["setModalData"];
 }
