@@ -9,20 +9,17 @@ export default {
   component: ExplicitSign,
   parameters: {
     layout: "fullscreen",
+    container: {
+      backgroundTheme: "dark",
+      style: {
+        width: "fit-content",
+      },
+    },
   },
 } as ComponentMeta<typeof ExplicitSign>;
 
 const Template: ComponentStory<typeof ExplicitSign> = () => {
-  return (
-    <div
-      style={{
-        padding: "2em",
-        background: "rgba(0, 0, 0, 0.9)",
-      }}
-    >
-      <ExplicitSign />
-    </div>
-  );
+  return <ExplicitSign />;
 };
 
 export const Default = Template.bind({});

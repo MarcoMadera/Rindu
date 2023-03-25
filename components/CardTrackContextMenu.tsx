@@ -217,6 +217,7 @@ export default function CardTrackContextMenu({
             setModalData({
               title: "Embed",
               modalElement: <EmbedModal type={track.type} id={track.id} />,
+              maxHeight: "100%",
             });
             removeContextMenu();
           }}

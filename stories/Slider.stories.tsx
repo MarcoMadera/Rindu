@@ -9,20 +9,14 @@ export default {
   component: Slider,
   parameters: {
     layout: "fullscreen",
+    container: {
+      backgroundTheme: "dark",
+    },
   },
 } as ComponentMeta<typeof Slider>;
 
 const Template: ComponentStory<typeof Slider> = (args) => {
-  return (
-    <div
-      style={{
-        padding: "2em",
-        background: "rgba(0, 0, 0, 0.9)",
-      }}
-    >
-      <Slider {...args} />
-    </div>
-  );
+  return <Slider {...args} />;
 };
 
 export const WithUpdate = Template.bind({});

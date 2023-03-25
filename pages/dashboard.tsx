@@ -56,7 +56,7 @@ interface MappedPlaylist {
 }
 
 interface FeaturedPlaylistsMapped {
-  message?: string | undefined;
+  message?: string;
   playlists: {
     items: MappedPlaylist[] | null;
   };

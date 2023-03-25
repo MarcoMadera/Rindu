@@ -13,16 +13,7 @@ export default {
 } as ComponentMeta<typeof LoginButton>;
 
 const Template: ComponentStory<typeof LoginButton> = () => {
-  return (
-    <div
-      style={{
-        padding: "2em",
-        background: "rgba(0, 0, 0, 0.9)",
-      }}
-    >
-      <LoginButton />
-    </div>
-  );
+  return <LoginButton />;
 };
 
 export const Default = Template.bind({});

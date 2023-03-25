@@ -11,13 +11,13 @@ import {
 import { createPortal } from "react-dom";
 
 import Heading from "./Heading";
-import { ModalContextProviderProps } from "context/ModalContext";
+import { IModalContext } from "context/ModalContext";
 import { useFocusTrap, useTranslations } from "hooks";
 import { AsType } from "types/heading";
 
 interface IModalProps {
   title: string;
-  setModalData: ModalContextProviderProps["setModalData"];
+  setModalData: IModalContext["setModalData"];
   minWidth?: string;
   maxWidth?: string;
   minHeight?: string;

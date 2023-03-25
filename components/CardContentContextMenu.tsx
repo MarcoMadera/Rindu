@@ -82,6 +82,7 @@ export default function CardContentContextMenu({
               setModalData({
                 title: "Embed",
                 modalElement: <EmbedModal type={data.type} id={data.id} />,
+                maxHeight: "100%",
               });
               removeContextMenu();
             }}

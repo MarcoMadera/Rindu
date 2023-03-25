@@ -132,7 +132,7 @@ export default function EditPlaylistDetails({
             draggable="false"
             loading="eager"
             src={imgUrl || "/images/playlist-default.png"}
-            alt="Tracks - Corto plazo"
+            alt="Playlist cover"
             id="edit-cover-image"
             sizes="(min-width: 1280px) 232px, 192px"
           />

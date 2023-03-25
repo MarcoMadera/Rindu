@@ -43,12 +43,18 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
     setHideSideBar(isSmall || shouldDisplayPlayer);
   }, 1000);
 
-  const playerHeight =
-    currentlyPlaying?.id && shouldDisplayPlayer
-      ? "0"
-      : currentlyPlaying?.id && !shouldDisplayPlayer
-      ? "150"
-      : "68";
+  const defaultPlayerHeight = "68";
+  const isPlayingAndPlayerHidden = currentlyPlaying?.id && !shouldDisplayPlayer;
+  const isPlayingAndPlayerVisible = currentlyPlaying?.id && shouldDisplayPlayer;
+
+  function getPlayerHeight() {
+    if (isPlayingAndPlayerVisible) return "0";
+    if (isPlayingAndPlayerHidden) return "150";
+
+    return defaultPlayerHeight;
+  }
+
+  const playerHeight = getPlayerHeight();
 
   useEffect(() => {
     if (shouldDisplayPlayer && appRef.current) {

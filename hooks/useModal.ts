@@ -1,8 +1,8 @@
 import { useContext } from "react";
 
-import ModalContext, { ModalContextProviderProps } from "context/ModalContext";
+import ModalContext, { IModalContext } from "context/ModalContext";
 
-export function useModal(): ModalContextProviderProps {
+export function useModal(): IModalContext {
   const context = useContext(ModalContext);
 
   if (!context) {

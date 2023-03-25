@@ -10,6 +10,10 @@ export default {
   component: TrackListHeader,
   parameters: {
     layout: "fullscreen",
+    container: {
+      backgroundTheme: "dark",
+      disablePadding: true,
+    },
   },
 } as ComponentMeta<typeof TrackListHeader>;
 
