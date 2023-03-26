@@ -8,7 +8,7 @@ import "./preview.css";
 import { DocsPage, DocsContainer } from "@storybook/addon-docs";
 import { AppContextProvider } from "../context/AppContextProvider";
 import { optionsKnob as options, text, boolean } from "@storybook/addon-knobs";
-import { nextRouterMock } from "./mocks";
+import { nextRouterMock } from "../utils/__tests__/__mocks__/mocks";
 
 const OriginalNextImage = NextImage.default;
 

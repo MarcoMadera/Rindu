@@ -9,6 +9,7 @@ import {
   ContentContainer,
   Grid,
   Heading,
+  LikedSongsCard,
   NavigationTopBarExtraField,
   PresentationCard,
 } from "components";
@@ -77,6 +78,7 @@ export default function CollectionPlaylists({
         Playlists
       </Heading>
       <Grid>
+        <LikedSongsCard />
         {playlists?.length > 0
           ? playlists.map(({ images, name, description, id, owner }) => {
               return (

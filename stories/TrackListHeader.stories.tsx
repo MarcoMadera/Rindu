@@ -26,7 +26,7 @@ Album.args = {
   type: CardType.album,
   isPin: true,
   setIsPin: () => {
-    console.log("pin clicked");
+    console.info("pin clicked");
   },
 };
 
@@ -35,7 +35,7 @@ Playlist.args = {
   type: CardType.playlist,
   isPin: true,
   setIsPin: () => {
-    console.log("pin");
+    console.info("pin");
   },
 };
 
@@ -44,6 +44,6 @@ Presentation.args = {
   type: CardType.presentation,
   isPin: true,
   setIsPin: () => {
-    console.log("pin");
+    console.info("pin");
   },
 };

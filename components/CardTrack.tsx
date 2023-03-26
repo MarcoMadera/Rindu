@@ -111,7 +111,6 @@ function CardTrack({
     track?.type === "episode" ||
     (!isPremium && track?.preview_url) ||
     (isPremium && track?.is_playable !== false && !track?.is_local);
-  console.log(isPlayable);
 
   const isTheSameAsCurrentlyPlaying =
     currentlyPlaying?.name === track?.name &&

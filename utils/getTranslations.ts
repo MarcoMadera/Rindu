@@ -594,6 +594,9 @@ export const translations = {
       ...queueTranslations[Language.EN],
       title: "Collection Playlists",
       by: "By",
+      likedSongsCardTitle: "Liked Songs",
+      likedSongsCardDescriptionPlural: "{0} liked songs",
+      likedSongsCardDescriptionSingular: "{0} liked song",
     },
     [Page.CollectionPodcasts]: {
       ...sideBarTranslations[Language.EN],
@@ -839,6 +842,9 @@ export const translations = {
       ...queueTranslations[Language.ES],
       title: "Tus playlists",
       by: "De",
+      likedSongsCardTitle: "Tus me gusta",
+      likedSongsCardDescriptionPlural: "{0} canciones gustadas",
+      likedSongsCardDescriptionSingular: "{0} canción gustada",
     },
     [Page.CollectionPodcasts]: {
       ...sideBarTranslations[Language.ES],

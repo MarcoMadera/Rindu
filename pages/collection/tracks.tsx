@@ -57,11 +57,7 @@ export async function getServerSideProps({
   }
   const { accessToken, user } = (await getAuth(res, cookies)) || {};
 
-  const playListTracks = await getMyLikedSongs(
-    user?.country ?? "US",
-    accessToken,
-    cookies
-  );
+  const playListTracks = await getMyLikedSongs(50, accessToken, cookies);
   const trackIds = playListTracks?.items
     ?.filter(({ track }) => {
       if (track?.id) {

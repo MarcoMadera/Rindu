@@ -126,6 +126,6 @@ WithAddButton.args = {
   playlistUri: "",
   uri: "5aubkIdfpFOBcHaF8gxYwo",
   onClickAdd: () => {
-    console.log("onClickAdd");
+    console.info("onClickAdd");
   },
 };

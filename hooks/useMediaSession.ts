@@ -28,7 +28,10 @@ export function useMediaSession({
   const isPremium = user?.product === "premium";
   useEffect(() => {
     const duration = currentlyPlaying?.duration_ms;
-    if ("setPositionState" in navigator.mediaSession) {
+    if (
+      navigator.mediaSession &&
+      "setPositionState" in navigator.mediaSession
+    ) {
       navigator.mediaSession.setPositionState({
         duration: duration ?? 0,
         playbackRate: 1,
@@ -86,7 +89,7 @@ export function useMediaSession({
           player.nextTrack();
         });
       } catch (error) {
-        console.log(error);
+        console.error("useMediaSession", error);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

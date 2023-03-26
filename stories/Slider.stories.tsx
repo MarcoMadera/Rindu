@@ -30,15 +30,15 @@ WithUpdate.args = {
     shouldUpdate: true,
   },
   onDragging: (isDragging) => {
-    console.log("draggin", isDragging);
+    console.info("draggin", isDragging);
   },
   setLabelValue: (value) => {
-    console.log("label", value);
+    console.info("label", value);
   },
   valueText: "value",
   initialValuePercent: 0,
   action: (progressPercent) => {
-    console.log("progressPercent", progressPercent);
+    console.info("progressPercent", progressPercent);
   },
 };
 
@@ -46,11 +46,11 @@ export const Static = Template.bind({});
 Static.args = {
   title: "Static Slider",
   setLabelValue: (value) => {
-    console.log("label", value);
+    console.info("label", value);
   },
   valueText: "value",
   initialValuePercent: 0,
   action: (progressPercent) => {
-    console.log("progressPercent", progressPercent);
+    console.info("progressPercent", progressPercent);
   },
 };

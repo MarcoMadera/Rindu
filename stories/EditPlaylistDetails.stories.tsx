@@ -19,7 +19,7 @@ const Template: ComponentStory<typeof EditPlaylistDetails> = (args) => {
     <ModalContainer
       title="Edit details"
       setModalData={() => {
-        console.log("setModalData");
+        console.info("setModalData");
       }}
       minWidth="600px"
       maxHeight="100%"
