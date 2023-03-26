@@ -34,6 +34,7 @@ export function useIsThisPlaybackPlaying({
   const router = useRouter();
   const isStationTrack = router.pathname.includes("/station/track/");
   const isConcert = router.pathname.includes("/concert/");
+  const isLikedTracks = router.pathname.includes("/collection/tracks");
   const stationTrackId = isStationTrack
     ? (router.query.trackId as string)
     : null;
@@ -116,7 +117,8 @@ export function useIsThisPlaybackPlaying({
     };
 
     const updateIsLikedTracksPlaying = () => {
-      const isLikedTracksPlaying = playlistPlayingId === "tracks" && isPlaying;
+      const isLikedTracksPlaying =
+        playlistPlayingId === "tracks" && isPlaying && isLikedTracks;
       setIsLikedTracksPlaying(isLikedTracksPlaying);
     };
 
@@ -154,6 +156,7 @@ export function useIsThisPlaybackPlaying({
     currentlyPlaying?.id,
     isPlaying,
     isSingle,
+    isLikedTracks,
     playlistPlayingId,
     stationTrackId,
     trackId,
