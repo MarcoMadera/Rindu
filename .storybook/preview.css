@@ -9,6 +9,14 @@ body {
 .sbdocs-content p,
 .sbdocs-content h1,
 .sbdocs-content h2,
-.sbdocs-content h3 {
+.sbdocs-content h3,
+.sbdocs-content li {
   color: #000;
+}
+
+.sbdocs-content ul {
+  padding: 0.5rem 1.2rem;
+}
+.sbdocs-content li {
+  padding: 0.2rem 0;
 }

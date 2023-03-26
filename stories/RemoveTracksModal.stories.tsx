@@ -20,7 +20,7 @@ const Template: ComponentStory<typeof RemoveTracksModal> = (args) => {
     <ModalContainer
       title="Details"
       setModalData={() => {
-        console.log("setModalData");
+        console.info("setModalData");
       }}
       minWidth="600px"
     >

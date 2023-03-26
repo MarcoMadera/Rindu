@@ -19,7 +19,7 @@ const Template: ComponentStory<typeof EmbedModal> = (args) => {
     <ModalContainer
       title="Details"
       setModalData={() => {
-        console.log("setModalData");
+        console.info("setModalData");
       }}
       minWidth="600px"
       maxHeight="100%"

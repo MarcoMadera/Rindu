@@ -10,7 +10,7 @@ import { useOnScreen } from "hooks";
 import { IUtilsMocks } from "types/mocks";
 import { ISpotifyContext } from "types/spotify";
 import type { IToast } from "types/toast";
-import { Language, playCurrentTrack, translations } from "utils";
+import { Language, playCurrentTrack } from "utils";
 
 jest.mock<NextRouter>("next/router", () => ({
   ...jest.requireActual("next/router"),
@@ -23,7 +23,7 @@ jest.mock<NextRouter>("next/router", () => ({
   })),
 }));
 
-const { track } = jest.requireActual<IUtilsMocks>(
+const { track, getAllTranslations } = jest.requireActual<IUtilsMocks>(
   "utils/__tests__/__mocks__/mocks.ts"
 );
 jest.mock("hooks/useOnScreen");
@@ -40,18 +40,9 @@ interface ISetup {
 }
 
 function setup(props: ISetup) {
-  const allTranslations: Record<string, string>[] = Object.values(
-    translations[Language.EN]
-  );
-  const allTranslationsFlat = allTranslations.reduce(
-    (acc, cur) => ({ ...acc, ...cur }),
-    {}
-  );
+  const translations = getAllTranslations(Language.EN);
   const view = render(
-    <AppContextProvider
-      {...props.appContextProps}
-      translations={allTranslationsFlat}
-    >
+    <AppContextProvider {...props.appContextProps} translations={translations}>
       <CardTrack {...props.cardTrackProps} />
     </AppContextProvider>
   );
@@ -62,7 +53,6 @@ function setup(props: ISetup) {
 describe("cardTrack", () => {
   // eslint-disable-next-line jest/no-hooks
   beforeAll(() => {
-    // mock navigator.mediaSession
     Object.defineProperty(navigator, "mediaSession", {
       writable: true,
       value: {
@@ -71,7 +61,6 @@ describe("cardTrack", () => {
       },
     });
 
-    // create a div with id="toast" and append it to document.body
     const toast = document.createElement("div");
     toast.setAttribute("id", "toast");
     document.body.appendChild(toast);

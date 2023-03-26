@@ -1,12 +1,12 @@
 import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 
 export async function getMyLikedSongs(
-  market: string,
+  limit: number,
   accessToken?: string,
   cookies?: string | undefined
 ): Promise<SpotifyApi.PlaylistTrackResponse | null> {
   const res = await fetch(
-    `https://api.spotify.com/v1/me/tracks?limit=50&offset=0&market=${market}`,
+    `https://api.spotify.com/v1/me/tracks?limit=${limit}&offset=0&market=from_token`,
     {
       method: "GET",
       headers: {

@@ -17,7 +17,10 @@ export default function MainTracks({
   tracksInLibrary,
 }: MainTracksProps): ReactElement {
   const { accessToken } = useAuth();
-  const allTracks = tracksRecommendations?.map((track) => {
+  const filteredTracks = tracksRecommendations?.filter(
+    (track, index, self) => index === self.findIndex((t) => t.id === track.id)
+  );
+  const allTracks = filteredTracks?.map((track) => {
     return {
       ...track,
       audio: track?.preview_url,
@@ -27,7 +30,7 @@ export default function MainTracks({
 
   return (
     <Carousel title={title} gap={24}>
-      {divideArray(tracksRecommendations, 5).map((tracks, i) => {
+      {divideArray(filteredTracks, 5).map((tracks, i) => {
         const tracksId = tracks
           .slice(0, i)
           .map((track) => track.id)
@@ -46,9 +49,7 @@ export default function MainTracks({
                   return null;
                 }
                 const index = i * 5 + chunkIndex;
-                const uris = tracksRecommendations?.map(
-                  (track) => track.uri || ""
-                );
+                const uris = filteredTracks?.map((track) => track.uri || "");
 
                 return (
                   <CardTrack

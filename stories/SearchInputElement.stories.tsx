@@ -26,14 +26,14 @@ const Template: ComponentStory<typeof SearchInputElement> = (args) => {
 
 export const Search = Template.bind({});
 Search.args = {
-  setData: (() => console.log("setData")) as Dispatch<
+  setData: (() => console.info("setData")) as Dispatch<
     SetStateAction<SpotifyApi.SearchResponse | null>
   >,
   source: "search",
 };
 export const Playlist = Template.bind({});
 Playlist.args = {
-  setData: (() => console.log("setData")) as Dispatch<
+  setData: (() => console.info("setData")) as Dispatch<
     SetStateAction<SpotifyApi.SearchResponse | null>
   >,
   source: "playlist",
