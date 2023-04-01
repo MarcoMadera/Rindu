@@ -1,6 +1,5 @@
 import React from "react";
 
-import { boolean, withKnobs } from "@storybook/addon-knobs";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import { playlists, track } from "./mocks";
@@ -15,11 +14,10 @@ export default {
       disablePadding: true,
     },
     spotifyValue: {
-      playlistPlayingId: boolean("IsPlaying", false) ? track.id : "",
+      playlistPlayingId: false,
       playlists: playlists,
     },
   },
-  decorators: [withKnobs],
 } as ComponentMeta<typeof PageDetails>;
 
 const Template: ComponentStory<

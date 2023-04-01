@@ -134,7 +134,7 @@ export default function MyDocument(): ReactElement {
       </Head>
       <body>
         <Main />
-        <div id="tracksModal" />
+        <div id="globalModal" />
         <div id="toast" />
         <div id="contextMenu" />
         <div>

@@ -22,6 +22,8 @@ interface IModalProps {
   maxWidth?: string;
   minHeight?: string;
   maxHeight?: string;
+  modalRootId?: string;
+  handleClose?: () => void;
 }
 
 function Modal({
@@ -160,24 +162,31 @@ function Modal({
   );
 }
 
-export default function ModalContainer(
-  props: PropsWithChildren<IModalProps>
-): ReactPortal | null {
+export default function ModalContainer({
+  handleClose,
+  ...props
+}: PropsWithChildren<IModalProps>): ReactPortal | null {
   const [targetNode, setTargetNode] = useState<Element>();
 
   useEffect(() => {
-    setTargetNode(document.querySelector("#tracksModal") as Element);
+    setTargetNode(
+      document.querySelector(
+        props.modalRootId ? `#${props.modalRootId}` : "#globalModal"
+      ) as Element
+    );
 
     return () => {
       setTargetNode(undefined);
+      if (handleClose) handleClose();
     };
-  }, []);
+  }, [props.modalRootId, handleClose]);
 
   useLayoutEffect(() => {
     const elementToBlur = document.querySelector<HTMLElement>(".container");
 
     const handleClickOutside = (event: MouseEvent) => {
       if (targetNode && !targetNode.contains(event.target as Node)) {
+        handleClose && handleClose();
         props.setModalData(null);
       }
     };
@@ -191,7 +200,7 @@ export default function ModalContainer(
         elementToBlur.removeEventListener("mousedown", handleClickOutside);
       }
     };
-  }, [props, targetNode]);
+  }, [props, targetNode, handleClose]);
 
   if (targetNode === undefined) {
     return null;

@@ -1,6 +1,5 @@
 import React from "react";
 
-import { withKnobs } from "@storybook/addon-knobs";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import { RouterButtons } from "components";
@@ -15,7 +14,6 @@ export default {
       disablePadding: true,
     },
   },
-  decorators: [withKnobs],
 } as ComponentMeta<typeof RouterButtons>;
 
 const Template: ComponentStory<typeof RouterButtons> = () => {

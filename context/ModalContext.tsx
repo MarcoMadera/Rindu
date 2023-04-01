@@ -24,6 +24,8 @@ interface IModalData {
   maxWidth?: string;
   maxHeight?: string;
   minHeight?: string;
+  modalRootId?: string;
+  handleClose?: () => void;
 }
 
 interface IModalContextProviderProps {
@@ -55,6 +57,8 @@ export function ModalContextProvider({
           maxWidth={modalData.maxWidth}
           minHeight={modalData.minHeight}
           minWidth={modalData.minWidth}
+          modalRootId={modalData.modalRootId}
+          handleClose={modalData.handleClose}
         >
           {modalData.modalElement}
         </ModalContainer>

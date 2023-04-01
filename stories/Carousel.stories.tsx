@@ -1,6 +1,5 @@
-import React, { PropsWithChildren } from "react";
+import React, { ComponentProps, PropsWithChildren } from "react";
 
-import { number, withKnobs } from "@storybook/addon-knobs";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import { Carousel } from "components";
@@ -17,18 +16,18 @@ export default {
   argTypes: {
     title: { control: "text" },
     gap: { control: "number" },
+    boxWidth: { control: "number", defaultValue: 200, min: 0, max: 1000 },
+    totalBoxes: { control: "number", defaultValue: 50, min: 0, max: 1000 },
   },
-  decorators: [withKnobs],
 } as ComponentMeta<typeof Carousel>;
 
-const Box = ({ children }: PropsWithChildren) => (
+const Box = ({
+  children,
+  boxWidth,
+}: PropsWithChildren<{ boxWidth: number }>) => (
   <div
     style={{
-      minWidth: `${number("Box Width", 200, {
-        range: true,
-        min: 0,
-        max: 1000,
-      })}px`,
+      minWidth: `${boxWidth}px`,
       height: "200px",
       display: "flex",
       justifyContent: "center",
@@ -40,11 +39,22 @@ const Box = ({ children }: PropsWithChildren) => (
   </div>
 );
 
-const Template: ComponentStory<typeof Carousel> = (args) => {
-  const getBoxes = (totalBoxes: number) =>
-    Array.from({ length: totalBoxes }).map((_, i) => (
-      <Box key={i}>{`Box ${i + 1}`}</Box>
-    ));
+const getBoxes = (totalBoxes: number, boxWidth: number) =>
+  Array.from({ length: totalBoxes }).map((_, i) => (
+    <Box key={i} boxWidth={boxWidth}>{`Box ${i + 1}`}</Box>
+  ));
+
+const Template: ComponentStory<
+  ({
+    boxWidth,
+    totalBoxes,
+    ...args
+  }: { boxWidth: number; totalBoxes: number } & ComponentProps<
+    typeof Carousel
+  >) => JSX.Element
+> = (args) => {
+  const { boxWidth, totalBoxes, ...carouselProps } = args;
+
   return (
     <div
       style={{
@@ -52,13 +62,16 @@ const Template: ComponentStory<typeof Carousel> = (args) => {
         background: "rgba(0, 0, 0, 0.3)",
       }}
     >
-      <Carousel {...args}>{getBoxes(number("Total boxes", 50))}</Carousel>
+      <Carousel {...carouselProps}>{getBoxes(totalBoxes, boxWidth)}</Carousel>
     </div>
   );
 };
 
 export const Boxes = Template.bind({});
+
 Boxes.args = {
   title: "The best carousel",
   gap: 24,
+  boxWidth: 200,
+  totalBoxes: 50,
 };

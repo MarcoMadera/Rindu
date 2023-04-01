@@ -73,6 +73,7 @@ export default function EmbedModal({
             popupText="When set to 100%, the player width will automatically expand to fit
           mobile and desktop layouts."
             onChange={(e) => setWidth(e.target.value)}
+            style={{ maxWidth: 140 }}
           />
         </div>
       </div>

@@ -36,8 +36,8 @@ export default function SelectControl({
             d="M16 10l-4 4-4-4"
             fill="none"
             stroke="currentColor"
-            stroke-linecap="square"
-            stroke-width="2"
+            strokeLinecap="square"
+            strokeWidth="2"
           ></path>
         </svg>
       </span>

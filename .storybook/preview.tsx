@@ -3,12 +3,10 @@ import { RouterContext } from "next/dist/shared/lib/router-context";
 import * as NextImage from "next/image";
 import React from "react";
 import "../styles/globals.css";
-import { translations, Language } from "../utils/getTranslations";
 import "./preview.css";
 import { DocsPage, DocsContainer } from "@storybook/addon-docs";
-import { AppContextProvider } from "../context/AppContextProvider";
-import { optionsKnob as options, text, boolean } from "@storybook/addon-knobs";
-import { nextRouterMock } from "../utils/__tests__/__mocks__/mocks";
+import { Parameters } from "@storybook/react";
+import { WithConfiguration } from "./decorators/WithConfiguration";
 
 const OriginalNextImage = NextImage.default;
 
@@ -17,7 +15,7 @@ Object.defineProperty(NextImage, "default", {
   value: (props) => <OriginalNextImage {...props} unoptimized />,
 });
 
-export const parameters = {
+export const parameters: Parameters = {
   actions: {
     argTypesRegex: "^on[A-Z].*",
     handles: ["click", "input", "submit"],
@@ -26,6 +24,35 @@ export const parameters = {
     matchers: {
       color: /(background|color)$/i,
       date: /Date$/,
+    },
+  },
+  globals: {
+    language: "EN",
+    accessToken: "",
+    product: "premium",
+    isLogin: true,
+  },
+  globalTypes: {
+    language: {
+      name: "Language",
+      description: "The language to display the component in",
+      defaultValue: "EN",
+      toolbar: {
+        icon: "globe",
+        items: [
+          { value: "EN", right: "🇺🇸", title: "English" },
+          { value: "ES", right: "🇪🇸", title: "Español" },
+        ],
+      },
+    },
+    configuration: {
+      name: "Configuration",
+      description: "The configuration to display the components in",
+      defaultValue: "",
+      toolbar: {
+        icon: "cog",
+        items: [],
+      },
     },
   },
   docs: {
@@ -38,89 +65,4 @@ export const parameters = {
   },
 };
 
-export const decorators = [
-  (Story, context) => {
-    const allTranslations: Record<string, string>[] = Object.values(
-      translations[
-        options("Language", Language, Language.EN, {
-          display: "select",
-        })
-      ]
-    );
-    const allTranslationsFlat = allTranslations.reduce(
-      (acc, cur) => ({ ...acc, ...cur }),
-      {}
-    );
-    return (
-      <div
-        style={{
-          padding: context.parameters.container?.disablePadding ? "" : "3rem",
-          backgroundColor: `${
-            !context.parameters.container?.backgroundTheme
-              ? "transparent"
-              : context.parameters.container?.backgroundTheme === "dark"
-              ? "#121212"
-              : "#fff"
-          }`,
-          ...context.parameters.container?.style,
-        }}
-        id="__next"
-      >
-        <RouterContext.Provider
-          value={{ ...nextRouterMock, ...context.parameters.nextRouter }}
-        >
-          <AppContextProvider
-            translations={allTranslationsFlat}
-            userValue={{
-              isLogin: boolean("isLogin", true),
-              user: {
-                product: options(
-                  "product",
-                  {
-                    Premium: "premium",
-                    Open: "open",
-                  },
-                  "premium",
-                  {
-                    display: "inline-radio",
-                  }
-                ),
-                birthdate: "1990-01-01",
-                country: "US",
-                display_name: "Marco Madera",
-                email: "rindu@marcomadera.com",
-                id: "12133024755",
-                images: [
-                  {
-                    url: "https://i.scdn.co/image/ab6775700000ee85483a9d1a47289376804a5234",
-                    height: 640,
-                    width: 640,
-                  },
-                ],
-                uri: "spotify:user:12133024755",
-                type: "user",
-                href: "https://api.spotify.com/v1/users/12133024755",
-                followers: {
-                  href: null,
-                  total: 0,
-                },
-                external_urls: {
-                  spotify: "https://open.spotify.com/user/12133024755",
-                },
-              } as SpotifyApi.UserObjectPrivate,
-              accessToken: text("accessToken", "you need a token here"),
-            }}
-            spotifyValue={context.parameters.spotifyValue}
-            contextMenuValue={context.parameters.contextMenuValue}
-            headerValue={context.parameters.headerValue}
-          >
-            <Story />
-          </AppContextProvider>
-        </RouterContext.Provider>
-        <div id="tracksModal" />
-        <div id="toast" />
-        <div id="contextMenu" />
-      </div>
-    );
-  },
-];
+export const decorators = [WithConfiguration];
