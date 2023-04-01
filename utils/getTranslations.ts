@@ -562,6 +562,7 @@ export const translations = {
       topTracksPlaylistMediumTermTitle: "Medium term",
       topTracksPlaylistShortTermTitle: "Short term",
       yourPlaylists: "Your playlists",
+      playlists: "Playlists",
     },
     [Page.CollectionTracks]: {
       ...sideBarTranslations[Language.EN],
@@ -809,6 +810,7 @@ export const translations = {
       topTracksPlaylistMediumTermTitle: "Mediano plazo",
       topTracksPlaylistShortTermTitle: "Corto plazo",
       yourPlaylists: "Tus playlists",
+      playlists: "Playlists",
     },
     [Page.CollectionTracks]: {
       ...sideBarTranslations[Language.ES],

@@ -81,49 +81,83 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
         totalFollowers={currentUser?.followers?.total ?? 0}
         data={currentUser}
       />
-      {isThisUser && (
-        <ContentContainer>
-          <Carousel title={translations.topTracksPlaylistHeading} gap={24}>
-            {getTopTracksCards(user, translations).map((item) => {
-              if (!item) return null;
-              const { images, name, id, subTitle, url } = item;
-              return (
-                <PresentationCard
-                  type={CardType.SIMPLE}
-                  key={name}
-                  images={images}
-                  title={name}
-                  id={id}
-                  subTitle={subTitle}
-                  url={url}
-                />
-              );
-            })}
-          </Carousel>
-          <Heading id={"title-playlist"} number={2}>
-            {translations.yourPlaylists}
-          </Heading>
-          <Grid>
-            {playlists?.length > 0
-              ? playlists.map(({ images, name, description, id, owner }) => {
-                  return (
-                    <PresentationCard
-                      type={CardType.PLAYLIST}
-                      key={id}
-                      images={images}
-                      title={name}
-                      subTitle={
-                        decode(description) ||
-                        `${translations.by} ${owner.display_name || owner.id}`
-                      }
-                      id={id}
-                    />
-                  );
-                })
-              : null}
-          </Grid>
-        </ContentContainer>
-      )}
+      <ContentContainer>
+        {isThisUser && (
+          <>
+            <Carousel title={translations.topTracksPlaylistHeading} gap={24}>
+              {getTopTracksCards(user, translations).map((item) => {
+                if (!item) return null;
+                const { images, name, id, subTitle, url } = item;
+                return (
+                  <PresentationCard
+                    type={CardType.SIMPLE}
+                    key={name}
+                    images={images}
+                    title={name}
+                    id={id}
+                    subTitle={subTitle}
+                    url={url}
+                  />
+                );
+              })}
+            </Carousel>
+            {playlists?.length > 0 && (
+              <>
+                <Heading id={"title-playlist"} number={2}>
+                  {translations.yourPlaylists}
+                </Heading>
+                <Grid>
+                  {playlists.map(({ images, name, description, id, owner }) => {
+                    return (
+                      <PresentationCard
+                        type={CardType.PLAYLIST}
+                        key={id}
+                        images={images}
+                        title={name}
+                        subTitle={
+                          decode(description) ||
+                          `${translations.by} ${owner.display_name || owner.id}`
+                        }
+                        id={id}
+                      />
+                    );
+                  })}
+                </Grid>
+              </>
+            )}
+          </>
+        )}
+        {!isThisUser && currentUserPlaylists && (
+          <div style={{ marginTop: "16px" }}>
+            <Heading id={"title-playlist"} number={2}>
+              {translations.playlists}
+            </Heading>
+            <Grid>
+              {currentUserPlaylists?.items.length > 0
+                ? currentUserPlaylists?.items?.map(
+                    ({ images, name, description, id, owner }) => {
+                      return (
+                        <PresentationCard
+                          type={CardType.PLAYLIST}
+                          key={id}
+                          images={images}
+                          title={name}
+                          subTitle={
+                            decode(description) ||
+                            `${translations.by} ${
+                              owner.display_name || owner.id
+                            }`
+                          }
+                          id={id}
+                        />
+                      );
+                    }
+                  )
+                : null}
+            </Grid>
+          </div>
+        )}
+      </ContentContainer>
     </ContentContainer>
   );
 };
