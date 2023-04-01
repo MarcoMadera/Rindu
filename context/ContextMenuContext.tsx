@@ -56,6 +56,7 @@ export function ContextMenuContextProvider({
           maxWidth={modalData.maxWidth}
           minHeight={modalData.minHeight}
           minWidth={modalData.minWidth}
+          modalRootId={modalData.modalRootId}
         >
           {modalData.modalElement}
         </ModalContainer>

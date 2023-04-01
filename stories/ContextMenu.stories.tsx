@@ -1,6 +1,5 @@
 import React from "react";
 
-import { number, withKnobs } from "@storybook/addon-knobs";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import { playlists } from "./mocks";
@@ -12,7 +11,6 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-  decorators: [withKnobs],
 } as ComponentMeta<typeof ContextMenu>;
 
 const Template: ComponentStory<typeof ContextMenu> = () => <ContextMenu />;
@@ -47,8 +45,8 @@ Track.parameters = {
         uri: "spotify:track:7wgxq27uOvfydLunYkcmAU",
       },
       position: {
-        x: number("position x", 50),
-        y: number("position y", 50),
+        x: 50,
+        y: 50,
       },
     },
   },

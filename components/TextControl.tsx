@@ -21,7 +21,6 @@ const defaultInput = css`
     -webkit-box-flex: 1;
     -ms-flex: 1 0;
     flex: 1 0;
-    max-width: 140px;
     position: relative;
   }
   .text-input-size input {
@@ -31,7 +30,7 @@ const defaultInput = css`
     color: #ffffffb3;
     font-size: 14px;
     height: 32px;
-    padding: 0 12px;
+    padding: 0 36px 0 12px;
     text-align: left;
     width: 100%;
   }
@@ -75,7 +74,6 @@ const defaultInput = css`
     box-shadow: 0 4px 4px #00000040;
     font-size: 12px;
     color: #f0f0f0;
-
     box-sizing: border-box;
     border-radius: 8px;
     text-align: start;
@@ -163,10 +161,7 @@ export default function TextControl({
               setIsPopupOpen(false);
             }}
           >
-            <div>
-              When set to 100%, the player width will automatically expand to
-              fit mobile and desktop layouts.
-            </div>
+            <div>{popupText}</div>
           </div>
         </>
       )}

@@ -1,6 +1,5 @@
 import React from "react";
 
-import { withKnobs } from "@storybook/addon-knobs";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import { EpisodeCard } from "components";
@@ -26,7 +25,6 @@ export default {
       control: { type: "select" },
     },
   },
-  decorators: [withKnobs],
 } as ComponentMeta<typeof EpisodeCard>;
 
 const Template: ComponentStory<typeof EpisodeCard> = (args) => (

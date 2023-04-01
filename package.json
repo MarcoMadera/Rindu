@@ -16,12 +16,12 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --format=stylish --max-warnings=0"
   },
   "overrides": {
-    "@types/react": "^18.0.29"
+    "@types/react": "^18.0.31"
   },
   "dependencies": {
     "@storybook/addon-a11y": "^6.5.16",
     "@vercel/analytics": "^0.1.11",
-    "@vercel/og": "^0.1.0",
+    "@vercel/og": "^0.5.0",
     "cheerio": "^1.0.0-rc.12",
     "fast-levenshtein": "^3.0.0",
     "html-entities": "^2.3.3",
@@ -29,38 +29,37 @@
     "next": "13.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-virtualized": "^9.22.3",
-    "react-virtualized-auto-sizer": "^1.0.7"
+    "react-virtualized": "^9.22.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.3",
+    "@babel/core": "^7.21.4",
     "@babel/runtime": "^7.21.0",
     "@mdx-js/react": "^2.3.0",
     "@storybook/addon-actions": "^6.5.16",
+    "@storybook/addon-controls": "^6.5.16",
     "@storybook/addon-docs": "^6.5.16",
     "@storybook/addon-essentials": "^6.5.16",
     "@storybook/addon-interactions": "^6.5.16",
-    "@storybook/addon-knobs": "^6.4.0",
     "@storybook/addon-links": "^6.5.16",
     "@storybook/builder-webpack5": "^6.5.16",
     "@storybook/manager-webpack5": "^6.5.16",
-    "@storybook/mdx2-csf": "^0.0.4",
+    "@storybook/mdx2-csf": "^0.0.3",
     "@storybook/react": "^6.5.16",
     "@storybook/testing-library": "^0.0.13",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@types/fast-levenshtein": "^0.0.2",
-    "@types/react": "^18.0.29",
+    "@types/react": "^18.0.31",
     "@types/react-dom": "^18.0.11",
     "@types/react-virtualized": "^9.21.21",
     "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/spotify-api": "^0.0.21",
     "@types/spotify-web-playback-sdk": "^0.1.15",
-    "@typescript-eslint/eslint-plugin": "^5.56.0",
-    "@typescript-eslint/parser": "^5.56.0",
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
+    "@typescript-eslint/parser": "^5.57.0",
     "babel-loader": "^9.1.2",
     "chromatic": "^6.17.2",
-    "eslint": "^8.36.0",
+    "eslint": "^8.37.0",
     "eslint-config-next": "^13.2.4",
     "eslint-config-prettier": "^8.8.0",
     "eslint-formatter-summary": "^1.1.0",
@@ -78,6 +77,6 @@
     "react-docgen-typescript-plugin": "^1.0.5",
     "storybook-addon-next-router": "^4.0.2",
     "tsconfig-paths-webpack-plugin": "^4.0.1",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.3"
   }
 }

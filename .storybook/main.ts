@@ -10,7 +10,7 @@ const config: StorybookConfig = {
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
     "storybook-addon-next-router",
-    "@storybook/addon-knobs",
+    "@storybook/addon-controls",
     {
       name: "@storybook/addon-docs",
       options: {

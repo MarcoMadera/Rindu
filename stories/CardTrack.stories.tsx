@@ -1,6 +1,5 @@
 import React from "react";
 
-import { withKnobs } from "@storybook/addon-knobs";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import CardTrack, { CardType } from "../components/CardTrack";
@@ -14,7 +13,6 @@ export default {
       backgroundTheme: "dark",
     },
   },
-  decorators: [withKnobs],
   argTypes: {
     isTrackInLibrary: {
       control: { type: "boolean" },

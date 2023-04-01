@@ -1,6 +1,5 @@
 import React from "react";
 
-import { withKnobs } from "@storybook/addon-knobs";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import { track } from "./mocks";
@@ -12,7 +11,6 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-  decorators: [withKnobs],
 } as ComponentMeta<typeof FirstTrackContainer>;
 
 const Template: ComponentStory<typeof FirstTrackContainer> = (args) => {
