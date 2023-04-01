@@ -123,6 +123,7 @@ function Modal({
           color: #fff;
           z-index: 100;
           padding: 32px 32px 24px;
+          overflow: hidden;
         }
         header {
           display: flex;
