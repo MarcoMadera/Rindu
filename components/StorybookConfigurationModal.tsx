@@ -133,6 +133,9 @@ export default function StorybookConfigurationModal({
         </div>
       </div>
       <style jsx>{`
+        :global(.modal) {
+          overflow: auto;
+        }
         .preferences-container {
           position: relative;
           display: flex;
