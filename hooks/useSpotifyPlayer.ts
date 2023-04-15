@@ -6,8 +6,9 @@ import {
   useRef,
 } from "react";
 
-import { useAuth, useSpotify, useToast } from "hooks";
+import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
 import { ITrack } from "types/spotify";
+import { ToastMessage } from "utils";
 import { refreshAccessToken, transferPlayback } from "utils/spotifyCalls";
 
 export interface AudioPlayer extends HTMLAudioElement {
@@ -44,6 +45,7 @@ export function useSpotifyPlayer({ name }: { name: string }): {
   const audioPlayer = useRef<AudioPlayer>();
   const { user, setAccessToken } = useAuth();
   const { addToast } = useToast();
+  const { translations } = useTranslations();
 
   useEffect(() => {
     if (!user) return;
@@ -200,7 +202,7 @@ export function useSpotifyPlayer({ name }: { name: string }): {
           transferPlayback([device_id], { play: false });
           addToast({
             variant: "info",
-            message: "You are now connected to Spotify, enjoy!",
+            message: translations[ToastMessage.PlayerReady],
           });
         }
       );
@@ -211,7 +213,7 @@ export function useSpotifyPlayer({ name }: { name: string }): {
           console.warn("Device ID has gone offline", device_id);
           addToast({
             variant: "error",
-            message: "Connection failed, please try again later",
+            message: translations[ToastMessage.PlayerNotReady],
           });
         }
       );
@@ -232,38 +234,32 @@ export function useSpotifyPlayer({ name }: { name: string }): {
       spotifyPlayer.current?.on("authentication_error", () => {
         addToast({
           variant: "error",
-          message: "The user has not been authenticated",
+          message: translations[ToastMessage.PlayerAuthenticationError],
         });
       });
       spotifyPlayer.current?.on("autoplay_failed", () => {
         addToast({
           variant: "error",
-          message: "The track failed to play",
+          message: translations[ToastMessage.PlayerAutoPlayFailed],
         });
       });
 
       spotifyPlayer.current.addListener("initialization_error", () => {
         addToast({
           variant: "error",
-          message: "Error initializing Spotify Player",
-        });
-      });
-      spotifyPlayer.current.addListener("authentication_error", () => {
-        addToast({
-          variant: "error",
-          message: "Authentication Error",
+          message: translations[ToastMessage.PlayerInitializationError],
         });
       });
       spotifyPlayer.current.addListener("account_error", () => {
         addToast({
           variant: "error",
-          message: "Error getting account info",
+          message: translations[ToastMessage.PlayerAccountError],
         });
       });
       spotifyPlayer.current.addListener("playback_error", () => {
         addToast({
           variant: "error",
-          message: "Error playing this track",
+          message: translations[ToastMessage.PlayerPlaybackError],
         });
       });
 

@@ -1,6 +1,13 @@
 import { MouseEvent, ReactElement, useEffect, useState } from "react";
 
-import { useAuth, useModal, useSpotify, useToast } from "hooks";
+import {
+  useAuth,
+  useModal,
+  useSpotify,
+  useToast,
+  useTranslations,
+} from "hooks";
+import { ContentType, templateReplace, ToastMessage } from "utils";
 import { addCustomPlaylistImage } from "utils/spotifyCalls";
 import { editPlaylistDetails } from "utils/spotifyCalls/editPlaylistDetails";
 
@@ -32,6 +39,7 @@ export default function EditPlaylistDetails({
   const { setModalData } = useModal();
   const { setIgnoreShortcuts } = useSpotify();
   const [removePhoto, setRemovePhoto] = useState(false);
+  const { translations } = useTranslations();
 
   async function handleSave(
     e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
@@ -41,7 +49,9 @@ export default function EditPlaylistDetails({
       const res = await editPlaylistDetails(id, name, description);
       if (res) {
         addToast({
-          message: "Playlist details updated",
+          message: templateReplace(translations[ToastMessage.TypeUpdated], [
+            translations[ContentType.Details],
+          ]),
           variant: "success",
         });
       }
@@ -49,7 +59,9 @@ export default function EditPlaylistDetails({
 
     if (removePhoto) {
       addToast({
-        message: "Unable to remove playlist image",
+        message: templateReplace(translations[ToastMessage.UnabledToRemove], [
+          translations[ContentType.Image],
+        ]),
         variant: "error",
       });
     }
@@ -62,12 +74,16 @@ export default function EditPlaylistDetails({
       });
       if (res2) {
         addToast({
-          message: "Playlist image updated",
+          message: templateReplace(translations[ToastMessage.TypeUpdated], [
+            translations[ContentType.Image],
+          ]),
           variant: "success",
         });
       } else {
         addToast({
-          message: "Error updating playlist image",
+          message: templateReplace(translations[ToastMessage.ErrorUpdating], [
+            translations[ContentType.Image],
+          ]),
           variant: "error",
         });
       }
@@ -112,7 +128,7 @@ export default function EditPlaylistDetails({
           const file = e.target.files?.[0];
           if (file && !file.type.includes("image")) {
             addToast({
-              message: "File is not an image",
+              message: translations[ToastMessage.FileIsNotAnImage],
               variant: "error",
             });
             return;

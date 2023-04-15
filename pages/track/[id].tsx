@@ -25,6 +25,7 @@ import {
 } from "hooks";
 import { HeaderType } from "types/pageHeader";
 import {
+  ContentType,
   getAuth,
   getLyrics,
   getSiteUrl,
@@ -33,6 +34,7 @@ import {
   Page,
   serverRedirect,
   templateReplace,
+  ToastMessage,
   within,
 } from "utils";
 import {
@@ -185,7 +187,13 @@ export default function TrackPage({
                 if (saveRes) {
                   addToast({
                     variant: "success",
-                    message: "Song added to library.",
+                    message: templateReplace(
+                      translations[ToastMessage.TypeAddedTo],
+                      [
+                        translations[ContentType.Track],
+                        translations[ContentType.Library],
+                      ]
+                    ),
                   });
                   return true;
                 }
@@ -197,7 +205,13 @@ export default function TrackPage({
                 if (removeRes) {
                   addToast({
                     variant: "success",
-                    message: "Song removed from library.",
+                    message: templateReplace(
+                      translations[ToastMessage.TypeRemovedFrom],
+                      [
+                        translations[ContentType.Track],
+                        translations[ContentType.Library],
+                      ]
+                    ),
                   });
                   return true;
                 }

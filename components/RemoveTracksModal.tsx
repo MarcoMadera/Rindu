@@ -7,7 +7,13 @@ import { CardType } from "components/CardTrack";
 import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
 import { AsType } from "types/heading";
 import { IPageDetails, ITrack } from "types/spotify";
-import { analyzePlaylist, divideArray } from "utils";
+import {
+  analyzePlaylist,
+  ContentType,
+  divideArray,
+  templateReplace,
+  ToastMessage,
+} from "utils";
 import { removeTracksFromLibrary } from "utils/spotifyCalls";
 
 interface RemoveTracksModalProps {
@@ -100,12 +106,18 @@ export default function RemoveTracksModal({
       setTitle("Tracks removed from library");
       addToast({
         variant: "success",
-        message: "Tracks removed from library",
+        message: templateReplace(translations[ToastMessage.TypeRemovedFrom], [
+          translations[ContentType.Items],
+          translations[ContentType.Library],
+        ]),
       });
     } catch (error) {
       addToast({
         variant: "error",
-        message: "Error removing tracks from library",
+        message: templateReplace(
+          translations[ToastMessage.CouldNotRemoveFrom],
+          [translations[ContentType.Library]]
+        ),
       });
     }
   }
@@ -127,15 +139,26 @@ export default function RemoveTracksModal({
         });
       });
       setTracksToRemove([]);
-      setTitle("Tracks removed from playlist");
+      setTitle(
+        templateReplace(translations[ToastMessage.TypeRemovedFrom], [
+          translations[ContentType.Items],
+          translations[ContentType.Playlist],
+        ])
+      );
       addToast({
         variant: "success",
-        message: "Tracks removed from playlist",
+        message: templateReplace(translations[ToastMessage.TypeRemovedFrom], [
+          translations[ContentType.Items],
+          translations[ContentType.Playlist],
+        ]),
       });
     } else {
       addToast({
         variant: "error",
-        message: "Error removing tracks from playlist",
+        message: templateReplace(
+          translations[ToastMessage.CouldNotRemoveFrom],
+          [translations[ContentType.Playlist]]
+        ),
       });
     }
   }

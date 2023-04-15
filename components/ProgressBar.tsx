@@ -1,9 +1,9 @@
 import { ReactElement, useEffect, useState } from "react";
 
 import { Slider } from "components";
-import { useAuth, useSpotify, useToast } from "hooks";
+import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
-import { formatTime } from "utils";
+import { formatTime, ToastMessage } from "utils";
 
 export default function ProgressBar(): ReactElement {
   const {
@@ -17,6 +17,7 @@ export default function ProgressBar(): ReactElement {
   const [progressFromSpotify, setProgressFromSpotify] = useState(0);
   const { user } = useAuth();
   const { addToast } = useToast();
+  const { translations } = useTranslations();
   const isPremium = user?.product === "premium";
   const durationInSeconds = currentlyPlayingDuration
     ? isPremium
@@ -85,7 +86,7 @@ export default function ProgressBar(): ReactElement {
           if (!currentlyPlaying) {
             addToast({
               variant: "error",
-              message: "No song playing",
+              message: translations[ToastMessage.NothingPlaying],
             });
             return;
           }

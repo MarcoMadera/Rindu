@@ -4,7 +4,14 @@ import Link from "next/link";
 
 import { ArtistList, PictureInPictureButton, ScrollableText } from "components";
 import { Chevron, Heart } from "components/icons";
-import { useAuth, useContextMenu, useSpotify, useToast } from "hooks";
+import {
+  useAuth,
+  useContextMenu,
+  useSpotify,
+  useToast,
+  useTranslations,
+} from "hooks";
+import { ContentType, templateReplace, ToastMessage } from "utils";
 import {
   checkEpisodesInLibrary,
   checkTracksInLibrary,
@@ -24,6 +31,7 @@ export default function NowPlaying(): ReactElement | null {
     currentlyPlaying,
   } = useSpotify();
   const { addToast } = useToast();
+  const { translations } = useTranslations();
   const { addContextMenu } = useContextMenu();
   const type = playedSource?.split(":")?.[1];
   const id = playedSource?.split(":")?.[2];
@@ -131,9 +139,17 @@ export default function NowPlaying(): ReactElement | null {
             if (res) {
               addToast({
                 variant: "success",
-                message: `${
-                  currentlyPlaying.type === "episode" ? "Episode" : "Song"
-                } removed from library.`,
+                message: templateReplace(
+                  translations[ToastMessage.TypeRemovedFrom],
+                  [
+                    `${
+                      currentlyPlaying.type === "episode"
+                        ? translations[ContentType.Episode]
+                        : translations[ContentType.Track]
+                    }`,
+                    translations[ContentType.Library],
+                  ]
+                ),
               });
               return true;
             }
@@ -151,9 +167,17 @@ export default function NowPlaying(): ReactElement | null {
             if (saveRes) {
               addToast({
                 variant: "success",
-                message: `${
-                  currentlyPlaying.type === "episode" ? "Episode" : "Song"
-                } added to library`,
+                message: templateReplace(
+                  translations[ToastMessage.TypeAddedTo],
+                  [
+                    `${
+                      currentlyPlaying.type === "episode"
+                        ? translations[ContentType.Episode]
+                        : translations[ContentType.Track]
+                    }`,
+                    translations[ContentType.Library],
+                  ]
+                ),
               });
               return true;
             }

@@ -138,6 +138,171 @@ const shortCutsTranslations = {
   },
 };
 
+export enum ContentType {
+  Album = "album",
+  Artist = "artist",
+  Playlist = "playlist",
+  Podcast = "podcast",
+  Track = "track",
+  Items = "items",
+  Episode = "episode",
+  Show = "show",
+  Library = "library",
+  Queue = "queue",
+  Image = "image",
+  Details = "details",
+}
+
+const types: Record<Language, Record<ContentType, string>> = {
+  [Language.EN]: {
+    [ContentType.Album]: "album",
+    [ContentType.Artist]: "artist",
+    [ContentType.Playlist]: "playlist",
+    [ContentType.Podcast]: "podcast",
+    [ContentType.Track]: "track",
+    [ContentType.Items]: "items",
+    [ContentType.Episode]: "episode",
+    [ContentType.Show]: "show",
+    [ContentType.Library]: "library",
+    [ContentType.Queue]: "queue",
+    [ContentType.Image]: "image",
+    [ContentType.Details]: "details",
+  },
+  [Language.ES]: {
+    [ContentType.Album]: "álbum",
+    [ContentType.Artist]: "artista",
+    [ContentType.Playlist]: "playlist",
+    [ContentType.Podcast]: "podcast",
+    [ContentType.Track]: "track",
+    [ContentType.Items]: "elementos",
+    [ContentType.Episode]: "episodio",
+    [ContentType.Show]: "show",
+    [ContentType.Library]: "biblioteca",
+    [ContentType.Queue]: "la cola de reproducción",
+    [ContentType.Image]: "imagen",
+    [ContentType.Details]: "detalles",
+  },
+};
+
+export enum ToastMessage {
+  AddedTo = "toastMessage.addedTo",
+  RemovedFrom = "toastMessage.removedFrom",
+  TypeAddedTo = "toastMessage.typeAddedTo",
+  TypeRemovedFrom = "toastMessage.typeRemoveFrom",
+  CouldNotAddTo = "toastMessage.couldNotAddTo",
+  CouldNotRemoveFrom = "toastMessage.couldNotRemoveFrom",
+  UnableToPlayReconnecting = "toastMessage.unableToPlay",
+  ErrorPlayingThis = "toastMessage.errorPlayingThis",
+  IsCorruptedAndCannotBePlayed = "toastMessage.isCorruptedAndCannotBePlayed",
+  ContentIsUnavailable = "toastMessage.contentIsUnavailable",
+  DeviceConnectedTo = "toastMessage.deviceConnectedTo",
+  PremiumRequired = "toastMessage.premiumRequired",
+  TypeUpdated = "toastMessage.typeUpdated",
+  ErrorCreating = "toastMessage.errorCreating",
+  ErrorUpdating = "toastMessage.errorUpdating",
+  UnabledToRemove = "toastMessage.unableToRemove",
+  FileIsNotAnImage = "toastMessage.fileIsNotAnImage",
+  CopiedToClipboard = "toastMessage.copiedToClipboard",
+  FailedToCopyToClipboard = "toastMessage.failedToCopyToClipboard",
+  NoLyricsToDisplay = "toastMessage.noLyricsToDisplay",
+  NoDeviceConnected = "toastMessage.noDeviceConnected",
+  NothingPlaying = "toastMessage.nothingPlaying",
+  WelcomePreparing = "toastMessage.welcomePreparing",
+  WelcomeReady = "toastMessage.welcomeReady",
+  PlayerReady = "toastMessage.playerReady",
+  PlayerNotReady = "toastMessage.playerNotReady",
+  PlayerAuthenticationError = "toastMessage.playerAuthenticationError",
+  PlayerAutoPlayFailed = "toastMessage.playerAutoPlayFailed",
+  PlayerInitializationError = "toastMessage.playerInitializationError",
+  PlayerPlaybackError = "toastMessage.playerPlaybackError",
+  PlayerAccountError = "toastMessage.playerAccountError",
+}
+
+const toastMessages: Record<Language, Record<ToastMessage, string>> = {
+  [Language.EN]: {
+    [ToastMessage.AddedTo]: "Added to {0}",
+    [ToastMessage.RemovedFrom]: "Removed from {0}",
+    [ToastMessage.TypeAddedTo]: "{0} added to your {1}",
+    [ToastMessage.TypeRemovedFrom]: "{0} removed from your {1}",
+    [ToastMessage.CouldNotAddTo]: "Could not add to {0}",
+    [ToastMessage.CouldNotRemoveFrom]: "Could not remove from {0}",
+    [ToastMessage.UnableToPlayReconnecting]:
+      "Unable to play, trying to reconnect, please wait...",
+    [ToastMessage.ErrorPlayingThis]: "Error playing this {0}",
+    [ToastMessage.IsCorruptedAndCannotBePlayed]:
+      "This {0} is corrupted and cannot be played",
+    [ToastMessage.ContentIsUnavailable]: "Content is unavailable",
+    [ToastMessage.DeviceConnectedTo]: "Device connected to {0}",
+    [ToastMessage.PremiumRequired]:
+      "You need a premium account to use this feature",
+    [ToastMessage.TypeUpdated]: "{0} updated",
+    [ToastMessage.ErrorCreating]: "Error creating {0}",
+    [ToastMessage.ErrorUpdating]: "Error updating {0}",
+    [ToastMessage.UnabledToRemove]: "Unable to remove {0}",
+    [ToastMessage.FileIsNotAnImage]: "File is not an image",
+    [ToastMessage.CopiedToClipboard]: "Copied to clipboard",
+    [ToastMessage.FailedToCopyToClipboard]: "Failed to copy to clipboard",
+    [ToastMessage.NoLyricsToDisplay]: "No lyrics to display",
+    [ToastMessage.NoDeviceConnected]: "No device connected",
+    [ToastMessage.NothingPlaying]: "Nothing playing",
+    [ToastMessage.WelcomePreparing]:
+      "Welcome to Rindu, preparing your music for you",
+    [ToastMessage.WelcomeReady]: "Welcome to Rindu, prepare to enjoy!",
+    [ToastMessage.PlayerReady]: "You are now connected to Spotify, enjoy!",
+    [ToastMessage.PlayerNotReady]: "You are not connected to Spotify",
+    [ToastMessage.PlayerAuthenticationError]:
+      "There was an error authenticating with Spotify",
+    [ToastMessage.PlayerAutoPlayFailed]:
+      "There was an error playing your music",
+    [ToastMessage.PlayerInitializationError]:
+      "There was an error initializing the player",
+    [ToastMessage.PlayerPlaybackError]: "There was an error playing your music",
+    [ToastMessage.PlayerAccountError]:
+      "There was an error with your Spotify account",
+  },
+  [Language.ES]: {
+    [ToastMessage.AddedTo]: "Añadido a {0}",
+    [ToastMessage.RemovedFrom]: "Eliminado de {0}",
+    [ToastMessage.TypeAddedTo]: "{0} añadido a tu {1}",
+    [ToastMessage.TypeRemovedFrom]: "{0} eliminado de tu {1}",
+    [ToastMessage.CouldNotAddTo]: "No se pudo añadir a {0}",
+    [ToastMessage.CouldNotRemoveFrom]: "No se pudo eliminar de {0}",
+    [ToastMessage.UnableToPlayReconnecting]:
+      "No se puede reproducir, intentando reconectar, por favor espera...",
+    [ToastMessage.ErrorPlayingThis]: "Error al reproducir esta canción",
+    [ToastMessage.IsCorruptedAndCannotBePlayed]:
+      "El {0} está corrupta y no se puede reproducir",
+    [ToastMessage.ContentIsUnavailable]: "El contenido no está disponible",
+    [ToastMessage.DeviceConnectedTo]: "Dispositivo conectado a {0}",
+    [ToastMessage.PremiumRequired]:
+      "Necesitas una cuenta premium para usar esta función",
+    [ToastMessage.TypeUpdated]: "{0} actualizados",
+    [ToastMessage.ErrorCreating]: "Error al crear {0}",
+    [ToastMessage.ErrorUpdating]: "Error al actualizar {0}",
+    [ToastMessage.UnabledToRemove]: "No se pudo eliminar {0}",
+    [ToastMessage.FileIsNotAnImage]: "El archivo no es una imagen",
+    [ToastMessage.CopiedToClipboard]: "Copiado al portapapeles",
+    [ToastMessage.FailedToCopyToClipboard]: "No se pudo copiar al portapapeles",
+    [ToastMessage.NoLyricsToDisplay]: "No hay letras para mostrar",
+    [ToastMessage.NoDeviceConnected]: "Dispositivo no conectado",
+    [ToastMessage.NothingPlaying]: "No se está reproduciendo nada",
+    [ToastMessage.WelcomePreparing]:
+      "Bienvenido a Rindu, preparando tu música para ti",
+    [ToastMessage.WelcomeReady]:
+      "Bienvenido a Rindu, prepárate para disfrutar!",
+    [ToastMessage.PlayerReady]: "Ahora estás conectado a Spotify, ¡disfruta!",
+    [ToastMessage.PlayerNotReady]: "No estás conectado a Spotify",
+    [ToastMessage.PlayerAuthenticationError]:
+      "Hubo un error al autenticarse con Spotify",
+    [ToastMessage.PlayerAutoPlayFailed]:
+      "Hubo un error al reproducir tu música",
+    [ToastMessage.PlayerInitializationError]:
+      "Hubo un error al inicializar el reproductor",
+    [ToastMessage.PlayerPlaybackError]: "Hubo un error al reproducir tu música",
+    [ToastMessage.PlayerAccountError]: "Hubo un error con tu cuenta de Spotify",
+  },
+};
+
 const sideBarTranslations = {
   [Language.EN]: {
     collection: "Your Library",
@@ -151,6 +316,8 @@ const sideBarTranslations = {
     preferences: "Settings",
     upgradeToPremium: "Upgrade to Premium",
     ...shortCutsTranslations[Language.EN],
+    ...toastMessages[Language.EN],
+    ...types[Language.EN],
   },
   [Language.ES]: {
     collection: "Tu Biblioteca",
@@ -164,6 +331,8 @@ const sideBarTranslations = {
     preferences: "Preferencias",
     upgradeToPremium: "Actualizar a Premium",
     ...shortCutsTranslations[Language.ES],
+    ...toastMessages[Language.ES],
+    ...types[Language.ES],
   },
 };
 const queueTranslations = {

@@ -3,10 +3,22 @@ import { ReactElement, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 import EmbedModal from "./EmbedModal";
-import { useAuth, useContextMenu, useSpotify, useToast } from "hooks";
+import {
+  useAuth,
+  useContextMenu,
+  useSpotify,
+  useToast,
+  useTranslations,
+} from "hooks";
 import { menuContextStyles } from "styles/menuContextStyles";
 import { ITrack } from "types/spotify";
-import { getSiteUrl, positionSubMenu } from "utils";
+import {
+  ContentType,
+  getSiteUrl,
+  positionSubMenu,
+  templateReplace,
+  ToastMessage,
+} from "utils";
 import {
   addItemsToPlaylist,
   addToQueue,
@@ -25,6 +37,7 @@ export default function CardTrackContextMenu({
   const { deviceId, playlists } = useSpotify();
   const { accessToken } = useAuth();
   const { removeContextMenu, setModalData } = useContextMenu();
+  const { translations } = useTranslations();
 
   const availableStations = ["track", "artist", "genre"];
   const type = track?.type ?? "track";
@@ -64,12 +77,18 @@ export default function CardTrackContextMenu({
                   if (res) {
                     addToast({
                       variant: "success",
-                      message: "Added to queue",
+                      message: templateReplace(
+                        translations[ToastMessage.AddedTo],
+                        [translations[ContentType.Queue]]
+                      ),
                     });
                   } else {
                     addToast({
                       variant: "error",
-                      message: "Could not add to queue",
+                      message: templateReplace(
+                        translations[ToastMessage.CouldNotAddTo],
+                        [translations[ContentType.Queue]]
+                      ),
                     });
                   }
                   removeContextMenu();
@@ -121,12 +140,18 @@ export default function CardTrackContextMenu({
                               if (res) {
                                 addToast({
                                   variant: "success",
-                                  message: "Added to playlist",
+                                  message: templateReplace(
+                                    translations[ToastMessage.AddedTo],
+                                    [translations[ContentType.Playlist]]
+                                  ),
                                 });
                               } else {
                                 addToast({
                                   variant: "error",
-                                  message: "Could not add to playlist",
+                                  message: templateReplace(
+                                    translations[ToastMessage.CouldNotAddTo],
+                                    [translations[ContentType.Playlist]]
+                                  ),
                                 });
                               }
                               setShowAddPlaylistPopup(false);
@@ -238,14 +263,25 @@ export default function CardTrackContextMenu({
                 if (res) {
                   addToast({
                     variant: "success",
-                    message: `${
-                      track.type === "episode" ? "Episode" : "Song"
-                    } added to library`,
+                    message: templateReplace(
+                      translations[ToastMessage.TypeAddedTo],
+                      [
+                        `${
+                          track.type === "episode"
+                            ? translations[ContentType.Episode]
+                            : translations[ContentType.Track]
+                        }`,
+                        translations[ContentType.Library],
+                      ]
+                    ),
                   });
                 } else {
                   addToast({
                     variant: "error",
-                    message: "Could not add to library",
+                    message: templateReplace(
+                      translations[ToastMessage.CouldNotAddTo],
+                      [translations[ContentType.Library]]
+                    ),
                   });
                 }
                 removeContextMenu();

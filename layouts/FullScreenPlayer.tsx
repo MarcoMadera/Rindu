@@ -32,10 +32,13 @@ import {
 } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
 import {
+  ContentType,
   exitFullScreen,
   getMainColorFromImage,
   isFullScreen,
   requestFullScreen,
+  templateReplace,
+  ToastMessage,
 } from "utils";
 import {
   removeEpisodesFromLibrary,
@@ -234,11 +237,17 @@ export default function FullScreenPlayer(): ReactElement {
                         if (res) {
                           addToast({
                             variant: "success",
-                            message: `${
-                              currentlyPlaying.type === "episode"
-                                ? "Episode"
-                                : "Song"
-                            } removed from library.`,
+                            message: templateReplace(
+                              translations[ToastMessage.TypeRemovedFrom],
+                              [
+                                `${
+                                  currentlyPlaying.type === "episode"
+                                    ? translations[ContentType.Episode]
+                                    : translations[ContentType.Track]
+                                }`,
+                                translations[ContentType.Library],
+                              ]
+                            ),
                           });
                           return true;
                         }
@@ -256,11 +265,17 @@ export default function FullScreenPlayer(): ReactElement {
                         if (saveRes) {
                           addToast({
                             variant: "success",
-                            message: `${
-                              currentlyPlaying.type === "episode"
-                                ? "Episode"
-                                : "Song"
-                            } added to library`,
+                            message: templateReplace(
+                              translations[ToastMessage.TypeAddedTo],
+                              [
+                                `${
+                                  currentlyPlaying.type === "episode"
+                                    ? translations[ContentType.Episode]
+                                    : translations[ContentType.Track]
+                                }`,
+                                translations[ContentType.Library],
+                              ]
+                            ),
                           });
                           return true;
                         }

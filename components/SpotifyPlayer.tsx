@@ -15,6 +15,7 @@ import {
   useTranslations,
 } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
+import { ToastMessage } from "utils";
 
 export default function SpotifyPlayer(): ReactElement {
   const { user } = useAuth();
@@ -36,12 +37,12 @@ export default function SpotifyPlayer(): ReactElement {
     if (user?.product === "premium") {
       addToast({
         variant: "info",
-        message: "Welcome to Rindu, preparing your music for you",
+        message: translations[ToastMessage.WelcomePreparing],
       });
     } else {
       addToast({
         variant: "info",
-        message: "Welcome to Rindu, prepare to enjoy!",
+        message: translations[ToastMessage.WelcomeReady],
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

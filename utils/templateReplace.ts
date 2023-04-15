@@ -2,7 +2,7 @@ import { cloneElement, isValidElement, ReactNode } from "react";
 
 export function templateReplace(
   template: string,
-  replacements: ReactNode[]
+  replacements: ReactNode[] | string[]
 ): string | ReactNode[] {
   const pattern = /\{(\w+)\}/g;
   const result: ReactNode[] = [];

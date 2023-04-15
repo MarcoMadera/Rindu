@@ -18,12 +18,15 @@ import { useAnalytics, useAuth, useHeader, useSpotify, useToast } from "hooks";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
 import {
+  ContentType,
   getAuth,
   getSiteUrl,
   getTranslations,
   isCorruptedTrack,
   Page,
   serverRedirect,
+  templateReplace,
+  ToastMessage,
 } from "utils";
 import {
   checkIfUserFollowAlbums,
@@ -48,6 +51,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
   accessToken,
   tracks,
   tracksInLibrary,
+  translations,
 }) => {
   const { setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
@@ -153,7 +157,13 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
                 const unfollowRes = await unFollowAlbums([album.id]);
                 if (unfollowRes) {
                   addToast({
-                    message: "Album removed from your library",
+                    message: templateReplace(
+                      translations[ToastMessage.TypeRemovedFrom],
+                      [
+                        translations[ContentType.Album],
+                        translations[ContentType.Library],
+                      ]
+                    ),
                     variant: "success",
                   });
                   return true;
@@ -165,7 +175,13 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
                 const followRes = await followAlbums([album.id]);
                 if (followRes) {
                   addToast({
-                    message: "Album added to your library",
+                    message: templateReplace(
+                      translations[ToastMessage.TypeAddedTo],
+                      [
+                        translations[ContentType.Album],
+                        translations[ContentType.Library],
+                      ]
+                    ),
                     variant: "success",
                   });
                   return true;

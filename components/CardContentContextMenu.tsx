@@ -4,10 +4,16 @@ import { useRouter } from "next/router";
 
 import EmbedModal from "./EmbedModal";
 import { CardType } from "components/CardContent";
-import { useContextMenu, useToast } from "hooks";
+import { useContextMenu, useToast, useTranslations } from "hooks";
 import { menuContextStyles } from "styles/menuContextStyles";
 import { ICardContentContextMenuData } from "types/contextMenu";
-import { capitalizeFirstLetter, getSiteUrl } from "utils";
+import {
+  capitalizeFirstLetter,
+  ContentType,
+  getSiteUrl,
+  templateReplace,
+  ToastMessage,
+} from "utils";
 import {
   follow,
   followAlbums,
@@ -57,6 +63,7 @@ export default function CardContentContextMenu({
   const { removeContextMenu, setModalData } = useContextMenu();
   const router = useRouter();
   const { addToast } = useToast();
+  const { translations } = useTranslations();
 
   const isSaveable =
     !!data.type && Object.keys(saveFunctions).includes(data.type);
@@ -99,8 +106,10 @@ export default function CardContentContextMenu({
               saveFunction(data.type as SaveFunctionTypes, data.id);
               addToast({
                 message: `${capitalizeFirstLetter(
-                  data.type || "track"
-                )} added to your library`,
+                  templateReplace(translations[ToastMessage.AddedTo], [
+                    translations[ContentType.Library],
+                  ])
+                )}`,
                 variant: "success",
               });
               removeContextMenu();

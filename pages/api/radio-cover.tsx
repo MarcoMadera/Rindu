@@ -110,7 +110,7 @@ export default async function radioCover(
                 overflow: "hidden",
                 width: 600,
                 position: "relative",
-                margin: "0 auto",
+                margin: "-430px auto 0",
                 justifyContent: "center",
               }}
             >

@@ -30,7 +30,7 @@ import {
 import { PlaylistProps } from "pages/playlist/[playlist]";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
-import { getSiteUrl } from "utils";
+import { ContentType, getSiteUrl, templateReplace, ToastMessage } from "utils";
 import {
   addItemsToPlaylist,
   checkUsersFollowAPlaylist,
@@ -229,7 +229,13 @@ const Playlist: NextPage<
                               setIsFollowingThisPlaylist(true);
                               addToast({
                                 variant: "success",
-                                message: translations.playlistAddedToLibrary,
+                                message: templateReplace(
+                                  translations[ToastMessage.TypeAddedTo],
+                                  [
+                                    translations[ContentType.Playlist],
+                                    translations[ContentType.Library],
+                                  ]
+                                ),
                               });
                               return true;
                             }
@@ -243,8 +249,13 @@ const Playlist: NextPage<
                               setIsFollowingThisPlaylist(false);
                               addToast({
                                 variant: "success",
-                                message:
-                                  translations.playlistRemovedFromLibrary,
+                                message: templateReplace(
+                                  translations[ToastMessage.TypeRemovedFrom],
+                                  [
+                                    translations[ContentType.Playlist],
+                                    translations[ContentType.Library],
+                                  ]
+                                ),
                               });
                               return true;
                             }
