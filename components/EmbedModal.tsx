@@ -2,7 +2,8 @@ import { ReactElement, useEffect, useState } from "react";
 
 import SelectControl from "./SelectControl";
 import { Button, CheckBoxControl, TextControl } from "components";
-import { useToast, useToggle } from "hooks";
+import { useToast, useToggle, useTranslations } from "hooks";
+import { ToastMessage } from "utils";
 
 export default function EmbedModal({
   type,
@@ -19,6 +20,7 @@ export default function EmbedModal({
   const [theme, setTheme] = useState<string | null>(null);
   const hasTimeStampChanged = timeStamp !== "0:00";
   const [headerColor, setHeaderColor] = useState<string | null>(null);
+  const { translations } = useTranslations();
 
   useEffect(() => {
     const bodyStyle = document.body.getAttribute("style");
@@ -132,12 +134,12 @@ export default function EmbedModal({
               try {
                 navigator.clipboard.writeText(code);
                 addToast({
-                  message: "Copied to clipboard",
+                  message: translations[ToastMessage.CopiedToClipboard],
                   variant: "success",
                 });
               } catch (error) {
                 addToast({
-                  message: "Failed to copy to clipboard",
+                  message: translations[ToastMessage.FailedToCopyToClipboard],
                   variant: "error",
                 });
               }

@@ -8,7 +8,14 @@ import {
 
 import { LoadingSpinner } from "components";
 import { PictureInPicture } from "components/icons";
-import { useAuth, useHeader, useLyrics, useSpotify, useToast } from "hooks";
+import {
+  useAuth,
+  useHeader,
+  useLyrics,
+  useSpotify,
+  useToast,
+  useTranslations,
+} from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
 import {
   colorCodedToHex,
@@ -17,6 +24,7 @@ import {
   getRandomColor,
   hexToHsl,
   rgbToHex,
+  ToastMessage,
 } from "utils";
 
 interface FullScreenLyricsProps {
@@ -52,6 +60,7 @@ export default function FullScreenLyrics({
     trackId: currentlyPlaying?.id,
     accessToken: accessToken,
   });
+  const { translations } = useTranslations();
   const isPremium = user?.product === "premium";
   const { addToast } = useToast();
   const title = currentlyPlaying?.name || "";
@@ -337,13 +346,13 @@ export default function FullScreenLyrics({
             if (!isPremium) {
               addToast({
                 variant: "error",
-                message: "Premium Required",
+                message: translations[ToastMessage.PremiumRequired],
               });
             }
             if (!lyrics) {
               addToast({
                 variant: "error",
-                message: "No lyrics to show",
+                message: translations[ToastMessage.NoLyricsToDisplay],
               });
               return;
             }

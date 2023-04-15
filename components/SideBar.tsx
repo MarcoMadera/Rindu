@@ -6,7 +6,12 @@ import { useRouter } from "next/router";
 import { Logo, PlaylistText } from "components";
 import { Add, Chevron, Heart, Home, Library, Search } from "components/icons";
 import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
-import { getAllMyPlaylists } from "utils";
+import {
+  ContentType,
+  getAllMyPlaylists,
+  templateReplace,
+  ToastMessage,
+} from "utils";
 import { createPlaylist } from "utils/spotifyCalls";
 
 export default function SideBar(): ReactElement {
@@ -64,7 +69,10 @@ export default function SideBar(): ReactElement {
               createPlaylist(user.id, { accessToken }).then((res) => {
                 if (!res) {
                   addToast({
-                    message: "Error creating playlist",
+                    message: templateReplace(
+                      translations[ToastMessage.ErrorCreating],
+                      [translations[ContentType.Playlist]]
+                    ),
                     variant: "error",
                   });
                   return;

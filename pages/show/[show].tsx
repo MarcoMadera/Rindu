@@ -17,11 +17,14 @@ import { AsType } from "types/heading";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
 import {
+  ContentType,
   getAuth,
   getSiteUrl,
   getTranslations,
   Page,
   serverRedirect,
+  templateReplace,
+  ToastMessage,
 } from "utils";
 import {
   checkEpisodesInLibrary,
@@ -159,7 +162,13 @@ const Shows: NextPage<PlaylistProps> = ({
                 const saveRes = await saveShowsToLibrary([show.id]);
                 if (saveRes) {
                   addToast({
-                    message: "Podcast added to your library",
+                    message: templateReplace(
+                      translations[ToastMessage.TypeAddedTo],
+                      [
+                        translations[ContentType.Podcast],
+                        translations[ContentType.Library],
+                      ]
+                    ),
                     variant: "success",
                   });
                   return true;
@@ -171,7 +180,13 @@ const Shows: NextPage<PlaylistProps> = ({
                 const removeRes = await removeShowsFromLibrary([show.id]);
                 if (removeRes) {
                   addToast({
-                    message: "Podcast removed from your library",
+                    message: templateReplace(
+                      translations[ToastMessage.TypeRemovedFrom],
+                      [
+                        translations[ContentType.Podcast],
+                        translations[ContentType.Library],
+                      ]
+                    ),
                     variant: "success",
                   });
                   return true;

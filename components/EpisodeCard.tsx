@@ -4,9 +4,23 @@ import Link from "next/link";
 
 import { ExplicitSign, Heading } from "components";
 import { Add, Pause, Play, Share, ThreeDots } from "components/icons";
-import { useAuth, useContextMenu, useSpotify, useToast } from "hooks";
+import {
+  useAuth,
+  useContextMenu,
+  useSpotify,
+  useToast,
+  useTranslations,
+} from "hooks";
 import { AsType } from "types/heading";
-import { formatTime, getSiteUrl, getTimeAgo, playCurrentTrack } from "utils";
+import {
+  ContentType,
+  formatTime,
+  getSiteUrl,
+  getTimeAgo,
+  playCurrentTrack,
+  templateReplace,
+  ToastMessage,
+} from "utils";
 import {
   removeEpisodesFromLibrary,
   saveEpisodesToLibrary,
@@ -44,7 +58,7 @@ export default function EpisodeCard({
     savedEpisode ?? false
   );
   const [shouldUpdateList, setShouldUpdateList] = useState<boolean>(false);
-
+  const { translations } = useTranslations();
   useEffect(() => {
     setIsEpisodeInLibrary(savedEpisode);
     setShouldUpdateList(true);
@@ -112,7 +126,13 @@ export default function EpisodeCard({
                 ]);
                 if (removeEpisodeRes) {
                   addToast({
-                    message: "Episode removed from library",
+                    message: templateReplace(
+                      translations[ToastMessage.TypeRemovedFrom],
+                      [
+                        translations[ContentType.Episode],
+                        translations[ContentType.Library],
+                      ]
+                    ),
                     variant: "success",
                   });
                   setIsEpisodeInLibrary(false);
@@ -125,7 +145,13 @@ export default function EpisodeCard({
                 ]);
                 if (saveEpisodesToLibraryRes) {
                   addToast({
-                    message: "Episode added to library",
+                    message: templateReplace(
+                      translations[ToastMessage.TypeAddedTo],
+                      [
+                        translations[ContentType.Episode],
+                        translations[ContentType.Library],
+                      ]
+                    ),
                     variant: "success",
                   });
                   setIsEpisodeInLibrary(true);
@@ -143,7 +169,7 @@ export default function EpisodeCard({
                 `${getSiteUrl()}/episode/${item.id}`
               );
               addToast({
-                message: "Link copied to clipboard",
+                message: translations[ToastMessage.CopiedToClipboard],
                 variant: "success",
               });
             }}

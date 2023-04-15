@@ -1,6 +1,8 @@
+import { ReactNode } from "react";
+
 export interface NewToast {
   variant: "info" | "error" | "success";
-  message: string;
+  message: string | ReactNode[];
   displayTime?: number;
 }
 

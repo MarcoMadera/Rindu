@@ -8,7 +8,8 @@ import {
   Repeat,
   Suffle,
 } from "components/icons";
-import { useAuth, useSpotify, useToast } from "hooks";
+import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
+import { ToastMessage } from "utils";
 import { repeat, suffle } from "utils/spotifyCalls";
 
 export default function Player(): ReactElement {
@@ -22,6 +23,7 @@ export default function Player(): ReactElement {
   } = useSpotify();
   const { user, accessToken } = useAuth();
   const { addToast } = useToast();
+  const { translations } = useTranslations();
   const isPremium = user?.product === "premium";
 
   return (
@@ -35,14 +37,14 @@ export default function Player(): ReactElement {
             if (!isPremium) {
               addToast({
                 variant: "error",
-                message: "You need to be premium to use this feature",
+                message: translations[ToastMessage.PremiumRequired],
               });
               return;
             }
             if (!deviceId) {
               addToast({
                 variant: "error",
-                message: "No device connected",
+                message: translations[ToastMessage.NoDeviceConnected],
               });
               return;
             }
@@ -75,7 +77,7 @@ export default function Player(): ReactElement {
             if (!currentlyPlaying) {
               addToast({
                 variant: "error",
-                message: "No song playing",
+                message: translations[ToastMessage.NothingPlaying],
               });
               return;
             }
@@ -103,7 +105,7 @@ export default function Player(): ReactElement {
             if (!isPremium) {
               addToast({
                 variant: "error",
-                message: "You need to be premium to use this feature",
+                message: translations[ToastMessage.PremiumRequired],
               });
               return;
             }
@@ -117,7 +119,7 @@ export default function Player(): ReactElement {
             if (!deviceId) {
               addToast({
                 variant: "error",
-                message: "No device connected",
+                message: translations[ToastMessage.NoDeviceConnected],
               });
               return;
             }

@@ -2,13 +2,15 @@ import { ReactElement, useState } from "react";
 
 import { Heading } from "components";
 import { DeviceConnect, Playing } from "components/icons";
-import { useAuth, useSpotify, useToast } from "hooks";
+import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
+import { templateReplace, ToastMessage } from "utils";
 import { getAvailableDevices, transferPlayback } from "utils/spotifyCalls";
 
 export default function DeviceConnectControl(): ReactElement {
   const { user, accessToken } = useAuth();
   const { deviceId } = useSpotify();
   const { addToast } = useToast();
+  const { translations } = useTranslations();
   const [devices, setDevices] = useState<SpotifyApi.UserDevice[]>([]);
   const isPremium = user?.product === "premium";
   const currentActiveDevice = devices.find((device) => device.is_active);
@@ -62,7 +64,10 @@ export default function DeviceConnectControl(): ReactElement {
                       );
                       if (transferPlaybackResponse) {
                         addToast({
-                          message: `Device connected to ${device.name}`,
+                          message: templateReplace(
+                            translations[ToastMessage.DeviceConnectedTo],
+                            [device.name]
+                          ),
                           variant: "success",
                         });
                       }
@@ -87,7 +92,7 @@ export default function DeviceConnectControl(): ReactElement {
           if (!isPremium) {
             addToast({
               variant: "error",
-              message: "You need to be premium to use this feature",
+              message: translations[ToastMessage.PremiumRequired],
             });
             return;
           }

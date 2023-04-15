@@ -20,14 +20,18 @@ import {
   useOnSmallScreen,
   useSpotify,
   useToast,
+  useTranslations,
 } from "hooks";
 import { ITrack } from "types/spotify";
 import {
+  ContentType,
   formatTime,
   getSiteUrl,
   getTimeAgo,
   playCurrentTrack,
   spanishCountries,
+  templateReplace,
+  ToastMessage,
 } from "utils";
 import {
   removeEpisodesFromLibrary,
@@ -86,18 +90,19 @@ function CardTrack({
   const [mouseEnter, setMouseEnter] = useState(false);
   const [isFocusing, setIsFocusing] = useState(false);
   const [isLikedTrack, setIsLikedTrack] = useState(isTrackInLibrary);
+  const [type, setType] = useState<CardType>(cardType);
+  const router = useRouter();
   const trackRef = useRef<HTMLDivElement>(null);
-  const { user, setAccessToken } = useAuth();
   const { addContextMenu } = useContextMenu();
   const { addToast } = useToast();
-  const isPremium = user?.product === "premium";
+  const { translations } = useTranslations();
   const isVisible = useOnScreen(trackRef);
-  const router = useRouter();
+  const { user, setAccessToken } = useAuth();
+  const isPremium = user?.product === "premium";
   const country = router.query.country as string;
   const locale = spanishCountries.includes(country) ? "es" : "en";
   const date = track?.added_at ? +new Date(track?.added_at) : NaN;
   const displayDate = isNaN(date) ? track?.added_at : getTimeAgo(date, locale);
-  const [type, setType] = useState<CardType>(cardType);
 
   const isSmallScreen = useOnSmallScreen((isSmall) => {
     if (isSmall) {
@@ -137,7 +142,7 @@ function CardTrack({
         (player as Spotify.Player).disconnect();
         addToast({
           variant: "error",
-          message: "Unable to play, trying to reconnect, please wait...",
+          message: translations[ToastMessage.UnableToPlayReconnecting],
         });
         setReconnectionError(true);
       }
@@ -153,7 +158,10 @@ function CardTrack({
       if (status === 400) {
         addToast({
           variant: "error",
-          message: "Error playing this track",
+          message: templateReplace(
+            translations[ToastMessage.ErrorPlayingThis],
+            [translations[ContentType.Track]]
+          ),
         });
       }
     });
@@ -174,7 +182,10 @@ function CardTrack({
           if (track.corruptedTrack) {
             addToast({
               variant: "error",
-              message: "This track is corrupted and cannot be played",
+              message: templateReplace(
+                translations[ToastMessage.IsCorruptedAndCannotBePlayed],
+                [translations[ContentType.Track]]
+              ),
             });
             return;
           }
@@ -185,7 +196,7 @@ function CardTrack({
         } else {
           addToast({
             variant: "info",
-            message: "This content is not available",
+            message: translations[ToastMessage.ContentIsUnavailable],
           });
         }
       }}
@@ -194,7 +205,10 @@ function CardTrack({
           if (track.corruptedTrack) {
             addToast({
               variant: "error",
-              message: "This track is corrupted and cannot be played",
+              message: templateReplace(
+                translations[ToastMessage.IsCorruptedAndCannotBePlayed],
+                [translations[ContentType.Track]]
+              ),
             });
             return;
           }
@@ -205,7 +219,7 @@ function CardTrack({
         } else {
           addToast({
             variant: "info",
-            message: "This content is not available",
+            message: translations[ToastMessage.ContentIsUnavailable],
           });
         }
       }}
@@ -253,7 +267,10 @@ function CardTrack({
           if (track.corruptedTrack) {
             addToast({
               variant: "error",
-              message: "This track is corrupted and cannot be played",
+              message: templateReplace(
+                translations[ToastMessage.IsCorruptedAndCannotBePlayed],
+                [translations[ContentType.Track]]
+              ),
             });
             return;
           }
@@ -271,7 +288,7 @@ function CardTrack({
             } else {
               addToast({
                 variant: "info",
-                message: "This content is not available",
+                message: translations[ToastMessage.ContentIsUnavailable],
               });
             }
           }
@@ -293,7 +310,10 @@ function CardTrack({
             if (track.corruptedTrack) {
               addToast({
                 variant: "error",
-                message: "This track is corrupted and cannot be played",
+                message: templateReplace(
+                  translations[ToastMessage.IsCorruptedAndCannotBePlayed],
+                  [translations[ContentType.Track]]
+                ),
               });
               return;
             }
@@ -304,7 +324,7 @@ function CardTrack({
           } else {
             addToast({
               variant: "info",
-              message: "This content is not available",
+              message: translations[ToastMessage.ContentIsUnavailable],
             });
           }
         }}
@@ -401,9 +421,17 @@ function CardTrack({
               setIsLikedTrack(true);
               addToast({
                 variant: "success",
-                message: `${
-                  track.type === "episode" ? "Episode" : "Song"
-                } added to library`,
+                message: templateReplace(
+                  translations[ToastMessage.TypeAddedTo],
+                  [
+                    `${
+                      track.type === "episode"
+                        ? translations[ContentType.Episode]
+                        : translations[ContentType.Track]
+                    }`,
+                    translations[ContentType.Library],
+                  ]
+                ),
               });
               return true;
             }
@@ -422,9 +450,17 @@ function CardTrack({
               setIsLikedTrack(false);
               addToast({
                 variant: "success",
-                message: `${
-                  track.type === "episode" ? "Episode" : "Song"
-                } removed from library.`,
+                message: templateReplace(
+                  translations[ToastMessage.TypeRemovedFrom],
+                  [
+                    `${
+                      track.type === "episode"
+                        ? translations[ContentType.Episode]
+                        : translations[ContentType.Track]
+                    }`,
+                    translations[ContentType.Library],
+                  ]
+                ),
               });
               return true;
             }

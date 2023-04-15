@@ -8,7 +8,9 @@ import {
   useClickPreventionOnDoubleClick,
   useSpotify,
   useToast,
+  useTranslations,
 } from "hooks";
+import { ToastMessage } from "utils";
 import { play } from "utils/spotifyCalls";
 
 interface PlaylistTextProps {
@@ -40,6 +42,7 @@ export default function PlaylistText({
   const { user, accessToken, setAccessToken } = useAuth();
   const isPremium = user?.product === "premium";
   const { addToast } = useToast();
+  const { translations } = useTranslations();
 
   const getActualVolume = useCallback(() => {
     if (volume > 0) {
@@ -66,7 +69,7 @@ export default function PlaylistText({
           (player as Spotify.Player).disconnect();
           addToast({
             variant: "error",
-            message: "Unable to play, trying to reconnect, please wait...",
+            message: translations[ToastMessage.UnableToPlayReconnecting],
           });
           setReconnectionError(true);
         }
@@ -78,18 +81,19 @@ export default function PlaylistText({
       });
     }
   }, [
-    uri,
     accessToken,
-    deviceId,
-    isPremium,
-    setAccessToken,
-    player,
     addToast,
-    setReconnectionError,
-    setPlaylistPlayingId,
+    deviceId,
     id,
+    isPremium,
+    player,
+    setAccessToken,
     setPlayedSource,
+    setPlaylistPlayingId,
+    setReconnectionError,
+    translations,
     type,
+    uri,
   ]);
 
   const onClick = useCallback(() => {

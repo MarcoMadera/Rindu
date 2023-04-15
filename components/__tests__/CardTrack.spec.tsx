@@ -325,7 +325,7 @@ describe("cardTrack", () => {
     fireEvent.doubleClick(mytest);
     expect(toasts).toStrictEqual([
       {
-        message: "This content is not available",
+        message: "Content is unavailable",
         displayTime: 10000,
         id: expect.any(String) as string,
         timeOut: expect.any(Number) as number,
