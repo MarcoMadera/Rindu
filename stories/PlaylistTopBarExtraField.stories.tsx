@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { PlaylistTopBarExtraField } from "components";
 export default {
@@ -17,9 +17,9 @@ export default {
       },
     },
   },
-} as ComponentMeta<typeof PlaylistTopBarExtraField>;
+} as Meta<typeof PlaylistTopBarExtraField>;
 
-const Template: ComponentStory<typeof PlaylistTopBarExtraField> = () => {
+const Template: StoryFn<typeof PlaylistTopBarExtraField> = () => {
   return <PlaylistTopBarExtraField />;
 };
 

@@ -1,7 +1,5 @@
-import { RouterContext } from "next/dist/shared/lib/router-context";
 import React, { useEffect, useState } from "react";
 import { AppContextProvider } from "../../context/AppContextProvider";
-import { nextRouterMock } from "../../utils/__tests__/__mocks__/mocks";
 import { translations, Language } from "../../utils/getTranslations";
 import StorybookConfigurationModal, {
   StorybookConfigurationModalProps,
@@ -56,11 +54,10 @@ function StorybookModal({
 }
 
 export const WithConfiguration = (Story, context) => {
-  const [language, setLanguage] = useState(
-    context.globals.language.toUpperCase() || "EN"
-  );
+  const defaultLanguage = context.globals.language?.toUpperCase() || "EN";
+  const [language, setLanguage] = useState(defaultLanguage);
   const allTranslations: Record<string, string>[] = Object.values(
-    translations[context.globals.language.toUpperCase() || ("EN" as Language)]
+    translations[defaultLanguage as Language]
   );
   const allTranslationsFlat = allTranslations.reduce(
     (acc, cur) => ({ ...acc, ...cur }),
@@ -112,75 +109,71 @@ export const WithConfiguration = (Story, context) => {
       }}
       id="__next"
     >
-      <RouterContext.Provider
-        value={{ ...nextRouterMock, ...context.parameters.nextRouter }}
+      <AppContextProvider
+        translations={allTranslationsFlat}
+        userValue={{
+          isLogin: isLogin,
+          user: {
+            product,
+            birthdate: "1990-01-01",
+            country: "US",
+            display_name: "Marco Madera",
+            email: "rindu@marcomadera.com",
+            id: "12133024755",
+            images: [
+              {
+                url: "https://i.scdn.co/image/ab6775700000ee85483a9d1a47289376804a5234",
+                height: 640,
+                width: 640,
+              },
+            ],
+            uri: "spotify:user:12133024755",
+            type: "user",
+            href: "https://api.spotify.com/v1/users/12133024755",
+            followers: {
+              href: null,
+              total: 0,
+            },
+            external_urls: {
+              spotify: "https://open.spotify.com/user/12133024755",
+            },
+          } as SpotifyApi.UserObjectPrivate,
+          accessToken,
+        }}
+        spotifyValue={context.parameters.spotifyValue}
+        contextMenuValue={context.parameters.contextMenuValue}
+        headerValue={context.parameters.headerValue}
       >
-        <AppContextProvider
-          translations={allTranslationsFlat}
-          userValue={{
-            isLogin: isLogin,
-            user: {
-              product,
-              birthdate: "1990-01-01",
-              country: "US",
-              display_name: "Marco Madera",
-              email: "rindu@marcomadera.com",
-              id: "12133024755",
-              images: [
-                {
-                  url: "https://i.scdn.co/image/ab6775700000ee85483a9d1a47289376804a5234",
-                  height: 640,
-                  width: 640,
-                },
-              ],
-              uri: "spotify:user:12133024755",
-              type: "user",
-              href: "https://api.spotify.com/v1/users/12133024755",
-              followers: {
-                href: null,
-                total: 0,
-              },
-              external_urls: {
-                spotify: "https://open.spotify.com/user/12133024755",
-              },
-            } as SpotifyApi.UserObjectPrivate,
-            accessToken,
+        <StorybookModal
+          open={openModal}
+          handleClose={() => {
+            if (openModal) {
+              setOpenModal(false);
+            }
           }}
-          spotifyValue={context.parameters.spotifyValue}
-          contextMenuValue={context.parameters.contextMenuValue}
-          headerValue={context.parameters.headerValue}
-        >
-          <StorybookModal
-            open={openModal}
-            handleClose={() => {
-              if (openModal) {
-                setOpenModal(false);
-              }
-            }}
-            setAccessToken={(accessToken) => {
-              setAccessToken(accessToken);
-              context.globals.accessToken = accessToken;
-            }}
-            setProduct={(product) => {
-              setProduct(product);
-              context.globals.product = product;
-            }}
-            setIsLogin={(isLogin) => {
-              setIsLogin(isLogin);
-              context.globals.isLogin = isLogin;
-            }}
-            setLanguage={(language) => {
-              setLanguage(language);
-              context.globals.language = language;
-            }}
-            language={context.globals.language.toUpperCase() || language}
-            accessToken={accessToken}
-            product={product}
-            isLogin={isLogin}
-          />
-          <Story />
-        </AppContextProvider>
-      </RouterContext.Provider>
+          setAccessToken={(accessToken) => {
+            setAccessToken(accessToken);
+            context.globals.accessToken = accessToken;
+          }}
+          setProduct={(product) => {
+            setProduct(product);
+            context.globals.product = product;
+          }}
+          setIsLogin={(isLogin) => {
+            setIsLogin(isLogin);
+            context.globals.isLogin = isLogin;
+          }}
+          setLanguage={(language) => {
+            setLanguage(language);
+            context.globals.language = language;
+          }}
+          language={defaultLanguage || language}
+          accessToken={accessToken}
+          product={product}
+          isLogin={isLogin}
+        />
+        <Story />
+      </AppContextProvider>
       <div id="globalModal" />
       <div id="toast" />
       <div id="contextMenu" />

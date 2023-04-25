@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { track } from "./mocks";
 import { NowPlaying } from "components";
@@ -18,9 +18,9 @@ export default {
       isPlaying: true,
     },
   },
-} as ComponentMeta<typeof NowPlaying>;
+} as Meta<typeof NowPlaying>;
 
-const Template: ComponentStory<typeof NowPlaying> = () => {
+const Template: StoryFn<typeof NowPlaying> = () => {
   return <NowPlaying />;
 };
 

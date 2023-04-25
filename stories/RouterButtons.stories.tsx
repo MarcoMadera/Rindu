@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { RouterButtons } from "components";
 
@@ -14,9 +14,9 @@ export default {
       disablePadding: true,
     },
   },
-} as ComponentMeta<typeof RouterButtons>;
+} as Meta<typeof RouterButtons>;
 
-const Template: ComponentStory<typeof RouterButtons> = () => {
+const Template: StoryFn<typeof RouterButtons> = () => {
   return (
     <div
       style={{

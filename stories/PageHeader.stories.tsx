@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { PageHeader } from "components";
 import { HeaderType } from "types/pageHeader";
@@ -24,11 +24,9 @@ export default {
       control: { type: "select" },
     },
   },
-} as ComponentMeta<typeof PageHeader>;
+} as Meta<typeof PageHeader>;
 
-const Template: ComponentStory<typeof PageHeader> = (args) => (
-  <PageHeader {...args} />
-);
+const Template: StoryFn<typeof PageHeader> = (args) => <PageHeader {...args} />;
 
 export const Playlist = Template.bind({});
 Playlist.args = {

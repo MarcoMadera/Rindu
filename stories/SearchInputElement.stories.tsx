@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { SearchInputElement } from "components";
 export default {
@@ -18,9 +18,9 @@ export default {
       control: { type: "select" },
     },
   },
-} as ComponentMeta<typeof SearchInputElement>;
+} as Meta<typeof SearchInputElement>;
 
-const Template: ComponentStory<typeof SearchInputElement> = (args) => {
+const Template: StoryFn<typeof SearchInputElement> = (args) => {
   return <SearchInputElement {...args} />;
 };
 

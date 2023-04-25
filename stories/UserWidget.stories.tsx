@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { UserWidget } from "components";
 
@@ -17,9 +17,9 @@ export default {
       },
     },
   },
-} as ComponentMeta<typeof UserWidget>;
+} as Meta<typeof UserWidget>;
 
-const Template: ComponentStory<typeof UserWidget> = () => (
+const Template: StoryFn<typeof UserWidget> = () => (
   <UserWidget
     name="Marco Madera"
     img="https://i.scdn.co/image/ab6775700000ee85483a9d1a47289376804a5234"

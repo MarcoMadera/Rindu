@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { SideBar } from "components";
 export default {
@@ -16,9 +16,9 @@ export default {
       },
     },
   },
-} as ComponentMeta<typeof SideBar>;
+} as Meta<typeof SideBar>;
 
-const Template: ComponentStory<typeof SideBar> = () => {
+const Template: StoryFn<typeof SideBar> = () => {
   return <SideBar />;
 };
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { PlaylistTopBarExtraField, TopBar } from "components";
 
@@ -14,9 +14,9 @@ export default {
       disablePadding: true,
     },
   },
-} as ComponentMeta<typeof TopBar>;
+} as Meta<typeof TopBar>;
 
-const Template: ComponentStory<typeof TopBar> = () => <TopBar />;
+const Template: StoryFn<typeof TopBar> = () => <TopBar />;
 
 export const Default = Template.bind({});
 export const LoggedIn = Template.bind({});
@@ -24,21 +24,25 @@ export const LoggedInWithExtraField = Template.bind({});
 
 LoggedIn.parameters = {
   layout: "fullscreen",
-  nextRouter: {
-    query: {
-      country: "US",
+  nextjs: {
+    router: {
+      pathname: "/dashboard",
+      query: {
+        country: "US",
+      },
     },
-    pathname: "/dashboard",
   },
 };
 
 LoggedInWithExtraField.parameters = {
   layout: "fullscreen",
-  nextRouter: {
-    query: {
-      country: "US",
+  nextjs: {
+    router: {
+      pathname: "/dashboard",
+      query: {
+        country: "US",
+      },
     },
-    pathname: "/dashboard",
   },
   spotifyValue: { pageDetails: { name: "Skinny Dipping" } },
   headerValue: {

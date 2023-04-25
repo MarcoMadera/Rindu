@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { ProgressBar } from "components";
 export default {
@@ -17,9 +17,9 @@ export default {
       },
     },
   },
-} as ComponentMeta<typeof ProgressBar>;
+} as Meta<typeof ProgressBar>;
 
-const Template: ComponentStory<typeof ProgressBar> = () => {
+const Template: StoryFn<typeof ProgressBar> = () => {
   return <ProgressBar />;
 };
 

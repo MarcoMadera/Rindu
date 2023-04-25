@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { track } from "./mocks";
 import { SingleTrackCard } from "components";
@@ -17,9 +17,9 @@ export default {
       },
     },
   },
-} as ComponentMeta<typeof SingleTrackCard>;
+} as Meta<typeof SingleTrackCard>;
 
-const Template: ComponentStory<typeof SingleTrackCard> = (args) => (
+const Template: StoryFn<typeof SingleTrackCard> = (args) => (
   <SingleTrackCard {...args} />
 );
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { PlayButton } from "components";
 
@@ -10,11 +10,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof PlayButton>;
+} as Meta<typeof PlayButton>;
 
-const Template: ComponentStory<typeof PlayButton> = (args) => (
-  <PlayButton {...args} />
-);
+const Template: StoryFn<typeof PlayButton> = (args) => <PlayButton {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

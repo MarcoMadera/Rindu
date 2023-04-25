@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { ExplicitSign } from "components";
 
@@ -16,9 +16,9 @@ export default {
       },
     },
   },
-} as ComponentMeta<typeof ExplicitSign>;
+} as Meta<typeof ExplicitSign>;
 
-const Template: ComponentStory<typeof ExplicitSign> = () => {
+const Template: StoryFn<typeof ExplicitSign> = () => {
   return <ExplicitSign />;
 };
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { SpotifyPlayer } from "components";
 export default {
@@ -12,8 +12,8 @@ export default {
       disablePadding: true,
     },
   },
-} as ComponentMeta<typeof SpotifyPlayer>;
+} as Meta<typeof SpotifyPlayer>;
 
-const Template: ComponentStory<typeof SpotifyPlayer> = () => <SpotifyPlayer />;
+const Template: StoryFn<typeof SpotifyPlayer> = () => <SpotifyPlayer />;
 
 export const Default = Template.bind({});

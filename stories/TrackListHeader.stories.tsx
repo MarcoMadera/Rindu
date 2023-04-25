@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { TrackListHeader } from "components";
 import { CardType } from "components/CardTrack";
@@ -15,9 +15,9 @@ export default {
       disablePadding: true,
     },
   },
-} as ComponentMeta<typeof TrackListHeader>;
+} as Meta<typeof TrackListHeader>;
 
-const Template: ComponentStory<typeof TrackListHeader> = (args) => {
+const Template: StoryFn<typeof TrackListHeader> = (args) => {
   return <TrackListHeader {...args} />;
 };
 

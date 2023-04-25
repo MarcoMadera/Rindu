@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { PresentationCard, SubTitle } from "components";
 import { CardType } from "components/CardContent";
@@ -45,9 +45,9 @@ export default {
       description: "isSingle",
     },
   },
-} as ComponentMeta<typeof PresentationCard>;
+} as Meta<typeof PresentationCard>;
 
-const Template: ComponentStory<typeof PresentationCard> = (args) => (
+const Template: StoryFn<typeof PresentationCard> = (args) => (
   <PresentationCard {...args} />
 );
 

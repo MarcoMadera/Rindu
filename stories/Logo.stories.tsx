@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { Logo } from "components";
 
@@ -10,9 +10,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof Logo>;
+} as Meta<typeof Logo>;
 
-const Template: ComponentStory<typeof Logo> = (args) => {
+const Template: StoryFn<typeof Logo> = (args) => {
   return <Logo {...args} />;
 };
 

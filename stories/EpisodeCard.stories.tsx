@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { EpisodeCard } from "components";
 import { HeaderType } from "types/pageHeader";
@@ -25,9 +25,9 @@ export default {
       control: { type: "select" },
     },
   },
-} as ComponentMeta<typeof EpisodeCard>;
+} as Meta<typeof EpisodeCard>;
 
-const Template: ComponentStory<typeof EpisodeCard> = (args) => (
+const Template: StoryFn<typeof EpisodeCard> = (args) => (
   <EpisodeCard {...args} />
 );
 
