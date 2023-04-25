@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { PlayerControls } from "components";
 
@@ -18,11 +18,9 @@ export default {
       },
     },
   },
-} as ComponentMeta<typeof PlayerControls>;
+} as Meta<typeof PlayerControls>;
 
-const Template: ComponentStory<typeof PlayerControls> = () => (
-  <PlayerControls />
-);
+const Template: StoryFn<typeof PlayerControls> = () => <PlayerControls />;
 
 export const Default = Template.bind({});
 Default.args = {

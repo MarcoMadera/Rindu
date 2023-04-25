@@ -1,6 +1,6 @@
 import React, { ComponentProps, PropsWithChildren } from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { Carousel } from "components";
 
@@ -19,7 +19,7 @@ export default {
     boxWidth: { control: "number", defaultValue: 200, min: 0, max: 1000 },
     totalBoxes: { control: "number", defaultValue: 50, min: 0, max: 1000 },
   },
-} as ComponentMeta<typeof Carousel>;
+} as Meta<typeof Carousel>;
 
 const Box = ({
   children,
@@ -44,7 +44,7 @@ const getBoxes = (totalBoxes: number, boxWidth: number) =>
     <Box key={i} boxWidth={boxWidth}>{`Box ${i + 1}`}</Box>
   ));
 
-const Template: ComponentStory<
+const Template: StoryFn<
   ({
     boxWidth,
     totalBoxes,

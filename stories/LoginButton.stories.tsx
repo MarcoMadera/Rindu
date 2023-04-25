@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { LoginButton } from "components";
 
@@ -10,9 +10,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof LoginButton>;
+} as Meta<typeof LoginButton>;
 
-const Template: ComponentStory<typeof LoginButton> = () => {
+const Template: StoryFn<typeof LoginButton> = () => {
   return <LoginButton />;
 };
 

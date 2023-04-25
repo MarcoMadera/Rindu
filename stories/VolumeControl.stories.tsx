@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { VolumeControl } from "components";
 export default {
@@ -17,8 +17,8 @@ export default {
       },
     },
   },
-} as ComponentMeta<typeof VolumeControl>;
+} as Meta<typeof VolumeControl>;
 
-const Template: ComponentStory<typeof VolumeControl> = () => <VolumeControl />;
+const Template: StoryFn<typeof VolumeControl> = () => <VolumeControl />;
 
 export const Default = Template.bind({});

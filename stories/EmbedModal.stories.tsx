@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { EmbedModal, ModalContainer } from "components";
 export default {
@@ -12,9 +12,9 @@ export default {
       disablePadding: true,
     },
   },
-} as ComponentMeta<typeof EmbedModal>;
+} as Meta<typeof EmbedModal>;
 
-const Template: ComponentStory<typeof EmbedModal> = (args) => {
+const Template: StoryFn<typeof EmbedModal> = (args) => {
   return (
     <ModalContainer
       title="Details"

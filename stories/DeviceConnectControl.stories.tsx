@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { DeviceConnectControl } from "components";
 
@@ -10,9 +10,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof DeviceConnectControl>;
+} as Meta<typeof DeviceConnectControl>;
 
-const Template: ComponentStory<typeof DeviceConnectControl> = () => (
+const Template: StoryFn<typeof DeviceConnectControl> = () => (
   <div style={{ color: "#121212" }}>
     Go to{" "}
     <a

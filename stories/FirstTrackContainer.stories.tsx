@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { track } from "./mocks";
 import { FirstTrackContainer } from "components";
@@ -11,9 +11,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof FirstTrackContainer>;
+} as Meta<typeof FirstTrackContainer>;
 
-const Template: ComponentStory<typeof FirstTrackContainer> = (args) => {
+const Template: StoryFn<typeof FirstTrackContainer> = (args) => {
   return <FirstTrackContainer {...args} />;
 };
 

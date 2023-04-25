@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { LoadingSpinner } from "components";
 
@@ -13,9 +13,9 @@ export default {
       backgroundTheme: "dark",
     },
   },
-} as ComponentMeta<typeof LoadingSpinner>;
+} as Meta<typeof LoadingSpinner>;
 
-const Template: ComponentStory<typeof LoadingSpinner> = () => {
+const Template: StoryFn<typeof LoadingSpinner> = () => {
   return <LoadingSpinner />;
 };
 

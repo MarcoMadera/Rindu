@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { mockPlaylistTrackResponse } from "../utils/__tests__/__mocks__/mocks";
 import { LikedSongsCard } from "components";
@@ -10,9 +10,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof LikedSongsCard>;
+} as Meta<typeof LikedSongsCard>;
 
-const Template: ComponentStory<typeof LikedSongsCard> = (args) => {
+const Template: StoryFn<typeof LikedSongsCard> = (args) => {
   return <LikedSongsCard {...args} />;
 };
 

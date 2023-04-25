@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { BigPill } from "../components";
 
@@ -19,11 +19,9 @@ export default {
     href: { control: "text" },
     subTitle: { control: "text", type: "string" },
   },
-} as ComponentMeta<typeof BigPill>;
+} as Meta<typeof BigPill>;
 
-const Template: ComponentStory<typeof BigPill> = (args) => (
-  <BigPill {...args} />
-);
+const Template: StoryFn<typeof BigPill> = (args) => <BigPill {...args} />;
 
 export const Artist = Template.bind({});
 Artist.args = {

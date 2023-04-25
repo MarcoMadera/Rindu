@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { EditPlaylistDetails, ModalContainer } from "components";
 export default {
@@ -12,9 +12,9 @@ export default {
       disablePadding: true,
     },
   },
-} as ComponentMeta<typeof EditPlaylistDetails>;
+} as Meta<typeof EditPlaylistDetails>;
 
-const Template: ComponentStory<typeof EditPlaylistDetails> = (args) => {
+const Template: StoryFn<typeof EditPlaylistDetails> = (args) => {
   return (
     <ModalContainer
       title="Edit details"

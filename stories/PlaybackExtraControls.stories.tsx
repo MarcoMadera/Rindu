@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { PlaybackExtraControls } from "components";
 export default {
@@ -12,9 +12,9 @@ export default {
       backgroundTheme: "dark",
     },
   },
-} as ComponentMeta<typeof PlaybackExtraControls>;
+} as Meta<typeof PlaybackExtraControls>;
 
-const Template: ComponentStory<typeof PlaybackExtraControls> = () => {
+const Template: StoryFn<typeof PlaybackExtraControls> = () => {
   return <PlaybackExtraControls />;
 };
 

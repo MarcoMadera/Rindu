@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { playlists } from "./mocks";
 import { ContextMenu } from "components";
@@ -11,9 +11,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof ContextMenu>;
+} as Meta<typeof ContextMenu>;
 
-const Template: ComponentStory<typeof ContextMenu> = () => <ContextMenu />;
+const Template: StoryFn<typeof ContextMenu> = () => <ContextMenu />;
 export const Track = Template.bind({});
 
 Track.parameters = {

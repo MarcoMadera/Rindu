@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { ModalContainer, RemoveTracksModal } from "components";
 export default {
@@ -13,9 +13,9 @@ export default {
       disablePadding: true,
     },
   },
-} as ComponentMeta<typeof RemoveTracksModal>;
+} as Meta<typeof RemoveTracksModal>;
 
-const Template: ComponentStory<typeof RemoveTracksModal> = (args) => {
+const Template: StoryFn<typeof RemoveTracksModal> = (args) => {
   return (
     <ModalContainer
       title="Details"

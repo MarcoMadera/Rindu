@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { playlists, track } from "./mocks";
 import { PageDetails } from "components";
@@ -18,11 +18,11 @@ export default {
       playlists: playlists,
     },
   },
-} as ComponentMeta<typeof PageDetails>;
+} as Meta<typeof PageDetails>;
 
-const Template: ComponentStory<
-  typeof PageDetails & { playlistPlayingId: string }
-> = (args) => {
+const Template: StoryFn<typeof PageDetails & { playlistPlayingId: string }> = (
+  args
+) => {
   return <PageDetails {...args} />;
 };
 

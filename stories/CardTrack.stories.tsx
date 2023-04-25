@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import CardTrack, { CardType } from "../components/CardTrack";
 import { ITrack } from "types/spotify";
@@ -18,11 +18,9 @@ export default {
       control: { type: "boolean" },
     },
   },
-} as ComponentMeta<typeof CardTrack>;
+} as Meta<typeof CardTrack>;
 
-const Template: ComponentStory<typeof CardTrack> = (args) => (
-  <CardTrack {...args} />
-);
+const Template: StoryFn<typeof CardTrack> = (args) => <CardTrack {...args} />;
 
 const track = {
   album: {

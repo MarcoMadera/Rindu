@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { ModalContainer, ShortCuts } from "components";
 export default {
@@ -13,9 +13,9 @@ export default {
       disablePadding: true,
     },
   },
-} as ComponentMeta<typeof ShortCuts>;
+} as Meta<typeof ShortCuts>;
 
-const Template: ComponentStory<typeof ShortCuts> = () => {
+const Template: StoryFn<typeof ShortCuts> = () => {
   return (
     <ModalContainer
       title="Details"

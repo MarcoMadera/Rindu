@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 
 import { Slider } from "../components";
 
@@ -13,9 +13,9 @@ export default {
       backgroundTheme: "dark",
     },
   },
-} as ComponentMeta<typeof Slider>;
+} as Meta<typeof Slider>;
 
-const Template: ComponentStory<typeof Slider> = (args) => {
+const Template: StoryFn<typeof Slider> = (args) => {
   return <Slider {...args} />;
 };
 
