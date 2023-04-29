@@ -61,7 +61,6 @@ export default function SelectControl({
           width: 100%;
         }
         .arrow-container {
-          display: none;
           width: 18px;
           height: 18px;
           display: block;
