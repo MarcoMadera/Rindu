@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useLayoutEffect, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 
 import { decode } from "html-entities";
 import Link from "next/link";
@@ -14,9 +14,9 @@ import {
 } from "components";
 import {
   useAuth,
+  useDynamicFontSize,
   useHeader,
   useModal,
-  useOnSmallScreen,
   useSpotify,
   useTranslations,
 } from "hooks";
@@ -64,7 +64,7 @@ export default function PageHeader({
   const [pageHeaderDescription, setPageHeaderDescription] =
     useState(description);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     // This will reset page header image and title when navigating to a new page
     setPageHeaderImg(coverImg);
     setPageHeaderTitle(title);
@@ -90,13 +90,13 @@ export default function PageHeader({
     [HeaderType.radio]: translations.pageHeaderRadio,
     [HeaderType.top]: translations.pageHeaderTop,
   };
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
-  useEffect(() => {
-    if (banner) return;
-    getMainColorFromImage("cover-image", setHeaderColor);
-  }, [banner, router.asPath, setHeaderColor]);
-
-  const isSmallScreen = useOnSmallScreen();
+  useDynamicFontSize({
+    ref: headingRef,
+    maxFontSize: 120,
+    minFontSize: 30,
+  });
 
   return (
     <PageDetails
@@ -106,7 +106,14 @@ export default function PageHeader({
     >
       {coverImg && !banner ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={pageHeaderImg} alt="" id="cover-image" />
+        <img
+          src={pageHeaderImg}
+          alt=""
+          id="cover-image"
+          onLoad={() => {
+            getMainColorFromImage("cover-image", setHeaderColor);
+          }}
+        />
       ) : (
         !banner && <div id="cover-image"></div>
       )}
@@ -140,20 +147,7 @@ export default function PageHeader({
                   }
                 }}
               >
-                <Heading
-                  number={1}
-                  fontSize={
-                    isSmallScreen
-                      ? "48px"
-                      : title.length < 16
-                      ? "96px"
-                      : title.length < 21
-                      ? "72px"
-                      : title.length < 30
-                      ? "64px"
-                      : "48px"
-                  }
-                >
+                <Heading number={1} ref={headingRef}>
                   {pageHeaderTitle}
                 </Heading>
               </button>
@@ -269,8 +263,12 @@ export default function PageHeader({
           .title-container :global(.text) {
             white-space: pre-wrap;
           }
+          .title-container :global(*) {
+            width: 100%;
+          }
           .title-container :global(h1) {
             line-break: auto;
+            line-height: 1;
           }
           p.description {
             margin-bottom: 4px;
@@ -329,7 +327,9 @@ export default function PageHeader({
               white-space: nowrap;
               display: flex;
               margin: 0 auto;
-              width: fit-content;
+              width: 100%;
+              text-align: center;
+              justify-content: center;
             }
             #cover-image {
               margin: 0;
