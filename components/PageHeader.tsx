@@ -95,7 +95,9 @@ export default function PageHeader({
   useDynamicFontSize({
     ref: headingRef,
     maxFontSize: 120,
-    minFontSize: 30,
+    minFontSize: 40,
+    maxHeight: 150,
+    lineNum: 3,
   });
 
   return (
@@ -329,7 +331,8 @@ export default function PageHeader({
               margin: 0 auto;
               width: 100%;
               text-align: center;
-              justify-content: center;
+              justify-content: start;
+              width: fit-content;
             }
             #cover-image {
               margin: 0;
@@ -337,6 +340,18 @@ export default function PageHeader({
             }
             div.playlistInfo span {
               margin: 0 auto;
+              width: auto;
+            }
+          }
+          @media (max-width: 480px) {
+            .playlistInfo :global(h1) {
+              margin: 0 auto;
+              justify-content: start;
+              width: fit-content;
+            }
+            div.playlistInfo span {
+              margin: 0 auto;
+              width: auto;
             }
           }
         `}

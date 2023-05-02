@@ -1,12 +1,22 @@
 import { useLayoutEffect } from "react";
 
+import { useOnSmallScreen } from "./useOnSmallScreen";
+
 interface UseDynamicFontSizeProps {
   ref: React.RefObject<HTMLHeadingElement>;
   maxFontSize: number;
   minFontSize: number;
+  maxHeight: number;
+  lineNum?: number;
 }
 
-function measureText(pText: string, pFontSize: number) {
+function measureText(
+  pText: string,
+  pFontSize: number,
+  width: number,
+  maxHeight: number,
+  lineNum: number
+) {
   let lDiv: HTMLDivElement | null = document.createElement("div");
 
   document.body.appendChild(lDiv);
@@ -14,12 +24,18 @@ function measureText(pText: string, pFontSize: number) {
   lDiv.style.position = "absolute";
   lDiv.style.left = "-1000";
   lDiv.style.top = "-1000";
-
+  lDiv.style.maxWidth = `${width}px`;
+  lDiv.style.maxHeight = `${maxHeight}px`;
+  lDiv.style.webkitLineClamp = `${lineNum}`;
+  lDiv.style.textOverflow = "ellipsis";
+  lDiv.style.overflow = "hidden";
+  lDiv.style.webkitBoxOrient = "vertical";
+  lDiv.style.display = "-webkit-box";
+  lDiv.style.lineHeight = "1";
   lDiv.textContent = pText;
-
   const lResult = {
-    width: lDiv.clientWidth,
-    height: lDiv.clientHeight,
+    width: lDiv.scrollWidth,
+    height: lDiv.scrollHeight,
   };
 
   document.body.removeChild(lDiv);
@@ -31,21 +47,25 @@ function measureText(pText: string, pFontSize: number) {
 export function fitText(
   el: HTMLHeadingElement,
   maxFontSize: number,
-  minFontSize: number
+  minFontSize: number,
+  maxHeight: number,
+  lineNum: number
 ): void {
   const text = el.textContent;
   if (!text) return;
   const computedStyles = getComputedStyle(el);
   let fsize = parseInt(computedStyles.fontSize);
   fsize = Math.max(fsize, minFontSize);
-  const measured = measureText(text, fsize);
   const { width } = el.getBoundingClientRect();
+  const measured = measureText(text, fsize, width, maxHeight, lineNum);
   const letsBeTrue = true;
-  if (measured.width > width) {
+  if (measured.width > width || measured.height > maxHeight) {
     while (letsBeTrue) {
       fsize = parseInt(computedStyles.fontSize);
-      const m = measureText(text, fsize);
-      if (m.width > width && fsize > minFontSize) {
+      const m = measureText(text, fsize, width, maxHeight, lineNum);
+      console.log(m.height);
+      if ((m.width > width && fsize > minFontSize) || m.height > maxHeight) {
+        console.log("decreasing");
         el.style.fontSize = `${--fsize}px`;
       } else {
         break;
@@ -54,7 +74,7 @@ export function fitText(
   } else {
     while (letsBeTrue) {
       fsize = parseInt(computedStyles.fontSize);
-      const m = measureText(text, fsize);
+      const m = measureText(text, fsize, width, maxHeight, lineNum);
       if (m.width < width - 4 && fsize < maxFontSize) {
         el.style.fontSize = `${++fsize}px`;
       } else {
@@ -68,12 +88,20 @@ export function useDynamicFontSize({
   ref,
   maxFontSize,
   minFontSize,
+  maxHeight,
+  lineNum = 1,
 }: UseDynamicFontSizeProps): void {
+  const isSmallScreen = useOnSmallScreen();
   useLayoutEffect(() => {
     const element = ref.current;
+    if (isSmallScreen) {
+      if (!element) return;
+      element.style.fontSize = `${minFontSize}px`;
+      return;
+    }
     const handleResize = () => {
       if (element) {
-        fitText(element, maxFontSize, minFontSize);
+        fitText(element, maxFontSize, minFontSize, maxHeight, lineNum);
       }
     };
 
@@ -85,5 +113,13 @@ export function useDynamicFontSize({
       if (!element) return;
       element.style.fontSize = "";
     };
-  }, [ref, maxFontSize, ref.current?.textContent, minFontSize]);
+  }, [
+    ref,
+    maxFontSize,
+    ref.current?.textContent,
+    minFontSize,
+    maxHeight,
+    lineNum,
+    isSmallScreen,
+  ]);
 }
