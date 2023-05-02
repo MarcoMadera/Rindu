@@ -1,6 +1,7 @@
 import { ReactElement, useEffect, useState } from "react";
 
 import type { IToast } from "types/toast";
+import { capitalizeFirstLetter } from "utils";
 
 export default function ToastCard({
   id,
@@ -17,6 +18,15 @@ export default function ToastCard({
     return () => clearTimeout(timeOutTime);
   }, [displayTime]);
 
+  const colors = {
+    info: "#2e77d0",
+    error: "#ff5a5f",
+    success: "#2e77d0",
+    default: "#ff0",
+  };
+
+  const background = colors[variant] || colors.default;
+
   return (
     <article
       key={id}
@@ -24,16 +34,10 @@ export default function ToastCard({
       aria-labelledby="alertText"
       className={dissapearCard ? "notificationDissapear" : ""}
     >
-      <p id="alertText">{message}</p>
+      <p id="alertText">{capitalizeFirstLetter(message)}</p>
       <style jsx>{`
         article {
-          background: ${variant === "info"
-            ? "#2e77d0"
-            : variant === "error"
-            ? "#ff5a5f"
-            : variant === "success"
-            ? "#2e77d0"
-            : "#ff0"};
+          background: ${background};
         }
       `}</style>
       <style jsx>{`

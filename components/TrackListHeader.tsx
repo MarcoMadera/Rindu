@@ -44,7 +44,7 @@ export default function TrackListHeader({
           }
         },
         {
-          rootMargin: `0px 0px -${window.innerHeight - 60}px 0px`,
+          rootMargin: `0px 0px -${(window.innerHeight || 0) - 60}px 0px`,
         }
       );
 
