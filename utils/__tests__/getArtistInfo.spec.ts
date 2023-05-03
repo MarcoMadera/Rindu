@@ -1,5 +1,5 @@
 import { IUtilsMocks } from "types/mocks";
-import { getArtistInfo } from "utils";
+import { ArtistScrobbleInfo, getArtistInfo } from "utils";
 
 const { artistInfo, mockFetchSuccess } = jest.requireActual<IUtilsMocks>(
   "./__mocks__/mocks.ts"
@@ -9,7 +9,7 @@ describe("getArtistInfo", () => {
   it("should return null if no artistName provided", async () => {
     expect.assertions(1);
 
-    const result = await getArtistInfo(undefined);
+    const result = await getArtistInfo();
     expect(result).toBeNull();
   });
 
@@ -17,16 +17,16 @@ describe("getArtistInfo", () => {
     expect.assertions(1);
     mockFetchSuccess({ artist: artistInfo }, true);
 
-    const result = await getArtistInfo("artistName", "api");
+    const result = await getArtistInfo("artistName");
     expect(result).toStrictEqual(artistInfo);
   });
 
-  it("should return null if response is not ok", async () => {
+  it("should return empty object if response is not ok", async () => {
     expect.assertions(1);
 
     mockFetchSuccess({ artists: [artistInfo] }, false);
 
     const result = await getArtistInfo("artistName");
-    expect(result).toBeNull();
+    expect(result).toStrictEqual({} as ArtistScrobbleInfo);
   });
 });

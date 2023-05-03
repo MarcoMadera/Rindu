@@ -28,7 +28,7 @@ import {
 } from "hooks";
 import { HeaderType } from "types/pageHeader";
 import {
-  Artist,
+  ArtistScrobbleInfo,
   fullFilledValue,
   getArtistInfo,
   getAuth,
@@ -71,7 +71,7 @@ interface ArtistPageProps {
   accessToken?: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
   setLists: SetLists | null;
-  artistInfo: Artist | null;
+  artistInfo: ArtistScrobbleInfo | null;
   translations: Record<string, string>;
   albums: IMappedAlbums | null;
   compilations: IMappedAlbums | null;
@@ -452,9 +452,8 @@ export async function getServerSideProps({
 
   const currentArtist = await getArtistById(artistId, accessToken, cookies);
   const setListAPIKey = process.env.SETLIST_FM_API_KEY;
-  const lastFMAPIKey = process.env.LAST_FM_API_KEY;
   const setListsProm = getSetLists(currentArtist?.name, setListAPIKey);
-  const artistInfoProm = getArtistInfo(currentArtist?.name, lastFMAPIKey);
+  const artistInfoProm = getArtistInfo(currentArtist?.name);
   const topTracksProm = getArtistTopTracks(
     artistId,
     user?.country ?? "US",
