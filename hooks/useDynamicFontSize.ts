@@ -63,9 +63,7 @@ export function fitText(
     while (letsBeTrue) {
       fsize = parseInt(computedStyles.fontSize);
       const m = measureText(text, fsize, width, maxHeight, lineNum);
-      console.log(m.height);
       if ((m.width > width && fsize > minFontSize) || m.height > maxHeight) {
-        console.log("decreasing");
         el.style.fontSize = `${--fsize}px`;
       } else {
         break;

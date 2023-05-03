@@ -1,8 +1,7 @@
 import { NextRouter } from "next/router";
 
 import { ITrack } from "types/spotify";
-import { Language } from "utils";
-import { Artist } from "utils/getArtistInfo";
+import { ArtistScrobbleInfo, Language } from "utils";
 import { IRefreshAccessTokenResponse } from "utils/spotifyCalls/refreshAccessToken";
 
 export interface IUtilsMocks {
@@ -18,7 +17,7 @@ export interface IUtilsMocks {
   trackFull: SpotifyApi.TrackObjectFull;
   track: ITrack;
   playlistTrackResponse: SpotifyApi.PlaylistTrackObject;
-  artistInfo: Artist;
+  artistInfo: ArtistScrobbleInfo;
   refreshAccessTokenResponse: IRefreshAccessTokenResponse;
   setupCookies: (value?: string) => string;
   setupEnvironment: (value?: Record<string, string>) => string;

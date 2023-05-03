@@ -52,3 +52,6 @@ export * from "./carousels";
 export * from "./contextMenu";
 export * from "./getArtistsOfTheWeek";
 export * from "./getTracksOfTheWeek";
+export * from "./getMBID";
+export * from "./getArtistScrobbleInfo";
+export * from "./getMusicFanArt";
