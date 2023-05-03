@@ -6,6 +6,13 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  images: {
+    remotePatterns: [
+      {
+        hostname: "assets.fanart.tv",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
