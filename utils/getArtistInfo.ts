@@ -23,7 +23,10 @@ export async function getArtistInfo(
     if (mbid) {
       const musicFanArt = await getMusicFanArt(mbid);
       if (musicFanArt) {
-        artistInfo.banner = musicFanArt?.artistbackground?.[0]?.url;
+        const banner = musicFanArt?.artistbackground?.[0]?.url;
+        if (banner) {
+          artistInfo.banner = "/_next/image?url=" + banner + "&w=2048&q=100";
+        }
         artistInfo.thumb = musicFanArt?.artistthumb?.[0]?.url;
       }
     }
