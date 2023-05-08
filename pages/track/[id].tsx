@@ -64,7 +64,7 @@ export default function TrackPage({
     showOnFixed: false,
   });
   const { setUser, setAccessToken } = useAuth();
-  const [isTrackInLibrary, setIsTrackInLibrary] = useState(false);
+  const [tracksInLibrary, setTracksInLibrary] = useState<string[]>([]);
   const [showMoreTopTracks, setShowMoreTopTracks] = useToggle(false);
   const [artistTopTracks, setArtistTopTracks] = useState<
     SpotifyApi.TrackObjectFull[]
@@ -123,8 +123,8 @@ export default function TrackPage({
   useEffect(() => {
     if (!track) return;
     checkTracksInLibrary([track.id]).then((tracksInLibrary) => {
-      if (tracksInLibrary) {
-        setIsTrackInLibrary(tracksInLibrary[0]);
+      if (tracksInLibrary?.[0]) {
+        setTracksInLibrary((value) => [...value, track.id]);
       }
     });
   }, [track]);
@@ -138,6 +138,15 @@ export default function TrackPage({
     ).then((res) => {
       if (res && Array.isArray(res.tracks)) {
         setArtistTopTracks(res.tracks);
+        const trackIds = res.tracks.map((track) => track.id);
+        checkTracksInLibrary(trackIds).then((tracksInLibrary) => {
+          if (tracksInLibrary) {
+            setTracksInLibrary((value) => {
+              const likedTracks = trackIds.filter((_, i) => tracksInLibrary[i]);
+              return [...value, ...likedTracks];
+            });
+          }
+        });
       }
     });
 
@@ -179,7 +188,7 @@ export default function TrackPage({
           />
           <div className="info">
             <Heart
-              active={isTrackInLibrary}
+              active={tracksInLibrary.includes(track?.id ?? "")}
               style={{ width: 80, height: 80 }}
               handleLike={async () => {
                 if (!track) return null;
@@ -267,10 +276,12 @@ export default function TrackPage({
                 ? i
                 : i + 1;
 
+              const isTrackInLibrary = tracksInLibrary.includes(artistTrack.id);
+
               return (
                 <CardTrack
                   accessToken={accessToken ?? ""}
-                  isTrackInLibrary={false}
+                  isTrackInLibrary={isTrackInLibrary}
                   playlistUri=""
                   track={artistTrack}
                   key={artistTrack.id}

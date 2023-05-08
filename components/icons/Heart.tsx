@@ -46,9 +46,7 @@ export default function Heart({
   });
 
   useEffect(() => {
-    if (isPlaying) return;
     setDefaultActiveValue(active);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);
 
   const playAnimationAndSetValue = useCallback(
