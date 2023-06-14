@@ -1,5 +1,6 @@
 import { Follow_type } from "./follow";
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { handleJsonResponse } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function checkIfUserFollowArtistUser(
   type: Follow_type,
@@ -7,26 +8,19 @@ export async function checkIfUserFollowArtistUser(
   accessToken?: string,
   cookies?: string
 ): Promise<boolean> {
-  if (!id) {
-    return false;
-  }
-  const res = await fetch(
-    `https://api.spotify.com/v1/me/following/contains?type=${type}&ids=${id}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken
-            ? accessToken
-            : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
-        }`,
-      },
-    }
-  );
-  if (res.ok) {
-    const data = (await res.json()) as boolean[] | null;
+  if (!id) return false;
+
+  const res = await callSpotifyApi({
+    endpoint: `/me/following/contains?type=${type}&ids=${id}`,
+    method: "GET",
+    accessToken,
+    cookies,
+  });
+  const data = await handleJsonResponse<boolean[]>(res);
+
+  if (data) {
     return data?.[0] ?? false;
   }
+
   return false;
 }

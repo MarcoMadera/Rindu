@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
-import { refreshAccessToken } from "utils/spotifyCalls";
+import { callSpotifyApi, refreshAccessToken } from "utils/spotifyCalls";
 
 export async function play(
   accessToken: string,
@@ -26,17 +26,13 @@ export async function play(
   } else if (Array.isArray(uris) && uris.length) {
     body.uris = [...new Set(uris)];
   }
-  const res = await fetch(
-    `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(body),
-    }
-  );
+
+  const res = await callSpotifyApi({
+    endpoint: `/me/player/play?device_id=${deviceId}`,
+    method: "PUT",
+    accessToken,
+    body: JSON.stringify(body),
+  });
 
   if (res.status === 401 && !ignore) {
     const { access_token: newAccessToken } = (await refreshAccessToken()) || {};

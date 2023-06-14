@@ -1,5 +1,5 @@
 import { AuthorizationResponse } from "types/spotify";
-import { getSiteUrl } from "utils/environment";
+import { getSiteUrl, handleJsonResponse } from "utils";
 
 export async function getAuthorizationByCode(
   code: string
@@ -11,9 +11,6 @@ export async function getAuthorizationByCode(
     },
     body: JSON.stringify({ code }),
   });
-  if (res.ok) {
-    const data = (await res.json()) as AuthorizationResponse;
-    return data;
-  }
-  return null;
+
+  return handleJsonResponse<AuthorizationResponse>(res);
 }

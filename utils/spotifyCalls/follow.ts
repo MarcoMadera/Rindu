@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export enum Follow_type {
   artist = "artist",
@@ -11,25 +11,14 @@ export async function follow(
   accessToken?: string,
   cookies?: string
 ): Promise<boolean> {
-  if (!id) {
-    return false;
-  }
-  const res = await fetch(
-    `https://api.spotify.com/v1/me/following?type=${type}&ids=${id}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken
-            ? accessToken
-            : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
-        }`,
-      },
-    }
-  );
-  if (res.ok) {
-    return true;
-  }
-  return false;
+  if (!id) return false;
+
+  const res = await callSpotifyApi({
+    endpoint: `/me/following?type=${type}&ids=${id}`,
+    method: "PUT",
+    accessToken,
+    cookies,
+  });
+
+  return res.ok;
 }

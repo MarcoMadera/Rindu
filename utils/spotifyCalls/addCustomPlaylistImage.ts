@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { callSpotifyApi } from "./callSpotifyApi";
 
 interface IAddCustomPlaylistImage {
   user_id: string | undefined;
@@ -8,6 +8,25 @@ interface IAddCustomPlaylistImage {
   cookies?: string;
 }
 
+const getCoverData = (imageId?: string) => {
+  const cover: HTMLElement | null = document.getElementById(
+    imageId ?? "cover-image"
+  );
+
+  if (!cover) return null;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = cover.clientWidth;
+  canvas.height = cover.clientHeight;
+  const ctx = canvas.getContext("2d");
+
+  if (!ctx) return null;
+
+  ctx.drawImage(cover as HTMLImageElement, 0, 0, canvas.width, canvas.height);
+  const dataUrl = canvas.toDataURL("image/jpeg");
+  return dataUrl.split(",")[1];
+};
+
 export async function addCustomPlaylistImage({
   user_id,
   playlist_id,
@@ -16,46 +35,17 @@ export async function addCustomPlaylistImage({
   cookies,
 }: IAddCustomPlaylistImage): Promise<boolean> {
   if (!playlist_id || !user_id) return false;
-  const getCoverData = () => {
-    const cover: HTMLElement | null = document.getElementById(
-      imageId ?? "cover-image"
-    );
-    if (cover) {
-      const canvas = document.createElement("canvas");
-      canvas.width = cover.clientWidth;
-      canvas.height = cover.clientHeight;
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.drawImage(
-          cover as HTMLImageElement,
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-        const dataUrl = canvas.toDataURL("image/jpeg");
-        return dataUrl.split(",")[1];
-      }
-    }
-    return null;
-  };
-  const coverData = getCoverData();
+
+  const coverData = getCoverData(imageId);
   if (!coverData) return false;
-  const res = await fetch(
-    `https://api.spotify.com/v1/users/${user_id}/playlists/${playlist_id}/images`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "image/jpeg",
-        Authorization: `Bearer ${
-          accessToken
-            ? accessToken
-            : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
-        }`,
-      },
-      body: coverData,
-    }
-  );
+
+  const res = await callSpotifyApi({
+    endpoint: `/users/${user_id}/playlists/${playlist_id}/images`,
+    method: "PUT",
+    accessToken,
+    cookies,
+    body: coverData,
+  });
 
   return res.ok;
 }

@@ -11,8 +11,8 @@ export function takeCookie(
   cookiesJar?: string | undefined
 ): string | null {
   const isServerSide = isServer();
-  const allCookies = `; ${isServerSide ? cookiesJar || "" : document.cookie}`;
-  const parts = allCookies.split(`; ${cookieName || ""}=`);
+  const allCookies = `; ${isServerSide ? cookiesJar ?? "" : document.cookie}`;
+  const parts = allCookies.split(`; ${cookieName ?? ""}=`);
   if (parts.length === 2) {
     return parts.pop()?.split(";").shift() || null;
   }

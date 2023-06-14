@@ -22,7 +22,7 @@ export default function Heart({
   style,
   ...props
 }: {
-  active: boolean;
+  active: boolean | string;
   handleLike?: () => Promise<true | null>;
   handleDislike?: () => Promise<true | null>;
   options?: LottieOptions;
@@ -120,7 +120,7 @@ export default function Heart({
       {View}
       <style jsx>{`
         div :global(svg path) {
-          fill: #fff;
+          fill: ${typeof props.color === "string" ? props.color : "#ffffffb3"};
         }
       `}</style>
     </div>

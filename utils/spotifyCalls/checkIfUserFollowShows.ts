@@ -1,28 +1,16 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { handleJsonResponse } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function checkIfUserFollowShows(
   showIds?: string[],
   accessToken?: string
 ): Promise<boolean[] | null> {
-  if (!showIds) {
-    return null;
-  }
+  if (!showIds) return null;
   const ids = showIds.join();
-  const res = await fetch(
-    `https://api.spotify.com/v1/me/shows/contains?ids=${ids}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
-        }`,
-      },
-    }
-  );
-  if (res.ok) {
-    const data = (await res.json()) as boolean[];
-    return data;
-  }
-  return null;
+  const res = await callSpotifyApi({
+    endpoint: `/me/shows/contains?ids=${ids}`,
+    method: "GET",
+    accessToken,
+  });
+  return handleJsonResponse<boolean[]>(res);
 }

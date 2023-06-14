@@ -7,13 +7,8 @@ import { CardType } from "components/CardContent";
 import { useContextMenu, useToast, useTranslations } from "hooks";
 import { menuContextStyles } from "styles/menuContextStyles";
 import { ICardContentContextMenuData } from "types/contextMenu";
-import {
-  capitalizeFirstLetter,
-  ContentType,
-  getSiteUrl,
-  templateReplace,
-  ToastMessage,
-} from "utils";
+import { Modify } from "types/customTypes";
+import { ContentType, getSiteUrl, templateReplace, ToastMessage } from "utils";
 import {
   follow,
   followAlbums,
@@ -28,31 +23,17 @@ type SaveFunctionTypes =
   | CardType.ARTIST
   | CardType.SHOW;
 
-const saveFunctions: { [key in SaveFunctionTypes]: (id: string) => void } = {
+type SaveFunctions = Modify<
+  Partial<Record<CardType, never>>,
+  Record<SaveFunctionTypes, (id: string) => void>
+>;
+
+const saveFunctions: SaveFunctions = {
   album: followAlbums,
   show: saveShowsToLibrary,
   artist: (id: string) => follow(Follow_type.artist, id),
   playlist: followPlaylist,
 };
-
-function saveFunction(type: SaveFunctionTypes, id: string): void {
-  switch (type) {
-    case CardType.ALBUM:
-      saveFunctions.album(id);
-      break;
-    case CardType.PLAYLIST:
-      saveFunctions.playlist(id);
-      break;
-    case CardType.ARTIST:
-      saveFunctions.artist(id);
-      break;
-    case CardType.SHOW:
-      saveFunctions.show(id);
-      break;
-    default:
-      break;
-  }
-}
 
 export interface ICardContentContextMenu {
   data: ICardContentContextMenuData["data"];
@@ -65,8 +46,7 @@ export default function CardContentContextMenu({
   const { addToast } = useToast();
   const { translations } = useTranslations();
 
-  const isSaveable =
-    !!data.type && Object.keys(saveFunctions).includes(data.type);
+  const saveFunction = saveFunctions[data.type];
 
   return (
     <ul>
@@ -74,20 +54,19 @@ export default function CardContentContextMenu({
         <button
           type="button"
           onClick={() => {
-            router.push(`${getSiteUrl()}/${data.type ?? "track"}/${data.id}`);
+            router.push(`${getSiteUrl()}/${data.type || "track"}/${data.id}`);
             removeContextMenu();
           }}
         >
-          Go to {data.type}
+          Go to {data.type || "track"}
         </button>
       </li>
-      {data.type !== "genre" && (
+      {data.type && data.type !== "genre" && data.id && (
         <li>
           <button
             onClick={() => {
-              if (!data.type || !data.id) return;
               setModalData({
-                title: "Embed",
+                title: `Embed ${data.type}`,
                 modalElement: <EmbedModal type={data.type} id={data.id} />,
                 maxHeight: "100%",
               });
@@ -98,18 +77,16 @@ export default function CardContentContextMenu({
           </button>
         </li>
       )}
-      {isSaveable && (
+      {saveFunction && (
         <li>
           <button
             type="button"
             onClick={() => {
-              saveFunction(data.type as SaveFunctionTypes, data.id);
+              saveFunction(data.id);
               addToast({
-                message: `${capitalizeFirstLetter(
-                  templateReplace(translations[ToastMessage.AddedTo], [
-                    translations[ContentType.Library],
-                  ])
-                )}`,
+                message: templateReplace(translations[ToastMessage.AddedTo], [
+                  translations[ContentType.Library],
+                ]),
                 variant: "success",
               });
               removeContextMenu();

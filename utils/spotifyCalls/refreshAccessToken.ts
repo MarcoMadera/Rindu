@@ -1,4 +1,4 @@
-import { getSiteUrl } from "utils";
+import { getSiteUrl, handleJsonResponse } from "utils";
 
 export interface IRefreshAccessTokenResponse {
   access_token: string;
@@ -16,10 +16,6 @@ export async function refreshAccessToken(
     },
     body: JSON.stringify({ refreshToken }),
   });
-  if (res.ok) {
-    const data = (await res.json()) as IRefreshAccessTokenResponse;
-    return data;
-  }
 
-  return null;
+  return handleJsonResponse<IRefreshAccessTokenResponse>(res);
 }

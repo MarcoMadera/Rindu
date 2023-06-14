@@ -1,4 +1,5 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { handleJsonResponse } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function getCategoryPlaylists(
   category: string,
@@ -6,25 +7,14 @@ export async function getCategoryPlaylists(
   accessToken?: string,
   cookies?: string
 ): Promise<SpotifyApi.CategoryPlaylistsResponse | null> {
-  const res = await fetch(
-    `https://api.spotify.com/v1/browse/categories/${category}/playlists?country=${
+  const res = await callSpotifyApi({
+    endpoint: `/browse/categories/${category}/playlists?country=${
       country ?? "US"
     }`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken
-            ? accessToken
-            : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
-        }`,
-      },
-    }
-  );
-  if (res.ok) {
-    const data = (await res.json()) as SpotifyApi.CategoryPlaylistsResponse;
-    return data;
-  }
-  return null;
+    method: "GET",
+    accessToken,
+    cookies,
+  });
+
+  return handleJsonResponse<SpotifyApi.CategoryPlaylistsResponse>(res);
 }

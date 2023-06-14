@@ -1,4 +1,5 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { handleJsonResponse } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function getAlbumById(
   id: string,
@@ -6,26 +7,14 @@ export async function getAlbumById(
   accessToken?: string,
   cookies?: string
 ): Promise<SpotifyApi.SingleAlbumResponse | null> {
-  if (!id) {
-    return null;
-  }
-  const res = await fetch(
-    `https://api.spotify.com/v1/albums/${id}?market=${market}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken
-            ? accessToken
-            : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
-        }`,
-      },
-    }
-  );
-  if (res.ok) {
-    const data = (await res.json()) as SpotifyApi.SingleAlbumResponse;
-    return data;
-  }
-  return null;
+  if (!id) return null;
+
+  const res = await callSpotifyApi({
+    endpoint: `/albums/${id}?market=${market}`,
+    method: "GET",
+    accessToken,
+    cookies,
+  });
+
+  return handleJsonResponse<SpotifyApi.SingleAlbumResponse>(res);
 }
