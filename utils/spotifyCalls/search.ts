@@ -1,23 +1,18 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { handleJsonResponse } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function search(
   query: string,
   accessToken?: string
-): Promise<SpotifyApi.SearchResponse> {
+): Promise<SpotifyApi.SearchResponse | null> {
   const q = query.replaceAll(" ", "+");
-  const res = await fetch(
-    `https://api.spotify.com/v1/search?q=${q}&type=album,track,artist,playlist,show,episode&market=from_token&limit=10`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
-        }`,
-      },
-    }
-  );
-  const data = (await res.json()) as SpotifyApi.SearchResponse;
-  return data;
+  const res = await callSpotifyApi({
+    endpoint: `/search?q=${q}&type=album,track,artist,playlist,show,episode&market=from_token&limit=10`,
+    method: "GET",
+    accessToken,
+  });
+
+  return handleJsonResponse<SpotifyApi.SearchResponse>(res);
 }
 
 export async function searchArtist(
@@ -25,19 +20,18 @@ export async function searchArtist(
   accessToken?: string
 ): Promise<SpotifyApi.ArtistObjectFull[] | null> {
   const q = query.replaceAll(" ", "+");
-  const res = await fetch(
-    `https://api.spotify.com/v1/search?q=${q}&type=artist&market=from_token&limit=1`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
-        }`,
-      },
-    }
-  );
-  const data = (await res.json()) as SpotifyApi.SearchResponse;
-  return data?.artists?.items || null;
+  const res = await callSpotifyApi({
+    endpoint: `/search?q=${q}&type=artist&market=from_token&limit=1`,
+    method: "GET",
+    accessToken,
+  });
+
+  const data = await handleJsonResponse<SpotifyApi.SearchResponse>(res);
+  if (data) {
+    return data?.artists?.items ?? null;
+  }
+
+  return null;
 }
 
 export async function searchTrack(
@@ -45,19 +39,18 @@ export async function searchTrack(
   accessToken?: string
 ): Promise<SpotifyApi.TrackObjectFull[] | null> {
   const q = query.replaceAll(" ", "+");
-  const res = await fetch(
-    `https://api.spotify.com/v1/search?q=${q}&type=track&market=from_token&limit=10`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
-        }`,
-      },
-    }
-  );
-  const data = (await res.json()) as SpotifyApi.SearchResponse;
-  return data?.tracks?.items || null;
+  const res = await callSpotifyApi({
+    endpoint: `/search?q=${q}&type=track&market=from_token&limit=10`,
+    method: "GET",
+    accessToken,
+  });
+  const data = await handleJsonResponse<SpotifyApi.SearchResponse>(res);
+
+  if (data) {
+    return data?.tracks?.items ?? null;
+  }
+
+  return null;
 }
 
 export async function searchPlaylist(
@@ -66,19 +59,18 @@ export async function searchPlaylist(
 ): Promise<SpotifyApi.PlaylistObjectFull[] | null> {
   if (!query) return null;
   const q = query.replaceAll(" ", "+");
-  const res = await fetch(
-    `https://api.spotify.com/v1/search?q=${q}&type=playlist&market=from_token&limit=50`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
-        }`,
-      },
-    }
-  );
-  const data = (await res.json()) as SpotifyApi.PlaylistSearchResponse;
-  return (data?.playlists?.items || null) as
-    | SpotifyApi.PlaylistObjectFull[]
-    | null;
+  const res = await callSpotifyApi({
+    endpoint: `/search?q=${q}&type=playlist&market=from_token&limit=50`,
+    method: "GET",
+    accessToken,
+  });
+  const data = await handleJsonResponse<SpotifyApi.PlaylistSearchResponse>(res);
+
+  if (data) {
+    return (data?.playlists?.items ?? null) as
+      | SpotifyApi.PlaylistObjectFull[]
+      | null;
+  }
+
+  return null;
 }

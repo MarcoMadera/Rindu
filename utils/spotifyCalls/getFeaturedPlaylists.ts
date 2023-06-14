@@ -1,4 +1,5 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { handleJsonResponse } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function getFeaturedPlaylists(
   country: string,
@@ -6,24 +7,12 @@ export async function getFeaturedPlaylists(
   accessToken?: string,
   cookies?: string
 ): Promise<SpotifyApi.ListOfFeaturedPlaylistsResponse | null> {
-  const res = await fetch(
-    `https://api.spotify.com/v1/browse/featured-playlists?country=${country}&limit=${limit}&market=from_token`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken
-            ? accessToken
-            : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
-        }`,
-      },
-    }
-  );
-  if (res.ok) {
-    const data =
-      (await res.json()) as SpotifyApi.ListOfFeaturedPlaylistsResponse;
-    return data;
-  }
-  return null;
+  const res = await callSpotifyApi({
+    endpoint: `/browse/featured-playlists?country=${country}&limit=${limit}&market=from_token`,
+    method: "GET",
+    accessToken,
+    cookies,
+  });
+
+  return handleJsonResponse<SpotifyApi.ListOfFeaturedPlaylistsResponse>(res);
 }

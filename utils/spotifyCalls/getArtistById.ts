@@ -1,27 +1,19 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { handleJsonResponse } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function getArtistById(
   id: string,
   accessToken?: string,
   cookies?: string
 ): Promise<SpotifyApi.SingleArtistResponse | null> {
-  if (!id) {
-    return null;
-  }
-  const res = await fetch(`https://api.spotify.com/v1/artists/${id}`, {
+  if (!id) return null;
+
+  const res = await callSpotifyApi({
+    endpoint: `/artists/${id}`,
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        accessToken
-          ? accessToken
-          : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
-      }`,
-    },
+    accessToken,
+    cookies,
   });
-  if (res.ok) {
-    const data = (await res.json()) as SpotifyApi.SingleArtistResponse;
-    return data;
-  }
-  return null;
+
+  return handleJsonResponse<SpotifyApi.SingleArtistResponse>(res);
 }

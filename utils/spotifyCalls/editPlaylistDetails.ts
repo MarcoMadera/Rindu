@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function editPlaylistDetails(
   playlistId: string | undefined | null,
@@ -11,19 +11,12 @@ export async function editPlaylistDetails(
   const body: { name: string; description?: string } = { name };
   if (description) body.description = description;
 
-  const res = await fetch(
-    `https://api.spotify.com/v1/playlists/${playlistId}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
-        }`,
-      },
-      body: JSON.stringify(body),
-    }
-  );
+  const res = await callSpotifyApi({
+    endpoint: `/playlists/${playlistId}`,
+    method: "PUT",
+    accessToken,
+    body: JSON.stringify(body),
+  });
 
   return res.ok;
 }

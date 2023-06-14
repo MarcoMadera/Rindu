@@ -55,3 +55,4 @@ export * from "./getTracksOfTheWeek";
 export * from "./getMBID";
 export * from "./getArtistScrobbleInfo";
 export * from "./getMusicFanArt";
+export * from "./handleJsonResponse";

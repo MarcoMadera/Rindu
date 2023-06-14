@@ -1,4 +1,5 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { handleJsonResponse } from "utils/handleJsonResponse";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function createPlaylist(
   user_id: string | undefined,
@@ -11,29 +12,18 @@ export async function createPlaylist(
 ): Promise<SpotifyApi.CreatePlaylistResponse | null> {
   if (!user_id) return null;
   const { name, description, accessToken, cookies } = options || {};
-  const res = await fetch(
-    `https://api.spotify.com/v1/users/${user_id}/playlists`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken
-            ? accessToken
-            : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
-        }`,
-      },
-      body: JSON.stringify({
-        name: name ?? "New Playlist",
-        description: description ?? "Your playlist created in Rindu",
-        public: false,
-      }),
-    }
-  );
 
-  if (res.ok) {
-    const data = (await res.json()) as SpotifyApi.CreatePlaylistResponse;
-    return data;
-  }
-  return null;
+  const res = await callSpotifyApi({
+    endpoint: `/users/${user_id}/playlists`,
+    method: "POST",
+    accessToken,
+    cookies,
+    body: JSON.stringify({
+      name: name ?? "New Playlist",
+      description: description ?? "Your playlist created in Rindu",
+      public: false,
+    }),
+  });
+
+  return handleJsonResponse<SpotifyApi.CreatePlaylistResponse>(res);
 }

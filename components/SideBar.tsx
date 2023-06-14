@@ -5,7 +5,13 @@ import { useRouter } from "next/router";
 
 import { Logo, PlaylistText } from "components";
 import { Add, Chevron, Heart, Home, Library, Search } from "components/icons";
-import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
+import {
+  useAnalytics,
+  useAuth,
+  useSpotify,
+  useToast,
+  useTranslations,
+} from "hooks";
 import {
   ContentType,
   getAllMyPlaylists,
@@ -28,15 +34,26 @@ export default function SideBar(): ReactElement {
   const router = useRouter();
   const { addToast } = useToast();
   const { translations } = useTranslations();
+  const { trackWithGoogleAnalytics } = useAnalytics();
 
   useEffect(() => {
     if (!accessToken) return;
-    getAllMyPlaylists(accessToken).then((res) => {
-      if (res) {
-        setPlaylists(res.items);
-      }
-    });
-  }, [accessToken, setPlaylists]);
+    getAllMyPlaylists(accessToken)
+      .then((res) => {
+        if (res) {
+          setPlaylists(res.items);
+        }
+      })
+      .catch((err) => {
+        const message = "SideBar - getAllMyPlaylists";
+        const exDescription =
+          err instanceof Error ? message + err.message : message;
+        trackWithGoogleAnalytics("exception", {
+          exDescription: exDescription,
+          exFatal: "0",
+        });
+      });
+  }, [accessToken, setPlaylists, trackWithGoogleAnalytics]);
 
   const type = playedSource?.split(":")?.[1];
   const id = playedSource?.split(":")?.[2];
@@ -66,20 +83,38 @@ export default function SideBar(): ReactElement {
             onClick={(e) => {
               e.stopPropagation();
               if (!user?.id) return;
-              createPlaylist(user.id, { accessToken }).then((res) => {
-                if (!res) {
-                  addToast({
-                    message: templateReplace(
-                      translations[ToastMessage.ErrorCreating],
-                      [translations[ContentType.Playlist]]
-                    ),
-                    variant: "error",
+              createPlaylist(user.id, { accessToken })
+                .then(async (res) => {
+                  if (!res) {
+                    addToast({
+                      message: templateReplace(
+                        translations[ToastMessage.ErrorCreating],
+                        [translations[ContentType.Playlist]]
+                      ),
+                      variant: "error",
+                    });
+                    return;
+                  }
+                  setPlaylists((prev) => [res, ...prev]);
+                  await router.push(`/playlist/${res.id}`);
+                })
+                .then(() => {
+                  trackWithGoogleAnalytics("event", {
+                    eventAction: "createPlaylist",
+                    eventCategory: "playlist",
+                    eventLabel: "createPlaylist",
+                    eventValue: "1",
                   });
-                  return;
-                }
-                setPlaylists((prev) => [res, ...prev]);
-                router.push(`/playlist/${res.id}`);
-              });
+                })
+                .catch((err) => {
+                  const message = "SideBar - createPlaylist";
+                  const exDescription =
+                    err instanceof Error ? message + err.message : message;
+                  trackWithGoogleAnalytics("exception", {
+                    exDescription: exDescription,
+                    exFatal: "0",
+                  });
+                });
             }}
           >
             <div>

@@ -1,5 +1,5 @@
 import { Follow_type } from "./follow";
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function unFollow(
   type: Follow_type,
@@ -7,25 +7,14 @@ export async function unFollow(
   accessToken?: string,
   cookies?: string
 ): Promise<boolean> {
-  if (!id) {
-    return false;
-  }
-  const res = await fetch(
-    `https://api.spotify.com/v1/me/following?type=${type}&ids=${id}`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken
-            ? accessToken
-            : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
-        }`,
-      },
-    }
-  );
-  if (res.ok) {
-    return true;
-  }
-  return false;
+  if (!id) return false;
+
+  const res = await callSpotifyApi({
+    endpoint: `/me/following?type=${type}&ids=${id}`,
+    method: "DELETE",
+    accessToken,
+    cookies,
+  });
+
+  return res.ok;
 }

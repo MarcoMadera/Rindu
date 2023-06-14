@@ -1,6 +1,7 @@
 export * from "./addCustomPlaylistImage";
 export * from "./addItemsToPlaylist";
 export * from "./addToQueue";
+export * from "./callSpotifyApi";
 export * from "./checkEpisodesInLibrary";
 export * from "./checkIfUserFollowAlbums";
 export * from "./checkIfUserFollowArtistUser";

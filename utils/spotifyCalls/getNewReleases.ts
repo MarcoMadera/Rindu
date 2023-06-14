@@ -1,4 +1,5 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { handleJsonResponse } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function getNewReleases(
   country: string,
@@ -6,23 +7,14 @@ export async function getNewReleases(
   accessToken?: string | null,
   cookies?: string | undefined
 ): Promise<SpotifyApi.ListOfNewReleasesResponse | null> {
-  const res = await fetch(
-    `https://api.spotify.com/v1/browse/new-releases?country=${country}&limit=${
+  const res = await callSpotifyApi({
+    endpoint: `/browse/new-releases?country=${country}&limit=${
       limit ?? 10
     }&market=from_token`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ?? (takeCookie(ACCESS_TOKEN_COOKIE, cookies) || "")
-        }`,
-      },
-    }
-  );
-  if (res.ok) {
-    const data = (await res.json()) as SpotifyApi.ListOfNewReleasesResponse;
-    return data;
-  }
-  return null;
+    method: "GET",
+    accessToken,
+    cookies,
+  });
+
+  return handleJsonResponse<SpotifyApi.ListOfNewReleasesResponse>(res);
 }

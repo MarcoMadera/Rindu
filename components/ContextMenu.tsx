@@ -77,7 +77,12 @@ export default function ContextMenu(): ReactPortal | null {
   );
 
   return createPortal(
-    <section ref={contextMenuRef} style={{ top, left }}>
+    <section
+      role="menu"
+      data-type={contextMenuData.data?.type}
+      ref={contextMenuRef}
+      style={{ top, left }}
+    >
       {contextMenuData.data?.type === "track" ||
       contextMenuData.data?.type === "episode" ? (
         <CardTrackContextMenu track={contextMenuData.data as ITrack} />

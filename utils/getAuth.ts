@@ -16,7 +16,7 @@ export async function getAuth(
     tokens?.access_token ?? takeCookie(ACCESS_TOKEN_COOKIE, cookies);
   const user = await getMe(accessTokenFromCookie, cookies);
   if (refreshToken && !user) {
-    const { access_token } = (await refreshAccessToken(refreshToken)) || {};
+    const { access_token } = (await refreshAccessToken(refreshToken)) ?? {};
 
     if (!access_token) {
       serverRedirect(res, "/");

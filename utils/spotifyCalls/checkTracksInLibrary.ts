@@ -1,4 +1,5 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { handleJsonResponse } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function checkTracksInLibrary(
   ids: string[],
@@ -7,23 +8,13 @@ export async function checkTracksInLibrary(
 ): Promise<boolean[] | null> {
   if (ids?.length === 0) return null;
   const stringIds = ids?.join(",");
-  const res = await fetch(
-    `https://api.spotify.com/v1/me/tracks/contains?ids=${stringIds}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ?? takeCookie(ACCESS_TOKEN_COOKIE, cookies) ?? ""
-        }`,
-      },
-    }
-  );
 
-  if (res.ok) {
-    const data = (await res.json()) as boolean[];
-    return data;
-  }
+  const res = await callSpotifyApi({
+    endpoint: `/me/tracks/contains?ids=${stringIds}`,
+    method: "GET",
+    accessToken,
+    cookies,
+  });
 
-  return null;
+  return handleJsonResponse<boolean[]>(res);
 }

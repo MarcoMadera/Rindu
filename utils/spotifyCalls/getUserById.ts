@@ -1,24 +1,17 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { handleJsonResponse } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function getUserById(
   id: string,
   accessToken?: string
 ): Promise<SpotifyApi.UserObjectPublic | null> {
-  if (!id) {
-    return null;
-  }
-  const res = await fetch(`https://api.spotify.com/v1/users/${id}`, {
+  if (!id) return null;
+
+  const res = await callSpotifyApi({
+    endpoint: `/users/${id}`,
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
-      }`,
-    },
+    accessToken,
   });
-  if (res.ok) {
-    const data = (await res.json()) as SpotifyApi.UserObjectPublic;
-    return data;
-  }
-  return null;
+
+  return handleJsonResponse<SpotifyApi.UserObjectPublic>(res);
 }

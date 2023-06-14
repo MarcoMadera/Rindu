@@ -6,30 +6,31 @@ import { useOnScreen } from "hooks";
 import { ITrack, ITrackArtist } from "types/spotify";
 import { getIdFromUri } from "utils";
 
-interface IAritstListProps {
+export interface IArtistListProps {
   artists: ITrack["artists"];
   maxArtistsToShow?: number;
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
-const getArtistId = (artist: ITrackArtist) =>
-  artist.id || getIdFromUri(artist.uri, "id");
+function getArtistId(artist: ITrackArtist): string | undefined {
+  return artist.id ?? getIdFromUri(artist.uri, "id");
+}
 
 export default function ArtistList({
   artists,
   maxArtistsToShow,
   onClick,
-}: IAritstListProps): ReactElement | null {
+}: IArtistListProps): ReactElement | null {
   const artistsRef = useRef<HTMLAnchorElement>(null);
   const isVisible = useOnScreen(artistsRef);
   if (!artists) return null;
-  const { length } = artists || [];
+  const { length } = artists;
 
   return (
     <span>
       {artists.map((artist, i) => {
         const id = getArtistId(artist);
-        if ((maxArtistsToShow && i > maxArtistsToShow) || !id) return null;
+        if (maxArtistsToShow && i >= maxArtistsToShow) return null;
 
         if (!id && artist.name) {
           return (
@@ -39,6 +40,8 @@ export default function ArtistList({
             </span>
           );
         }
+
+        if (!id) return null;
 
         return (
           <Fragment key={id}>

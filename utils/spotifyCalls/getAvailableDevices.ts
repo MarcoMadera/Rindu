@@ -1,24 +1,16 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { handleJsonResponse } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function getAvailableDevices(
   accessToken?: string,
   cookies?: string
 ): Promise<SpotifyApi.UserDevicesResponse | null> {
-  const res = await fetch("https://api.spotify.com/v1/me/player/devices", {
+  const res = await callSpotifyApi({
+    endpoint: "/me/player/devices",
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        accessToken
-          ? accessToken
-          : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
-      }`,
-    },
+    accessToken,
+    cookies,
   });
 
-  if (res.ok) {
-    const data = (await res.json()) as SpotifyApi.UserDevicesResponse;
-    return data;
-  }
-  return null;
+  return handleJsonResponse<SpotifyApi.UserDevicesResponse>(res);
 }

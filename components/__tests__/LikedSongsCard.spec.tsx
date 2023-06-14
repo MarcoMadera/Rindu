@@ -54,25 +54,6 @@ function setup({ appContextProviderProps }: ISetupProps = {}) {
 }
 
 describe("likedSongsCard", () => {
-  // eslint-disable-next-line jest/no-hooks
-  beforeAll(() => {
-    Object.defineProperty(navigator, "mediaSession", {
-      writable: true,
-      value: {
-        setActionHandler: jest.fn(),
-        setPositionState: jest.fn(),
-      },
-    });
-
-    const toast = document.createElement("div");
-    toast.setAttribute("id", "toast");
-    document.body.appendChild(toast);
-
-    const contextMenu = document.createElement("div");
-    contextMenu.setAttribute("id", "contextMenu");
-    document.body.appendChild(contextMenu);
-  });
-
   it("should render and redirect", async () => {
     expect.assertions(5);
     (getMyLikedSongs as jest.Mock).mockResolvedValueOnce(

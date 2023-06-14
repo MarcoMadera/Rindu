@@ -1,7 +1,6 @@
 import { ComponentProps } from "react";
 
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { NextRouter } from "next/router";
 
 import CardTrack, { CardType } from "components/CardTrack";
 import { AppContextProvider } from "context/AppContextProvider";
@@ -9,19 +8,7 @@ import { IUserContext } from "context/UserContext";
 import { useOnScreen } from "hooks";
 import { IUtilsMocks } from "types/mocks";
 import { ISpotifyContext } from "types/spotify";
-import type { IToast } from "types/toast";
 import { Language, playCurrentTrack } from "utils";
-
-jest.mock<NextRouter>("next/router", () => ({
-  ...jest.requireActual("next/router"),
-  useRouter: jest.fn().mockImplementation(() => ({
-    asPath: "/",
-    push: jest.fn(),
-    query: {
-      country: "US",
-    },
-  })),
-}));
 
 const { track, getAllTranslations } = jest.requireActual<IUtilsMocks>(
   "utils/__tests__/__mocks__/mocks.ts"
@@ -51,34 +38,6 @@ function setup(props: ISetup) {
 }
 
 describe("cardTrack", () => {
-  // eslint-disable-next-line jest/no-hooks
-  beforeAll(() => {
-    Object.defineProperty(navigator, "mediaSession", {
-      writable: true,
-      value: {
-        setActionHandler: jest.fn(),
-        setPositionState: jest.fn(),
-      },
-    });
-
-    const toast = document.createElement("div");
-    toast.setAttribute("id", "toast");
-    document.body.appendChild(toast);
-
-    const contextMenu = document.createElement("div");
-    contextMenu.setAttribute("id", "contextMenu");
-    document.body.appendChild(contextMenu);
-  });
-  // eslint-disable-next-line jest/require-hook
-  let toasts: IToast[] = [];
-  const setToasts = (toastArray: IToast[] | ((toasts: IToast[]) => void)) => {
-    if (typeof toastArray === "function") {
-      toastArray(toasts);
-    } else {
-      toasts = toastArray;
-    }
-  };
-
   const onClickAdd = jest.fn();
   it("renders", () => {
     expect.assertions(1);
@@ -108,7 +67,7 @@ describe("cardTrack", () => {
   });
 
   it("should play on double click", async () => {
-    expect.assertions(3);
+    expect.assertions(2);
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
     (playCurrentTrack as jest.Mock<Promise<number>>).mockResolvedValue(200);
     const setPlayedSource = jest.fn();
@@ -143,10 +102,10 @@ describe("cardTrack", () => {
 
     const mytest = screen.getByTestId("cardTrack-container");
     fireEvent.doubleClick(mytest);
-    expect(player.activateElement).toHaveBeenCalledTimes(1);
     await waitFor(() => {
-      expect(setPlayedSource).toHaveBeenCalledWith(track.uri);
+      expect(player.activateElement).toHaveBeenCalledTimes(1);
     });
+    expect(setPlayedSource).toHaveBeenCalledWith(track.uri);
   });
   it("should add toast reconnection error", async () => {
     expect.assertions(4);
@@ -157,7 +116,6 @@ describe("cardTrack", () => {
       activateElement: jest.fn().mockResolvedValue(200),
     } as unknown as Spotify.Player;
     const setReconnectionError = jest.fn();
-
     setup({
       cardTrackProps: {
         track,
@@ -172,10 +130,6 @@ describe("cardTrack", () => {
         onClickAdd,
       },
       appContextProps: {
-        toastValue: {
-          toasts,
-          setToasts,
-        },
         spotifyValue: {
           player,
           setReconnectionError,
@@ -185,21 +139,18 @@ describe("cardTrack", () => {
     const mytest = screen.getByTestId("cardTrack-container");
     fireEvent.doubleClick(mytest);
     await waitFor(() => {
-      expect(player.disconnect).toHaveBeenCalledWith();
+      screen.getAllByRole("alertdialog");
     });
+    const toast = screen.getAllByRole("alertdialog");
+    expect(player.disconnect).toHaveBeenCalledWith();
+    expect(toast).toHaveLength(1);
+    expect(toast[0]).toHaveTextContent(
+      "Unable to play, trying to reconnect, please wait..."
+    );
     expect(setReconnectionError).toHaveBeenCalledWith(true);
-    expect(toasts).toStrictEqual([
-      {
-        message: "Unable to play, trying to reconnect, please wait...",
-        displayTime: 10000,
-        id: expect.any(String) as string,
-        timeOut: expect.any(Number) as number,
-        variant: "error",
-      },
-    ]);
   });
   it("should add toast with error playing this track", async () => {
-    expect.assertions(2);
+    expect.assertions(1);
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
     (playCurrentTrack as jest.Mock<Promise<number>>).mockResolvedValue(400);
     const setReconnectionError = jest.fn();
@@ -221,10 +172,6 @@ describe("cardTrack", () => {
         onClickAdd,
       },
       appContextProps: {
-        toastValue: {
-          toasts,
-          setToasts,
-        },
         spotifyValue: {
           player,
           setReconnectionError,
@@ -235,18 +182,11 @@ describe("cardTrack", () => {
     const mytest = screen.getByTestId("cardTrack-container");
     fireEvent.doubleClick(mytest);
     await waitFor(() => {
-      expect(toasts).toStrictEqual([
-        {
-          message: "Error playing this track",
-          displayTime: 10000,
-          id: expect.any(String) as string,
-          timeOut: expect.any(Number) as number,
-          variant: "error",
-        },
-      ]);
+      const toast = screen.getAllByRole("alertdialog");
+      expect(toast[0]).toHaveTextContent("Error playing this track");
     });
   });
-  it("should add toast with error if is corrupted track", () => {
+  it("should add toast with error if is corrupted track", async () => {
     expect.assertions(1);
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
     const setReconnectionError = jest.fn();
@@ -265,10 +205,6 @@ describe("cardTrack", () => {
         onClickAdd,
       },
       appContextProps: {
-        toastValue: {
-          toasts,
-          setToasts,
-        },
         spotifyValue: {
           setReconnectionError,
         } as unknown as ISpotifyContext,
@@ -277,17 +213,14 @@ describe("cardTrack", () => {
 
     const mytest = screen.getByTestId("cardTrack-container");
     fireEvent.doubleClick(mytest);
-    expect(toasts).toStrictEqual([
-      {
-        message: "This track is corrupted and cannot be played",
-        displayTime: 10000,
-        id: expect.any(String) as string,
-        timeOut: expect.any(Number) as number,
-        variant: "error",
-      },
-    ]);
+    await waitFor(() => {
+      const toast = screen.getAllByRole("alertdialog");
+      expect(toast[0]).toHaveTextContent(
+        "This track is corrupted and cannot be played"
+      );
+    });
   });
-  it("should add toast with info no content available", () => {
+  it("should add toast with info no content available", async () => {
     expect.assertions(1);
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
     const setReconnectionError = jest.fn();
@@ -306,10 +239,6 @@ describe("cardTrack", () => {
         onClickAdd,
       },
       appContextProps: {
-        toastValue: {
-          toasts,
-          setToasts,
-        },
         userValue: {
           user: {
             product: "premium",
@@ -323,15 +252,10 @@ describe("cardTrack", () => {
 
     const mytest = screen.getByTestId("cardTrack-container");
     fireEvent.doubleClick(mytest);
-    expect(toasts).toStrictEqual([
-      {
-        message: "Content is unavailable",
-        displayTime: 10000,
-        id: expect.any(String) as string,
-        timeOut: expect.any(Number) as number,
-        variant: "info",
-      },
-    ]);
+    await waitFor(() => {
+      const toast = screen.getAllByRole("alertdialog");
+      expect(toast[0]).toHaveTextContent("Content is unavailable");
+    });
   });
   it("should change artists styles on mouse enter", () => {
     expect.assertions(1);

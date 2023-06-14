@@ -1,4 +1,5 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { handleJsonResponse } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function getEpisodeById(
   id: string,
@@ -6,24 +7,12 @@ export async function getEpisodeById(
   accessToken?: string,
   cookies?: string
 ): Promise<SpotifyApi.SingleEpisodeResponse | null> {
-  const res = await fetch(
-    `https://api.spotify.com/v1/episodes/${id}?market=${market}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${
-          accessToken
-            ? accessToken
-            : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
-        }`,
-      },
-    }
-  );
-  if (res.ok) {
-    const data: SpotifyApi.SingleEpisodeResponse =
-      (await res.json()) as SpotifyApi.SingleEpisodeResponse;
-    return data;
-  }
-  return null;
+  const res = await callSpotifyApi({
+    endpoint: `/episodes/${id}?market=${market}`,
+    method: "GET",
+    accessToken,
+    cookies,
+  });
+
+  return handleJsonResponse<SpotifyApi.SingleEpisodeResponse>(res);
 }

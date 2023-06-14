@@ -1,4 +1,5 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { handleJsonResponse } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export enum TopType {
   TRACKS = "tracks",
@@ -16,26 +17,18 @@ export async function getMyTop<T extends TopType>(
     ? SpotifyApi.UsersTopTracksResponse | null
     : SpotifyApi.UsersTopArtistsResponse | null
 > {
-  const res = await fetch(
-    `https://api.spotify.com/v1/me/top/${type}?time_range=${
-      time_range ?? "short_term"
-    }&limit=${limit ?? 10}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${
-          accessToken ?? (takeCookie(ACCESS_TOKEN_COOKIE, cookies) || "")
-        }`,
-      },
-    }
-  );
+  const res = await callSpotifyApi({
+    endpoint: `/me/top/${type}?time_range=${time_range ?? "short_term"}&limit=${
+      limit ?? 10
+    }`,
+    method: "GET",
+    accessToken,
+    cookies,
+  });
 
-  if (res.ok) {
-    const data = (await res.json()) as T extends TopType.TRACKS
+  return handleJsonResponse<
+    T extends TopType.TRACKS
       ? SpotifyApi.UsersTopTracksResponse
-      : SpotifyApi.UsersTopArtistsResponse;
-    return data;
-  }
-  return null;
+      : SpotifyApi.UsersTopArtistsResponse
+  >(res);
 }

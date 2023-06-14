@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function transferPlayback(
   device_ids: string[],
@@ -6,17 +6,12 @@ export async function transferPlayback(
     | { play?: boolean; accessToken?: string; cookies?: string }
     | undefined
 ): Promise<boolean> {
-  const { accessToken, cookies, play = true } = options || {};
-  const res = await fetch("https://api.spotify.com/v1/me/player", {
+  const { accessToken, cookies, play = true } = options ?? {};
+  const res = await callSpotifyApi({
+    endpoint: "/me/player",
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        accessToken
-          ? accessToken
-          : takeCookie(ACCESS_TOKEN_COOKIE, cookies) || ""
-      }`,
-    },
+    accessToken,
+    cookies,
     body: JSON.stringify({
       device_ids,
       play,

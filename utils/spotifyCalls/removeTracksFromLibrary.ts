@@ -1,18 +1,15 @@
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function removeTracksFromLibrary(
   ids: string[],
   accessToken?: string
 ): Promise<boolean> {
-  const res = await fetch("https://api.spotify.com/v1/me/tracks", {
+  const res = await callSpotifyApi({
+    endpoint: "/me/tracks",
     method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        accessToken ? accessToken : takeCookie(ACCESS_TOKEN_COOKIE) || ""
-      }`,
-    },
+    accessToken,
     body: JSON.stringify({ ids }),
   });
+
   return res.ok;
 }

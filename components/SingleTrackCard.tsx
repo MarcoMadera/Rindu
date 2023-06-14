@@ -22,12 +22,12 @@ export default function SingleTrackCard({
   const { allTracks } = useSpotify();
 
   useEffect(() => {
-    getMainColorFromImage(`cover-image-${track.id || ""}`, setMainTrackColor);
+    getMainColorFromImage(`cover-image-${track.id ?? ""}`, setMainTrackColor);
   }, [track.id, router.asPath]);
 
   return (
     <Link
-      href={`/track/${track.id || ""}`}
+      href={`/track/${track.id ?? ""}`}
       onMouseEnter={() => {
         setHeaderColor((prev) => {
           return mainTrackColor ?? prev;
@@ -49,7 +49,7 @@ export default function SingleTrackCard({
       <img
         src={track.album?.images[0].url}
         alt={track.name}
-        id={`cover-image-${track.id || ""}`}
+        id={`cover-image-${track.id ?? ""}`}
       />
       <div>
         <p>{track.name}</p>
