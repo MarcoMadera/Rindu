@@ -14,7 +14,7 @@ import { ISpotifyContext } from "types/spotify";
 
 interface AppContextProviderProps {
   toastValue?: IToastContext;
-  userValue?: IUserContext;
+  userValue?: Partial<IUserContext>;
   headerValue?: IHeaderContext;
   spotifyValue?: ISpotifyContext;
   contextMenuValue?: IContextMenuContext;

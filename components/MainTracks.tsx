@@ -58,7 +58,7 @@ export default function MainTracks({
                     playlistUri=""
                     track={track}
                     key={`${tracksId}-${index}-${chunkIndex}}`}
-                    type={CardType.presentation}
+                    type={CardType.Presentation}
                     position={index}
                     isSingleTrack
                     uris={uris}

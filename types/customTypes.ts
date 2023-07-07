@@ -9,7 +9,7 @@ export type Replace<T, K extends keyof T, TReplace> = Identity<
 
 type Enumerate<
   N extends number,
-  Acc extends number[] = []
+  Acc extends number[] = [],
 > = Acc["length"] extends N
   ? Acc[number]
   : Enumerate<N, [...Acc, Acc["length"]]>;

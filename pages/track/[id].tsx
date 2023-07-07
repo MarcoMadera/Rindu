@@ -165,7 +165,7 @@ export default function TrackPage({
         </Head>
       )}
       <PageHeader
-        type={HeaderType.song}
+        type={HeaderType.Song}
         title={track?.name ?? ""}
         coverImg={
           track?.album?.images?.[0]?.url ??
@@ -285,7 +285,7 @@ export default function TrackPage({
                   playlistUri=""
                   track={artistTrack}
                   key={artistTrack.id}
-                  type={CardType.playlist}
+                  type={CardType.Playlist}
                   position={position}
                   visualPosition={i + 1}
                   isSingleTrack

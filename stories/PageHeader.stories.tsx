@@ -30,7 +30,7 @@ const Template: StoryFn<typeof PageHeader> = (args) => <PageHeader {...args} />;
 
 export const Playlist = Template.bind({});
 Playlist.args = {
-  type: HeaderType.playlist,
+  type: HeaderType.Playlist,
   title: "Heartstopper: Official Mixtape",
   coverImg:
     "https://th.bing.com/th/id/OIP.3vYK8ab9Pg3FiufY8UgZOwHaHa?pid=ImgDet&rs=1",
@@ -43,7 +43,7 @@ Playlist.args = {
 
 export const Artist = Template.bind({});
 Artist.args = {
-  type: HeaderType.artist,
+  type: HeaderType.Artist,
   title: "Billie Eilish",
   coverImg:
     "https://studiosol-a.akamaihd.net/uploadfile/letras/fotos/6/1/c/a/61ca1dcbc2cdda2af430927f4fe4b98c.jpg",
@@ -54,7 +54,7 @@ Artist.args = {
 
 export const ArtistWithBanner = Template.bind({});
 ArtistWithBanner.args = {
-  type: HeaderType.artist,
+  type: HeaderType.Artist,
   title: "Billie Eilish",
   coverImg:
     "https://studiosol-a.akamaihd.net/uploadfile/letras/fotos/6/1/c/a/61ca1dcbc2cdda2af430927f4fe4b98c.jpg",
@@ -67,7 +67,7 @@ ArtistWithBanner.args = {
 
 export const Episode = Template.bind({});
 Episode.args = {
-  type: HeaderType.episode,
+  type: HeaderType.Episode,
   title: "Shadow Work Demystified",
   coverImg: "https://i.scdn.co/image/ab6765630000ba8adea5d4cd16f16977604725eb",
   ownerId: "2OLNxlrm2OCdATbUaonmEh",

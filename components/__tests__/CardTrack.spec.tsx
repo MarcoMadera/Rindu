@@ -50,7 +50,7 @@ describe("cardTrack", () => {
     setup({
       cardTrackProps: {
         track: cardTrackName,
-        type: CardType.presentation,
+        type: CardType.Presentation,
         position: 0,
         accessToken: "",
         style: { margin: "50px" },
@@ -78,7 +78,7 @@ describe("cardTrack", () => {
     setup({
       cardTrackProps: {
         track,
-        type: CardType.presentation,
+        type: CardType.Presentation,
         position: 0,
         accessToken: "",
         isTrackInLibrary: false,
@@ -119,7 +119,7 @@ describe("cardTrack", () => {
     setup({
       cardTrackProps: {
         track,
-        type: CardType.presentation,
+        type: CardType.Presentation,
         position: 0,
         accessToken: "",
         style: {},
@@ -161,7 +161,7 @@ describe("cardTrack", () => {
     setup({
       cardTrackProps: {
         track,
-        type: CardType.presentation,
+        type: CardType.Presentation,
         position: 0,
         accessToken: "",
         style: {},
@@ -194,7 +194,7 @@ describe("cardTrack", () => {
     setup({
       cardTrackProps: {
         track: { ...track, corruptedTrack: true },
-        type: CardType.presentation,
+        type: CardType.Presentation,
         position: 0,
         accessToken: "",
         style: {},
@@ -228,7 +228,7 @@ describe("cardTrack", () => {
     setup({
       cardTrackProps: {
         track: { ...track, is_playable: false, corruptedTrack: false },
-        type: CardType.presentation,
+        type: CardType.Presentation,
         position: 0,
         accessToken: "",
         style: {},
@@ -267,7 +267,7 @@ describe("cardTrack", () => {
           ...track,
           artists: [{ name: "Artist name", id: "artistId" }],
         },
-        type: CardType.presentation,
+        type: CardType.Presentation,
         position: 0,
         accessToken: "",
         style: {},

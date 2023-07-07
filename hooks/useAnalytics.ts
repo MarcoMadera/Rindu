@@ -3,21 +3,21 @@ import { useCallback } from "react";
 import { dataToSendType, Fields, UseAnalyticsParams } from "types/analytics";
 import { makeCookie, takeCookie } from "utils";
 
+function addAnalyticsCookie() {
+  const value = `GA1.2.${~~(2147483648 * Math.random())}.${~~(
+    Date.now() / 1000
+  )}`;
+  makeCookie({
+    name: "_ga",
+    value: value,
+    age: 60 * 60 * 24 * 365,
+  });
+  return value;
+}
+
 export function useAnalytics(): UseAnalyticsParams {
   const trackWithGoogleAnalytics: UseAnalyticsParams["trackWithGoogleAnalytics"] =
     useCallback((hitType = "pageview", fields: Fields) => {
-      function addAnalyticsCookie() {
-        const value = `GA1.2.${~~(2147483648 * Math.random())}.${~~(
-          Date.now() / 1000
-        )}`;
-        makeCookie({
-          name: "_ga",
-          value: value,
-          age: 60 * 60 * 24 * 365,
-        });
-        return value;
-      }
-
       const analyticsCookie = takeCookie("_ga") ?? addAnalyticsCookie();
 
       const data: Partial<dataToSendType> = {

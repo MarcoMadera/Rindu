@@ -2,18 +2,18 @@ import { Modify } from "types/customTypes";
 import { ITrack } from "types/spotify";
 
 export enum HeaderType {
-  song = "SONG",
-  playlist = "PLAYLIST",
-  album = "ALBUM",
-  artist = "ARTIST",
-  profile = "PROFILE",
-  podcast = "PODCAST",
-  single = "SINGLE",
-  compilation = "COMPILATION",
-  episode = "EPISODE",
-  concert = "CONCERT",
-  radio = "RADIO",
-  top = "TOP",
+  Song = "SONG",
+  Playlist = "PLAYLIST",
+  Album = "ALBUM",
+  Artist = "ARTIST",
+  Profile = "PROFILE",
+  Podcast = "PODCAST",
+  Single = "SINGLE",
+  Compilation = "COMPILATION",
+  Episode = "EPISODE",
+  Concert = "CONCERT",
+  Radio = "RADIO",
+  Top = "TOP",
 }
 
 interface IPageHeader {
@@ -37,7 +37,7 @@ interface IPageHeader {
 }
 
 interface IAlbumLike {
-  type: HeaderType.album | HeaderType.single | HeaderType.compilation;
+  type: HeaderType.Album | HeaderType.Single | HeaderType.Compilation;
   artists: SpotifyApi.ArtistObjectSimplified[];
   release_date: string;
   totalTracks: number;
@@ -46,7 +46,7 @@ interface IAlbumLike {
 type AlbumLike = Modify<IPageHeader, IAlbumLike>;
 
 interface IProfile {
-  type: HeaderType.profile;
+  type: HeaderType.Profile;
   totalPublicPlaylists: number;
   totalFollowers: number;
   data: SpotifyApi.UserObjectPublic | null;
@@ -54,7 +54,7 @@ interface IProfile {
 type Profile = Modify<IPageHeader, IProfile>;
 
 interface IArtist {
-  type: HeaderType.artist;
+  type: HeaderType.Artist;
   popularity: number;
   totalFollowers: number;
   banner?: string;
@@ -68,7 +68,7 @@ interface IArtist {
 type Artist = Modify<IPageHeader, IArtist>;
 
 interface ISong {
-  type: HeaderType.song;
+  type: HeaderType.Song;
   artists: SpotifyApi.ArtistObjectSimplified[];
   release_date: string;
   duration_s: number;
@@ -77,7 +77,7 @@ interface ISong {
 type Song = Modify<IPageHeader, ISong>;
 
 interface IPlaylist {
-  type: HeaderType.playlist;
+  type: HeaderType.Playlist;
   ownerId: string;
   description: string;
   ownerDisplayName: string;
@@ -88,7 +88,7 @@ interface IPlaylist {
 type Playlist = Modify<IPageHeader, IPlaylist>;
 
 interface IConcert {
-  type: HeaderType.concert;
+  type: HeaderType.Concert;
   ownerId: string;
   description: string;
   ownerDisplayName: string;
@@ -96,7 +96,7 @@ interface IConcert {
   totalTracks: number;
 }
 interface ITop {
-  type: HeaderType.top;
+  type: HeaderType.Top;
   ownerId: string;
   description: string;
   ownerDisplayName: string;
@@ -107,12 +107,12 @@ interface ITop {
 type Concert = Modify<IPageHeader, IConcert>;
 interface IRadio {
   type:
-    | HeaderType.playlist
-    | HeaderType.podcast
-    | HeaderType.episode
-    | HeaderType.concert
-    | HeaderType.radio
-    | HeaderType.top;
+    | HeaderType.Playlist
+    | HeaderType.Podcast
+    | HeaderType.Episode
+    | HeaderType.Concert
+    | HeaderType.Radio
+    | HeaderType.Top;
   ownerId: string;
   description?: string;
   ownerDisplayName: string;
@@ -125,7 +125,7 @@ type Radio = Modify<IPageHeader, IRadio>;
 type Top = Modify<IPageHeader, ITop>;
 
 interface IShowLike {
-  type: HeaderType.episode | HeaderType.podcast;
+  type: HeaderType.Episode | HeaderType.Podcast;
   ownerId: string;
   ownerDisplayName: string;
   description: string;

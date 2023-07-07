@@ -115,7 +115,9 @@ export default function ShortCuts(): ReactElement {
         }
         kbd {
           border-radius: 4px;
-          box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3), inset 0 0 0 1px #fff;
+          box-shadow:
+            0 1px 0 rgba(0, 0, 0, 0.3),
+            inset 0 0 0 1px #fff;
           box-sizing: border-box;
           color: inherit;
           display: inline-block;

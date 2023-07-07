@@ -27,7 +27,7 @@ export default function TrackListHeader({
 
   const isSmallScreen = useOnSmallScreen((isSmall) => {
     if (isSmall) {
-      setType(CardType.presentation);
+      setType(CardType.Presentation);
     } else {
       setType(cardType);
     }

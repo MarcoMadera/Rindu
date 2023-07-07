@@ -9,12 +9,19 @@ import { AppContextProvider } from "context/AppContextProvider";
 import { TranslationsContextProviderProps } from "context/TranslationsContext";
 import MainLayout from "layouts/MainLayout";
 
+interface AppContextProviderProps extends TranslationsContextProviderProps {
+  accessToken?: string;
+}
+
 const MyApp = ({
   Component,
   pageProps,
-}: AppProps<TranslationsContextProviderProps>): ReactElement => {
+}: AppProps<AppContextProviderProps>): ReactElement => {
   return (
-    <AppContextProvider translations={pageProps.translations}>
+    <AppContextProvider
+      translations={pageProps.translations}
+      userValue={{ accessToken: pageProps.accessToken }}
+    >
       <Seo />
       <MainLayout>
         <Component {...pageProps} />

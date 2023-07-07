@@ -162,16 +162,16 @@ const Playlist: NextPage<
       <PageHeader
         type={
           pageDetails?.type === "concert"
-            ? HeaderType.concert
+            ? HeaderType.Concert
             : pageDetails?.type === "radio"
-            ? HeaderType.radio
+            ? HeaderType.Radio
             : pageDetails?.type === "episode"
-            ? HeaderType.episode
+            ? HeaderType.Episode
             : pageDetails?.type === "podcast"
-            ? HeaderType.podcast
+            ? HeaderType.Podcast
             : pageDetails?.type === "top"
-            ? HeaderType.top
-            : HeaderType.playlist
+            ? HeaderType.Top
+            : HeaderType.Playlist
         }
         title={pageDetails?.name ?? ""}
         description={pageDetails?.description ?? ""}
@@ -292,11 +292,11 @@ const Playlist: NextPage<
             <div className="trc">
               <TrackListHeader
                 isPin={isPin}
-                type={CardType.playlist}
+                type={CardType.Playlist}
                 setIsPin={setIsPin}
               />
               <VirtualizedList
-                type={CardType.playlist}
+                type={CardType.Playlist}
                 isLibrary={isLibrary}
                 isGeneratedPlaylist={isGeneratedPlaylist}
                 initialTracksInLibrary={tracksInLibrary}
@@ -346,7 +346,7 @@ const Playlist: NextPage<
                         );
                       }}
                       key={track.id}
-                      type={CardType.presentation}
+                      type={CardType.Presentation}
                       position={i}
                       isSingleTrack
                       uri={track.uri}
@@ -397,7 +397,7 @@ const Playlist: NextPage<
                           );
                         }}
                         key={track.id}
-                        type={CardType.presentation}
+                        type={CardType.Presentation}
                         position={i}
                         isSingleTrack
                         uri={track.uri}

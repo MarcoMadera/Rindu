@@ -23,7 +23,7 @@ const Template: StoryFn<typeof TrackListHeader> = (args) => {
 
 export const Album = Template.bind({});
 Album.args = {
-  type: CardType.album,
+  type: CardType.Album,
   isPin: true,
   setIsPin: () => {
     console.info("pin clicked");
@@ -32,7 +32,7 @@ Album.args = {
 
 export const Playlist = Template.bind({});
 Playlist.args = {
-  type: CardType.playlist,
+  type: CardType.Playlist,
   isPin: true,
   setIsPin: () => {
     console.info("pin");
@@ -41,7 +41,7 @@ Playlist.args = {
 
 export const Presentation = Template.bind({});
 Presentation.args = {
-  type: CardType.presentation,
+  type: CardType.Presentation,
   isPin: true,
   setIsPin: () => {
     console.info("pin");

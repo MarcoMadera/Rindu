@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useCallback } from "react";
 
 import { useRouter } from "next/router";
 
@@ -8,7 +8,13 @@ import { useContextMenu, useToast, useTranslations } from "hooks";
 import { menuContextStyles } from "styles/menuContextStyles";
 import { ICardContentContextMenuData } from "types/contextMenu";
 import { Modify } from "types/customTypes";
-import { ContentType, getSiteUrl, templateReplace, ToastMessage } from "utils";
+import {
+  ContentType,
+  getSiteUrl,
+  handleAsyncError,
+  templateReplace,
+  ToastMessage,
+} from "utils";
 import {
   follow,
   followAlbums,
@@ -25,13 +31,13 @@ type SaveFunctionTypes =
 
 type SaveFunctions = Modify<
   Partial<Record<CardType, never>>,
-  Record<SaveFunctionTypes, (id: string) => void>
+  Record<SaveFunctionTypes, (id: string) => Promise<boolean | null>>
 >;
 
 const saveFunctions: SaveFunctions = {
   album: followAlbums,
   show: saveShowsToLibrary,
-  artist: (id: string) => follow(Follow_type.artist, id),
+  artist: (id: string) => follow(Follow_type.Artist, id),
   playlist: followPlaylist,
 };
 
@@ -48,16 +54,15 @@ export default function CardContentContextMenu({
 
   const saveFunction = saveFunctions[data.type];
 
+  const handleGoToClick = useCallback(async () => {
+    removeContextMenu();
+    await router.push(`${getSiteUrl()}/${data.type || "track"}/${data.id}`);
+  }, [data.id, data.type, removeContextMenu, router]);
+
   return (
     <ul>
       <li>
-        <button
-          type="button"
-          onClick={() => {
-            router.push(`${getSiteUrl()}/${data.type || "track"}/${data.id}`);
-            removeContextMenu();
-          }}
-        >
+        <button type="button" onClick={handleAsyncError(handleGoToClick)}>
           Go to {data.type || "track"}
         </button>
       </li>

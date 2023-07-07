@@ -1,8 +1,15 @@
-import { ReactElement, SVGProps, useEffect, useState } from "react";
+import {
+  ReactElement,
+  SVGProps,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 import { useLottie } from "lottie-react";
 
 import AddAnimation from "animations/add-circle.json";
+import { handleAsyncError } from "utils";
 
 export function Add(
   props: SVGProps<SVGSVGElement> & {
@@ -47,6 +54,18 @@ export function Add(
     });
   }, [animationItem, pause]);
 
+  const handleClick = useCallback(async () => {
+    if (isPlaying) return;
+    if (props.handleClick) {
+      const res = await props.handleClick();
+      if (res) {
+        goToAndPlay(0);
+      } else {
+        goToAndPlay(60, true);
+      }
+    }
+  }, [goToAndPlay, isPlaying, props]);
+
   if (!props.handleClick) {
     return (
       <svg height="12" width="12" viewBox="0 0 16 16" {...props}>
@@ -60,17 +79,7 @@ export function Add(
     <button
       type="button"
       aria-label="Add"
-      onClick={async () => {
-        if (isPlaying) return;
-        if (props.handleClick) {
-          const res = await props.handleClick();
-          if (res) {
-            goToAndPlay(0);
-          } else {
-            goToAndPlay(60, true);
-          }
-        }
-      }}
+      onClick={handleAsyncError(handleClick)}
     >
       {View}
       <style jsx>{`
