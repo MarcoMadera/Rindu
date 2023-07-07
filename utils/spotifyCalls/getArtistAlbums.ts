@@ -2,10 +2,10 @@ import { handleJsonResponse } from "utils";
 import { callSpotifyApi } from "utils/spotifyCalls";
 
 export enum Include_groups {
-  album = "album",
-  single = "single",
-  appears_on = "appears_on",
-  compilation = "compilation",
+  Album = "album",
+  Single = "single",
+  AppearsOn = "appears_on",
+  Compilation = "compilation",
 }
 
 export async function getArtistAlbums(

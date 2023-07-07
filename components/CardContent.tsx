@@ -1,9 +1,10 @@
-import { ReactElement, useRef } from "react";
+import { ReactElement, useCallback, useRef } from "react";
 
 import { decode } from "html-entities";
 import { useRouter } from "next/router";
 
 import { useContextMenu, useOnScreen } from "hooks";
+import { handleAsyncError } from "utils";
 import { getSiteUrl } from "utils/environment";
 
 export enum CardType {
@@ -23,7 +24,7 @@ export interface ICardContent {
   id: string;
   images?: SpotifyApi.ImageObject[];
   title: string;
-  subTitle: string | JSX.Element;
+  subTitle: string | ReactElement;
   type: CardType;
   url?: string;
 }
@@ -42,6 +43,44 @@ export default function CardContent({
   const { addContextMenu } = useContextMenu();
   const uri = `spotify:${type}:${id}`;
 
+  const handleClick = useCallback(async () => {
+    if (!type) return;
+    if (type === CardType.SIMPLE && url) {
+      await router.push(url);
+      return;
+    }
+    await router.push(`/${type}/${encodeURIComponent(id)}`);
+  }, [id, router, type, url]);
+
+  const handleKeyDown = useCallback(
+    async (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "Enter") {
+        if (!type) return;
+        await router.push(`/${type}/${encodeURIComponent(id)}`);
+      }
+    },
+    [id, router, type]
+  );
+
+  const handleContextMenu = useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      if (type === CardType.SIMPLE && url) return;
+      e.preventDefault();
+      const x = e.pageX;
+      const y = e.pageY;
+      addContextMenu({
+        type: type === CardType.TRACK ? "cardTrack" : "cardContent",
+        data: {
+          id,
+          type,
+          uri,
+        },
+        position: { x, y },
+      });
+    },
+    [addContextMenu, id, type, uri, url]
+  );
+
   return (
     <article>
       <div
@@ -49,35 +88,9 @@ export default function CardContent({
         data-testid="cardContent-button"
         aria-hidden="true"
         className="handler"
-        onClick={() => {
-          if (!type) return;
-          if (type === CardType.SIMPLE && url) {
-            router.push(url);
-            return;
-          }
-          router.push(`/${type}/${encodeURIComponent(id)}`);
-        }}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            if (!type) return;
-            router.push(`/${type}/${encodeURIComponent(id)}`);
-          }
-        }}
-        onContextMenu={(e) => {
-          if (type === CardType.SIMPLE && url) return;
-          e.preventDefault();
-          const x = e.pageX;
-          const y = e.pageY;
-          addContextMenu({
-            type: type === CardType.TRACK ? "cardTrack" : "cardContent",
-            data: {
-              id,
-              type,
-              uri,
-            },
-            position: { x, y },
-          });
-        }}
+        onClick={handleAsyncError(handleClick)}
+        onKeyDown={handleAsyncError(handleKeyDown)}
+        onContextMenu={handleContextMenu}
         role="button"
         tabIndex={isVisible ? 0 : -1}
       ></div>

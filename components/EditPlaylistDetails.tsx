@@ -322,7 +322,8 @@ export default function EditPlaylistDetails({
         section {
           background-color: #282828;
           border-radius: 4px;
-          box-shadow: 0 16px 24px rgba(0, 0, 0, 0.3),
+          box-shadow:
+            0 16px 24px rgba(0, 0, 0, 0.3),
             0 6px 8px rgba(0, 0, 0, 0.2);
           display: ${openSettings ? "block" : "none"};
           max-height: calc(100vh - 24px);

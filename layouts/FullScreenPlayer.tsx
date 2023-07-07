@@ -463,7 +463,9 @@ export default function FullScreenPlayer(): ReactElement {
               display: block;
               border-radius: 0.375rem;
               object-fit: cover;
-              box-shadow: 0 0 #0000, 0 0 #0000,
+              box-shadow:
+                0 0 #0000,
+                0 0 #0000,
                 0 25px 50px -12px rgba(0, 0, 0, 0.25);
               display: flex;
               align-items: center;

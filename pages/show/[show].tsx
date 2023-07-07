@@ -135,7 +135,7 @@ const Shows: NextPage<PlaylistProps> = ({
   return (
     <ContentContainer hasPageHeader>
       <PageHeader
-        type={HeaderType.podcast}
+        type={HeaderType.Podcast}
         title={show?.name ?? ""}
         coverImg={
           show?.images?.[0]?.url ??

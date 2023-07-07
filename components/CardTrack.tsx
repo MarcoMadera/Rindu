@@ -41,9 +41,9 @@ import {
 } from "utils/spotifyCalls";
 
 export enum CardType {
-  presentation = "presentation",
-  playlist = "playlist",
-  album = "album",
+  Presentation = "presentation",
+  Playlist = "playlist",
+  Album = "album",
 }
 interface CardTrackProps {
   track: ITrack | undefined;
@@ -106,7 +106,7 @@ function CardTrack({
 
   const isSmallScreen = useOnSmallScreen((isSmall) => {
     if (isSmall) {
-      setType(CardType.presentation);
+      setType(CardType.Presentation);
     } else {
       setType(cardType);
     }
@@ -662,14 +662,26 @@ function CardTrack({
           top: 0;
         }
         .pop-meter-bar:after {
-          box-shadow: 4px 0 0 0 #3e3e40, 8px 0 0 0 #3e3e40, 12px 0 0 0 #3e3e40,
-            16px 0 0 0 #3e3e40, 20px 0 0 0 #3e3e40, 24px 0 0 0 #3e3e40,
-            28px 0 0 0 #3e3e40, 32px 0 0 0 #3e3e40;
+          box-shadow:
+            4px 0 0 0 #3e3e40,
+            8px 0 0 0 #3e3e40,
+            12px 0 0 0 #3e3e40,
+            16px 0 0 0 #3e3e40,
+            20px 0 0 0 #3e3e40,
+            24px 0 0 0 #3e3e40,
+            28px 0 0 0 #3e3e40,
+            32px 0 0 0 #3e3e40;
         }
         .pop-meter-overlay:after {
-          box-shadow: 4px 0 0 0 #88898c, 8px 0 0 0 #88898c, 12px 0 0 0 #88898c,
-            16px 0 0 0 #88898c, 20px 0 0 0 #88898c, 24px 0 0 0 #88898c,
-            28px 0 0 0 #88898c, 32px 0 0 0 #88898c;
+          box-shadow:
+            4px 0 0 0 #88898c,
+            8px 0 0 0 #88898c,
+            12px 0 0 0 #88898c,
+            16px 0 0 0 #88898c,
+            20px 0 0 0 #88898c,
+            24px 0 0 0 #88898c,
+            28px 0 0 0 #88898c,
+            32px 0 0 0 #88898c;
         }
         :global(.trackName),
         .trackArtists :global(a) {

@@ -208,7 +208,7 @@ export default function ArtistPage({
   return (
     <ContentContainer hasPageHeader>
       <PageHeader
-        type={HeaderType.artist}
+        type={HeaderType.Artist}
         title={currentArtist?.name ?? ""}
         coverImg={
           currentArtist?.images?.[0]?.url ??
@@ -229,7 +229,7 @@ export default function ArtistPage({
           centerSize={28}
           allTracks={allTracks}
         />
-        <FollowButton type={Follow_type.artist} id={currentArtist?.id} />
+        <FollowButton type={Follow_type.Artist} id={currentArtist?.id} />
       </div>
       <div className="content">
         {topTracks?.tracks && topTracks?.tracks?.length > 0 ? (
@@ -252,7 +252,7 @@ export default function ArtistPage({
                     key={track.id}
                     isSingleTrack
                     position={i}
-                    type={TrackCardType.playlist}
+                    type={TrackCardType.Playlist}
                   />
                 );
               })}
@@ -463,28 +463,28 @@ export async function getServerSideProps({
   const singleAlbumsProm = getArtistAlbums(
     artistId,
     user?.country ?? "US",
-    Include_groups.single,
+    Include_groups.Single,
     accessToken,
     cookies
   );
   const appearAlbumsProm = getArtistAlbums(
     artistId,
     user?.country ?? "US",
-    Include_groups.appears_on,
+    Include_groups.AppearsOn,
     accessToken,
     cookies
   );
   const albumsProm = getArtistAlbums(
     artistId,
     user?.country ?? "US",
-    Include_groups.album,
+    Include_groups.Album,
     accessToken,
     cookies
   );
   const compilationsProm = getArtistAlbums(
     artistId,
     user?.country ?? "US",
-    Include_groups.compilation,
+    Include_groups.Compilation,
     accessToken,
     cookies
   );

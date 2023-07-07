@@ -25,22 +25,26 @@ export function useRefreshAccessToken(): void {
 
     setAccessToken(takeCookie(ACCESS_TOKEN_COOKIE) ?? "");
 
-    const interval = setInterval(async () => {
-      const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE);
-      if (refreshToken) {
-        const { access_token } = (await refreshAccessToken(refreshToken)) || {};
-        if (access_token) {
-          setAccessToken(access_token);
-          makeCookie({
-            name: ACCESS_TOKEN_COOKIE,
-            value: access_token,
-            age: 60 * 60 * 24 * 30 * 2,
-          });
-          return;
+    const interval = setInterval(
+      async () => {
+        const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE);
+        if (refreshToken) {
+          const { access_token } =
+            (await refreshAccessToken(refreshToken)) || {};
+          if (access_token) {
+            setAccessToken(access_token);
+            makeCookie({
+              name: ACCESS_TOKEN_COOKIE,
+              value: access_token,
+              age: 60 * 60 * 24 * 30 * 2,
+            });
+            return;
+          }
+          router.push("/");
         }
-        router.push("/");
-      }
-    }, (expireIn - 1000) * 1000);
+      },
+      (expireIn - 1000) * 1000
+    );
 
     return () => clearTimeout(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps

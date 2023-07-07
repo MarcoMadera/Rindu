@@ -28,7 +28,7 @@ export default function FullScreenQueue(): ReactElement {
                 accessToken={accessToken}
                 playlistUri={playlistUri}
                 isTrackInLibrary={false}
-                type={CardType.presentation}
+                type={CardType.Presentation}
                 isSingleTrack
                 uri={track.uri}
               />
@@ -43,7 +43,7 @@ export default function FullScreenQueue(): ReactElement {
                 accessToken={accessToken}
                 playlistUri={playlistUri}
                 isTrackInLibrary={false}
-                type={CardType.presentation}
+                type={CardType.Presentation}
                 isSingleTrack
                 uri={currentlyPlaying.uri}
               />
@@ -58,7 +58,7 @@ export default function FullScreenQueue(): ReactElement {
                 accessToken={accessToken}
                 playlistUri={playlistUri}
                 isTrackInLibrary={false}
-                type={CardType.presentation}
+                type={CardType.Presentation}
                 isSingleTrack
                 uri={track.uri}
               />

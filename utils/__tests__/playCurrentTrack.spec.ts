@@ -11,7 +11,7 @@ jest.mock<typeof import("utils/spotifyCalls")>(
         status: 200,
         ok: true,
       }),
-    } as unknown as typeof import("utils/spotifyCalls"))
+    }) as unknown as typeof import("utils/spotifyCalls")
 );
 
 const { track, user, accessToken } = jest.requireActual<IUtilsMocks>(

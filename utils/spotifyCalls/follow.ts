@@ -1,8 +1,8 @@
 import { callSpotifyApi } from "utils/spotifyCalls";
 
 export enum Follow_type {
-  artist = "artist",
-  user = "user",
+  Artist = "artist",
+  User = "user",
 }
 
 export async function follow(

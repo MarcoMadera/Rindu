@@ -25,7 +25,7 @@ const UserContext = createContext<IUserContext>(null!);
 export default UserContext;
 
 interface IUserContextProviderProps {
-  value?: IUserContext;
+  value?: Partial<IUserContext>;
 }
 
 export function UserContextProvider({

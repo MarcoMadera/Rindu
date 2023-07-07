@@ -11,8 +11,8 @@ module.exports = {
     "prettier",
     "next",
     "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended",
     "plugin:storybook/recommended",
+    "plugin:prettier/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -29,6 +29,7 @@ module.exports = {
       "error",
       {
         endOfLine: "auto",
+        trailingComma: "es5",
       },
     ],
     "jsx-a11y/anchor-is-valid": [
@@ -67,6 +68,13 @@ module.exports = {
         "@typescript-eslint/restrict-plus-operands": "error",
         "@typescript-eslint/restrict-template-expressions": "error",
         "@typescript-eslint/no-for-in-array": "error",
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            selector: "enumMember",
+            format: ["PascalCase"],
+          },
+        ],
         "import/order": [
           "error",
           {

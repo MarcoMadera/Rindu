@@ -54,7 +54,7 @@ export default function PageHeader({
   const { setModalData } = useModal();
   const { user } = useAuth();
   const { pageDetails } = useSpotify();
-  const isPlaylist = type === HeaderType.playlist;
+  const isPlaylist = type === HeaderType.Playlist;
   const isOwner = user?.id === pageDetails?.owner?.id;
   const enableEditPlaylist =
     !!(pageDetails?.id && isPlaylist && isOwner) &&
@@ -72,23 +72,23 @@ export default function PageHeader({
   }, [coverImg, title, description]);
 
   const isAlbumVariant =
-    type === HeaderType.album ||
-    type === HeaderType.single ||
-    type === HeaderType.compilation;
+    type === HeaderType.Album ||
+    type === HeaderType.Single ||
+    type === HeaderType.Compilation;
 
   const headerTypeEyebrowText = {
-    [HeaderType.artist]: translations.pageHeaderArtist,
-    [HeaderType.album]: translations.pageHeaderAlbum,
-    [HeaderType.single]: translations.pageHeaderSingle,
-    [HeaderType.compilation]: translations.pageHeaderCompilation,
-    [HeaderType.playlist]: translations.pageHeaderPlaylist,
-    [HeaderType.profile]: translations.pageHeaderProfile,
-    [HeaderType.concert]: translations.pageHeaderConcert,
-    [HeaderType.song]: translations.pageHeaderSong,
-    [HeaderType.podcast]: translations.pageHeaderPodcast,
-    [HeaderType.episode]: translations.pageHeaderEpisode,
-    [HeaderType.radio]: translations.pageHeaderRadio,
-    [HeaderType.top]: translations.pageHeaderTop,
+    [HeaderType.Artist]: translations.pageHeaderArtist,
+    [HeaderType.Album]: translations.pageHeaderAlbum,
+    [HeaderType.Single]: translations.pageHeaderSingle,
+    [HeaderType.Compilation]: translations.pageHeaderCompilation,
+    [HeaderType.Playlist]: translations.pageHeaderPlaylist,
+    [HeaderType.Profile]: translations.pageHeaderProfile,
+    [HeaderType.Concert]: translations.pageHeaderConcert,
+    [HeaderType.Song]: translations.pageHeaderSong,
+    [HeaderType.Podcast]: translations.pageHeaderPodcast,
+    [HeaderType.Episode]: translations.pageHeaderEpisode,
+    [HeaderType.Radio]: translations.pageHeaderRadio,
+    [HeaderType.Top]: translations.pageHeaderTop,
   };
   const headingRef = useRef<HTMLHeadingElement>(null);
 
@@ -161,11 +161,11 @@ export default function PageHeader({
         ) : null}
         <div>
           <p>
-            {type === HeaderType.song || isAlbumVariant ? (
+            {type === HeaderType.Song || isAlbumVariant ? (
               <span className="trackArtists">
                 <ArtistList artists={artists} />
               </span>
-            ) : type === HeaderType.podcast ? (
+            ) : type === HeaderType.Podcast ? (
               <Heading number={3} as={AsType.SPAN}>
                 {decode(ownerDisplayName)}
               </Heading>
@@ -173,9 +173,9 @@ export default function PageHeader({
               ownerDisplayName && (
                 <Link
                   href={`/${
-                    type === HeaderType.episode
+                    type === HeaderType.Episode
                       ? "show"
-                      : type === HeaderType.concert
+                      : type === HeaderType.Concert
                       ? "artist"
                       : "user"
                   }/${ownerId}`}
@@ -185,7 +185,7 @@ export default function PageHeader({
                 </Link>
               )
             )}
-            {type === HeaderType.artist && (
+            {type === HeaderType.Artist && (
               <span className="stats">
                 {stats?.listeners && (
                   <span className="stat">
@@ -206,7 +206,7 @@ export default function PageHeader({
             {(totalFollowers ?? 0) > 0 ? (
               <span>
                 {!(
-                  type === HeaderType.profile || type === HeaderType.artist
+                  type === HeaderType.Profile || type === HeaderType.Artist
                 ) ? (
                   <>&nbsp;&middot;</>
                 ) : (
@@ -215,10 +215,10 @@ export default function PageHeader({
                 {formatNumber(totalFollowers ?? 0)} {translations.followers}
               </span>
             ) : null}
-            {(type === HeaderType.song || isAlbumVariant) && release_date ? (
+            {(type === HeaderType.Song || isAlbumVariant) && release_date ? (
               <>
                 <span>&nbsp;&middot; {getYear(release_date)}</span>
-                {type === HeaderType.song && duration_s ? (
+                {type === HeaderType.Song && duration_s ? (
                   <span>
                     &nbsp;&middot; {formatTime(duration_s)}{" "}
                     {translations.minutes}
@@ -315,10 +315,10 @@ export default function PageHeader({
             min-width: 232px;
             width: 232px;
             box-shadow: 0 4px 60px rgb(0 0 0 / 50%);
-            border-radius: ${type === HeaderType.artist ||
-            type === HeaderType.profile
+            border-radius: ${type === HeaderType.Artist ||
+            type === HeaderType.Profile
               ? "50%"
-              : type === HeaderType.episode || type === HeaderType.podcast
+              : type === HeaderType.Episode || type === HeaderType.Podcast
               ? "12px"
               : "0px"};
             object-fit: cover;

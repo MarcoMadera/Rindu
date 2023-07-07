@@ -39,7 +39,7 @@ function renderListRow({
         isTrackInLibrary={false}
         track={tracksToRemove[index]}
         playlistUri={pageDetails?.uri ?? ""}
-        type={CardType.album}
+        type={CardType.Album}
         position={tracksToRemove[index].position}
       />
     </div>

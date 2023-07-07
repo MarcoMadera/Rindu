@@ -118,11 +118,11 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
   ) {
     switch (album_type) {
       case "single":
-        return HeaderType.single;
+        return HeaderType.Single;
       case "compilation":
-        return HeaderType.compilation;
+        return HeaderType.Compilation;
       default:
-        return HeaderType.album;
+        return HeaderType.Album;
     }
   }
 
@@ -194,12 +194,12 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
         </div>
         <div className="trc">
           <TrackListHeader
-            type={CardType.album}
+            type={CardType.Album}
             setIsPin={setIsPin}
             isPin={isPin}
           />
           <VirtualizedList
-            type={CardType.album}
+            type={CardType.Album}
             initialTracksInLibrary={tracksInLibrary}
           />
           <div className="copy">
