@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "firsttris.vscode-jest-runner",
+    "dbaeumer.vscode-eslint",
+    "SonarSource.sonarlint-vscode",
+    "blanu.vscode-styled-jsx",
+    "Divlo.vscode-styled-jsx-languageserver"
+  ]
+}
