@@ -2,7 +2,7 @@ import React from "react";
 
 import { Meta, StoryFn } from "@storybook/react";
 
-import CardTrack, { CardType } from "../components/CardTrack";
+import CardTrack, { CardType } from "./CardTrack";
 import { ITrack } from "types/spotify";
 export default {
   title: "Components/CardTrack",

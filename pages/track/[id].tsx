@@ -13,7 +13,7 @@ import {
   PlayButton,
   PlaylistTopBarExtraField,
 } from "components";
-import { CardType } from "components/CardTrack";
+import { CardType } from "components/CardTrack/CardTrack";
 import { Heart } from "components/icons";
 import {
   useAuth,

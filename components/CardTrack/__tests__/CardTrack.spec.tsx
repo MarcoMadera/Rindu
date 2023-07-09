@@ -2,7 +2,7 @@ import { ComponentProps } from "react";
 
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
-import CardTrack, { CardType } from "components/CardTrack";
+import CardTrack, { CardType } from "components/CardTrack/CardTrack";
 import { AppContextProvider } from "context/AppContextProvider";
 import { IUserContext } from "context/UserContext";
 import { useOnScreen } from "hooks";

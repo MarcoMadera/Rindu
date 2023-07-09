@@ -5,7 +5,7 @@ export { default as Button } from "./Button";
 export { default as CardContainer } from "./CardContainer";
 export { default as CardContent } from "./CardContent";
 export * from "./CardSubTitle";
-export { default as CardTrack } from "./CardTrack";
+export { default as CardTrack } from "./CardTrack/CardTrack";
 export { default as CardTrackContextMenu } from "./CardTrackContextMenu";
 export { default as Carousel } from "./Carousel";
 export * from "./CarouselCards";

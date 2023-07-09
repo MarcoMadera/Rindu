@@ -6,17 +6,17 @@ import PresentationCard from "./PresentationCard";
 import { CardSubTitle } from "components";
 import { IMappedAlbums } from "pages/artist/[artistId]";
 
-export function CarouselCards({
-  items,
-  translations,
-  title,
-  type,
-}: {
+interface ICarouselCards {
   items: IMappedAlbums["items"] | SpotifyApi.ArtistObjectFull[];
-  translations: Record<string, string>;
   title: string;
   type: CardType;
-}): ReactElement {
+}
+
+export function CarouselCards({
+  items,
+  title,
+  type,
+}: ICarouselCards): ReactElement {
   return (
     <Carousel title={title} gap={24}>
       {items?.map((item) => {
@@ -28,13 +28,7 @@ export function CarouselCards({
             key={item.id}
             images={item.images}
             title={item.name}
-            subTitle={
-              <CardSubTitle
-                type={type}
-                item={item}
-                translations={translations}
-              />
-            }
+            subTitle={<CardSubTitle type={type} item={item} />}
             id={item.id}
           />
         );

@@ -3,7 +3,7 @@ import { ReactElement, ReactNode, useEffect, useState } from "react";
 import { List, ListRowProps } from "react-virtualized";
 
 import { Button, CardTrack, Heading, LoadingSpinner } from "components";
-import { CardType } from "components/CardTrack";
+import { CardType } from "components/CardTrack/CardTrack";
 import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
 import { AsType } from "types/heading";
 import { IPageDetails, ITrack } from "types/spotify";
