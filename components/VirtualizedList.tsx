@@ -9,7 +9,7 @@ import {
 } from "react-virtualized";
 
 import { CardTrack } from "components";
-import { CardType } from "components/CardTrack";
+import { CardType } from "components/CardTrack/CardTrack";
 import { useAuth, useSpotify } from "hooks";
 import { ITrack } from "types/spotify";
 import { getTracksFromLibrary, isServer, mapPlaylistItems } from "utils";

@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 
 import { CardTrack, ContentContainer, Heading } from "components";
-import { CardType } from "components/CardTrack";
+import { CardType } from "components/CardTrack/CardTrack";
 import { useAuth, useSpotify, useTranslations } from "hooks";
 
 export default function FullScreenQueue(): ReactElement {

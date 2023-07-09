@@ -2,19 +2,17 @@ import { ReactElement } from "react";
 
 import { CardType } from "./CardContent";
 import SubTitle from "./SubTitle";
+import { useTranslations } from "hooks";
 import { IMappedAlbumItems } from "pages/artist/[artistId]";
 
 interface ICardSubTitle {
   type: CardType;
   item: IMappedAlbumItems | SpotifyApi.ArtistObjectFull;
-  translations: Record<string, string>;
 }
 
-export function CardSubTitle({
-  type,
-  item,
-  translations,
-}: ICardSubTitle): ReactElement {
+export function CardSubTitle({ type, item }: ICardSubTitle): ReactElement {
+  const { translations } = useTranslations();
+
   if (type === CardType.ALBUM && "album_type" in item) {
     return (
       <SubTitle

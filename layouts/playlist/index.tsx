@@ -17,7 +17,7 @@ import {
   TrackListHeader,
   VirtualizedList,
 } from "components";
-import { CardType } from "components/CardTrack";
+import { CardType } from "components/CardTrack/CardTrack";
 import { Broom, Heart } from "components/icons";
 import {
   useAnalytics,

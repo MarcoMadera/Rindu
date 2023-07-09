@@ -16,7 +16,7 @@ import {
   SetList,
 } from "components";
 import { CardType } from "components/CardContent";
-import { CardType as TrackCardType } from "components/CardTrack";
+import { CardType as TrackCardType } from "components/CardTrack/CardTrack";
 import TextToggleButton from "components/TextToggleButton";
 import {
   useAnalytics,
@@ -274,7 +274,6 @@ export default function ArtistPage({
               title={title}
               items={carouselItems}
               type={type}
-              translations={translations}
             />
           );
         })}

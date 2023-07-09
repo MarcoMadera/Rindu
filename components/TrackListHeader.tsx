@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 
-import { CardType } from "./CardTrack";
+import { CardType } from "./CardTrack/CardTrack";
 import { Clock } from "components/icons";
 import { useOnSmallScreen, useTranslations } from "hooks";
 

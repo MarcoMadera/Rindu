@@ -12,7 +12,7 @@ import {
   TrackListHeader,
   VirtualizedList,
 } from "components";
-import { CardType } from "components/CardTrack";
+import { CardType } from "components/CardTrack/CardTrack";
 import { Heart } from "components/icons";
 import { useAnalytics, useAuth, useHeader, useSpotify, useToast } from "hooks";
 import { HeaderType } from "types/pageHeader";

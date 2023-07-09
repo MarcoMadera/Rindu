@@ -3,7 +3,7 @@ import React from "react";
 import { Meta, StoryFn } from "@storybook/react";
 
 import { TrackListHeader } from "components";
-import { CardType } from "components/CardTrack";
+import { CardType } from "components/CardTrack/CardTrack";
 
 export default {
   title: "Components/TrackListHeader",
