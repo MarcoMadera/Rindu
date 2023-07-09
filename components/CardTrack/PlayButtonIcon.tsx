@@ -21,7 +21,7 @@ export function PlayButtonIcon({
   position,
 }: IPlayButtonIcon): ReactElement {
   if (mouseEnter && isTheSameAsCurrentlyPlaying && isPlaying) {
-    return <Pause size={24} color={"#FFF"} />;
+    return <Pause size={24} fill={"#FFF"} />;
   }
 
   if (isTheSameAsCurrentlyPlaying && isPlaying) {
