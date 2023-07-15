@@ -34,7 +34,7 @@ export enum CardType {
   Playlist = "playlist",
   Album = "album",
 }
-interface CardTrackProps {
+interface ICardTrackProps {
   track: ITrack | undefined;
   accessToken: string | undefined;
   playlistUri: string;
@@ -79,7 +79,7 @@ function CardTrack({
   uri,
   visualPosition,
   uris,
-}: CardTrackProps): ReactElement | null {
+}: ICardTrackProps): ReactElement | null {
   const {
     allTracks,
     deviceId,
