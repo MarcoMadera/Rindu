@@ -1,3 +1,5 @@
+import { ReactElement } from "react";
+
 import css from "styled-jsx/css";
 
 import type { AsType, Heading, HeadingStyles } from "types/heading";
@@ -12,7 +14,7 @@ export function getHeadingStyles(
   { color, fontSize, margin, textAlign, multiline }: HeadingStyles
 ): {
   className: string;
-  styles: JSX.Element;
+  styles: ReactElement;
 } {
   return css.resolve`
     ${element} {

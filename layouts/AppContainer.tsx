@@ -10,9 +10,7 @@ import {
 import {
   FullScreenLyrics,
   FullScreenQueue,
-  Panel,
-  PanelGroup,
-  PanelResizeHandle,
+  ResizablePanel,
   SideBar,
   TopBar,
 } from "components";
@@ -65,17 +63,17 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
   return (
     <div className="container">
       <div className="overlay"></div>
-      <PanelGroup direction="row">
-        <Panel
+      <ResizablePanel.Group direction="row">
+        <ResizablePanel.Item
           defaultSize={`${leftPanelWidth}px`}
           id="left"
           minWidth={`${leftPanelMinWidth}px`}
           maxWidth={`${leftPanelMaxWidth}px`}
         >
           <SideBar />
-          <PanelResizeHandle onResize={setLeftPanelDraggedWidth} />
-        </Panel>
-        <Panel defaultSize="100%" id="right">
+          <ResizablePanel.Handle onResize={setLeftPanelDraggedWidth} />
+        </ResizablePanel.Item>
+        <ResizablePanel.Item defaultSize="100%" id="right">
           <div
             className="app"
             ref={appRef as MutableRefObject<HTMLDivElement>}
@@ -94,8 +92,8 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
               children
             )}
           </div>
-        </Panel>
-      </PanelGroup>
+        </ResizablePanel.Item>
+      </ResizablePanel.Group>
       <style jsx>{`
         div.container :global(#left) {
           display: ${hideSideBar ? "none" : "grid"};

@@ -1,1 +1,2 @@
-export { default as CardTrack } from "./CardTrack";
+export { default } from "./CardTrack";
+export * from "./CardTrack";
