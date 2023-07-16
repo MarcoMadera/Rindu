@@ -5,13 +5,13 @@ import Link from "next/link";
 import { Grid, Heading } from "components";
 import { colors } from "utils";
 
-interface BrowseCategoriesProps {
+interface IBrowseCategoriesProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
 }
 
 export default function BrowseCategories({
   categories,
-}: BrowseCategoriesProps): ReactElement {
+}: IBrowseCategoriesProps): ReactElement {
   return (
     <Grid>
       {categories?.items.map(({ name, id, icons }, i) => {

@@ -4,7 +4,7 @@ import {
   EXPIRE_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
 } from "utils/constants";
-import { Artist } from "utils/getArtistInfo";
+import { ArtistScrobbleInfo } from "utils/getArtistScrobbleInfo";
 import { Language, translations } from "utils/getTranslations";
 
 export const accessToken = "accessToken";
@@ -120,7 +120,7 @@ export const playlistTrackResponse: SpotifyApi.PlaylistTrackObject = {
   track: trackFull,
 };
 
-export const artistInfo: Artist = {
+export const artistInfo: ArtistScrobbleInfo = {
   name: "artist",
   image: [{ "#text": "url", size: "large" }],
   tags: { tag: [{ name: "tag", url: "url" }] },
