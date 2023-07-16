@@ -63,10 +63,10 @@ export default function FullScreenLyrics({
   const { translations } = useTranslations();
   const isPremium = user?.product === "premium";
   const { addToast } = useToast();
-  const title = currentlyPlaying?.name || "";
-  const artist = currentlyPlaying?.artists?.[0]?.name || "";
-  const album = currentlyPlaying?.album?.name || "";
-  const cover = currentlyPlaying?.album?.images?.[0]?.url || "";
+  const title = currentlyPlaying?.name ?? "";
+  const artist = currentlyPlaying?.artists?.[0]?.name ?? "";
+  const album = currentlyPlaying?.album?.name ?? "";
+  const cover = currentlyPlaying?.album?.images?.[0]?.url ?? "";
 
   useHeader({
     disableOpacityChange: true,
@@ -106,7 +106,7 @@ export default function FullScreenLyrics({
     const newLyricsBackgroundColor = lyrics?.colors?.background
       ? rgbToHex(colorCodedToRGB(lyrics.colors.background))
       : lyricsBackgroundColor ?? getRandomColor();
-    const [h, s, l] = hexToHsl(newLyricsBackgroundColor, true) || [];
+    const [h, s, l] = hexToHsl(newLyricsBackgroundColor, true) ?? [];
     setLyricLineColor(
       lyrics?.colors?.highlightText
         ? colorCodedToHex(lyrics.colors.highlightText)

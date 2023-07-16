@@ -13,9 +13,11 @@ export default function SubTitle({
   releaseYear?: string;
 }): ReactElement {
   const spanRef = useRef<HTMLSpanElement>(null);
+  const year = releaseYear && getYear(releaseYear);
+
   return (
     <span ref={spanRef} className="subTitle">
-      {releaseYear && <>{getYear(releaseYear)} · </>}
+      {year && <>{year} · </>}
       {albumType && <>{capitalizeFirstLetter(albumType)} · </>}
       <ArtistList artists={artists} maxArtistsToShow={2} />
       {artists.length > 2 ? " y más..." : null}
