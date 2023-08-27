@@ -20,22 +20,22 @@ export default function MainLayout({
     document.documentElement.style.setProperty("--vh", `${vh}px`);
   }, []);
 
+  if (isLoginPage) {
+    return (
+      <>
+        <div>
+          <TopBar />
+          {children}
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <>
-      {isLoginPage ? (
-        <>
-          <div>
-            <TopBar />
-            {children}
-          </div>
-          <Footer />
-        </>
-      ) : (
-        <>
-          <AppContainer>{children}</AppContainer>
-          <SpotifyPlayer />
-        </>
-      )}
+      <AppContainer>{children}</AppContainer>
+      <SpotifyPlayer />
     </>
   );
 }

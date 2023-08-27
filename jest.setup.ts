@@ -1,5 +1,6 @@
-import "@testing-library/jest-dom/extend-expect";
-import { beforeAll, afterAll, jest } from "@jest/globals";
+import "@testing-library/jest-dom";
+import { afterAll, beforeAll, jest } from "@jest/globals";
+import { NextRouter } from "next/router";
 
 process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID = "clientId";
 process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URL =
@@ -10,7 +11,7 @@ process.env.SETLIST_FM_API_KEY = "setlistFmApiKey";
 process.env.SPOTIFY_ACCESS_COOKIE = "accessCookie";
 
 jest.mock("next/router", () => ({
-  ...jest.requireActual("next/router"),
+  ...jest.requireActual<NextRouter>("next/router"),
   useRouter: jest.fn().mockImplementation(() => ({
     asPath: "/",
     push: jest.fn(),
