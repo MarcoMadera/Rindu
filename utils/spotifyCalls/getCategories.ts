@@ -16,9 +16,8 @@ export async function getCategories(
     cookies,
   });
 
-  const data = await handleJsonResponse<SpotifyApi.MultipleCategoriesResponse>(
-    res
-  );
+  const data =
+    await handleJsonResponse<SpotifyApi.MultipleCategoriesResponse>(res);
 
   if (data) return data.categories;
 

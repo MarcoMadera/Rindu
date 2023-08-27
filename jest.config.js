@@ -37,7 +37,7 @@ const customJestConfig = {
     "^@/(.*)$": join(process.cwd(), "src", "$1"),
   },
   setupFiles: ["jest-canvas-mock"],
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   testMatch: ["<rootDir>/**/*.(spec|test).(js|jsx|ts|tsx)"],
   moduleDirectories: ["<rootDir>", "node_modules"],
   coverageThreshold: {
