@@ -3,6 +3,7 @@ import {
   ReactElement,
   useEffect,
   useLayoutEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -20,15 +21,122 @@ import { DisplayInFullScreen } from "types/spotify";
 import {
   colorCodedToHex,
   colorCodedToRGB,
-  getLinesFittingCanvas,
+  getAllLinesFittingWidth,
+  getLineType,
   getRandomColor,
   hexToHsl,
+  IFormatLyricsResponse,
   rgbToHex,
   ToastMessage,
 } from "utils";
 
 interface FullScreenLyricsProps {
   appRef?: MutableRefObject<HTMLDivElement | undefined>;
+}
+
+interface ILyricLineProps {
+  line: IFormatLyricsResponse["lines"][0];
+  lyricsProgressMs: number;
+  lyrics: IFormatLyricsResponse;
+  type: "current" | "previous" | "next";
+  lyricLineColor: string;
+  lyricTextColor: string;
+}
+
+function LyricLine({
+  line,
+  lyricsProgressMs,
+  lyrics,
+  type,
+  lyricLineColor,
+  lyricTextColor,
+}: ILyricLineProps) {
+  const { player } = useSpotify();
+  const { user } = useAuth();
+  const isPremium = user?.product === "premium";
+  const lineRef = useRef<HTMLButtonElement>(null);
+
+  const lineColors = {
+    current: "#fff",
+    previous: lyricLineColor + "80",
+    next: lyricTextColor,
+  };
+
+  useEffect(() => {
+    const line = lineRef.current;
+    if (!line) return;
+    const currentLine = line.classList.contains("current");
+    if (currentLine) {
+      line.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+    }
+  }, [lyricsProgressMs]);
+
+  return (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        if (
+          isPremium &&
+          line?.startTimeMs &&
+          player &&
+          lyrics.syncType === "LINE_SYNCED"
+        ) {
+          player.seek(Number(line.startTimeMs));
+        }
+      }}
+      className={`line ${type}`}
+      dir="auto"
+      ref={lineRef}
+    >
+      {line.words}
+      <style jsx>{`
+        .line {
+          display: block;
+          color: ${lyricTextColor};
+          background-color: transparent;
+          border: none;
+          width: 100%;
+          text-align: left;
+          padding-left: 144px;
+        }
+        .line.current {
+          color: ${lineColors.current};
+        }
+        .line.previous {
+          color: ${lineColors.previous};
+        }
+        .line.next {
+          color: ${lineColors.next};
+        }
+        .line:hover {
+          color: ${lyrics?.colors ? lyricLineColor : "#fff"};
+          opacity: 1;
+        }
+        @media (max-width: 768px) {
+          .line {
+            padding-left: 0;
+          }
+        }
+        @media (max-width: 658px) {
+          .line {
+            padding-left: 0;
+          }
+        }
+        .line {
+          font-size: 32px;
+          font-weight: 700;
+          letter-spacing: -0.04em;
+          line-height: 54px;
+          cursor: pointer;
+          transition: all 0.1s ease-out 0s;
+        }
+      `}</style>
+    </button>
+  );
 }
 
 export default function FullScreenLyrics({
@@ -74,17 +182,6 @@ export default function FullScreenLyrics({
     showOnFixed: false,
     disableBackground: true,
   });
-
-  useEffect(() => {
-    const currentLine = document.querySelector(".line-current");
-    if (currentLine) {
-      currentLine.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "nearest",
-      });
-    }
-  }, [lyricsProgressMs]);
 
   useEffect(() => {
     if (!isPremium) return;
@@ -156,48 +253,31 @@ export default function FullScreenLyrics({
   useEffect(() => {
     if (!isPictureInPictureLyircsCanvas || !pictureInPictureCanvas.current)
       return;
-    const lines = document.querySelectorAll(".line");
+    const lines = lyrics?.lines;
     const ctx = pictureInPictureCanvas.current.getContext("2d");
+    const canvasWidth = pictureInPictureCanvas.current.width;
+    const canvasHeight = pictureInPictureCanvas.current.height;
+    const LYRICS_PIP_HEADER_HEIGH = 100;
     if (!ctx) return;
-    const canvasHeight = pictureInPictureCanvas.current.height - 100;
+    const lyricsContainerHeight = canvasHeight - LYRICS_PIP_HEADER_HEIGH;
 
-    ctx.clearRect(0, 100, pictureInPictureCanvas.current.width, canvasHeight);
+    ctx.clearRect(0, 100, canvasWidth, lyricsContainerHeight);
     ctx.font = "24px Arial";
 
-    const canvasMiddle = canvasHeight / 2;
-    if (lyricsError) {
+    const canvasMiddle = lyricsContainerHeight / 2;
+    if (lyricsError || !lines) {
       ctx.fillStyle = lyricTextColor;
-      ctx.fillText(lyricsError, 10, canvasMiddle);
+      ctx.fillText(lyricsError ?? "", 10, canvasMiddle);
     }
 
-    const lineHeight = 40;
-    const allLines: {
-      color: string;
-      text: string;
-      type: "opaque" | "current" | "normal";
-    }[] = [];
-
-    lines.forEach((line) => {
-      const isOpaqueLine = line.classList.contains("line-opaque");
-      const isCurrentLine = line.classList.contains("line-current");
-      const color = isOpaqueLine
-        ? lyricTextColor + "80" // 50% opacity
-        : isCurrentLine
-        ? lyricLineColor
-        : lyricTextColor;
-
-      const linesText = getLinesFittingCanvas(
-        ctx,
-        line.textContent ?? "",
-        (pictureInPictureCanvas.current?.width ?? 10) - 20
-      );
-      linesText.forEach((lineText) => {
-        allLines.push({
-          color,
-          text: lineText,
-          type: isOpaqueLine ? "opaque" : isCurrentLine ? "current" : "normal",
-        });
-      });
+    const LINE_HEIGHT = 40;
+    const allLines = getAllLinesFittingWidth({
+      ctx,
+      lines: lines || [],
+      lyricLineColor,
+      lyricsProgressMs,
+      lyricTextColor,
+      canvasWidth,
     });
 
     const currentLineIndex = allLines.findIndex(
@@ -205,11 +285,29 @@ export default function FullScreenLyrics({
     );
 
     allLines.forEach((line, index) => {
+      const FIRST_LINES_TO_MIDDLE = 5;
+      const LAST_LINES_TO_MIDDLE = 7;
+      const isOneOfFirstLines = currentLineIndex < FIRST_LINES_TO_MIDDLE;
+      const isOfLastLines =
+        currentLineIndex > allLines.length - LAST_LINES_TO_MIDDLE;
+      const bottomLineTrace = isOfLastLines
+        ? lyricsContainerHeight +
+          LINE_HEIGHT +
+          10 -
+          LINE_HEIGHT * (allLines.length - currentLineIndex)
+        : canvasMiddle;
+      const middleHeight = isOneOfFirstLines
+        ? canvasMiddle - LINE_HEIGHT * (4 - currentLineIndex)
+        : bottomLineTrace;
+
       const lineY =
-        100 + canvasMiddle + lineHeight * (index - currentLineIndex);
-      ctx.fillStyle = line.color;
-      const limit = lineHeight + 100;
-      const isOutsideCanvas = lineY < limit || lineY > canvasHeight + limit;
+        LYRICS_PIP_HEADER_HEIGH +
+        middleHeight +
+        LINE_HEIGHT * (index - currentLineIndex);
+      ctx.fillStyle = line.color ?? "#fff";
+      const limit = LINE_HEIGHT + LYRICS_PIP_HEADER_HEIGH;
+      const isOutsideCanvas =
+        lineY < limit || lineY > lyricsContainerHeight + limit;
       if (isOutsideCanvas) return;
       ctx.fillText(line.text, 10, lineY);
     });
@@ -231,6 +329,7 @@ export default function FullScreenLyrics({
     lyricTextColor,
     lyricsBackgroundColor,
     pictureInPictureCanvas,
+    lyrics?.lines,
   ]);
 
   useEffect(() => {
@@ -302,34 +401,22 @@ export default function FullScreenLyrics({
       {lyrics && lyrics.lines.length > 0 && (
         <div className="lyrics">
           {lyrics.lines.map((line, i) => {
+            const type = getLineType({
+              currentLine: line,
+              lyricsProgressMs,
+              nextLine: lyrics.lines[i + 1],
+            });
+
             return (
-              <button
+              <LyricLine
+                line={line}
+                lyrics={lyrics}
+                lyricsProgressMs={lyricsProgressMs}
+                type={type}
+                lyricLineColor={lyricLineColor}
+                lyricTextColor={lyricTextColor}
                 key={i}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (
-                    isPremium &&
-                    line?.startTimeMs &&
-                    player &&
-                    lyrics.syncType === "LINE_SYNCED"
-                  ) {
-                    player.seek(Number(line.startTimeMs));
-                  }
-                }}
-                className={`line line${
-                  line.startTimeMs &&
-                  Number(line.startTimeMs) <= lyricsProgressMs &&
-                  lyrics?.lines[i + 1]?.startTimeMs &&
-                  Number(lyrics?.lines[i + 1]?.startTimeMs) >= lyricsProgressMs
-                    ? "-current"
-                    : Number(line.startTimeMs) <= lyricsProgressMs
-                    ? "-opaque"
-                    : ""
-                }`}
-                dir="auto"
-              >
-                {line.words}
-              </button>
+              />
             );
           })}
         </div>
@@ -428,19 +515,6 @@ export default function FullScreenLyrics({
             background-position: 100% 50%;
           }
         }
-        .line {
-          display: block;
-          color: ${lyricTextColor};
-          background-color: transparent;
-          border: none;
-          width: 100%;
-          text-align: left;
-          padding-left: 144px;
-        }
-        .line.line-current {
-          opacity: 1;
-          color: ${lyricLineColor};
-        }
       `}</style>
       <style jsx>{`
         .lyrics-container {
@@ -454,10 +528,6 @@ export default function FullScreenLyrics({
           max-width: max-content;
           position: sticky;
           top: 0;
-        }
-        .line-opaque {
-          opacity: 0.5;
-          color: #fff;
         }
         @media (max-width: 768px) {
           .lyrics-container {
@@ -481,20 +551,13 @@ export default function FullScreenLyrics({
           width: 100%;
           height: calc((var(--vh, 1vh) * 100) - 90px - 60px);
         }
-        .line,
-        .line-opaque,
-        .line-current {
+        .line {
           font-size: 32px;
           font-weight: 700;
           letter-spacing: -0.04em;
           line-height: 54px;
           cursor: pointer;
           transition: all 0.1s ease-out 0s;
-        }
-        .lyrics .line:hover,
-        .lyrics .line-opaque:hover {
-          color: ${lyrics?.colors ? lyricLineColor : "#fff"};
-          opacity: 1;
         }
         .lyrics {
           font-size: 2rem;
