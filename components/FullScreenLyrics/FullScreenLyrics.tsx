@@ -43,6 +43,9 @@ interface ILyricLineProps {
   lyricTextColor: string;
 }
 
+const LINE_HEIGHT = 40;
+const LYRICS_PIP_HEADER_HEIGH = 100;
+const LYRICS_PADDING_LEFT = 10;
 function LyricLine({
   line,
   lyricsProgressMs,
@@ -139,6 +142,49 @@ function LyricLine({
   );
 }
 
+function applyLyricLinePositionAndColor(
+  ctx: CanvasRenderingContext2D,
+  allLines: {
+    color: string;
+    text: string;
+    type: "current" | "previous" | "next";
+  }[],
+  containerHeight: number
+) {
+  const containerMiddle = containerHeight / 2;
+  const currentLineIndex = allLines.findIndex(
+    (line) => line.type === "current"
+  );
+
+  allLines.forEach((line, index) => {
+    const isOneOfFirstLines =
+      currentLineIndex * LINE_HEIGHT < containerMiddle - LINE_HEIGHT;
+    const isOfLastLines =
+      currentLineIndex * LINE_HEIGHT >
+      allLines.length * LINE_HEIGHT - LINE_HEIGHT - containerMiddle;
+    const canvasRest = containerMiddle % LINE_HEIGHT;
+    const bottomLineTrace = isOfLastLines
+      ? containerHeight +
+        LINE_HEIGHT +
+        (LINE_HEIGHT - canvasRest) -
+        LINE_HEIGHT * (allLines.length - currentLineIndex)
+      : containerMiddle;
+    const middleHeight = isOneOfFirstLines
+      ? LINE_HEIGHT + currentLineIndex * LINE_HEIGHT
+      : bottomLineTrace;
+
+    const lineY =
+      LYRICS_PIP_HEADER_HEIGH +
+      middleHeight +
+      LINE_HEIGHT * (index - currentLineIndex);
+    ctx.fillStyle = line.color ?? "#fff";
+    const limit = LINE_HEIGHT + LYRICS_PIP_HEADER_HEIGH;
+    const isOutsideCanvas = lineY < limit || lineY > containerHeight + limit;
+    if (isOutsideCanvas) return;
+    ctx.fillText(line.text, LYRICS_PADDING_LEFT, lineY);
+  });
+}
+
 export default function FullScreenLyrics({
   appRef,
 }: FullScreenLyricsProps): ReactElement {
@@ -159,6 +205,7 @@ export default function FullScreenLyrics({
   const [lyricsProgressMs, setLyricsProgressMs] = useState(0);
   const [lyricLineColor, setLyricLineColor] = useState<string>("#fff");
   const [lyricTextColor, setLyricTextColor] = useState<string>("#fff");
+  const [spinnerFrame, setSpinnerFrame] = useState<number | null>(null);
   const [lyricsBackgroundColor, setLyricsBackgroundColor] = useState<
     string | undefined
   >();
@@ -253,64 +300,115 @@ export default function FullScreenLyrics({
   useEffect(() => {
     if (!isPictureInPictureLyircsCanvas || !pictureInPictureCanvas.current)
       return;
+    const ctx = pictureInPictureCanvas.current.getContext("2d");
+    const canvasWidth = pictureInPictureCanvas.current.width;
+    const canvasHeight = pictureInPictureCanvas.current.height;
+    if (!ctx) return;
+    const lines = lyrics?.lines;
+    ctx.font = "24px Arial";
+
+    const centerX = canvasWidth / 2;
+    const centerY = canvasHeight / 2;
+    const radius = 40;
+    const lineWidth = 10;
+    const numSegments = 120;
+    const segmentAngle = (2 * Math.PI) / numSegments;
+    const rotationSpeed = 0.05;
+    let rotation = 0;
+
+    function drawLoadingSpinner(rotation: number) {
+      if (!ctx) return;
+      ctx.clearRect(0, LYRICS_PIP_HEADER_HEIGH, canvasWidth, canvasHeight);
+      const [h, s] = hexToHsl(lyricsBackgroundColor ?? "", true) ?? [0, 0, 0];
+
+      for (let i = 0; i < numSegments; i++) {
+        const startAngle = i * segmentAngle + rotation;
+        const endAngle = startAngle + segmentAngle;
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.lineWidth = lineWidth;
+
+        const minLightness = 30;
+        const maxLightness = 60;
+        const adjustedLightness =
+          minLightness + (i * (maxLightness - minLightness)) / numSegments;
+
+        const segmentColor = `hsl(${h}, ${s}%, ${adjustedLightness}%)`;
+        ctx.strokeStyle = segmentColor;
+
+        ctx.strokeStyle = segmentColor;
+        ctx.stroke();
+      }
+
+      ctx.globalCompositeOperation = "destination-over";
+      ctx.fillStyle = lyricsBackgroundColor ?? "#000";
+
+      ctx.fillRect(0, LYRICS_PIP_HEADER_HEIGH, canvasWidth, canvasHeight);
+    }
+
+    function animate() {
+      drawLoadingSpinner(rotation);
+      rotation += rotationSpeed;
+      const frame = requestAnimationFrame(animate);
+      setSpinnerFrame(frame);
+    }
+
+    if (!lyricsError && !lines && !spinnerFrame) {
+      ctx.fillStyle = "#fff";
+
+      animate();
+      return;
+    }
+
+    if (spinnerFrame && (lines || lyricsError)) {
+      cancelAnimationFrame(spinnerFrame);
+      setSpinnerFrame(null);
+      ctx.clearRect(0, LYRICS_PIP_HEADER_HEIGH, canvasWidth, canvasHeight);
+    }
+  }, [
+    spinnerFrame,
+    isPictureInPictureLyircsCanvas,
+    lyrics?.lines,
+    lyricsBackgroundColor,
+    lyricsError,
+    pictureInPictureCanvas,
+  ]);
+
+  useEffect(() => {
+    if (!isPictureInPictureLyircsCanvas || !pictureInPictureCanvas.current)
+      return;
     const lines = lyrics?.lines;
     const ctx = pictureInPictureCanvas.current.getContext("2d");
     const canvasWidth = pictureInPictureCanvas.current.width;
     const canvasHeight = pictureInPictureCanvas.current.height;
-    const LYRICS_PIP_HEADER_HEIGH = 100;
     if (!ctx) return;
     const lyricsContainerHeight = canvasHeight - LYRICS_PIP_HEADER_HEIGH;
 
-    ctx.clearRect(0, 100, canvasWidth, lyricsContainerHeight);
+    ctx.clearRect(
+      0,
+      LYRICS_PIP_HEADER_HEIGH,
+      canvasWidth,
+      lyricsContainerHeight
+    );
     ctx.font = "24px Arial";
 
     const canvasMiddle = lyricsContainerHeight / 2;
     if (lyricsError || !lines) {
       ctx.fillStyle = lyricTextColor;
-      ctx.fillText(lyricsError ?? "", 10, canvasMiddle);
+      ctx.fillText(lyricsError ?? "", LYRICS_PADDING_LEFT, canvasMiddle);
     }
 
-    const LINE_HEIGHT = 40;
     const allLines = getAllLinesFittingWidth({
       ctx,
-      lines: lines || [],
+      lines: lines ?? [],
       lyricLineColor,
       lyricsProgressMs,
       lyricTextColor,
       canvasWidth,
     });
 
-    const currentLineIndex = allLines.findIndex(
-      (line) => line.type === "current"
-    );
-
-    allLines.forEach((line, index) => {
-      const FIRST_LINES_TO_MIDDLE = 5;
-      const LAST_LINES_TO_MIDDLE = 7;
-      const isOneOfFirstLines = currentLineIndex < FIRST_LINES_TO_MIDDLE;
-      const isOfLastLines =
-        currentLineIndex > allLines.length - LAST_LINES_TO_MIDDLE;
-      const bottomLineTrace = isOfLastLines
-        ? lyricsContainerHeight +
-          LINE_HEIGHT +
-          10 -
-          LINE_HEIGHT * (allLines.length - currentLineIndex)
-        : canvasMiddle;
-      const middleHeight = isOneOfFirstLines
-        ? canvasMiddle - LINE_HEIGHT * (4 - currentLineIndex)
-        : bottomLineTrace;
-
-      const lineY =
-        LYRICS_PIP_HEADER_HEIGH +
-        middleHeight +
-        LINE_HEIGHT * (index - currentLineIndex);
-      ctx.fillStyle = line.color ?? "#fff";
-      const limit = LINE_HEIGHT + LYRICS_PIP_HEADER_HEIGH;
-      const isOutsideCanvas =
-        lineY < limit || lineY > lyricsContainerHeight + limit;
-      if (isOutsideCanvas) return;
-      ctx.fillText(line.text, 10, lineY);
-    });
+    applyLyricLinePositionAndColor(ctx, allLines, lyricsContainerHeight);
 
     ctx.globalCompositeOperation = "destination-over";
     ctx.fillStyle = lyricsBackgroundColor ?? "#000";
