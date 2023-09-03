@@ -23,10 +23,9 @@ interface SliderProps {
     steps: number;
     shouldUpdate: boolean;
   };
-  onDragging?: (isDragging: boolean) => void;
+  onDragging?: (isDragging: boolean, progressPercent: number) => void;
   showDot?: boolean;
   className?: string;
-  currentValueCallback?: (currentValue: number) => void;
 }
 
 export default function Slider({
@@ -40,7 +39,6 @@ export default function Slider({
   initialValuePercent,
   showDot,
   className,
-  currentValueCallback,
 }: SliderProps): ReactElement {
   const [progressPercent, setProgressPercent] = useState(initialValuePercent);
   const [isPressingMouse, setIsPressingMouse] = useState(false);
@@ -48,37 +46,50 @@ export default function Slider({
   const sliderRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
-    if (currentValueCallback) {
-      currentValueCallback(progressPercent);
-    }
-  }, [currentValueCallback, progressPercent]);
-
-  useEffect(() => {
     if (typeof updateProgress === "number") {
-      setProgressPercent(
-        Math.ceil(updateProgress) > 100 ? 100 : Math.ceil(updateProgress)
-      );
+      setProgressPercent(updateProgress);
     }
   }, [updateProgress]);
 
+  console.log("progressPercent", progressPercent);
+
   useEffect(() => {
     if (onDragging) {
-      onDragging(isDragging || isPressingMouse);
+      onDragging(isDragging || isPressingMouse, progressPercent);
     }
     const update = intervalUpdateAction;
-    if (!update || (!isDragging && !isPressingMouse && !update.shouldUpdate)) {
+    if (
+      !update ||
+      (!isDragging && !isPressingMouse && !update.shouldUpdate) ||
+      !update.shouldUpdate
+    ) {
       return;
     }
+    let newValue: number | undefined;
     const playerInterval = setInterval(() => {
-      if (!isDragging && setLabelValue) {
-        setProgressPercent((value) =>
-          value >= 100 ? 0 : value + update.steps
-        );
-        setLabelValue((value) => value + update.labelUpdateValue);
+      if (isDragging || !setLabelValue || !update.shouldUpdate) {
+        clearInterval(playerInterval);
+        return;
       }
+      newValue = progressPercent + update.steps;
+      if (newValue >= 100) {
+        clearInterval(playerInterval);
+        newValue = 100;
+      }
+
+      setLabelValue((value) => value + update.labelUpdateValue);
     }, update.ms);
 
-    return () => clearInterval(playerInterval);
+    if (newValue) {
+      setProgressPercent(newValue);
+    }
+
+    return () => {
+      clearInterval(playerInterval);
+      if (setLabelValue && !intervalUpdateAction.shouldUpdate) {
+        setLabelValue(0);
+      }
+    };
   }, [
     intervalUpdateAction,
     intervalUpdateAction?.shouldUpdate,
@@ -86,6 +97,7 @@ export default function Slider({
     isPressingMouse,
     setLabelValue,
     onDragging,
+    progressPercent,
   ]);
 
   const getMyCurrentPositionPercent = useCallback(
@@ -160,11 +172,6 @@ export default function Slider({
         onMouseMove={(e) => {
           e.stopPropagation();
           if (isPressingMouse) {
-            setProgressPercent(
-              ((e.pageX - (sliderRef.current?.parentElement?.offsetLeft ?? 0)) *
-                100) /
-                (sliderRef.current?.clientWidth ?? 0)
-            );
             const currentPositionPercent = getMyCurrentPositionPercent(e);
             setProgressPercent(currentPositionPercent);
           }
