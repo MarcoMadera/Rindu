@@ -10,6 +10,7 @@ import { useOnScreen } from "hooks";
 import { IUtilsMocks } from "types/mocks";
 import { Language } from "utils";
 
+jest.mock("hooks/useLyricsInPictureInPicture");
 jest.mock("hooks/useOnScreen");
 
 const { getAllTranslations } = jest.requireActual<IUtilsMocks>(

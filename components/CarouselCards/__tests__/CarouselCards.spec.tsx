@@ -9,6 +9,7 @@ import { IMappedAlbumItems } from "pages/artist/[artistId]";
 import { IUtilsMocks } from "types/mocks";
 import { Language } from "utils";
 
+jest.mock("hooks/useLyricsInPictureInPicture");
 jest.mock<typeof import("hooks/useAuth")>("hooks/useAuth");
 jest.mock<typeof import("hooks/useOnScreen")>("hooks/useOnScreen");
 jest.mock<NextRouter>("next/router");

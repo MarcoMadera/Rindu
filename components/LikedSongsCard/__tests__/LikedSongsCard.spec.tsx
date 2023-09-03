@@ -9,6 +9,7 @@ import { IUtilsMocks } from "types/mocks";
 import { Language } from "utils";
 import { getMyLikedSongs } from "utils/spotifyCalls";
 
+jest.mock("hooks/useLyricsInPictureInPicture");
 jest.mock<typeof import("utils/spotifyCalls")>("utils/spotifyCalls", () => ({
   ...jest.requireActual("utils/spotifyCalls"),
   getMyLikedSongs: jest.fn(),

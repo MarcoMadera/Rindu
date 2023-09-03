@@ -1,5 +1,6 @@
 import { PropsWithChildren, ReactElement, useMemo } from "react";
 
+import { LyricsContextContextProvider } from "./LyricsContextProvider";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import { HeaderContextProvider, IHeaderContext } from "context/HeaderContext";
 import { IModalContext, ModalContextProvider } from "context/ModalContext";
@@ -41,11 +42,13 @@ export function AppContextProvider({
         <UserContextProvider value={userValue}>
           <HeaderContextProvider value={headerValue}>
             <SpotifyContextProvider value={spotifyValue}>
-              <ContextMenuContextProvider value={contextMenuValue}>
-                <ModalContextProvider value={modalValue}>
-                  {children}
-                </ModalContextProvider>
-              </ContextMenuContextProvider>
+              <LyricsContextContextProvider>
+                <ContextMenuContextProvider value={contextMenuValue}>
+                  <ModalContextProvider value={modalValue}>
+                    {children}
+                  </ModalContextProvider>
+                </ContextMenuContextProvider>
+              </LyricsContextContextProvider>
             </SpotifyContextProvider>
           </HeaderContextProvider>
         </UserContextProvider>
