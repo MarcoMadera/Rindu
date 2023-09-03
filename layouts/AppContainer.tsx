@@ -3,6 +3,7 @@ import {
   PropsWithChildren,
   ReactElement,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -14,7 +15,7 @@ import {
   SideBar,
   TopBar,
 } from "components";
-import { useOnSmallScreen, useSpotify } from "hooks";
+import { useLyricsContext, useOnSmallScreen, useSpotify } from "hooks";
 import FullScreenPlayer from "layouts/FullScreenPlayer";
 import { DisplayInFullScreen } from "types/spotify";
 import { requestFullScreen } from "utils";
@@ -23,6 +24,7 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
   const appRef = useRef<HTMLDivElement>();
   const { displayInFullScreen, currentlyPlaying, hideSideBar, setHideSideBar } =
     useSpotify();
+  const { lyricsBackgroundColor } = useLyricsContext();
   const shouldDisplayLyrics =
     displayInFullScreen === DisplayInFullScreen.Lyrics &&
     currentlyPlaying?.type === "track";
@@ -60,6 +62,19 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
     }
   }, [shouldDisplayPlayer]);
 
+  useLayoutEffect(() => {
+    const app = appRef?.current;
+    if (!app) return;
+    if (displayInFullScreen === DisplayInFullScreen.Lyrics) {
+      app.style.backgroundColor = lyricsBackgroundColor ?? "";
+      return;
+    }
+    app.style.backgroundColor = "inherit";
+    return () => {
+      app.style.backgroundColor = "inherit";
+    };
+  }, [appRef, lyricsBackgroundColor, displayInFullScreen]);
+
   return (
     <div className="container">
       <div className="overlay"></div>
@@ -83,7 +98,7 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
           >
             <TopBar appRef={appRef} />
             {shouldDisplayLyrics ? (
-              <FullScreenLyrics appRef={appRef} />
+              <FullScreenLyrics />
             ) : shouldDisplayQueue ? (
               <FullScreenQueue />
             ) : shouldDisplayPlayer ? (

@@ -11,6 +11,7 @@ import { IUtilsMocks } from "types/mocks";
 import { Language } from "utils";
 import { follow } from "utils/spotifyCalls";
 
+jest.mock("hooks/useLyricsInPictureInPicture");
 jest.mock<typeof import("utils/spotifyCalls/follow")>(
   "utils/spotifyCalls/follow",
   () => ({

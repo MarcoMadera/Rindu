@@ -14,6 +14,7 @@ const { track, getAllTranslations } = jest.requireActual<IUtilsMocks>(
   "utils/__tests__/__mocks__/mocks.ts"
 );
 jest.mock("hooks/useOnScreen");
+jest.mock("hooks/useLyricsInPictureInPicture");
 jest.mock<typeof import("utils")>("utils", () => ({
   ...jest.requireActual<typeof import("utils")>("utils"),
   playCurrentTrack: jest.fn(),
@@ -72,7 +73,9 @@ describe("cardTrack", () => {
     (playCurrentTrack as jest.Mock<Promise<number>>).mockResolvedValue(200);
     const setPlayedSource = jest.fn();
     const player = {
+      getCurrentState: jest.fn().mockResolvedValue({ position: 0 }),
       activateElement: jest.fn().mockResolvedValue(200),
+      on: jest.fn(),
     } as unknown as Spotify.Player;
 
     setup({

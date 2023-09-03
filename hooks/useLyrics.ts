@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useToggle } from "hooks";
+import { useAuth, useSpotify, useToggle } from "hooks";
 import {
   formatLyrics,
   getLyrics,
@@ -10,21 +10,12 @@ import {
   within,
 } from "utils";
 
-export function useLyrics({
-  artist,
-  title,
-  trackId,
-  accessToken,
-}: {
-  artist?: string;
-  title?: string;
-  trackId?: string | null;
-  accessToken?: string;
-}): {
+export function useLyrics({ requestLyrics }: { requestLyrics: boolean }): {
   lyrics: IFormatLyricsResponse | null;
   lyricsLoading: boolean;
   lyricsError: string | null;
 } {
+  const { currentlyPlaying } = useSpotify();
   const [lyrics, setLyrics] = useState<IFormatLyricsResponse | null>(null);
   const [lyricsLoading, setLoading] = useToggle();
   const [lyricsError, setLyricsError] = useState<string | null>(null);
@@ -33,8 +24,13 @@ export function useLyrics({
     id?: string | null;
     data: GetLyrics;
   }>({ error: null, data: null, id: null });
+  const { accessToken } = useAuth();
+  const artist = currentlyPlaying?.artists?.[0].name;
+  const title = currentlyPlaying?.name;
+  const trackId = currentlyPlaying?.id;
 
   useEffect(() => {
+    if (!requestLyrics) return;
     setLoading.on();
     setLyricsError(null);
     setLyrics(null);
@@ -62,9 +58,18 @@ export function useLyrics({
       setLoading.reset();
       setLyricsError(null);
     };
-  }, [accessToken, artist, setLoading, setLyricsError, title, trackId]);
+  }, [
+    accessToken,
+    artist,
+    setLoading,
+    setLyricsError,
+    title,
+    trackId,
+    requestLyrics,
+  ]);
 
   useEffect(() => {
+    if (!requestLyrics) return;
     if (!res || !artist || !title || res.id !== artist + title) return;
     if (res.error === "timeout") {
       setLyricsError(
@@ -88,7 +93,7 @@ export function useLyrics({
 
     setLyricsError(null);
     setLyrics(formatLyrics(res.data));
-  }, [artist, res, setLoading, title]);
+  }, [artist, res, setLoading, title, requestLyrics]);
 
   return {
     lyrics,

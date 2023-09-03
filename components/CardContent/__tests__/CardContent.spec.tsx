@@ -11,7 +11,7 @@ import { IUtilsMocks } from "types/mocks";
 import { Language } from "utils";
 
 jest.mock("hooks/useOnScreen");
-
+jest.mock("hooks/useLyricsInPictureInPicture");
 const { getAllTranslations } = jest.requireActual<IUtilsMocks>(
   "utils/__tests__/__mocks__/mocks.ts"
 );
