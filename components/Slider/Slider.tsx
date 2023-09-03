@@ -51,8 +51,6 @@ export default function Slider({
     }
   }, [updateProgress]);
 
-  console.log("progressPercent", progressPercent);
-
   useEffect(() => {
     if (onDragging) {
       onDragging(isDragging || isPressingMouse, progressPercent);
