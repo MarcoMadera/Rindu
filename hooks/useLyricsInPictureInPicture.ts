@@ -114,7 +114,7 @@ export function useLyricsInPictureInPicture({
   ]);
 
   useEffect(() => {
-    if (!isPlaying || !currentlyPlayingDuration || !requestLyrics) {
+    if (!isPlaying || !currentlyPlayingDuration) {
       return;
     }
     const minimumIntervalCheck = 200;
