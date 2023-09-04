@@ -72,3 +72,4 @@ export { default as TrackListHeader } from "./TrackListHeader";
 export { default as UserWidget } from "./UserWidget";
 export { default as VirtualizedList } from "./VirtualizedList";
 export { default as VolumeControl } from "./VolumeControl";
+export { default as LyricsPIPButton } from "./LyricsPIPButton";

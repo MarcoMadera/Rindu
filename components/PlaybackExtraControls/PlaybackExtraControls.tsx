@@ -3,6 +3,7 @@ import { ReactElement } from "react";
 import {
   DeviceConnectControl,
   FullScreenControl,
+  LyricsPIPButton,
   VolumeControl,
 } from "components";
 import { FullScreen, Lyrics, Queue } from "components/icons";
@@ -14,10 +15,13 @@ export default function PlaybackExtraControls(): ReactElement {
   return (
     <div className="extras">
       {currentlyPlaying?.type === "track" && (
-        <FullScreenControl
-          icon={Lyrics}
-          displayInFullScreen={DisplayInFullScreen.Lyrics}
-        />
+        <>
+          <LyricsPIPButton />
+          <FullScreenControl
+            icon={Lyrics}
+            displayInFullScreen={DisplayInFullScreen.Lyrics}
+          />
+        </>
       )}
       <FullScreenControl
         icon={Queue}

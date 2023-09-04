@@ -1,26 +1,11 @@
 import { ReactElement } from "react";
 
 import { LyricLine } from "./LyricLine";
-import { LoadingSpinner } from "components";
-import { PictureInPicture } from "components/icons";
-import {
-  useAuth,
-  useHeader,
-  useLyricsContext,
-  useSpotify,
-  useToast,
-  useTranslations,
-} from "hooks";
-import { getLineType, ToastMessage } from "utils";
+import { LoadingSpinner, LyricsPIPButton } from "components";
+import { useHeader, useLyricsContext } from "hooks";
+import { getLineType } from "utils";
 
 export default function FullScreenLyrics(): ReactElement {
-  const {
-    setIsPictureInPictureLyircsCanvas,
-    isPictureInPictureLyircsCanvas,
-    videoRef,
-    isPip,
-    setIsPip,
-  } = useSpotify();
   const {
     lyricsProgressMs,
     lyricsBackgroundColor,
@@ -28,10 +13,6 @@ export default function FullScreenLyrics(): ReactElement {
     lyricsError,
     lyricsLoading,
   } = useLyricsContext();
-  const { user } = useAuth();
-  const { translations } = useTranslations();
-  const isPremium = user?.product === "premium";
-  const { addToast } = useToast();
 
   useHeader({
     disableOpacityChange: true,
@@ -66,40 +47,7 @@ export default function FullScreenLyrics(): ReactElement {
         </div>
       )}
       {!!document?.pictureInPictureEnabled && (
-        <button
-          className="lyrics-pip-button"
-          onClick={async (e) => {
-            e.stopPropagation();
-            if (!isPremium) {
-              addToast({
-                variant: "error",
-                message: translations[ToastMessage.PremiumRequired],
-              });
-            }
-            if (!lyrics) {
-              addToast({
-                variant: "error",
-                message: translations[ToastMessage.NoLyricsToDisplay],
-              });
-              return;
-            }
-            if (
-              isPictureInPictureLyircsCanvas &&
-              document.pictureInPictureElement
-            ) {
-              await document.exitPictureInPicture();
-              setIsPictureInPictureLyircsCanvas.off();
-              setIsPip(false);
-              return;
-            }
-            setIsPictureInPictureLyircsCanvas.on();
-            setIsPip(true);
-            await videoRef.current?.play();
-            await videoRef.current?.requestPictureInPicture();
-          }}
-        >
-          <PictureInPicture />
-        </button>
+        <LyricsPIPButton background={lyricsBackgroundColor} />
       )}
       <style jsx>{`
         :global(.app) {
@@ -108,34 +56,17 @@ export default function FullScreenLyrics(): ReactElement {
         :global(body .app:fullscreen .back-to-player) {
           display: block;
         }
-        .lyrics-pip-button {
+        .lyrics-container :global(.lyrics-pip-button) {
           position: fixed;
           top: calc(100% - 150px);
           transform: translateY(-50%);
           right: 30px;
-          width: 40px;
-          height: 40px;
-          margin: 0 0 0 32px;
-          z-index: 999999999999900;
-          padding: 10px;
           cursor: pointer;
-          color: ${isPip && isPictureInPictureLyircsCanvas
-            ? "#1db954"
-            : "#ffffffb3"};
-          --border-width: 3px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-family: Lato, sans-serif;
-          font-size: 2.5rem;
-          text-transform: uppercase;
-          background: ${lyricsBackgroundColor || "transparent"};
-          border: none;
         }
-        .lyrics-pip-button:hover {
+        .lyrics-container :global(.lyrics-pip-button:hover) {
           filter: brightness(1.2);
         }
-        .lyrics-pip-button::after {
+        .lyrics-container :global(.lyrics-pip-button::after) {
           position: absolute;
           content: "";
           top: calc(-1 * var(--border-width));
@@ -219,7 +150,7 @@ export default function FullScreenLyrics(): ReactElement {
           height: 100%;
         }
         @media screen and (max-width: 1000px) {
-          div.lyrics-container .lyrics-pip-button {
+          div.lyrics-container :global(.lyrics-pip-button) {
             top: calc(100% - 200px);
           }
         }
