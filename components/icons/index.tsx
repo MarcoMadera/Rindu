@@ -24,3 +24,4 @@ export { default as Share } from "./Share";
 export { default as Suffle } from "./Suffle";
 export { default as ThreeDots } from "./ThreeDots";
 export { default as Volume } from "./Volume";
+export { default as LyricsPictureInPicture } from "./LyricsPictureInPicture";
