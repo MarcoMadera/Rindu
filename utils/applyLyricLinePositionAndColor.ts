@@ -1,3 +1,4 @@
+import { findIndexOrLast } from "./findIndexOrLast";
 import {
   LINE_HEIGHT,
   LYRICS_PADDING_LEFT,
@@ -14,9 +15,9 @@ export function applyLyricLinePositionAndColor(
   containerHeight: number
 ): void {
   const containerMiddle = containerHeight / 2;
-  const currentLineIndex = Math.max(
-    allLines.findIndex((line) => line.type === "current"),
-    allLines.length - 1
+  const currentLineIndex = findIndexOrLast(
+    allLines,
+    (line) => line.type === "current"
   );
 
   allLines.forEach((line, index) => {
