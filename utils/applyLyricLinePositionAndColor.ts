@@ -14,8 +14,9 @@ export function applyLyricLinePositionAndColor(
   containerHeight: number
 ): void {
   const containerMiddle = containerHeight / 2;
-  const currentLineIndex = allLines.findIndex(
-    (line) => line.type === "current"
+  const currentLineIndex = Math.max(
+    allLines.findIndex((line) => line.type === "current"),
+    allLines.length - 1
   );
 
   allLines.forEach((line, index) => {
