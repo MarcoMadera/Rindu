@@ -114,7 +114,7 @@ export function useLyricsInPictureInPicture({
   ]);
 
   useEffect(() => {
-    if (!isPlaying || !currentlyPlayingDuration) {
+    if (!isPlaying || !currentlyPlayingDuration || !requestLyrics) {
       return;
     }
     const minimumIntervalCheck = 200;
@@ -150,13 +150,13 @@ export function useLyricsInPictureInPicture({
 
     function drawLoadingSpinner(rotation: number) {
       if (!ctx) return;
-      ctx.clearRect(0, LYRICS_PIP_HEADER_HEIGH, canvasWidth, canvasHeight);
-      const [h, s] = hexToHsl(lyricsBackgroundColor ?? "", true) ?? [0, 0, 0];
+      const [h, s] = hexToHsl(lyricsBackgroundColor ?? "#ccacaa", true) ?? [
+        0, 0, 0,
+      ];
 
       for (let i = 0; i < numSegments; i++) {
         const startAngle = i * segmentAngle + rotation;
         const endAngle = startAngle + segmentAngle;
-
         ctx.beginPath();
         ctx.arc(centerX, centerY, radius, startAngle, endAngle);
         ctx.lineWidth = lineWidth;
@@ -168,13 +168,9 @@ export function useLyricsInPictureInPicture({
 
         const segmentColor = `hsl(${h}, ${s}%, ${adjustedLightness}%)`;
         ctx.strokeStyle = segmentColor;
+        ctx.globalCompositeOperation = "source-over";
         ctx.stroke();
       }
-
-      ctx.globalCompositeOperation = "destination-over";
-      ctx.fillStyle = lyricsBackgroundColor ?? "#000";
-
-      ctx.fillRect(0, LYRICS_PIP_HEADER_HEIGH, canvasWidth, canvasHeight);
     }
 
     function animate() {
@@ -185,8 +181,6 @@ export function useLyricsInPictureInPicture({
     }
 
     if (!lyricsError && !lines && !spinnerFrame) {
-      ctx.fillStyle = "#fff";
-
       animate();
       return;
     }
@@ -194,16 +188,16 @@ export function useLyricsInPictureInPicture({
     if (spinnerFrame && (lines || lyricsError)) {
       cancelAnimationFrame(spinnerFrame);
       setSpinnerFrame(null);
-      ctx.globalCompositeOperation = "destination-over";
-      ctx.fillStyle = lyricsBackgroundColor ?? "#000";
-
-      ctx.fillRect(
-        0,
-        0,
-        pictureInPictureCanvas.current.width,
-        pictureInPictureCanvas.current.height
-      );
     }
+    ctx.globalCompositeOperation = "destination-over";
+    ctx.fillStyle = lyricsBackgroundColor ?? "#000";
+
+    ctx.fillRect(
+      0,
+      0,
+      pictureInPictureCanvas.current.width,
+      pictureInPictureCanvas.current.height
+    );
   }, [
     spinnerFrame,
     isPictureInPictureLyircsCanvas,

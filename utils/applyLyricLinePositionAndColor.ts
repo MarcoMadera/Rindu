@@ -45,6 +45,7 @@ export function applyLyricLinePositionAndColor(
     const limit = LINE_HEIGHT + LYRICS_PIP_HEADER_HEIGH;
     const isOutsideCanvas = lineY < limit || lineY > containerHeight + limit;
     if (isOutsideCanvas) return;
+    ctx.globalCompositeOperation = "source-over";
     ctx.fillText(line.text, LYRICS_PADDING_LEFT, lineY);
   });
 }
