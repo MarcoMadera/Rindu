@@ -1,5 +1,6 @@
-import { findIndexOrLast } from "./findIndexOrLast";
+import { LineType } from "types/lyrics";
 import {
+  findIndexOrLast,
   LINE_HEIGHT,
   LYRICS_PADDING_LEFT,
   LYRICS_PIP_HEADER_HEIGH,
@@ -10,15 +11,15 @@ export function applyLyricLinePositionAndColor(
   allLines: {
     color: string;
     text: string;
-    type: "current" | "previous" | "next";
+    type: LineType;
   }[],
   containerHeight: number
 ): void {
   const containerMiddle = containerHeight / 2;
-  const currentLineIndex = findIndexOrLast(
-    allLines,
-    (line) => line.type === "current"
-  );
+  const currentLineIndex = findIndexOrLast(allLines, (line) => {
+    const validTypes = ["current", "first"];
+    return validTypes.includes(line.type);
+  });
 
   allLines.forEach((line, index) => {
     const isOneOfFirstLines =

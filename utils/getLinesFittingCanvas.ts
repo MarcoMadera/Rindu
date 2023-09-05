@@ -1,4 +1,5 @@
 import { IFormatLyricsResponse } from "./formatLyrics";
+import { IAllLines, LineType } from "types/lyrics";
 
 export function getLinesFittingCanvas(
   ctx: CanvasRenderingContext2D,
@@ -29,30 +30,34 @@ interface IGetLineInfo {
   lyricLineColor: string;
   lyricTextColor: string;
   lyricsProgressMs: number;
+  index: number;
 }
 interface IGetLineType {
   currentLine: IFormatLyricsResponse["lines"][0];
   nextLine: IFormatLyricsResponse["lines"][0];
   lyricsProgressMs: number;
+  index: number;
 }
 
 export function getLineType({
   currentLine,
   lyricsProgressMs,
   nextLine,
-}: IGetLineType): "current" | "previous" | "next" {
+  index,
+}: IGetLineType): LineType {
   const isPreviousLine =
     currentLine.startTimeMs &&
     Number(currentLine.startTimeMs) <= lyricsProgressMs;
   const isNextLine =
     nextLine?.startTimeMs && Number(nextLine?.startTimeMs) >= lyricsProgressMs;
-
   const isCurrentLine = isPreviousLine && isNextLine;
+  const isFirstLine = index === 0;
 
-  const lineTypes = {
-    current: isCurrentLine,
-    previous: isPreviousLine,
-    next: isNextLine,
+  const lineTypes: Record<LineType, boolean> = {
+    current: !!isCurrentLine,
+    previous: !!isPreviousLine,
+    first: isFirstLine,
+    next: !!isNextLine,
   };
 
   const type = Object.keys(lineTypes).find(
@@ -68,21 +73,24 @@ export function getLineInfo({
   lyricTextColor,
   lyricsProgressMs,
   nextLine,
+  index,
 }: IGetLineInfo): {
   color: string;
   text: string;
-  type: "current" | "previous" | "next";
+  type: LineType;
 } {
   const type = getLineType({
     currentLine,
     lyricsProgressMs,
     nextLine,
+    index,
   });
 
-  const lineColors = {
+  const lineColors: Record<LineType, string> = {
     current: "#fff",
     previous: lyricLineColor + "80",
     next: lyricTextColor,
+    first: lyricTextColor,
   };
 
   return {
@@ -108,16 +116,8 @@ export function getAllLinesFittingWidth({
   lyricTextColor,
   lyricsProgressMs,
   canvasWidth,
-}: IgetAllLinesFittingWidth): {
-  color: string;
-  text: string;
-  type: "previous" | "current" | "next";
-}[] {
-  const allLines: {
-    color: string;
-    text: string;
-    type: "previous" | "current" | "next";
-  }[] = [];
+}: IgetAllLinesFittingWidth): IAllLines[] {
+  const allLines: IAllLines[] = [];
 
   lines.forEach((line, i) => {
     const lineInfo = getLineInfo({
@@ -126,6 +126,7 @@ export function getAllLinesFittingWidth({
       lyricsProgressMs,
       lyricTextColor,
       nextLine: lines[i + 1],
+      index: i,
     });
 
     const linesText = getLinesFittingCanvas(
