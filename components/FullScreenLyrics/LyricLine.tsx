@@ -1,11 +1,12 @@
 import { ReactElement, useEffect, useRef } from "react";
 
 import { useAuth, useLyricsContext, useSpotify } from "hooks";
+import { LineType } from "types/lyrics";
 import { IFormatLyricsResponse } from "utils";
 
 interface ILyricLineProps {
   line: IFormatLyricsResponse["lines"][0];
-  type: "current" | "previous" | "next";
+  type: LineType;
 }
 
 export function LyricLine({ line, type }: ILyricLineProps): ReactElement {

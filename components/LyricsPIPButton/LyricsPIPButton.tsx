@@ -67,7 +67,7 @@ export default function LyricsPIPButton({
           font-family: Lato, sans-serif;
           font-size: 2.5rem;
           text-transform: uppercase;
-          background: ${background || "transparent"};
+          background: ${background ?? "transparent"};
           border: none;
         }
         .lyrics-pip-button:hover {

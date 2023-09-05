@@ -40,6 +40,7 @@ export default function FullScreenLyrics(): ReactElement {
               currentLine: line,
               lyricsProgressMs,
               nextLine: lyrics.lines[i + 1],
+              index: i,
             });
 
             return <LyricLine line={line} type={type} key={i} />;
@@ -76,9 +77,9 @@ export default function FullScreenLyrics(): ReactElement {
           height: calc(100% + var(--border-width) * 2);
           background: linear-gradient(
             60deg,
-            ${lyricsBackgroundColor || "transparent"} 0%,
+            ${lyricsBackgroundColor ?? "transparent"} 0%,
             #ffffff80 50%,
-            ${lyricsBackgroundColor || "transparent"} 100%
+            ${lyricsBackgroundColor ?? "transparent"} 100%
           );
           background-size: 300% 300%;
           background-position: 0 50%;
