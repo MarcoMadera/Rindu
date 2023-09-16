@@ -24,6 +24,7 @@ import {
 import { ITrack } from "types/spotify";
 import {
   ContentType,
+  handlePlayCurrentTrackError,
   playCurrentTrack,
   templateReplace,
   ToastMessage,
@@ -136,50 +137,40 @@ function CardTrack({
       "[index] 55px [first] 14fr [popularity] 1fr [last] minmax(60px,1fr)",
   };
 
-  function playThisTrack() {
-    playCurrentTrack(track, {
-      allTracks,
-      player,
-      user,
-      accessToken,
-      deviceId,
-      playlistUri,
-      playlistId: pageDetails?.id,
-      setCurrentlyPlaying,
-      setPlaylistPlayingId,
-      isSingleTrack,
-      position,
-      setAccessToken,
-      uri,
-      uris,
-    }).then((status) => {
-      if (status === 404) {
-        (player as Spotify.Player).disconnect();
-        addToast({
-          variant: "error",
-          message: translations[ToastMessage.UnableToPlayReconnecting],
-        });
-        setReconnectionError(true);
-      }
-      if (status === 200) {
-        const source = pageDetails?.uri;
-        const isCollection = source?.split(":")?.[3];
-        setPlayedSource(
-          isCollection && pageDetails?.type && pageDetails?.id
-            ? `spotify:${pageDetails.type}:${pageDetails.id}`
-            : source ?? track?.uri
-        );
-      }
-      if (status === 400) {
-        addToast({
-          variant: "error",
-          message: templateReplace(
-            translations[ToastMessage.ErrorPlayingThis],
-            [translations[ContentType.Track]]
-          ),
-        });
-      }
-    });
+  async function playThisTrack() {
+    try {
+      const playlistPlayingId = await playCurrentTrack(track, {
+        allTracks,
+        player,
+        user,
+        accessToken,
+        deviceId,
+        playlistUri,
+        playlistId: pageDetails?.id,
+        setCurrentlyPlaying,
+        isSingleTrack,
+        position,
+        setAccessToken,
+        uri,
+        uris,
+      });
+
+      const source = pageDetails?.uri;
+      const isCollection = source?.split(":")?.[3];
+      setPlaylistPlayingId(playlistPlayingId);
+      setPlayedSource(
+        isCollection && pageDetails?.type && pageDetails?.id
+          ? `spotify:${pageDetails.type}:${pageDetails.id}`
+          : source ?? track?.uri
+      );
+    } catch (error) {
+      handlePlayCurrentTrackError(error, {
+        addToast,
+        player: player as Spotify.Player,
+        setReconnectionError,
+        translations,
+      });
+    }
   }
 
   const id = useId();

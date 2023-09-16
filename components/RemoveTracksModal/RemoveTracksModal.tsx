@@ -124,12 +124,8 @@ export default function RemoveTracksModal({
 
   async function handleRemoveTracksFromPlaylist() {
     const indexes = [...new Set([...corruptedSongsIdx, ...duplicateTracksIdx])];
-    const snapshot = await removeTracks(
-      pageDetails?.id,
-      indexes,
-      pageDetails?.snapshot_id
-    );
-    if (snapshot) {
+    try {
+      await removeTracks(pageDetails?.id, indexes, pageDetails?.snapshot_id);
       setAllTracks((tracks) => {
         return tracks.filter((_, i) => {
           if (indexes.includes(i)) {
@@ -152,7 +148,7 @@ export default function RemoveTracksModal({
           translations[ContentType.Playlist],
         ]),
       });
-    } else {
+    } catch (error) {
       addToast({
         variant: "error",
         message: templateReplace(

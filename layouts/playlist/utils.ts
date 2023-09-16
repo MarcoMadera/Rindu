@@ -2,7 +2,7 @@ import { NextRouter } from "next/router";
 
 import { IPageDetails, ITrack, PlaylistItems } from "types/spotify";
 import { UseToast } from "types/toast";
-import { getAllMyPlaylists } from "utils";
+import { CreatePlaylistError, getAllMyPlaylists } from "utils";
 import {
   addCustomPlaylistImage,
   addItemsToPlaylist,
@@ -29,8 +29,7 @@ export async function handleSaveToPlaylistClick({
 }): Promise<void> {
   try {
     const playlist = await createCustomPlaylist({
-      addToast,
-      accessToken: accessToken || "",
+      accessToken: accessToken ?? "",
       user,
       pageDetails,
     });
@@ -43,46 +42,42 @@ export async function handleSaveToPlaylistClick({
     const uris = getTrackUris(allTracks);
 
     await addTracksToPlaylist({
-      playlistId: playlist?.id || "",
+      playlistId: playlist?.id ?? "",
       uris,
       setPlaylists,
       accessToken,
     });
 
     await navigateToPlaylistPage({
-      playlistId: playlist?.id || "",
+      playlistId: playlist?.id ?? "",
       accessToken,
       router,
       addToast,
     });
-  } catch (e) {
-    console.error(e);
-    addToast({
-      message: "Error creating playlist",
-      variant: "error",
-    });
+  } catch (error) {
+    if (CreatePlaylistError.isThisError(error)) {
+      addToast({
+        message: error.message,
+        variant: "error",
+      });
+    }
   }
 }
 
 async function createCustomPlaylist({
-  addToast,
   accessToken,
   user,
   pageDetails,
 }: Pick<
   Parameters<typeof handleSaveToPlaylistClick>[0],
-  "addToast" | "accessToken" | "user" | "pageDetails"
+  "accessToken" | "user" | "pageDetails"
 >) {
   const playlist = await createPlaylist(user?.id, {
     name: pageDetails?.name,
   });
 
   if (!playlist) {
-    addToast({
-      message: "Error creating playlist",
-      variant: "error",
-    });
-    throw new Error("Error creating playlist");
+    throw new CreatePlaylistError();
   }
 
   await addCustomPlaylistImage({

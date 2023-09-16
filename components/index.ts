@@ -73,3 +73,4 @@ export { default as UserWidget } from "./UserWidget";
 export { default as VirtualizedList } from "./VirtualizedList";
 export { default as VolumeControl } from "./VolumeControl";
 export { default as LyricsPIPButton } from "./LyricsPIPButton";
+export { default as PortalTarget } from "./PortalTarget";

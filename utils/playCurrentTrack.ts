@@ -1,7 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
 
+import { BadRequestError, NotFoundError } from "./errors";
+import { ContentType, ToastMessage } from "./getTranslations";
+import { templateReplace } from "./templateReplace";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { ITrack } from "types/spotify";
+import { NewToast } from "types/toast";
 import { play } from "utils/spotifyCalls";
 
 interface Config {
@@ -13,12 +17,44 @@ interface Config {
   player: AudioPlayer | Spotify.Player | undefined;
   setCurrentlyPlaying: Dispatch<SetStateAction<ITrack | undefined>>;
   playlistId: string | undefined;
-  setPlaylistPlayingId: Dispatch<SetStateAction<string | undefined>>;
   isSingleTrack?: boolean;
   position?: number;
   setAccessToken: Dispatch<SetStateAction<string | undefined>>;
   uri?: string;
   uris?: string[];
+}
+
+export function handlePlayCurrentTrackError(
+  error: unknown,
+  {
+    player,
+    addToast,
+    setReconnectionError,
+    translations,
+  }: {
+    player: Spotify.Player;
+    addToast: (toast: NewToast) => void;
+    setReconnectionError: (value: SetStateAction<boolean>) => void;
+    translations: Record<string, string>;
+  }
+): void {
+  if (NotFoundError.isThisError(error)) {
+    player.disconnect();
+    addToast({
+      variant: "error",
+      message: translations[ToastMessage.UnableToPlayReconnecting],
+    });
+    setReconnectionError(true);
+  }
+
+  if (BadRequestError.isThisError(error)) {
+    addToast({
+      variant: "error",
+      message: templateReplace(translations[ToastMessage.ErrorPlayingThis], [
+        translations[ContentType.Track],
+      ]),
+    });
+  }
 }
 
 export async function playCurrentTrack(
@@ -32,14 +68,13 @@ export async function playCurrentTrack(
     playlistUri,
     setCurrentlyPlaying,
     playlistId,
-    setPlaylistPlayingId,
     isSingleTrack,
     position,
     setAccessToken,
     uri,
     uris,
   }: Config
-): Promise<number> {
+): Promise<string | undefined> {
   const isPremium = user?.product === "premium";
   if (!isPremium && track?.preview_url) {
     (player as AudioPlayer).currentTime = 0;
@@ -47,8 +82,7 @@ export async function playCurrentTrack(
     (player as AudioPlayer).play();
     (player as AudioPlayer).allTracks = allTracks;
     setCurrentlyPlaying(track);
-    setPlaylistPlayingId(playlistId);
-    return 200;
+    return playlistId;
   }
 
   if (accessToken && track && deviceId) {
@@ -76,22 +110,15 @@ export async function playCurrentTrack(
           offset: track.position,
         };
 
-    const playStatus = await play(
-      accessToken,
-      deviceId,
-      playConfig,
-      setAccessToken
-    ).then((res) => {
-      if (res.status === 404) {
-        return 404;
-      }
-      if (res.ok) {
-        setPlaylistPlayingId(isSingleTrack ? undefined : playlistId);
-        return 200;
-      }
-      return 400;
-    });
-    return playStatus;
+    const res = await play(accessToken, deviceId, playConfig, setAccessToken);
+
+    if (res.status === 404) {
+      throw new NotFoundError();
+    }
+    if (res.ok) {
+      return isSingleTrack ? undefined : playlistId;
+    }
+    throw new BadRequestError();
   }
-  return 400;
+  throw new BadRequestError();
 }

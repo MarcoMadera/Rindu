@@ -8,7 +8,12 @@ import { IUserContext } from "context/UserContext";
 import { useOnScreen } from "hooks";
 import { IUtilsMocks } from "types/mocks";
 import { ISpotifyContext } from "types/spotify";
-import { Language, playCurrentTrack } from "utils";
+import {
+  BadRequestError,
+  Language,
+  NotFoundError,
+  playCurrentTrack,
+} from "utils";
 
 const { track, getAllTranslations } = jest.requireActual<IUtilsMocks>(
   "utils/__tests__/__mocks__/mocks.ts"
@@ -70,7 +75,7 @@ describe("cardTrack", () => {
   it("should play on double click", async () => {
     expect.assertions(2);
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
-    (playCurrentTrack as jest.Mock<Promise<number>>).mockResolvedValue(200);
+    (playCurrentTrack as jest.Mock<Promise<string>>).mockResolvedValue("id");
     const setPlayedSource = jest.fn();
     const player = {
       getCurrentState: jest.fn().mockResolvedValue({ position: 0 }),
@@ -113,7 +118,7 @@ describe("cardTrack", () => {
   it("should add toast reconnection error", async () => {
     expect.assertions(4);
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
-    (playCurrentTrack as jest.Mock<Promise<number>>).mockResolvedValue(404);
+    (playCurrentTrack as jest.Mock).mockRejectedValue(new NotFoundError());
     const player = {
       disconnect: jest.fn(),
       activateElement: jest.fn().mockResolvedValue(200),
@@ -155,7 +160,7 @@ describe("cardTrack", () => {
   it("should add toast with error playing this track", async () => {
     expect.assertions(1);
     (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
-    (playCurrentTrack as jest.Mock<Promise<number>>).mockResolvedValue(400);
+    (playCurrentTrack as jest.Mock).mockRejectedValue(new BadRequestError());
     const setReconnectionError = jest.fn();
     const player = {
       activateElement: jest.fn().mockResolvedValue(200),

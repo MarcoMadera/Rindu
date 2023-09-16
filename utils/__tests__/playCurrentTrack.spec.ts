@@ -1,5 +1,6 @@
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { IUtilsMocks } from "types/mocks";
+import { BadRequestError, NotFoundError } from "utils/errors";
 import { playCurrentTrack } from "utils/playCurrentTrack";
 import { play } from "utils/spotifyCalls";
 
@@ -19,136 +20,71 @@ const { track, user, accessToken } = jest.requireActual<IUtilsMocks>(
 );
 
 describe("playCurrentTrack", () => {
-  it("should play a track for premium user and setPlaylistPlayingId undefined for singleTrack", async () => {
-    expect.assertions(2);
-    const player = {
-      src: "",
-      currentTime: 0,
-      allTracks: [],
-      play: jest.fn(),
-    } as unknown as AudioPlayer;
+  const player = {
+    src: "",
+    currentTime: 0,
+    allTracks: [],
+    play: jest.fn(),
+  } as unknown as AudioPlayer;
 
-    const setCurrentlyPlaying = jest.fn();
-    const setPlaylistPlayingId = jest.fn();
-    const setAccessToken = jest.fn();
+  const setCurrentlyPlaying = jest.fn();
+  const setAccessToken = jest.fn();
 
-    const result = await playCurrentTrack(track, {
-      player,
-      user,
-      allTracks: [track],
-      accessToken,
-      deviceId: "deviceId",
-      playlistUri: "playlistUri",
-      setCurrentlyPlaying,
-      playlistId: "playlistId",
-      setPlaylistPlayingId,
-      isSingleTrack: true,
-      position: 0,
-      setAccessToken,
-      uri: "spotify:track:123",
-    });
+  const config = {
+    player,
+    user,
+    allTracks: [track],
+    accessToken,
+    deviceId: "deviceId",
+    playlistUri: "playlistUri",
+    setCurrentlyPlaying,
+    playlistId: "playlistId",
+    isSingleTrack: true,
+    position: 0,
+    setAccessToken,
+    uri: "spotify:track:123",
+  };
 
-    expect(result).toBe(200);
-    expect(setPlaylistPlayingId).toHaveBeenCalledWith(undefined);
+  it("should play a track for premium user and result must be undefined for singleTrack", async () => {
+    expect.assertions(1);
+
+    const result = await playCurrentTrack(track, config);
+
+    expect(result).toBeUndefined();
   });
 
-  it("should play uris for premium user and setPlaylistPlayingId for singleTrack", async () => {
-    expect.assertions(2);
-    const player = {
-      src: "",
-      currentTime: 0,
-      allTracks: [],
-      play: jest.fn(),
-    } as unknown as AudioPlayer;
-
-    const setCurrentlyPlaying = jest.fn();
-    const setPlaylistPlayingId = jest.fn();
-    const setAccessToken = jest.fn();
+  it("should play uris for premium user", async () => {
+    expect.assertions(1);
 
     const result = await playCurrentTrack(track, {
-      player,
-      user,
-      allTracks: [track],
-      accessToken,
-      deviceId: "deviceId",
-      playlistUri: "playlistUri",
-      setCurrentlyPlaying,
-      playlistId: "playlistId",
-      setPlaylistPlayingId,
-      isSingleTrack: true,
-      position: 0,
-      setAccessToken,
+      ...config,
       uri: undefined,
     });
 
-    expect(result).toBe(200);
-    expect(setPlaylistPlayingId).toHaveBeenCalledWith(undefined);
+    expect(result).toBeUndefined();
   });
 
-  it("should play a track for premium user", async () => {
-    expect.assertions(2);
-    const player = {
-      src: "",
-      currentTime: 0,
-      allTracks: [],
-      play: jest.fn(),
-    } as unknown as AudioPlayer;
-
-    const setCurrentlyPlaying = jest.fn();
-    const setPlaylistPlayingId = jest.fn();
-    const setAccessToken = jest.fn();
+  it("should play a track for premium user and non single track", async () => {
+    expect.assertions(1);
 
     const result = await playCurrentTrack(track, {
-      player,
-      user,
-      allTracks: [track],
-      accessToken,
-      deviceId: "deviceId",
-      playlistUri: "playlistUri",
-      setCurrentlyPlaying,
-      playlistId: "playlistId",
-      setPlaylistPlayingId,
+      ...config,
       isSingleTrack: false,
-      position: 0,
-      setAccessToken,
-      uri: "spotify:track:123",
     });
 
-    expect(result).toBe(200);
-    expect(setPlaylistPlayingId).toHaveBeenCalledWith("playlistId");
+    expect(result).toBe("playlistId");
   });
 
-  it("should play a track for non-premium user", async () => {
-    expect.assertions(2);
-    const player = {
-      src: "",
-      currentTime: 0,
-      allTracks: [],
-      play: jest.fn(),
-    } as unknown as AudioPlayer;
-
-    const setCurrentlyPlaying = jest.fn();
-    const setPlaylistPlayingId = jest.fn();
-    const setAccessToken = jest.fn();
+  it("should play a track for non-premium user and non single track", async () => {
+    expect.assertions(1);
 
     const result = await playCurrentTrack(track, {
-      player,
+      ...config,
       user: { ...user, product: "open" },
-      allTracks: [track],
-      accessToken,
-      deviceId: "deviceId",
-      playlistUri: "playlistUri",
-      setCurrentlyPlaying,
-      playlistId: "playlistId",
-      setPlaylistPlayingId,
       isSingleTrack: false,
-      position: 0,
-      setAccessToken,
-      uri: "spotify:track:123",
     });
 
-    expect(result).toBe(200);
-    expect(setPlaylistPlayingId).toHaveBeenCalledWith("playlistId");
+    expect(result).toBe("playlistId");
   });
 
   it("should return 400 for a different status", async () => {
@@ -157,101 +93,39 @@ describe("playCurrentTrack", () => {
       status: 500,
       ok: false,
     });
-    const player = {
-      src: "",
-      currentTime: 0,
-      allTracks: [],
-      play: jest.fn(),
-    } as unknown as AudioPlayer;
 
-    const setCurrentlyPlaying = jest.fn();
-    const setPlaylistPlayingId = jest.fn();
-    const setAccessToken = jest.fn();
+    async function handler() {
+      await playCurrentTrack(track, { ...config, isSingleTrack: false });
+    }
 
-    const result = await playCurrentTrack(track, {
-      player,
-      user,
-      allTracks: [track],
-      accessToken,
-      deviceId: "deviceId",
-      playlistUri: "playlistUri",
-      setCurrentlyPlaying,
-      playlistId: "playlistId",
-      setPlaylistPlayingId,
-      isSingleTrack: false,
-      position: 0,
-      setAccessToken,
-      uri: "spotify:track:123",
-    });
-
-    expect(result).toBe(400);
+    await expect(handler).rejects.toThrow(BadRequestError);
   });
 
-  it("should return 404", async () => {
+  it("should throw NotFoundError if status is 404", async () => {
     expect.assertions(1);
     (play as jest.Mock).mockResolvedValue({
       status: 404,
       ok: false,
     });
-    const player = {
-      src: "",
-      currentTime: 0,
-      allTracks: [],
-      play: jest.fn(),
-    } as unknown as AudioPlayer;
 
-    const setCurrentlyPlaying = jest.fn();
-    const setPlaylistPlayingId = jest.fn();
-    const setAccessToken = jest.fn();
+    async function handler() {
+      await playCurrentTrack(track, { ...config, isSingleTrack: false });
+    }
 
-    const result = await playCurrentTrack(track, {
-      player,
-      user,
-      allTracks: [track],
-      accessToken,
-      deviceId: "deviceId",
-      playlistUri: "playlistUri",
-      setCurrentlyPlaying,
-      playlistId: "playlistId",
-      setPlaylistPlayingId,
-      isSingleTrack: false,
-      position: 0,
-      setAccessToken,
-      uri: "spotify:track:123",
-    });
-
-    expect(result).toBe(404);
+    await expect(handler).rejects.toThrow(NotFoundError);
   });
 
-  it("should return 400 if not deviceId", async () => {
+  it("should throw BadRequestError if not deviceId", async () => {
     expect.assertions(1);
-    const player = {
-      src: "",
-      currentTime: 0,
-      allTracks: [],
-      play: jest.fn(),
-    } as unknown as AudioPlayer;
 
-    const setCurrentlyPlaying = jest.fn();
-    const setPlaylistPlayingId = jest.fn();
-    const setAccessToken = jest.fn();
+    async function handler() {
+      await playCurrentTrack(track, {
+        ...config,
+        deviceId: undefined,
+        uri: undefined,
+      });
+    }
 
-    const result = await playCurrentTrack(track, {
-      player,
-      user,
-      allTracks: [track],
-      accessToken,
-      deviceId: undefined,
-      playlistUri: "playlistUri",
-      setCurrentlyPlaying,
-      playlistId: "playlistId",
-      setPlaylistPlayingId,
-      isSingleTrack: false,
-      position: 0,
-      setAccessToken,
-      uri: undefined,
-    });
-
-    expect(result).toBe(400);
+    await expect(handler).rejects.toThrow(BadRequestError);
   });
 });
