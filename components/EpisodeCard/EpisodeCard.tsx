@@ -17,6 +17,7 @@ import {
   formatTime,
   getSiteUrl,
   getTimeAgo,
+  handlePlayCurrentTrackError,
   playCurrentTrack,
   templateReplace,
   ToastMessage,
@@ -48,6 +49,8 @@ export default function EpisodeCard({
     pageDetails,
     setCurrentlyPlaying,
     setPlaylistPlayingId,
+    setReconnectionError,
+    setPlayedSource,
   } = useSpotify();
   const { user, accessToken, setAccessToken } = useAuth();
   const { addToast } = useToast();
@@ -71,6 +74,65 @@ export default function EpisodeCard({
   }, [shouldUpdateList]);
 
   if (!item) return null;
+
+  async function playThisTrack() {
+    try {
+      const playlistPlayingId = await playCurrentTrack(
+        {
+          album: {
+            id: show.id,
+            images: item.images ?? [],
+            name: show.name,
+            release_date: item.release_date,
+            type: "album",
+            uri: show.uri,
+          },
+          artists: [
+            {
+              name: show.name,
+              id: show.id,
+              type: "artist",
+              uri: `spotify:show:${show.id}`,
+            },
+          ],
+          id: item.id,
+          name: item.name,
+          explicit: item.explicit ?? false,
+          type: "track",
+          uri: item.uri,
+        },
+        {
+          player,
+          user,
+          allTracks,
+          accessToken,
+          deviceId,
+          playlistUri: pageDetails?.uri,
+          playlistId: pageDetails?.id,
+          setCurrentlyPlaying,
+          isSingleTrack: true,
+          position,
+          setAccessToken,
+        }
+      );
+
+      const source = pageDetails?.uri;
+      const isCollection = source?.split(":")?.[3];
+      setPlaylistPlayingId(playlistPlayingId);
+      setPlayedSource(
+        isCollection && pageDetails?.type && pageDetails?.id
+          ? `spotify:${pageDetails.type}:${pageDetails.id}`
+          : source ?? item.uri
+      );
+    } catch (error) {
+      handlePlayCurrentTrackError(error, {
+        addToast,
+        player: player as Spotify.Player,
+        setReconnectionError,
+        translations,
+      });
+    }
+  }
 
   return (
     <div
@@ -205,45 +267,7 @@ export default function EpisodeCard({
               if (isPremium) {
                 (player as Spotify.Player)?.activateElement();
               }
-              playCurrentTrack(
-                {
-                  album: {
-                    id: show.id,
-                    images: item.images ?? [],
-                    name: show.name,
-                    release_date: item.release_date,
-                    type: "album",
-                    uri: show.uri,
-                  },
-                  artists: [
-                    {
-                      name: show.name,
-                      id: show.id,
-                      type: "artist",
-                      uri: `spotify:show:${show.id}`,
-                    },
-                  ],
-                  id: item.id,
-                  name: item.name,
-                  explicit: item.explicit ?? false,
-                  type: "track",
-                  uri: item.uri,
-                },
-                {
-                  player,
-                  user,
-                  allTracks,
-                  accessToken,
-                  deviceId,
-                  playlistUri: pageDetails?.uri,
-                  playlistId: pageDetails?.id,
-                  setCurrentlyPlaying,
-                  setPlaylistPlayingId,
-                  isSingleTrack: true,
-                  position,
-                  setAccessToken,
-                }
-              );
+              playThisTrack();
             }}
           >
             {isThisEpisodePlaying && isPlaying ? <Pause /> : <Play />}

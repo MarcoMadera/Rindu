@@ -1,17 +1,12 @@
-import { useCallback, useContext } from "react";
+import { useCallback } from "react";
 
 import ContextMenuContext from "context/ContextMenuContext";
+import { useCustomContext } from "hooks";
 import type { UseContextMenu } from "types/contextMenu";
 
 export function useContextMenu(): UseContextMenu {
-  const context = useContext(ContextMenuContext);
-
-  if (context === undefined) {
-    throw new Error("useContextMenu must be used within a ContextMenuProvider");
-  }
-
   const { contextMenuData, setContextMenuData, setModalData, modalData } =
-    context;
+    useCustomContext(ContextMenuContext);
 
   const removeContextMenu: UseContextMenu["removeContextMenu"] =
     useCallback(() => {

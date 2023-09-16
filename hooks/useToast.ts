@@ -1,17 +1,12 @@
-import { useCallback, useContext, useId } from "react";
+import { useCallback, useId } from "react";
 
 import ToastContext from "context/ToastContext";
+import { useCustomContext } from "hooks";
 import type { IToast, UseToast } from "types/toast";
 
 export function useToast(): UseToast {
-  const context = useContext(ToastContext);
+  const { toasts, setToasts } = useCustomContext(ToastContext);
   const id = useId();
-
-  if (context === undefined) {
-    throw new Error("useToast must be used within a ToastProvider");
-  }
-
-  const { toasts, setToasts } = context;
 
   const removeToast: UseToast["removeToast"] = useCallback(
     (toastId) => {

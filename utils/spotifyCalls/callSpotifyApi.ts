@@ -1,3 +1,4 @@
+import { refreshAccessToken } from "./refreshAccessToken";
 import { ACCESS_TOKEN_COOKIE } from "utils/constants";
 import { takeCookie } from "utils/cookies";
 
@@ -7,6 +8,7 @@ interface ICallSpotifyApi {
   accessToken?: string | null;
   cookies?: string;
   body?: BodyInit | null;
+  retry?: boolean;
 }
 
 export async function callSpotifyApi({
@@ -15,6 +17,7 @@ export async function callSpotifyApi({
   accessToken,
   cookies,
   body,
+  retry,
 }: ICallSpotifyApi): Promise<Response> {
   const res = await fetch(`https://api.spotify.com/v1${endpoint}`, {
     method,
@@ -26,6 +29,20 @@ export async function callSpotifyApi({
     },
     body,
   });
+
+  if (res.ok && res.status === 401 && !retry) {
+    const { access_token } = (await refreshAccessToken()) ?? {};
+    if (access_token) {
+      return callSpotifyApi({
+        endpoint,
+        method,
+        accessToken: access_token,
+        cookies,
+        body,
+        retry: true,
+      });
+    }
+  }
 
   return res;
 }

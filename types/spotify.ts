@@ -126,7 +126,7 @@ export interface ISpotifyContext {
     playlist: string | undefined,
     tracks: number[],
     snapshotID: string | undefined
-  ) => Promise<string | undefined>;
+  ) => Promise<string>;
   displayInFullScreen: DisplayInFullScreen;
   setDisplayInFullScreen: Dispatch<SetStateAction<DisplayInFullScreen>>;
   isPictureInPictureLyircsCanvas: boolean;

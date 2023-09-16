@@ -25,6 +25,7 @@ import {
   ITrack,
   PlaylistItems,
 } from "types/spotify";
+import { RemoveTrackError } from "utils";
 import { removeTracksFromPlaylist } from "utils/spotifyCalls";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -115,20 +116,11 @@ export function SpotifyContextProvider({
       tracks: number[],
       snapshotID: string | undefined
     ) => {
-      try {
-        const res = await removeTracksFromPlaylist(
-          playlist,
-          tracks,
-          snapshotID
-        );
-        if (!res) {
-          throw Error("Failed to remove tracks");
-        }
-        return res.snapshot_id;
-      } catch (err) {
-        console.warn(err);
-        return;
+      const res = await removeTracksFromPlaylist(playlist, tracks, snapshotID);
+      if (!res?.snapshot_id) {
+        throw new RemoveTrackError();
       }
+      return res.snapshot_id;
     },
     []
   );
