@@ -18,9 +18,8 @@ export default function LyricsPIPButton({
     isPip,
   } = useSpotify();
 
-  const { user } = useAuth();
+  const { isPremium } = useAuth();
   const { translations } = useTranslations();
-  const isPremium = user?.product === "premium";
   const { addToast } = useToast();
 
   return (

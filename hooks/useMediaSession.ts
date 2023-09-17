@@ -24,8 +24,7 @@ export function useMediaSession({
   pictureInPictureCanvas: MutableRefObject<HTMLCanvasElement | undefined>;
   isPictureInPictureLyircsCanvas: boolean;
 }): void {
-  const { user } = useAuth();
-  const isPremium = user?.product === "premium";
+  const { user, isPremium } = useAuth();
   useEffect(() => {
     const duration = currentlyPlaying?.duration_ms;
     if (

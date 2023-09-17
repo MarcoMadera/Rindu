@@ -27,7 +27,6 @@ describe("playCurrentTrack", () => {
     play: jest.fn(),
   } as unknown as AudioPlayer;
 
-  const setCurrentlyPlaying = jest.fn();
   const setAccessToken = jest.fn();
 
   const config = {
@@ -37,12 +36,11 @@ describe("playCurrentTrack", () => {
     accessToken,
     deviceId: "deviceId",
     playlistUri: "playlistUri",
-    setCurrentlyPlaying,
-    playlistId: "playlistId",
     isSingleTrack: true,
     position: 0,
     setAccessToken,
     uri: "spotify:track:123",
+    isPremium: true,
   };
 
   it("should play a track for premium user and result must be undefined for singleTrack", async () => {
@@ -72,7 +70,7 @@ describe("playCurrentTrack", () => {
       isSingleTrack: false,
     });
 
-    expect(result).toBe("playlistId");
+    expect(result).toBeUndefined();
   });
 
   it("should play a track for non-premium user and non single track", async () => {
@@ -80,11 +78,11 @@ describe("playCurrentTrack", () => {
 
     const result = await playCurrentTrack(track, {
       ...config,
-      user: { ...user, product: "open" },
+      isPremium: false,
       isSingleTrack: false,
     });
 
-    expect(result).toBe("playlistId");
+    expect(result).toBeUndefined();
   });
 
   it("should return 400 for a different status", async () => {

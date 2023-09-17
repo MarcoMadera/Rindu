@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 
 import { ContentContainer, Heading } from "components";
 import SelectControl from "components/SelectControl";
-import { useAnalytics, useAuth } from "hooks";
+import { useAnalytics, useTranslations } from "hooks";
 import { AsType } from "types/heading";
 import {
   getAuth,
@@ -26,36 +26,17 @@ interface PreferencesProps {
 }
 
 export default function PreferencesPage({
-  user,
-  accessToken,
-  translations,
   lang,
 }: PreferencesProps): ReactElement {
+  const { translations } = useTranslations();
   const [language, setLanguage] = useState(lang);
   const [isReload, setIsReload] = useState(false);
-  const { setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
   const router = useRouter();
 
   useEffect(() => {
     trackWithGoogleAnalytics();
-
-    if (!accessToken) {
-      router.push("/");
-      return;
-    }
-
-    setAccessToken(accessToken);
-
-    setUser(user);
-  }, [
-    accessToken,
-    router,
-    setAccessToken,
-    setUser,
-    trackWithGoogleAnalytics,
-    user,
-  ]);
+  }, [router, trackWithGoogleAnalytics]);
 
   return (
     <ContentContainer>

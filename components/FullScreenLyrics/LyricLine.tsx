@@ -11,8 +11,7 @@ interface ILyricLineProps {
 
 export function LyricLine({ line, type }: ILyricLineProps): ReactElement {
   const { player } = useSpotify();
-  const { user } = useAuth();
-  const isPremium = user?.product === "premium";
+  const { isPremium } = useAuth();
   const lineRef = useRef<HTMLButtonElement>(null);
   const { lyricsProgressMs, lyricTextColor, lyricLineColor, lyrics } =
     useLyricsContext();

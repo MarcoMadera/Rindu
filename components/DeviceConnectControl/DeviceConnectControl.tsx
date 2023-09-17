@@ -7,15 +7,14 @@ import { templateReplace, ToastMessage } from "utils";
 import { getAvailableDevices, transferPlayback } from "utils/spotifyCalls";
 
 export default function DeviceConnectControl(): ReactElement {
-  const { user, accessToken } = useAuth();
+  const { accessToken, isPremium } = useAuth();
   const { deviceId } = useSpotify();
   const { addToast } = useToast();
   const { translations } = useTranslations();
   const [devices, setDevices] = useState<SpotifyApi.UserDevice[]>([]);
-  const isPremium = user?.product === "premium";
   const currentActiveDevice = devices.find((device) => device.is_active);
   const thisDevice = devices.find((device) => device.id === deviceId);
-  const currentDevice = currentActiveDevice || thisDevice;
+  const currentDevice = currentActiveDevice ?? thisDevice;
 
   return (
     <div className="devices">

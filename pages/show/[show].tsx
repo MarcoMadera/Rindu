@@ -12,7 +12,13 @@ import {
   PlaylistTopBarExtraField,
 } from "components";
 import { Heart } from "components/icons";
-import { useAuth, useHeader, useSpotify, useToast } from "hooks";
+import {
+  useAuth,
+  useHeader,
+  useSpotify,
+  useToast,
+  useTranslations,
+} from "hooks";
 import { AsType } from "types/heading";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
@@ -41,14 +47,10 @@ interface PlaylistProps {
   translations: Record<string, string>;
 }
 
-const Shows: NextPage<PlaylistProps> = ({
-  show,
-  accessToken,
-  user,
-  translations,
-}) => {
+const Shows: NextPage<PlaylistProps> = ({ show }) => {
   const [isShowInLibrary, setIsShowInLibrary] = useState(false);
-  const { setAccessToken, setUser } = useAuth();
+  const { accessToken } = useAuth();
+  const { translations } = useTranslations();
   const { setPageDetails, setAllTracks } = useSpotify();
   const { addToast } = useToast();
   const { setElement } = useHeader({
@@ -57,11 +59,7 @@ const Shows: NextPage<PlaylistProps> = ({
   const [savedEpisodes, setSavedEpisodes] = useState<boolean[]>([]);
   useEffect(() => {
     setElement(() => <PlaylistTopBarExtraField uri={show?.uri} />);
-
-    setAccessToken(accessToken);
-
-    setUser(user);
-  }, [accessToken, setAccessToken, setElement, setUser, show?.uri, user]);
+  }, [setElement, show?.uri]);
 
   useEffect(() => {
     async function fetchData() {
@@ -207,7 +205,6 @@ const Shows: NextPage<PlaylistProps> = ({
                   <EpisodeCard
                     key={item.id}
                     item={item}
-                    show={show}
                     position={i}
                     savedEpisode={savedEpisodes[i]}
                   />

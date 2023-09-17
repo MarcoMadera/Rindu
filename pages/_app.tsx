@@ -11,6 +11,7 @@ import MainLayout from "layouts/MainLayout";
 
 interface AppContextProviderProps extends TranslationsContextProviderProps {
   accessToken?: string;
+  user: SpotifyApi.UserObjectPrivate | null;
 }
 
 const MyApp = ({
@@ -20,7 +21,7 @@ const MyApp = ({
   return (
     <AppContextProvider
       translations={pageProps.translations}
-      userValue={{ accessToken: pageProps.accessToken }}
+      userValue={{ accessToken: pageProps.accessToken, user: pageProps.user }}
     >
       <Seo />
       <MainLayout>

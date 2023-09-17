@@ -83,14 +83,12 @@ export default function ArtistPage({
   singleAlbums,
   appearAlbums,
   relatedArtists,
-  user,
-  accessToken,
   setLists,
   artistInfo,
   albums,
   compilations,
 }: ArtistPageProps): ReactElement {
-  const { setUser, setAccessToken } = useAuth();
+  const { user, accessToken } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
   const banner = artistInfo?.banner;
   const { setElement } = useHeader({
@@ -110,19 +108,7 @@ export default function ArtistPage({
       return;
     }
     trackWithGoogleAnalytics();
-
-    setAccessToken(accessToken);
-
-    setUser(user);
-  }, [
-    accessToken,
-    currentArtist,
-    router,
-    setAccessToken,
-    setUser,
-    trackWithGoogleAnalytics,
-    user,
-  ]);
+  }, [accessToken, currentArtist, router, trackWithGoogleAnalytics, user]);
 
   useEffect(() => {
     setElement(() => <PlaylistTopBarExtraField uri={currentArtist?.uri} />);

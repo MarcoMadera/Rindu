@@ -43,14 +43,13 @@ const Playlist: NextPage<
 > = ({
   pageDetails,
   playListTracks,
-  user,
   tracksInLibrary,
   isLibrary,
   translations,
   isGeneratedPlaylist,
 }) => {
   const router = useRouter();
-  const { setUser, accessToken } = useAuth();
+  const { user, accessToken, isPremium } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
   const {
     player,
@@ -96,23 +95,19 @@ const Playlist: NextPage<
     setPageDetails(pageDetails);
     trackWithGoogleAnalytics();
     setAllTracks(tracks);
-
-    setUser(user);
   }, [
     isGeneratedPlaylist,
     setElement,
     setPageDetails,
     pageDetails,
     trackWithGoogleAnalytics,
-    setUser,
-    user,
     router,
     setAllTracks,
     tracks,
   ]);
 
   useEffect(() => {
-    if (deviceId && isPlaying && user?.product === "premium") {
+    if (deviceId && isPlaying && isPremium) {
       (player as Spotify.Player)
         ?.getCurrentState()
         .then((e) => {
@@ -130,7 +125,7 @@ const Playlist: NextPage<
     player,
     pageDetails,
     setPlaylistPlayingId,
-    user?.product,
+    isPremium,
   ]);
 
   useEffect(() => {

@@ -30,14 +30,12 @@ import {
 interface EpisodeCardProps {
   item: SpotifyApi.EpisodeObjectSimplified;
   position: number;
-  show: SpotifyApi.ShowObject;
   savedEpisode: boolean;
 }
 
 export default function EpisodeCard({
   item,
   position,
-  show,
   savedEpisode,
 }: EpisodeCardProps): ReactElement | null {
   const {
@@ -52,11 +50,10 @@ export default function EpisodeCard({
     setReconnectionError,
     setPlayedSource,
   } = useSpotify();
-  const { user, accessToken, setAccessToken } = useAuth();
+  const { accessToken, setAccessToken, isPremium } = useAuth();
   const { addToast } = useToast();
   const { addContextMenu } = useContextMenu();
   const isThisEpisodePlaying = currentlyPlaying?.uri === item?.uri;
-  const isPremium = user?.product === "premium";
   const [isEpisodeInLibrary, setIsEpisodeInLibrary] = useState<boolean>(
     savedEpisode ?? false
   );
@@ -77,48 +74,31 @@ export default function EpisodeCard({
 
   async function playThisTrack() {
     try {
-      const playlistPlayingId = await playCurrentTrack(
+      await playCurrentTrack(
         {
-          album: {
-            id: show.id,
-            images: item.images ?? [],
-            name: show.name,
-            release_date: item.release_date,
-            type: "album",
-            uri: show.uri,
-          },
-          artists: [
-            {
-              name: show.name,
-              id: show.id,
-              type: "artist",
-              uri: `spotify:show:${show.id}`,
-            },
-          ],
-          id: item.id,
-          name: item.name,
-          explicit: item.explicit ?? false,
-          type: "track",
           uri: item.uri,
+          preview_url: item.audio_preview_url,
         },
         {
           player,
-          user,
+          isPremium,
           allTracks,
           accessToken,
           deviceId,
           playlistUri: pageDetails?.uri,
-          playlistId: pageDetails?.id,
-          setCurrentlyPlaying,
           isSingleTrack: true,
           position,
           setAccessToken,
         }
       );
 
+      if (!isPremium) {
+        setCurrentlyPlaying(item);
+      }
+
       const source = pageDetails?.uri;
       const isCollection = source?.split(":")?.[3];
-      setPlaylistPlayingId(playlistPlayingId);
+      setPlaylistPlayingId(undefined);
       setPlayedSource(
         isCollection && pageDetails?.type && pageDetails?.id
           ? `spotify:${pageDetails.type}:${pageDetails.id}`

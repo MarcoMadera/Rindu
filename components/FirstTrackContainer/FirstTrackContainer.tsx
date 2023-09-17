@@ -26,9 +26,8 @@ export default function FirstTrackContainer({
   const [containerColor, setContainerColor] = useState<string>(
     backgroundColor ?? ""
   );
-  const { user } = useAuth();
+  const { isPremium } = useAuth();
   const { addContextMenu } = useContextMenu();
-  const isPremium = user?.product === "premium";
   const isPlayable =
     (!isPremium && preview) ||
     (isPremium && track?.is_playable !== false && !track?.is_local);

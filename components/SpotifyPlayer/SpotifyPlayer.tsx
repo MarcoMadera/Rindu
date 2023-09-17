@@ -18,9 +18,8 @@ import { DisplayInFullScreen } from "types/spotify";
 import { ToastMessage } from "utils";
 
 export default function SpotifyPlayer(): ReactElement {
-  const { user } = useAuth();
+  const { user, isPremium } = useAuth();
   const { addToast } = useToast();
-  const isPremium = user?.product === "premium";
   const { translations } = useTranslations();
   const router = useRouter();
   const { currentlyPlaying, setDisplayInFullScreen, displayInFullScreen } =
@@ -34,7 +33,7 @@ export default function SpotifyPlayer(): ReactElement {
       return;
     }
 
-    if (user?.product === "premium") {
+    if (isPremium) {
       addToast({
         variant: "info",
         message: translations[ToastMessage.WelcomePreparing],
@@ -46,7 +45,7 @@ export default function SpotifyPlayer(): ReactElement {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.product]);
+  }, [user?.product, isPremium]);
 
   return (
     <footer>

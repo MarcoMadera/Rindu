@@ -33,8 +33,7 @@ function PresentationCard({
   const uri = unsupportedUris.includes(type ?? "")
     ? undefined
     : `spotify:${type || "track"}:${id}`;
-  const { user } = useAuth();
-  const isPremium = user?.product === "premium";
+  const { isPremium } = useAuth();
   const router = useRouter();
   const isCollection = router.pathname.includes("collection");
   const { allTracks } = useSpotify();

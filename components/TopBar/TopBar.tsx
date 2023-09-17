@@ -17,10 +17,9 @@ interface TopBarProps {
 }
 
 export default function TopBar({ appRef }: TopBarProps): ReactElement {
-  const { user } = useAuth();
+  const { user, isPremium } = useAuth();
   const { element, displayOnFixed, disableBackground, disableOpacityChange } =
     useHeader();
-  const isPremium = user?.product === "premium";
   const router = useRouter();
   const isLoginPage = router.pathname === "/";
   const [displayElement, setDisplayElement] = useState(false);

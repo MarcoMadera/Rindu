@@ -27,12 +27,9 @@ interface CollectionPodcastsProps {
   translations: Record<string, string>;
 }
 
-export default function CollectionPlaylists({
-  accessToken,
-  user,
-}: CollectionPodcastsProps): ReactElement {
+export default function CollectionPlaylists(): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
-  const { setUser, setAccessToken } = useAuth();
+  const { accessToken } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
   const [shows, setShows] = useState<SpotifyApi.SavedShowObject[]>([]);
   const { isPlaying } = useSpotify();
@@ -60,11 +57,7 @@ export default function CollectionPlaylists({
 
   useEffect(() => {
     trackWithGoogleAnalytics();
-
-    accessToken && setAccessToken(accessToken);
-
-    setUser(user);
-  }, [accessToken, setAccessToken, setUser, trackWithGoogleAnalytics, user]);
+  }, [trackWithGoogleAnalytics]);
 
   return (
     <ContentContainer>

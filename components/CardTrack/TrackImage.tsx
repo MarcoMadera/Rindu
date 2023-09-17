@@ -37,8 +37,7 @@ export function TrackImage({
   const { addToast } = useToast();
   const { translations } = useTranslations();
   const isVisible = useOnScreen(trackRef);
-  const { user } = useAuth();
-  const isPremium = user?.product === "premium";
+  const { isPremium } = useAuth();
 
   const isPlayable =
     track?.type === "episode" ||

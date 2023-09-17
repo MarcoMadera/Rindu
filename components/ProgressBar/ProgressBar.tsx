@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useState } from "react";
 
 import { Slider } from "components";
 import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
-import { AudioPlayer } from "hooks/useSpotifyPlayer";
+import type { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { formatTime, ToastMessage } from "utils";
 
 export default function ProgressBar(): ReactElement {
@@ -16,10 +16,9 @@ export default function ProgressBar(): ReactElement {
   const [progressSeconds, setProgressSeconds] = useState(0);
   const [progressFromSpotify, setProgressFromSpotify] = useState(0);
   const [labelSeconds, setLabelSeconds] = useState(0);
-  const { user } = useAuth();
+  const { isPremium } = useAuth();
   const { addToast } = useToast();
   const { translations } = useTranslations();
-  const isPremium = user?.product === "premium";
   const durationInSecondsPremium = currentlyPlayingDuration
     ? currentlyPlayingDuration / 1000
     : 0;

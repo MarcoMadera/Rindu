@@ -12,8 +12,7 @@ export function useReconnectSpotifyPlayer({
   player: Spotify.Player | AudioPlayer | undefined;
   setReconnectionError: Dispatch<SetStateAction<boolean>>;
 }): void {
-  const { user } = useAuth();
-  const isPremium = user?.product === "premium";
+  const { isPremium } = useAuth();
 
   useEffect(() => {
     if (!reconnect || !isPremium) return;

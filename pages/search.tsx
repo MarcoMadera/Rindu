@@ -16,7 +16,6 @@ import {
 } from "components";
 import { CardType } from "components/CardContent";
 import {
-  useAuth,
   useHeader,
   useOnSmallScreen,
   useSpotify,
@@ -34,11 +33,8 @@ interface SearchPageProps {
 
 export default function SearchPage({
   categories,
-  accessToken,
-  user,
 }: SearchPageProps): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
-  const { setUser, setAccessToken } = useAuth();
   const [data, setData] = useState<SpotifyApi.SearchResponse | null>(null);
   const { isPlaying } = useSpotify();
   const { translations } = useTranslations();
@@ -53,13 +49,6 @@ export default function SearchPage({
       setElement(null);
     };
   }, [setElement, setHeaderColor]);
-
-  useEffect(() => {
-    if (accessToken) {
-      setAccessToken(accessToken);
-    }
-    setUser(user);
-  }, [user, accessToken, setUser, setAccessToken]);
 
   return (
     <ContentContainer>

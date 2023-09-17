@@ -79,8 +79,6 @@ interface DashboardProps {
 }
 
 const Dashboard: NextPage<DashboardProps> = ({
-  user,
-  accessToken,
   featuredPlaylists,
   newReleases,
   categories,
@@ -93,7 +91,7 @@ const Dashboard: NextPage<DashboardProps> = ({
   tracksOfTheWeek,
   thisPlaylists,
 }) => {
-  const { setUser } = useAuth();
+  const { user, accessToken } = useAuth();
   const { setHeaderColor } = useHeader({
     showOnFixed: true,
     alwaysDisplayColor: false,
@@ -127,12 +125,6 @@ const Dashboard: NextPage<DashboardProps> = ({
     accessToken,
     recentListeningRecommendations.length,
   ]);
-
-  useEffect(() => {
-    if (!user) return;
-
-    setUser(user);
-  }, [setUser, user]);
 
   useEffect(() => {
     setHeaderColor("#242424");

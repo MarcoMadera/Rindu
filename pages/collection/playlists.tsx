@@ -16,9 +16,9 @@ import {
 import { CardType } from "components/CardContent";
 import {
   useAnalytics,
-  useAuth,
   useHeader,
   useSpotify,
+  useTranslations,
   useUserPlaylists,
 } from "hooks";
 import {
@@ -35,16 +35,12 @@ interface CollectionPlaylistsProps {
   translations: Translations["collectionPlaylists"];
 }
 
-export default function CollectionPlaylists({
-  accessToken,
-  user,
-  translations,
-}: CollectionPlaylistsProps): ReactElement {
+export default function CollectionPlaylists(): ReactElement {
   const { setElement, setHeaderColor } = useHeader({
     showOnFixed: true,
     alwaysDisplayColor: true,
   });
-  const { setUser, setAccessToken } = useAuth();
+  const { translations } = useTranslations();
   const { trackWithGoogleAnalytics } = useAnalytics();
   const { isPlaying } = useSpotify();
   const playlists = useUserPlaylists();
@@ -61,11 +57,7 @@ export default function CollectionPlaylists({
 
   useEffect(() => {
     trackWithGoogleAnalytics();
-
-    accessToken && setAccessToken(accessToken);
-
-    setUser(user);
-  }, [accessToken, setAccessToken, setUser, trackWithGoogleAnalytics, user]);
+  }, [trackWithGoogleAnalytics]);
 
   return (
     <ContentContainer>
