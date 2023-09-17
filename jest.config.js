@@ -23,6 +23,7 @@ const customJestConfig = {
     "!**/context/**",
     "!**/*.js",
     "!**/*.mjs",
+    "!**/*.stories.tsx",
   ],
   testEnvironment: "jsdom",
   moduleFileExtensions: [
