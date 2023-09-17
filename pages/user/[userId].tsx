@@ -14,7 +14,12 @@ import {
   PresentationCard,
 } from "components";
 import { CardType } from "components/CardContent";
-import { useAnalytics, useAuth, useUserPlaylists } from "hooks";
+import {
+  useAnalytics,
+  useAuth,
+  useTranslations,
+  useUserPlaylists,
+} from "hooks";
 import { HeaderType } from "types/pageHeader";
 import {
   fullFilledValue,
@@ -37,13 +42,11 @@ interface CurrentUserProps {
 
 const CurrentUser: NextPage<CurrentUserProps> = ({
   currentUser,
-  user,
-  accessToken,
   currentUserPlaylists,
-  translations,
 }) => {
-  const { setUser, setAccessToken } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
+  const { user } = useAuth();
+  const { translations } = useTranslations();
   const router = useRouter();
   const playlists = useUserPlaylists();
   const isThisUser = currentUser?.id === user?.id;
@@ -53,19 +56,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
       router.push("/");
     }
     trackWithGoogleAnalytics();
-
-    setAccessToken(accessToken);
-
-    setUser(user);
-  }, [
-    accessToken,
-    currentUser,
-    router,
-    setAccessToken,
-    setUser,
-    trackWithGoogleAnalytics,
-    user,
-  ]);
+  }, [currentUser, router, trackWithGoogleAnalytics]);
 
   return (
     <ContentContainer hasPageHeader>

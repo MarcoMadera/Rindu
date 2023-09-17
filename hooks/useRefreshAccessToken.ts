@@ -17,36 +17,41 @@ export function useRefreshAccessToken(): void {
   const { user, setAccessToken } = useAuth();
 
   useEffect(() => {
-    if (!user?.uri) {
+    const isLoginPage = router.pathname === "/";
+    if (!user?.uri && !isLoginPage) {
+      router.push("/");
       return;
     }
 
-    const expireIn = parseInt(takeCookie(EXPIRE_TOKEN_COOKIE) || "3600", 10);
+    function handleRefreshAccessToken() {
+      const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE);
+      if (!refreshToken) {
+        router.push("/");
+        return;
+      }
 
-    setAccessToken(takeCookie(ACCESS_TOKEN_COOKIE) ?? "");
+      refreshAccessToken(refreshToken).then((res) => {
+        if (res?.access_token) {
+          setAccessToken(res.access_token);
+          makeCookie({
+            name: ACCESS_TOKEN_COOKIE,
+            value: res.access_token,
+            age: 60 * 60 * 24 * 30 * 2,
+          });
+          return;
+        }
+
+        router.push("/");
+      });
+    }
+
+    const expireIn = parseInt(takeCookie(EXPIRE_TOKEN_COOKIE) ?? "3600", 10);
 
     const interval = setInterval(
-      async () => {
-        const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE);
-        if (refreshToken) {
-          const { access_token } =
-            (await refreshAccessToken(refreshToken)) || {};
-          if (access_token) {
-            setAccessToken(access_token);
-            makeCookie({
-              name: ACCESS_TOKEN_COOKIE,
-              value: access_token,
-              age: 60 * 60 * 24 * 30 * 2,
-            });
-            return;
-          }
-          router.push("/");
-        }
-      },
+      handleRefreshAccessToken,
       (expireIn - 1000) * 1000
     );
 
-    return () => clearTimeout(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.uri]);
+    return () => clearInterval(interval);
+  }, [user?.uri, router, setAccessToken]);
 }

@@ -44,9 +44,8 @@ export default function PlayButton({
     setPlayedSource,
     setReconnectionError,
   } = useSpotify();
-  const { accessToken, user, setAccessToken } = useAuth();
+  const { accessToken, user, setAccessToken, isPremium } = useAuth();
   const { addToast } = useToast();
-  const isPremium = user?.product === "premium";
   const uriId = uri?.split(":")?.[2];
   const buttonRef = useRef<HTMLButtonElement>(null);
   const isVisible = useOnScreen(buttonRef);

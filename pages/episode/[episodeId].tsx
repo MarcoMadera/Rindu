@@ -12,7 +12,7 @@ import {
   PlayButton,
   PlaylistTopBarExtraField,
 } from "components";
-import { useAuth, useHeader, useSpotify } from "hooks";
+import { useHeader, useSpotify } from "hooks";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
 import {
@@ -38,13 +38,10 @@ interface EpisodePageProps {
 
 export default function EpisodePage({
   episode,
-  accessToken,
-  user,
 }: EpisodePageProps): ReactElement {
   const { setElement } = useHeader({
     showOnFixed: false,
   });
-  const { setUser, setAccessToken } = useAuth();
   const [isEpisodeInLibrary, setIsEpisodeInLibrary] = useState(false);
   const { setPageDetails, isPlaying, allTracks } = useSpotify();
   const episodeTrack: ITrack = useMemo(
@@ -95,13 +92,6 @@ export default function EpisodePage({
       tracks: { total: 1 },
     });
   }, [episode, setPageDetails]);
-
-  useEffect(() => {
-    if (accessToken) {
-      setAccessToken(accessToken);
-    }
-    setUser(user);
-  }, [user, accessToken, setUser, setAccessToken]);
 
   useEffect(() => {
     if (!episode) return;

@@ -17,8 +17,7 @@ export function useRecentlyPlayed({
   player: Spotify.Player | AudioPlayer | undefined;
   setVolume: Dispatch<SetStateAction<number>>;
 }): void {
-  const { user } = useAuth();
-  const isPremium = user?.product === "premium";
+  const { user, isPremium } = useAuth();
 
   useEffect(() => {
     if (!playedSource || !user?.id) return;

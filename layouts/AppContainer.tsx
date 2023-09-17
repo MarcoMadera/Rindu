@@ -3,7 +3,6 @@ import {
   PropsWithChildren,
   ReactElement,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -62,7 +61,7 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
     }
   }, [shouldDisplayPlayer]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const app = appRef?.current;
     if (!app) return;
     if (displayInFullScreen === DisplayInFullScreen.Lyrics) {

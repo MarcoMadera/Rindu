@@ -6,7 +6,7 @@ import Head from "next/head";
 
 import { ContentContainer, Grid, Heading, PresentationCard } from "components";
 import { CardType } from "components/CardContent";
-import { useAuth, useHeader, useSpotify } from "hooks";
+import { useHeader, useSpotify } from "hooks";
 import {
   fullFilledValue,
   getAuth,
@@ -30,23 +30,13 @@ interface CategoryProps {
 export default function Category({
   categoryInfo,
   playlists,
-  accessToken,
-  user,
 }: CategoryProps): ReactElement {
-  const { setAccessToken, setUser } = useAuth();
   const { setHeaderColor } = useHeader();
   const { isPlaying } = useSpotify();
 
   useEffect(() => {
     setHeaderColor("#242424");
   }, [setHeaderColor]);
-
-  useEffect(() => {
-    if (accessToken) {
-      setAccessToken(accessToken);
-      setUser(user);
-    }
-  }, [accessToken, setAccessToken, setUser, user]);
 
   return (
     <ContentContainer>

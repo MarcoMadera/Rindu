@@ -57,13 +57,11 @@ interface TrackPageProps {
 export default function TrackPage({
   track,
   lyrics,
-  accessToken,
-  user,
 }: TrackPageProps): ReactElement {
   const { setElement, setHeaderColor } = useHeader({
     showOnFixed: false,
   });
-  const { setUser, setAccessToken } = useAuth();
+  const { user, accessToken } = useAuth();
   const [tracksInLibrary, setTracksInLibrary] = useState<string[]>([]);
   const [showMoreTopTracks, setShowMoreTopTracks] = useToggle(false);
   const [artistTopTracks, setArtistTopTracks] = useState<
@@ -112,13 +110,6 @@ export default function TrackPage({
     track,
     allTracks.length,
   ]);
-
-  useEffect(() => {
-    if (accessToken) {
-      setAccessToken(accessToken);
-    }
-    setUser(user);
-  }, [user, accessToken, setUser, setAccessToken]);
 
   useEffect(() => {
     if (!track) return;

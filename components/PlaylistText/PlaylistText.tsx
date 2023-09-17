@@ -39,8 +39,7 @@ export default function PlaylistText({
     setReconnectionError,
   } = useSpotify();
   const router = useRouter();
-  const { user, accessToken, setAccessToken } = useAuth();
-  const isPremium = user?.product === "premium";
+  const { accessToken, setAccessToken, isPremium } = useAuth();
   const { addToast } = useToast();
   const { translations } = useTranslations();
 

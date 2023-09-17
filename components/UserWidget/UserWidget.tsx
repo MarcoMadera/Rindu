@@ -24,9 +24,8 @@ export default function UserWidget({
 }: UserConfigProps): ReactElement {
   const [openSettings, setOpenSettings] = useState(false);
   const router = useRouter();
-  const { user, setUser, setIsLogin } = useAuth();
+  const { user, setUser, setIsLogin, isPremium } = useAuth();
   const { setModalData } = useModal();
-  const isPremium = user?.product === "premium";
   const { translations } = useTranslations();
 
   useEffect(() => {

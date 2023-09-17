@@ -12,7 +12,13 @@ import {
   PresentationCard,
 } from "components";
 import { CardType } from "components/CardContent";
-import { useAnalytics, useAuth, useHeader, useSpotify } from "hooks";
+import {
+  useAnalytics,
+  useAuth,
+  useHeader,
+  useSpotify,
+  useTranslations,
+} from "hooks";
 import {
   getAllAlbums,
   getAuth,
@@ -28,14 +34,10 @@ interface CollectionAlbumProps {
   user: SpotifyApi.UserObjectPrivate | null;
   translations: Translations["collectionAlbums"];
 }
-
-export default function CollectionAlbums({
-  accessToken,
-  user,
-  translations,
-}: CollectionAlbumProps): ReactElement {
+export default function CollectionAlbums(): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
-  const { setUser, setAccessToken } = useAuth();
+  const { accessToken } = useAuth();
+  const { translations } = useTranslations();
   const [albums, setAlbums] = useState<SpotifyApi.SavedAlbumObject[]>([]);
   const { isPlaying } = useSpotify();
   const { trackWithGoogleAnalytics } = useAnalytics();
@@ -63,11 +65,7 @@ export default function CollectionAlbums({
 
   useEffect(() => {
     trackWithGoogleAnalytics();
-
-    accessToken && setAccessToken(accessToken);
-
-    setUser(user);
-  }, [accessToken, setAccessToken, setUser, trackWithGoogleAnalytics, user]);
+  }, [trackWithGoogleAnalytics]);
 
   return (
     <ContentContainer>

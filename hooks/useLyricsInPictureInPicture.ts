@@ -58,8 +58,7 @@ export function useLyricsInPictureInPicture({
     pictureInPictureCanvas,
   } = useSpotify();
   const [spinnerFrame, setSpinnerFrame] = useState<number | null>(null);
-  const { user } = useAuth();
-  const isPremium = user?.product === "premium";
+  const { isPremium } = useAuth();
   const title = currentlyPlaying?.name ?? "";
   const artist = currentlyPlaying?.artists?.[0]?.name ?? "";
   const album = currentlyPlaying?.album?.name ?? "";

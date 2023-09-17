@@ -171,7 +171,7 @@ export default function FullScreenPlayer(): ReactElement {
               <div className="player__track__info">
                 <div className="player__track__info-text">
                   <Heading number={2}>
-                    {currentlyPlaying && currentlyPlaying.id ? (
+                    {currentlyPlaying?.id ? (
                       <Link
                         href={`/${currentlyPlaying.type ?? "track"}/${
                           currentlyPlaying.id

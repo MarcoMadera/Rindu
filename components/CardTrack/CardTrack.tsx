@@ -103,8 +103,7 @@ function CardTrack({
   const { addToast } = useToast();
   const { translations } = useTranslations();
   const isVisible = useOnScreen(trackRef);
-  const { user, setAccessToken } = useAuth();
-  const isPremium = user?.product === "premium";
+  const { setAccessToken, isPremium } = useAuth();
 
   const isSmallScreen = useOnSmallScreen((isSmall) => {
     if (isSmall) {
@@ -139,25 +138,34 @@ function CardTrack({
 
   async function playThisTrack() {
     try {
-      const playlistPlayingId = await playCurrentTrack(track, {
-        allTracks,
-        player,
-        user,
-        accessToken,
-        deviceId,
-        playlistUri,
-        playlistId: pageDetails?.id,
-        setCurrentlyPlaying,
-        isSingleTrack,
-        position,
-        setAccessToken,
-        uri,
-        uris,
-      });
+      await playCurrentTrack(
+        {
+          position: track?.position,
+          preview_url: track?.preview_url,
+          uri: track?.uri,
+        },
+        {
+          allTracks,
+          player,
+          isPremium,
+          accessToken,
+          deviceId,
+          playlistUri,
+          isSingleTrack,
+          position,
+          setAccessToken,
+          uri,
+          uris,
+        }
+      );
+
+      if (!isPremium) {
+        setCurrentlyPlaying(track);
+      }
 
       const source = pageDetails?.uri;
       const isCollection = source?.split(":")?.[3];
-      setPlaylistPlayingId(playlistPlayingId);
+      setPlaylistPlayingId(isSingleTrack ? undefined : pageDetails?.id);
       setPlayedSource(
         isCollection && pageDetails?.type && pageDetails?.id
           ? `spotify:${pageDetails.type}:${pageDetails.id}`
@@ -209,18 +217,16 @@ function CardTrack({
           player?.pause();
           setIsPlaying(false);
           setPlaylistPlayingId(pageDetails?.id);
-        } else {
-          if (isPlayable) {
-            if (isPremium) {
-              (player as Spotify.Player)?.activateElement();
-            }
-            playThisTrack();
-          } else {
-            addToast({
-              variant: "info",
-              message: translations[ToastMessage.ContentIsUnavailable],
-            });
+        } else if (isPlayable) {
+          if (isPremium) {
+            (player as Spotify.Player)?.activateElement();
           }
+          playThisTrack();
+        } else {
+          addToast({
+            variant: "info",
+            message: translations[ToastMessage.ContentIsUnavailable],
+          });
         }
       },
     };

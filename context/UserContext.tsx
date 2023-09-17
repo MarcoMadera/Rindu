@@ -33,12 +33,14 @@ export function UserContextProvider({
   value: propsValue,
 }: PropsWithChildren<IUserContextProviderProps>): ReactElement {
   const router = useRouter();
-  const [isLogin, setIsLogin] = useState<boolean>(false);
-  const [user, setUser] = useState<SpotifyApi.UserObjectPrivate | null>(null);
+  const [user, setUser] = useState<SpotifyApi.UserObjectPrivate | null>(
+    propsValue?.user ?? null
+  );
+  const [isLogin, setIsLogin] = useState<boolean>(!!propsValue?.user?.uri);
   const [accessToken, setAccessToken] = useState<string>();
 
   useEffect(() => {
-    setIsLogin(!!user);
+    setIsLogin(!!user?.uri);
   }, [user]);
 
   useEffect(() => {
