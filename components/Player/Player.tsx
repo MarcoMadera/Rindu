@@ -21,7 +21,7 @@ export default function Player(): ReactElement {
     suffleState,
     repeatState,
   } = useSpotify();
-  const { user, accessToken, isPremium } = useAuth();
+  const { accessToken, isPremium } = useAuth();
   const { addToast } = useToast();
   const { translations } = useTranslations();
 
