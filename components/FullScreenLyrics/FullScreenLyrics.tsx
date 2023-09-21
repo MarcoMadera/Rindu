@@ -54,9 +54,6 @@ export default function FullScreenLyrics(): ReactElement {
         :global(.app) {
           position: relative;
         }
-        :global(body .app:fullscreen .back-to-player) {
-          display: block;
-        }
         .lyrics-container :global(.lyrics-pip-button) {
           position: fixed;
           top: calc(100% - 150px);

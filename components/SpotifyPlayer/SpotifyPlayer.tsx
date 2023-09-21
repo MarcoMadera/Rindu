@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useRef } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -14,8 +14,10 @@ import {
   useToast,
   useTranslations,
 } from "hooks";
+import { AppContainer } from "layouts/AppContainer";
+import FullScreenPlayer from "layouts/FullScreenPlayer";
 import { DisplayInFullScreen } from "types/spotify";
-import { ToastMessage } from "utils";
+import { isFullScreen, isServer, requestFullScreen, ToastMessage } from "utils";
 
 export default function SpotifyPlayer(): ReactElement {
   const { user, isPremium } = useAuth();
@@ -46,9 +48,81 @@ export default function SpotifyPlayer(): ReactElement {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.product, isPremium]);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleFullScreenChange() {
+      if (!isFullScreen()) {
+        setDisplayInFullScreen(DisplayInFullScreen.App);
+      }
+    }
+
+    document.addEventListener(
+      "fullscreenchange",
+      handleFullScreenChange,
+      false
+    );
+    document.addEventListener(
+      "mozfullscreenchange",
+      handleFullScreenChange,
+      false
+    );
+    document.addEventListener(
+      "fullscreenchange",
+      handleFullScreenChange,
+      false
+    );
+    document.addEventListener(
+      "MSFullscreenChange",
+      handleFullScreenChange,
+      false
+    );
+
+    if (!ref.current) return;
+
+    if (isFullScreenPlayer) {
+      requestFullScreen(ref.current);
+    }
+
+    return () => {
+      document.removeEventListener(
+        "fullscreenchange",
+        handleFullScreenChange,
+        false
+      );
+      document.removeEventListener(
+        "mozfullscreenchange",
+        handleFullScreenChange,
+        false
+      );
+      document.removeEventListener(
+        "fullscreenchange",
+        handleFullScreenChange,
+        false
+      );
+      document.removeEventListener(
+        "MSFullscreenChange",
+        handleFullScreenChange,
+        false
+      );
+    };
+  }, [isFullScreenPlayer, setDisplayInFullScreen]);
+
+  const shouldDisplayLyrics =
+    displayInFullScreen === DisplayInFullScreen.Lyrics &&
+    currentlyPlaying?.type === "track";
+  const shouldDisplayQueue = displayInFullScreen === DisplayInFullScreen.Queue;
+  const shouldDisplayApp =
+    !isServer() &&
+    isFullScreen() &&
+    (shouldDisplayLyrics || shouldDisplayQueue);
 
   return (
     <footer>
+      <div ref={ref}>
+        <FullScreenPlayer />
+        {shouldDisplayApp ? <AppContainer /> : null}
+      </div>
       <div className="container">
         {isPremium ? (
           <Script src="https://sdk.scdn.co/spotify-player.js"></Script>
@@ -122,7 +196,7 @@ export default function SpotifyPlayer(): ReactElement {
           fill: #fff;
         }
         footer {
-          display: ${isFullScreenPlayer ? "none" : "flex"};
+          display: "flex";
         }
       `}</style>
       <style jsx>{`
@@ -137,6 +211,12 @@ export default function SpotifyPlayer(): ReactElement {
       <style jsx>{`
         section {
           display: flex;
+        }
+        .fullScreenContainer {
+          min-height: 100%;
+        }
+        .fullScreenContainer.lyrics {
+          background-color: var(--header-color);
         }
         section:nth-child(1) {
           width: 30%;

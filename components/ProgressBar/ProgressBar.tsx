@@ -29,17 +29,24 @@ export default function ProgressBar(): ReactElement {
 
   useEffect(() => {
     if (!isPremium || !player) return;
+    (player as Spotify.Player).getCurrentState().then((playbackState) => {
+      if (playbackState) {
+        setProgressFromSpotify(
+          (playbackState?.position / playbackState?.duration) * 100
+        );
+        setProgressSeconds(playbackState?.position / 1000);
+      }
+    });
+  }, [isPremium, player]);
+
+  useEffect(() => {
+    if (!isPremium || !player) return;
     (player as Spotify.Player)?.on("player_state_changed", (playbackState) => {
       setProgressFromSpotify(
         (playbackState?.position / playbackState?.duration) * 100
       );
       setProgressSeconds(playbackState?.position / 1000);
     });
-
-    return () => {
-      setProgressFromSpotify(0);
-      setProgressSeconds(0);
-    };
   }, [isPremium, player]);
 
   useEffect(() => {

@@ -9,6 +9,8 @@ import { DisplayInFullScreen } from "types/spotify";
 import {
   calculateBannerOpacity,
   calculateHeaderOpacity,
+  isFullScreen,
+  isServer,
   setOpacityStyles,
 } from "utils";
 
@@ -23,10 +25,10 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
   const router = useRouter();
   const isLoginPage = router.pathname === "/";
   const [displayElement, setDisplayElement] = useState(false);
-  const { setDisplayInFullScreen } = useSpotify();
+  const { setDisplayInFullScreen, displayInFullScreen } = useSpotify();
 
   useRouterEvents(() => {
-    const app = appRef?.current;
+    const app = appRef?.current ?? document.querySelector(".app");
     const scrollTop = app?.scrollTop || 0;
     const headerOpacity = calculateHeaderOpacity({
       scrollTop,
@@ -91,6 +93,11 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
     );
   }
 
+  const isFullScreenApp =
+    !isServer() &&
+    isFullScreen() &&
+    displayInFullScreen !== DisplayInFullScreen.App;
+
   return (
     <>
       <div className="container">
@@ -135,7 +142,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
       {!disableBackground && <div className="bg-12"></div>}
       <style jsx>{`
         .back-to-player {
-          display: none;
+          display: ${isFullScreenApp ? "block" : "none"};
         }
         .back-to-player button {
           opacity: 1;
