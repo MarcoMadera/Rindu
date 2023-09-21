@@ -77,7 +77,7 @@ export function useLyricsInPictureInPicture({
         setLyricsProgressMs(state.position);
       }
     });
-  }, [player, isPremium, setLyricsProgressMs]);
+  }, [player, isPremium, setLyricsProgressMs, lyrics]);
 
   useLayoutEffect(() => {
     if (!requestLyrics) return;
