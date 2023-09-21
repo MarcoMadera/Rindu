@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useRef } from "react";
 
 import Link from "next/link";
 
@@ -13,13 +13,7 @@ import {
   ScrollableText,
   VolumeControl,
 } from "components";
-import {
-  FullScreen,
-  FullScreenExit,
-  Heart,
-  Lyrics,
-  Queue,
-} from "components/icons";
+import { FullScreenExit, Heart, Lyrics, Queue } from "components/icons";
 import {
   useAuth,
   useClickPreventionOnDoubleClick,
@@ -47,14 +41,14 @@ import {
   saveTracksToLibrary,
 } from "utils/spotifyCalls";
 
-export default function FullScreenPlayer(): ReactElement {
+export default function FullScreenPlayer(): ReactElement | null {
   const { accessToken } = useAuth();
   const {
     currentlyPlaying,
-    setHideSideBar,
     displayInFullScreen,
     nextTracks,
     player,
+    setDisplayInFullScreen: setDisplayInFullScreenSpotify,
   } = useSpotify();
   const { addToast } = useToast();
   const { addContextMenu } = useContextMenu();
@@ -63,17 +57,17 @@ export default function FullScreenPlayer(): ReactElement {
   const { setDisplayInFullScreen } = useFullScreenControl(
     DisplayInFullScreen.Player
   );
+  const playerRef = useRef<HTMLDivElement>(null);
   function onClick() {
     player?.togglePlay();
   }
 
   function onDoubleClick() {
-    const app = document.getElementById("right");
-    if (app) {
+    if (playerRef.current) {
       if (isFullScreen()) {
         exitFullScreen();
       } else {
-        requestFullScreen(app);
+        requestFullScreen(playerRef.current);
       }
       setDisplayInFullScreen(!isFullScreen());
     }
@@ -85,24 +79,16 @@ export default function FullScreenPlayer(): ReactElement {
   );
 
   useEffect(() => {
-    setHideSideBar(true);
-
-    return () => {
-      if (innerWidth < 1000) {
-        setHideSideBar(true);
-      } else {
-        setHideSideBar(false);
-      }
-    };
-  }, [displayInFullScreen, setHideSideBar]);
-
-  useEffect(() => {
     if (!currentlyPlaying?.id) return;
     getMainColorFromImage("cover-image", setHeaderColor);
   }, [currentlyPlaying?.id, setHeaderColor]);
 
+  const isFullScreenPlayer = displayInFullScreen === DisplayInFullScreen.Player;
+
+  if (!isFullScreenPlayer) return null;
+
   return (
-    <>
+    <div ref={playerRef} className="fullScreenPlayer">
       <ContentContainer hasPageHeader>
         <div
           className="player"
@@ -202,12 +188,11 @@ export default function FullScreenPlayer(): ReactElement {
                       <ArtistList
                         artists={currentlyPlaying?.artists}
                         onClick={() => {
-                          const app = document.getElementById("right");
-                          if (app) {
+                          if (playerRef.current) {
                             if (isFullScreen()) {
                               exitFullScreen();
                             } else {
-                              requestFullScreen(app);
+                              requestFullScreen(playerRef.current);
                             }
                           }
                         }}
@@ -301,290 +286,286 @@ export default function FullScreenPlayer(): ReactElement {
                     className="navBar-Button fullScreenButton"
                     onClick={(e) => {
                       e.stopPropagation();
-                      const app = document.getElementById("right");
-                      if (app) {
-                        if (isFullScreen()) {
-                          exitFullScreen();
-                        } else {
-                          requestFullScreen(app);
-                        }
-                        setDisplayInFullScreen(!isFullScreen());
-                      }
+                      setDisplayInFullScreenSpotify(DisplayInFullScreen.App);
+                      exitFullScreen();
                     }}
                   >
-                    {isFullScreen() ? <FullScreenExit /> : <FullScreen />}
+                    <FullScreenExit />
                   </button>
                 </div>
               </div>
             </div>
           </div>
-          <style jsx>{`
-            :global(.app > div) {
-              display: none;
-            }
-            :global(body .app main) {
-              margin: 0;
-            }
-            .player__track__info-text {
-              position: relative;
-              width: 100%;
-            }
-            .player__track__info {
-              display: flex;
-              flex-direction: row;
-              justify-content: space-between;
-              align-items: center;
-              padding: 0 1.5rem;
-              width: 100%;
-            }
-            .player__track__info-text :global(a) {
-              color: var(--text-color);
-              text-decoration: none;
-              max-width: 100%;
-            }
-            .player {
-              display: flex;
-              flex-direction: column;
-              position: relative;
-              background-color: var(--header-color);
-              -webkit-backdrop-filter: blur(100px);
-              box-shadow: rgb(100 100 111 / 20%) 0px 7px 29px 0px;
-              height: 100vh;
-              width: 100vw;
-              padding: 0;
-              padding: 0;
-              transition-property: background-color;
-              transition-duration: 0.5s;
-              transition-timing-function: ease-in-out;
-            }
-            .player__track {
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
-              height: 100%;
-              position: relative;
-              background-color: var(--header-color);
-              -webkit-backdrop-filter: blur(100px);
-              background-size: cover;
-              background-position: center;
-              background-repeat: no-repeat;
-              transition-property: background-color;
-              transition-duration: 0.5s;
-              transition-timing-function: ease-in-out;
-              user-select: none;
-            }
-            .player-container {
-              position: absolute;
-              bottom: 0;
-              left: 0;
-              right: 0;
-              z-index: 1;
-              min-height: 250px;
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
-              gap: 2rem;
-            }
-            .player-container :global(.player *) {
-              display: flex;
-            }
-            .player-container :global(.player) {
-              display: flex;
-              transform: scale(1.5);
-              justify-self: center;
-              grid-area: player;
-            }
-            .player-container :global(.progressBar) {
-              max-width: calc(100% - 2rem);
-            }
-            .player-container__controls {
-              display: grid;
-              justify-content: space-between;
-              align-items: center;
-              width: 100%;
-              max-width: 100%;
-              padding: 0 2rem;
-              gap: 2rem;
-              grid-template-columns: 1fr 3fr 1fr;
-              grid-template-rows: 1fr;
-              grid-template-areas:
-                "left player right"
-                "left player right"
-                "left player right";
-            }
-            .player-container__controls__left {
-              display: flex;
-              gap: 1rem;
-              align-items: center;
-              justify-content: start;
-              grid-area: left;
-            }
-            .player-container__controls__right {
-              display: flex;
-              gap: 1rem;
-              align-items: center;
-              justify-content: end;
-              grid-area: right;
-            }
-            .player-container__controls__right :global(.volume-slider) {
-              min-width: 100px;
-            }
-            .navBar-Button {
-              background: transparent;
-              border: none;
-              outline: none;
-              margin: 0 10px;
-              color: #ffffffb3;
-            }
-            .navBar-Button.fullScreenButton {
-              color: ${isFullScreen() ? "#1db954" : "#ffffffb3"};
-            }
-            .navBar-Button.fullScreenButton:hover {
-              color: ${isFullScreen() ? "#27da65" : "#fff"};
-            }
-            .player__track__image {
-              position: absolute;
-              top: 0;
-              left: 0;
-              right: 0;
-              bottom: 0;
-              z-index: 1;
-              display: flex;
-              flex-direction: column;
-            }
-            #cover-image {
-              inset: 0px;
-              box-sizing: border-box;
-              padding: 0px;
-              border: none;
-              margin: auto auto 250px 24px;
-              display: block;
-              border-radius: 0.375rem;
-              object-fit: cover;
-              box-shadow:
-                0 0 #0000,
-                0 0 #0000,
-                0 25px 50px -12px rgba(0, 0, 0, 0.25);
-              display: flex;
-              align-items: center;
-              align-self: center;
-              justify-content: center;
-            }
-            .next-track-container {
-              background: #1b1b1f;
-              border: 1px solid hsla(0, 0%, 100%, 0.3);
-              display: flex;
-              color: #fff;
-              z-index: 32;
-              max-width: 100%;
-            }
-            .next-track-container__image {
-              margin: 0.5em;
-              vertical-align: baseline;
-              box-sizing: border-box;
-            }
-            .next-track-container__info {
-              display: flex;
-              flex: 1;
-              margin: 6px 8px;
-              flex-direction: column;
-              justify-content: center;
-            }
-            .next-track-container__info .title {
-              font-size: 0.8rem;
-              letter-spacing: 0.1111111111em;
-              line-height: 1.7777777778em;
-              text-transform: uppercase;
-            }
-            .next-track-container__info p {
-              font-weight: 700;
-              margin: 0;
-            }
-            .next-track-container__info .track-name {
-              transform: translate3d(0px, 0px, 0px);
-              transition: none 0s ease 0s;
-              display: inline-block;
-              overflow: hidden;
-              text-indent: 0;
-              white-space: nowrap;
-              font-size: 12px;
-            }
-            .player_header {
-              display: grid;
-              grid-template-columns: 1fr 1fr 1fr;
-              grid-template-rows: 1fr;
-              max-width: 100%;
-              width: 100%;
-              padding: 24px 2rem;
-              gap: 2rem;
-              margin: 0 auto;
-              background-color: var(--header-color);
-              transition-property: background-color;
-              transition-duration: 0.5s;
-              transition-timing-function: ease-in-out;
-              user-select: none;
-            }
-            .player_header__left {
-              display: flex;
-              align-items: center;
-              justify-content: start;
-              grid-area: 1 / 1 / 2 / 2;
-            }
-            .player_header__center {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              grid-area: 1 / 2 / 2 / 3;
-              justify-self: center;
-            }
-            .player_header__center :global(h2) {
-              letter-spacing: -0.4px;
-            }
-            .player_header__right {
-              display: flex;
-              align-items: center;
-              justify-content: end;
-              grid-area: 1 / 3 / 2 / 4;
-              position: relative;
-              width: 100%;
-            }
-            @media screen and (max-width: 768px) {
-              .player-container__controls {
-                grid-template-columns: 1fr 3fr 1fr;
-                grid-template-rows: 1fr 1fr;
-                grid-template-areas:
-                  "player player player"
-                  "left c right"
-                  "left c right";
-              }
-              .player-container__controls__right :global(.volume-slider) {
-                display: none;
-              }
-              .player_header__center :global(h2) {
-                font-size: 1.5rem;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-              }
-              .player-container :global(.player) {
-                transform: scale(1.3);
-              }
-              .player_header {
-                display: flex;
-                justify-content: center;
-              }
-              .player_header__left,
-              .player_header__right {
-                display: none;
-              }
-              #cover-image {
-                margin: 32px auto;
-              }
-            }
-          `}</style>
         </div>
       </ContentContainer>
-    </>
+      <style jsx>{`
+        :global(.app > div) {
+          display: none;
+        }
+        :global(.back-to-player) {
+          display: none;
+        }
+        .fullScreenPlayer :global(main) {
+          margin: 0;
+        }
+        .player__track__info-text {
+          position: relative;
+          width: 100%;
+        }
+        .player__track__info {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0 1.5rem;
+          width: 100%;
+        }
+        .player__track__info-text :global(a) {
+          color: var(--text-color);
+          text-decoration: none;
+          max-width: 100%;
+        }
+        .player {
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          background-color: var(--header-color);
+          -webkit-backdrop-filter: blur(100px);
+          box-shadow: rgb(100 100 111 / 20%) 0px 7px 29px 0px;
+          height: 100vh;
+          width: 100vw;
+          padding: 0;
+          padding: 0;
+          transition-property: background-color;
+          transition-duration: 0.5s;
+          transition-timing-function: ease-in-out;
+        }
+        .player__track {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+          position: relative;
+          background-color: var(--header-color);
+          -webkit-backdrop-filter: blur(100px);
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          transition-property: background-color;
+          transition-duration: 0.5s;
+          transition-timing-function: ease-in-out;
+          user-select: none;
+        }
+        .player-container {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          z-index: 1;
+          min-height: 250px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 2rem;
+        }
+        .player-container :global(.player *) {
+          display: flex;
+        }
+        .player-container :global(.player) {
+          display: flex;
+          transform: scale(1.5);
+          justify-self: center;
+          grid-area: player;
+        }
+        .player-container :global(.progressBar) {
+          max-width: calc(100% - 2rem);
+        }
+        .player-container__controls {
+          display: grid;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+          max-width: 100%;
+          padding: 0 2rem;
+          gap: 2rem;
+          grid-template-columns: 1fr 3fr 1fr;
+          grid-template-rows: 1fr;
+          grid-template-areas:
+            "left player right"
+            "left player right"
+            "left player right";
+        }
+        .player-container__controls__left {
+          display: flex;
+          gap: 1rem;
+          align-items: center;
+          justify-content: start;
+          grid-area: left;
+        }
+        .player-container__controls__right {
+          display: flex;
+          gap: 1rem;
+          align-items: center;
+          justify-content: end;
+          grid-area: right;
+        }
+        .player-container__controls__right :global(.volume-slider) {
+          min-width: 100px;
+        }
+        .navBar-Button {
+          background: transparent;
+          border: none;
+          outline: none;
+          margin: 0 10px;
+          color: #ffffffb3;
+        }
+        .navBar-Button.fullScreenButton {
+          color: #1db954;
+        }
+        .navBar-Button.fullScreenButton:hover {
+          color: #27da65;
+        }
+        .player__track__image {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 1;
+          display: flex;
+          flex-direction: column;
+        }
+        #cover-image {
+          inset: 0px;
+          box-sizing: border-box;
+          padding: 0px;
+          border: none;
+          margin: auto auto 250px 24px;
+          display: block;
+          border-radius: 0.375rem;
+          object-fit: cover;
+          box-shadow:
+            0 0 #0000,
+            0 0 #0000,
+            0 25px 50px -12px rgba(0, 0, 0, 0.25);
+          display: flex;
+          align-items: center;
+          align-self: center;
+          justify-content: center;
+        }
+        .next-track-container {
+          background: #1b1b1f;
+          border: 1px solid hsla(0, 0%, 100%, 0.3);
+          display: flex;
+          color: #fff;
+          z-index: 32;
+          max-width: 100%;
+        }
+        .next-track-container__image {
+          margin: 0.5em;
+          vertical-align: baseline;
+          box-sizing: border-box;
+        }
+        .next-track-container__info {
+          display: flex;
+          flex: 1;
+          margin: 6px 8px;
+          flex-direction: column;
+          justify-content: center;
+        }
+        .next-track-container__info .title {
+          font-size: 0.8rem;
+          letter-spacing: 0.1111111111em;
+          line-height: 1.7777777778em;
+          text-transform: uppercase;
+        }
+        .next-track-container__info p {
+          font-weight: 700;
+          margin: 0;
+        }
+        .next-track-container__info .track-name {
+          transform: translate3d(0px, 0px, 0px);
+          transition: none 0s ease 0s;
+          display: inline-block;
+          overflow: hidden;
+          text-indent: 0;
+          white-space: nowrap;
+          font-size: 12px;
+        }
+        .player_header {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          grid-template-rows: 1fr;
+          max-width: 100%;
+          width: 100%;
+          padding: 24px 2rem;
+          gap: 2rem;
+          margin: 0 auto;
+          background-color: var(--header-color);
+          transition-property: background-color;
+          transition-duration: 0.5s;
+          transition-timing-function: ease-in-out;
+          user-select: none;
+        }
+        .player_header__left {
+          display: flex;
+          align-items: center;
+          justify-content: start;
+          grid-area: 1 / 1 / 2 / 2;
+        }
+        .player_header__center {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          grid-area: 1 / 2 / 2 / 3;
+          justify-self: center;
+        }
+        .player_header__center :global(h2) {
+          letter-spacing: -0.4px;
+        }
+        .player_header__right {
+          display: flex;
+          align-items: center;
+          justify-content: end;
+          grid-area: 1 / 3 / 2 / 4;
+          position: relative;
+          width: 100%;
+        }
+        @media screen and (max-width: 768px) {
+          .player-container__controls {
+            grid-template-columns: 1fr 3fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            grid-template-areas:
+              "player player player"
+              "left c right"
+              "left c right";
+          }
+          .player-container__controls__right :global(.volume-slider) {
+            display: none;
+          }
+          .player_header__center :global(h2) {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+          }
+          .player-container :global(.player) {
+            transform: scale(1.3);
+          }
+          .player_header {
+            display: flex;
+            justify-content: center;
+          }
+          .player_header__left,
+          .player_header__right {
+            display: none;
+          }
+          #cover-image {
+            margin: 32px auto;
+          }
+        }
+      `}</style>
+    </div>
   );
 }

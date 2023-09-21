@@ -15,9 +15,8 @@ import {
   TopBar,
 } from "components";
 import { useLyricsContext, useOnSmallScreen, useSpotify } from "hooks";
-import FullScreenPlayer from "layouts/FullScreenPlayer";
 import { DisplayInFullScreen } from "types/spotify";
-import { requestFullScreen } from "utils";
+import { isFullScreen, isServer } from "utils";
 
 export function AppContainer({ children }: PropsWithChildren): ReactElement {
   const appRef = useRef<HTMLDivElement>();
@@ -38,28 +37,25 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
     leftPanelMinWidth,
     Math.min(leftPanelDraggedWidth, leftPanelMaxWidth)
   );
+  const isFullScreenApp =
+    !isServer() &&
+    isFullScreen() &&
+    displayInFullScreen !== DisplayInFullScreen.App;
   useOnSmallScreen((isSmall) => {
-    setHideSideBar(isSmall || shouldDisplayPlayer);
+    setHideSideBar(isSmall);
   }, 1000);
 
   const defaultPlayerHeight = "68";
   const isPlayingAndPlayerHidden = currentlyPlaying?.id && !shouldDisplayPlayer;
   const isPlayingAndPlayerVisible = currentlyPlaying?.id && shouldDisplayPlayer;
-
   function getPlayerHeight() {
-    if (isPlayingAndPlayerVisible) return "0";
+    if (isPlayingAndPlayerVisible || isFullScreenApp) return "0";
     if (isPlayingAndPlayerHidden) return "150";
 
     return defaultPlayerHeight;
   }
 
   const playerHeight = getPlayerHeight();
-
-  useEffect(() => {
-    if (shouldDisplayPlayer && appRef.current) {
-      requestFullScreen(appRef.current);
-    }
-  }, [shouldDisplayPlayer]);
 
   useEffect(() => {
     const app = appRef?.current;
@@ -92,7 +88,9 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
             className="app"
             ref={appRef as MutableRefObject<HTMLDivElement>}
             style={{
-              "--left-panel-width": `${hideSideBar ? "0" : leftPanelWidth}px`,
+              "--left-panel-width": `${
+                hideSideBar || isFullScreenApp ? "0" : leftPanelWidth
+              }px`,
             }}
           >
             <TopBar appRef={appRef} />
@@ -100,8 +98,6 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
               <FullScreenLyrics />
             ) : shouldDisplayQueue ? (
               <FullScreenQueue />
-            ) : shouldDisplayPlayer ? (
-              <FullScreenPlayer />
             ) : (
               children
             )}
@@ -110,7 +106,7 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
       </ResizablePanel.Group>
       <style jsx>{`
         div.container :global(#left) {
-          display: ${hideSideBar ? "none" : "grid"};
+          display: ${hideSideBar || isFullScreenApp ? "none" : "grid"};
         }
         @media (max-width: 1000px) {
           div.container :global(#left) {
@@ -124,20 +120,23 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
 
       <style jsx>{`
         div.container {
-          height: calc(
-            (var(--vh, 1vh) * 100) - ${shouldDisplayPlayer ? "0" : "90px"}
-          );
+          height: ${isFullScreenApp
+            ? "100%"
+            : "calc((var(--vh, 1vh) * 100) - 90px)"};
           display: flex;
           width: calc(100vw + 1px);
         }
         .app {
           overflow-y: overlay;
-          height: calc(
-            (var(--vh, 1vh) * 100) - ${shouldDisplayPlayer ? "0" : "90px"}
-          );
           overflow-x: hidden;
           position: relative;
           width: calc(100vw - var(--left-panel-width, 0) + 2px);
+        }
+        .app,
+        .app :global(main) {
+          height: ${isFullScreenApp
+            ? "100%"
+            : "calc((var(--vh, 1vh) * 100) - 90px)"};
         }
         .app::-webkit-scrollbar {
           width: 14px;
