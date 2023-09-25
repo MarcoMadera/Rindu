@@ -16,7 +16,7 @@ export default function PlaybackExtraControls(): ReactElement {
     <div className="extras">
       {currentlyPlaying?.type === "track" && (
         <>
-          <LyricsPIPButton />
+          {!!document?.pictureInPictureEnabled && <LyricsPIPButton />}
           <FullScreenControl
             icon={Lyrics}
             displayInFullScreen={DisplayInFullScreen.Lyrics}
