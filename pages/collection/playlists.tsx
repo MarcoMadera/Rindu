@@ -104,7 +104,7 @@ export async function getServerSideProps({
 }): Promise<{
   props: CollectionPlaylistsProps | null;
 }> {
-  const country = (query.country || "US") as string;
+  const country = (query.country ?? "US") as string;
   const translations = getTranslations(country, Page.CollectionPlaylists);
   const cookies = req?.headers?.cookie;
   if (!cookies) {
@@ -112,11 +112,11 @@ export async function getServerSideProps({
     return { props: null };
   }
 
-  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+  const { accessToken, user } = (await getAuth(res, cookies)) ?? {};
 
   return {
     props: {
-      user: user || null,
+      user: user ?? null,
       accessToken: accessToken ?? null,
       translations,
     },

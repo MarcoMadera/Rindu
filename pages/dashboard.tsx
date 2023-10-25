@@ -14,7 +14,7 @@ import {
   TopTracks,
 } from "components";
 import { CardType } from "components/CardContent";
-import { useAuth, useHeader, useSpotify } from "hooks";
+import { useAuth, useHeader, useSpotify, useTranslations } from "hooks";
 import { AuthorizationResponse, ITrack } from "types/spotify";
 import {
   ACCESS_TOKEN_COOKIE,
@@ -86,7 +86,6 @@ const Dashboard: NextPage<DashboardProps> = ({
   tracksRecommendations,
   tracksInLibrary,
   topArtists,
-  translations,
   artistOfTheWeek,
   tracksOfTheWeek,
   thisPlaylists,
@@ -96,6 +95,7 @@ const Dashboard: NextPage<DashboardProps> = ({
     showOnFixed: true,
     alwaysDisplayColor: false,
   });
+  const { translations } = useTranslations();
   const router = useRouter();
   const { recentlyPlayed } = useSpotify();
   const [recentListeningRecommendations, setRecentListeningRecommendations] =
@@ -138,9 +138,8 @@ const Dashboard: NextPage<DashboardProps> = ({
           topTracks={topTracks}
         />
       ) : null}
-      {featuredPlaylists &&
-      featuredPlaylists.playlists?.items &&
-      featuredPlaylists.playlists?.items?.length > 0 ? (
+      {featuredPlaylists?.playlists?.items &&
+      featuredPlaylists?.playlists?.items?.length > 0 ? (
         <Carousel
           title={
             featuredPlaylists.message ?? translations.featuredPlaylistsHeading
@@ -541,12 +540,17 @@ export async function getServerSideProps({
       artistResult.push(fullFilledItem[0] as SpotifyApi.ArtistObjectFull);
       return;
     }
-    if (
-      fullFilledItem &&
-      fullFilledItem[0] &&
-      i > searchedArtistsPromisesLenght &&
-      i <= searchedArtistsPromisesLenght + searchedTracksPromises.length
-    ) {
+    const hasFulfilledItem = fullFilledItem?.[0];
+    const isAfterArtistsPromises = i > searchedArtistsPromisesLenght;
+    const isBeforeOrEqualTracksPromises =
+      i <= searchedArtistsPromisesLenght + searchedTracksPromises.length;
+
+    const isValidTrack =
+      hasFulfilledItem &&
+      isAfterArtistsPromises &&
+      isBeforeOrEqualTracksPromises;
+
+    if (isValidTrack) {
       tracksResult.push(fullFilledItem[0] as SpotifyApi.TrackObjectFull);
       return;
     }

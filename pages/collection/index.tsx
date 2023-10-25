@@ -7,10 +7,18 @@ import { useRouter } from "next/router";
 
 import { ContentContainer, NavigationTopBarExtraField } from "components";
 import { useHeader, useOnSmallScreen } from "hooks";
-import { getTranslations, Page, serverRedirect, Translations } from "utils";
+import {
+  getAuth,
+  getTranslations,
+  Page,
+  serverRedirect,
+  Translations,
+} from "utils";
 
 interface ICollectionProps {
   translations: Translations["collection"];
+  accessToken: string | null;
+  user: SpotifyApi.UserObjectPrivate | null;
 }
 
 export default function Collection({
@@ -74,7 +82,7 @@ export default function Collection({
   );
 }
 
-export function getServerSideProps({
+export async function getServerSideProps({
   res,
   req,
   query,
@@ -82,20 +90,23 @@ export function getServerSideProps({
   res: NextApiResponse;
   req: NextApiRequest;
   query: NextParsedUrlQuery;
-}): {
+}): Promise<{
   props: ICollectionProps | null;
-} {
-  const country = (query.country || "US") as string;
-  const translations = getTranslations(country, Page.CollectionPodcasts);
+}> {
+  const country = (query.country ?? "US") as string;
+  const translations = getTranslations(country, Page.Collection);
   const cookies = req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(res, "/");
     return { props: null };
   }
+  const { accessToken, user } = (await getAuth(res, cookies)) ?? {};
 
   return {
     props: {
       translations,
+      user: user ?? null,
+      accessToken: accessToken ?? null,
     },
   };
 }

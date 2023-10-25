@@ -109,7 +109,7 @@ export default function Carousel({
         {Children.map(children, (child, number) => {
           if (isValidElement(child) && carouselRef.current) {
             const itemWidth = carouselRef.current.children[0].clientWidth + gap;
-            const containerWidth = containerRef.current?.offsetWidth || 0;
+            const containerWidth = containerRef.current?.offsetWidth ?? 0;
             const itemsInMainContainer = Math.floor(containerWidth / itemWidth);
             const minRange = itemsInMainContainer * timesMoveCarousel;
             const maxRange = itemsInMainContainer * (timesMoveCarousel + 1);
