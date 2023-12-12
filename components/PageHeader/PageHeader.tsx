@@ -176,8 +176,8 @@ export default function PageHeader({
                     type === HeaderType.Episode
                       ? "show"
                       : type === HeaderType.Concert
-                      ? "artist"
-                      : "user"
+                        ? "artist"
+                        : "user"
                   }/${ownerId}`}
                   className="userLink"
                 >
@@ -319,8 +319,8 @@ export default function PageHeader({
             type === HeaderType.Profile
               ? "50%"
               : type === HeaderType.Episode || type === HeaderType.Podcast
-              ? "12px"
-              : "0px"};
+                ? "12px"
+                : "0px"};
             object-fit: cover;
             object-position: center center;
           }

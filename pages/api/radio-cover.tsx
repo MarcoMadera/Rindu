@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable jsx-a11y/alt-text */
-import { ImageResponse, NextRequest } from "next/server";
+import { ImageResponse } from "next/og";
+import { NextRequest } from "next/server";
 
 import { getRandomColor, hexToHsl } from "utils";
 
@@ -12,6 +13,8 @@ const font = fetch(
   new URL("../../fonts/SourceSansPro-Black.ttf", import.meta.url)
 ).then((res) => res.arrayBuffer());
 
+const colors: Record<string, string> = {};
+
 export default async function radioCover(
   req: NextRequest
 ): Promise<ImageResponse | void> {
@@ -20,7 +23,10 @@ export default async function radioCover(
     const { searchParams } = new URL(req.url);
     const { cover1, cover2, cover3, width, height, name } =
       Object.fromEntries(searchParams);
-    const color = getRandomColor();
+    if (!colors[name]) {
+      colors[name] = getRandomColor();
+    }
+    const color = colors[name];
     const [h, s, l] = hexToHsl(color, true) ?? [0, 0, 0];
     const textColor = l > 60 ? "#404040" : "white";
     const firstColor = `hsl(${h}, ${s}%, ${l + 30}%)`;
@@ -72,7 +78,7 @@ export default async function radioCover(
               alignItems: "center",
               borderRadius: "50%",
               background: secondaryColor,
-              zIndex: "-1",
+              zIndex: -1,
             }}
           ></div>
           <div
@@ -87,7 +93,7 @@ export default async function radioCover(
               alignItems: "center",
               borderRadius: "50%",
               background: tertiaryColor,
-              zIndex: "-1",
+              zIndex: -1,
             }}
           ></div>
           <div
@@ -158,7 +164,7 @@ export default async function radioCover(
               style={{
                 border: "6px solid white",
                 borderRadius: "50%",
-                zIndex: "1",
+                zIndex: 1,
               }}
             />
             <img
@@ -168,7 +174,7 @@ export default async function radioCover(
               style={{
                 border: "6px solid white",
                 borderRadius: "50%",
-                zIndex: "1",
+                zIndex: 1,
                 marginLeft: 190,
               }}
             />
@@ -179,7 +185,7 @@ export default async function radioCover(
               style={{
                 border: "8px solid white",
                 borderRadius: "50%",
-                zIndex: "2",
+                zIndex: 2,
                 marginLeft: -450,
               }}
             />

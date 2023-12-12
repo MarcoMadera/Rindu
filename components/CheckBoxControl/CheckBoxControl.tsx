@@ -9,6 +9,7 @@ export default function CheckBoxControl(
   return (
     <div className="checkbox-container">
       <input type="checkbox" {...props} />
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label htmlFor={props.id}>
         <span></span>
       </label>

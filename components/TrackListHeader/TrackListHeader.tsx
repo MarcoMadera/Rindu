@@ -89,8 +89,8 @@ export default function TrackListHeader({
           grid-template-columns: ${type === "playlist"
             ? "[index] 48px [first] 14fr [var1] 8fr [var2] 3fr [popularity] 1fr [last] minmax(180px,2fr)"
             : type === "album"
-            ? "[index] 48px [first] 14fr [popularity] 1fr [last] minmax(180px,2fr)"
-            : "[index] 55px [first] 14fr [popularity] 1fr [last] minmax(180px,2fr)"};
+              ? "[index] 48px [first] 14fr [popularity] 1fr [last] minmax(180px,2fr)"
+              : "[index] 55px [first] 14fr [popularity] 1fr [last] minmax(180px,2fr)"};
         }
         .trackListHeader span {
           display: flex;
@@ -115,8 +115,8 @@ export default function TrackListHeader({
             grid-template-columns: ${type === "playlist"
               ? "[index] 48px [first] 14fr [var1] 8fr [var2] 3fr [popularity] 1fr [last] minmax(60px,2fr)"
               : type === "album"
-              ? "[index] 48px [first] 14fr [popularity] 1fr [last] minmax(60px,2fr)"
-              : "[index] 55px [first] 14fr [popularity] 1fr [last] minmax(60px,2fr)"};
+                ? "[index] 48px [first] 14fr [popularity] 1fr [last] minmax(60px,2fr)"
+                : "[index] 55px [first] 14fr [popularity] 1fr [last] minmax(60px,2fr)"};
           }
         }
       `}</style>

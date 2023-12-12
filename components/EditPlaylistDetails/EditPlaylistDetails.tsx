@@ -155,6 +155,7 @@ export default function EditPlaylistDetails({
         </div>
         <div className="image-button-container">
           <div>
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
             <label aria-haspopup="true" htmlFor="editDetails">
               <div className="icon">
                 <svg
