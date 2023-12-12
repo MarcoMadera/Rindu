@@ -117,6 +117,7 @@ export async function playCurrentTrack(
       allTracks,
       previewUrl: trackInfo.preview_url,
     });
+    return;
   }
 
   if (!accessToken || !deviceId) {
