@@ -50,17 +50,22 @@ export default function ProgressBar(): ReactElement {
   }, [isPremium, player]);
 
   useEffect(() => {
-    if (!currentlyPlayingDuration) return;
+    if (!currentlyPlayingDuration || !isPremium) return;
     setProgressFromSpotify(
       ((progressSeconds * 1000) / currentlyPlayingDuration) * 100
     );
-  }, [currentlyPlayingDuration, progressSeconds]);
+  }, [currentlyPlayingDuration, isPremium, progressSeconds]);
 
   useEffect(() => {
     if (isPremium || !currentlyPlayingPosition || !currentlyPlayingDuration)
       return;
     setProgressFromSpotify(
-      ((currentlyPlayingPosition * 1000) / currentlyPlayingDuration) * 100
+      (currentlyPlayingPosition / currentlyPlayingDuration) * 100
+    );
+    setProgressSeconds(
+      currentlyPlayingPosition > currentlyPlayingDuration
+        ? currentlyPlayingDuration
+        : currentlyPlayingPosition
     );
   }, [currentlyPlayingDuration, currentlyPlayingPosition, isPremium]);
 

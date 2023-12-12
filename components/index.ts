@@ -74,3 +74,4 @@ export { default as VirtualizedList } from "./VirtualizedList";
 export { default as VolumeControl } from "./VolumeControl";
 export { default as LyricsPIPButton } from "./LyricsPIPButton";
 export { default as PortalTarget } from "./PortalTarget";
+export { default as SearchResults } from "./SearchResults";
