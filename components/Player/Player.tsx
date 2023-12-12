@@ -113,8 +113,8 @@ export default function Player(): ReactElement {
               repeatState === 0
                 ? "context"
                 : repeatState === 1
-                ? "track"
-                : "off";
+                  ? "track"
+                  : "off";
             if (!deviceId) {
               addToast({
                 variant: "error",

@@ -57,7 +57,7 @@ interface TrackPageProps {
 export default function TrackPage({
   track,
   lyrics,
-}: TrackPageProps): ReactElement {
+}: Readonly<TrackPageProps>): ReactElement {
   const { setElement, setHeaderColor } = useHeader({
     showOnFixed: false,
   });
@@ -261,11 +261,9 @@ export default function TrackPage({
               );
               const mainTrackExistInArtistTopTracks = sameTrackIndex >= 0;
               const isValidPosition = i - sameTrackIndex >= 0;
-              const position = isTheSameAsTrack
-                ? 0
-                : mainTrackExistInArtistTopTracks && isValidPosition
-                ? i
-                : i + 1;
+              const mainTrackPosition =
+                mainTrackExistInArtistTopTracks && isValidPosition ? i : i + 1;
+              const position = isTheSameAsTrack ? 0 : mainTrackPosition;
 
               const isTrackInLibrary = tracksInLibrary.includes(artistTrack.id);
 
@@ -390,14 +388,14 @@ export async function getServerSideProps({
 }): Promise<{
   props: TrackPageProps | null;
 }> {
-  const country = (query.country || "US") as string;
+  const country = (query.country ?? "US") as string;
   const translations = getTranslations(country, Page.Track);
   const cookies = req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(res, "/");
     return { props: null };
   }
-  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+  const { accessToken, user } = (await getAuth(res, cookies)) ?? {};
   const track = await getTrack(id, user?.country ?? "US", accessToken, cookies);
   let lyrics: string | null = null;
 

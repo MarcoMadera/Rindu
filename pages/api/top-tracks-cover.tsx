@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable jsx-a11y/alt-text */
-import { ImageResponse, NextRequest } from "next/server";
+import { ImageResponse } from "next/og";
+import { NextRequest } from "next/server";
 
 export const config = {
   runtime: "edge",
@@ -187,7 +188,7 @@ export default async function topTracksCover(
               style={{
                 border: "4px solid white",
                 borderRadius: "10px",
-                zIndex: "1",
+                zIndex: 1,
               }}
             />
           </div>

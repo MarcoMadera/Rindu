@@ -102,14 +102,14 @@ export interface UseAnalyticsParams {
     fields: T extends "event"
       ? Event
       : T extends "screenview"
-      ? Screenview
-      : T extends "social"
-      ? Social
-      : T extends "exception"
-      ? Exception
-      : T extends "timing"
-      ? Timing
-      : undefined
+        ? Screenview
+        : T extends "social"
+          ? Social
+          : T extends "exception"
+            ? Exception
+            : T extends "timing"
+              ? Timing
+              : undefined
   ): void;
   trackWithGoogleAnalytics(
     hitType?: "pageview" | "item" | "transaction",

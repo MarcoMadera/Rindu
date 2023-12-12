@@ -159,14 +159,14 @@ const Playlist: NextPage<
           pageDetails?.type === "concert"
             ? HeaderType.Concert
             : pageDetails?.type === "radio"
-            ? HeaderType.Radio
-            : pageDetails?.type === "episode"
-            ? HeaderType.Episode
-            : pageDetails?.type === "podcast"
-            ? HeaderType.Podcast
-            : pageDetails?.type === "top"
-            ? HeaderType.Top
-            : HeaderType.Playlist
+              ? HeaderType.Radio
+              : pageDetails?.type === "episode"
+                ? HeaderType.Episode
+                : pageDetails?.type === "podcast"
+                  ? HeaderType.Podcast
+                  : pageDetails?.type === "top"
+                    ? HeaderType.Top
+                    : HeaderType.Playlist
         }
         title={pageDetails?.name ?? ""}
         description={pageDetails?.description ?? ""}

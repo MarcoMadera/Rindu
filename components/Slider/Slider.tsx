@@ -108,8 +108,8 @@ export default function Slider({
         myposition > sliderXEnd
           ? sliderWidth
           : myposition < sliderPositionX
-          ? 0
-          : myposition - sliderPositionX;
+            ? 0
+            : myposition - sliderPositionX;
       const currentPositionPercent = (myPositionInSlider * 100) / sliderWidth;
       return currentPositionPercent;
     },

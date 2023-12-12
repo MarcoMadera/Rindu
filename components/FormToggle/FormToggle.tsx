@@ -14,6 +14,7 @@ export default function FormToggle(
         id={props.id}
         {...props}
       />
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label htmlFor={props.id} className="toggle-text">
         <span></span>
       </label>
