@@ -57,7 +57,12 @@ export default function ProgressBar(): ReactElement {
   }, [currentlyPlayingDuration, isPremium, progressSeconds]);
 
   useEffect(() => {
-    if (isPremium || !currentlyPlayingPosition || !currentlyPlayingDuration)
+    if (
+      isPremium ||
+      currentlyPlayingPosition === undefined ||
+      !currentlyPlayingDuration ||
+      (player as AudioPlayer).sliderBusy
+    )
       return;
     setProgressFromSpotify(
       (currentlyPlayingPosition / currentlyPlayingDuration) * 100
@@ -67,7 +72,7 @@ export default function ProgressBar(): ReactElement {
         ? currentlyPlayingDuration
         : currentlyPlayingPosition
     );
-  }, [currentlyPlayingDuration, currentlyPlayingPosition, isPremium]);
+  }, [currentlyPlayingDuration, currentlyPlayingPosition, isPremium, player]);
 
   useEffect(() => {
     setLabelSeconds(progressSeconds);

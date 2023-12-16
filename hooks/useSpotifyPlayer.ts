@@ -54,10 +54,6 @@ export function useSpotifyPlayer({ name }: { name: string }): {
     if (!isPremium) {
       audioPlayer.current = new Audio() as AudioPlayer;
 
-      audioPlayer.current.ondurationchange = function () {
-        setCurrentlyPlayingDuration(audioPlayer.current?.duration);
-      };
-
       audioPlayer.current.seek = function (seek: number) {
         if (audioPlayer.current) {
           audioPlayer.current.currentTime = seek;
@@ -166,13 +162,15 @@ export function useSpotifyPlayer({ name }: { name: string }): {
       audioPlayer.current.ontimeupdate = () => {
         if (!audioPlayer.current?.sliderBusy) {
           setCurrentlyPlayingPosition(
-            Math.floor(audioPlayer.current?.currentTime ?? 0)
+            Math.round(audioPlayer.current?.currentTime ?? 0)
           );
         }
       };
 
       audioPlayer.current.ondurationchange = () => {
-        setCurrentlyPlayingDuration(audioPlayer.current?.duration);
+        setCurrentlyPlayingDuration(
+          Math.round(audioPlayer.current?.duration ?? 0)
+        );
       };
 
       setPlayer(audioPlayer.current);

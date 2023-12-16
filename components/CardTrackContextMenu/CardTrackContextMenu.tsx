@@ -32,7 +32,7 @@ export interface ICardTrackContextMenu {
 
 export default function CardTrackContextMenu({
   track,
-}: ICardTrackContextMenu): ReactElement {
+}: Readonly<ICardTrackContextMenu>): ReactElement {
   const { addToast } = useToast();
   const { deviceId, playlists } = useSpotify();
   const { accessToken } = useAuth();
@@ -100,8 +100,8 @@ export default function CardTrackContextMenu({
           </button>
         </li>
       )}
-      <li>
-        {userPlaylists.length > 0 && (
+      {userPlaylists.length > 0 && (
+        <li>
           <div
             onMouseEnter={() => {
               setShowAddPlaylistPopup(true);
@@ -115,61 +115,61 @@ export default function CardTrackContextMenu({
           >
             Add to playlist
           </div>
-        )}
-        {showAddPlaylistPopup && (
-          <div
-            ref={playlistsRef}
-            className="playlists-container"
-            onMouseEnter={() => {
-              setShowAddPlaylistPopup(true);
-            }}
-            onMouseLeave={() => {
-              setShowAddPlaylistPopup(false);
-            }}
-          >
-            <ul>
-              {userPlaylists?.map((playlist) => {
-                return (
-                  <li key={playlist.id}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (track?.uri && deviceId) {
-                          addItemsToPlaylist(playlist.id, [track.uri]).then(
-                            (res) => {
-                              if (res) {
-                                addToast({
-                                  variant: "success",
-                                  message: templateReplace(
-                                    translations[ToastMessage.AddedTo],
-                                    [translations[ContentType.Playlist]]
-                                  ),
-                                });
-                              } else {
-                                addToast({
-                                  variant: "error",
-                                  message: templateReplace(
-                                    translations[ToastMessage.CouldNotAddTo],
-                                    [translations[ContentType.Playlist]]
-                                  ),
-                                });
+          {showAddPlaylistPopup && (
+            <div
+              ref={playlistsRef}
+              className="playlists-container"
+              onMouseEnter={() => {
+                setShowAddPlaylistPopup(true);
+              }}
+              onMouseLeave={() => {
+                setShowAddPlaylistPopup(false);
+              }}
+            >
+              <ul>
+                {userPlaylists?.map((playlist) => {
+                  return (
+                    <li key={playlist.id}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (track?.uri && deviceId) {
+                            addItemsToPlaylist(playlist.id, [track.uri]).then(
+                              (res) => {
+                                if (res) {
+                                  addToast({
+                                    variant: "success",
+                                    message: templateReplace(
+                                      translations[ToastMessage.AddedTo],
+                                      [translations[ContentType.Playlist]]
+                                    ),
+                                  });
+                                } else {
+                                  addToast({
+                                    variant: "error",
+                                    message: templateReplace(
+                                      translations[ToastMessage.CouldNotAddTo],
+                                      [translations[ContentType.Playlist]]
+                                    ),
+                                  });
+                                }
+                                setShowAddPlaylistPopup(false);
+                                removeContextMenu();
                               }
-                              setShowAddPlaylistPopup(false);
-                              removeContextMenu();
-                            }
-                          );
-                        }
-                      }}
-                    >
-                      {playlist.name}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        )}
-      </li>
+                            );
+                          }
+                        }}
+                      >
+                        {playlist.name}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+        </li>
+      )}
       {isStationAvailable && (
         <li>
           <Link
