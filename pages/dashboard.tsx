@@ -156,7 +156,7 @@ const Dashboard: NextPage<DashboardProps> = ({
                 images={images}
                 title={name}
                 subTitle={
-                  decode(description) ||
+                  decode(description) ??
                   `${translations.by} ${ownerDisplayName ?? ""}`
                 }
                 id={id}
@@ -274,7 +274,7 @@ const Dashboard: NextPage<DashboardProps> = ({
                 images={images}
                 title={name}
                 subTitle={
-                  decode(description) ||
+                  decode(description) ??
                   `${translations.by} ${ownerDisplayName ?? ""}`
                 }
                 id={id}
@@ -356,7 +356,7 @@ export async function getServerSideProps({
 }): Promise<{
   props: Partial<DashboardProps>;
 }> {
-  const country = (query.country || "US") as string;
+  const country = (query.country ?? "US") as string;
   const translations = getTranslations(country, Page.Dashboard);
   const cookies = req?.headers?.cookie ?? "";
   const lastFMAPIKey = process.env.LAST_FM_API_KEY as string;
@@ -397,7 +397,7 @@ export async function getServerSideProps({
     ]);
   }
 
-  const { accessToken, user } = (await getAuth(res, cookies, tokens)) || {};
+  const { accessToken, user } = (await getAuth(res, cookies, tokens)) ?? {};
   const artistsOfTheWeekProm = getArtistsOfTheWeek(lastFMAPIKey);
   const tracksOfTheWeekProm = getTracksOfTheWeek(lastFMAPIKey);
 
@@ -573,7 +573,7 @@ export async function getServerSideProps({
   });
 
   const recommendedTracksIds =
-    tracksRecommendations?.map((item) => item.id) || [];
+    tracksRecommendations?.map((item) => item.id) ?? [];
 
   const tracksInLibrary = await checkTracksInLibrary(
     recommendedTracksIds,
@@ -621,7 +621,7 @@ export async function getServerSideProps({
             type: artist.type,
             uri: artist.uri,
           };
-        }) || [],
+        }) ?? [],
       album: track.album,
       duration_ms: track.duration_ms,
       uri: track.uri,
@@ -635,20 +635,20 @@ export async function getServerSideProps({
 
   return {
     props: {
-      user: user || null,
+      user: user ?? null,
       accessToken: accessToken ?? null,
       featuredPlaylists:
-        mappedFeaturedPlaylists(fullFilledValue(featuredPlaylists)) || null,
+        mappedFeaturedPlaylists(fullFilledValue(featuredPlaylists)) ?? null,
       newReleases: fullFilledValue(newReleases),
       categories: fullFilledValue(categories),
       topTracks:
-        deserialize(mappedTracksData(fullFilledValue(topTracks)?.items)) || [],
+        deserialize(mappedTracksData(fullFilledValue(topTracks)?.items)) ?? [],
       topArtists: fullFilledValue(topArtists),
       artistOfTheWeek: artistResult,
-      tracksOfTheWeek: deserialize(mappedTracksData(tracksResult)) || [],
-      thisPlaylists: deserialize(mappedPlaylistData(thisPlaylistsResult)) || [],
+      tracksOfTheWeek: deserialize(mappedTracksData(tracksResult)) ?? [],
+      thisPlaylists: deserialize(mappedPlaylistData(thisPlaylistsResult)) ?? [],
       tracksRecommendations:
-        deserialize(mappedTracksData(tracksRecommendations)) || [],
+        deserialize(mappedTracksData(tracksRecommendations)) ?? [],
       tracksInLibrary,
       translations,
     },
