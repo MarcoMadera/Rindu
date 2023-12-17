@@ -7,7 +7,7 @@ import { CardType } from "./CardTrack";
 import { ArtistList, ExplicitSign } from "components";
 import { useOnScreen } from "hooks";
 import { ITrack } from "types/spotify";
-import { getTimeAgo, spanishCountries } from "utils";
+import { chooseImage, getTimeAgo, spanishCountries } from "utils";
 
 interface ITrackDetails {
   track: ITrack;
@@ -35,7 +35,7 @@ export function TrackDetails({
             //  eslint-disable-next-line @next/next/no-img-element
             <img
               loading="lazy"
-              src={track.album?.images[2]?.url ?? track.album?.images[1]?.url}
+              src={chooseImage(track.album?.images, 48).url}
               alt=""
               className="img"
               width="48"

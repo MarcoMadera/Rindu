@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { PlayButton } from "components";
 import { useContextMenu, useHeader, useSpotify } from "hooks";
 import { ITrack } from "types/spotify";
-import { getMainColorFromImage } from "utils";
+import { chooseImage, getMainColorFromImage } from "utils";
 
 interface ISingleTrackCard {
   track: ITrack;
@@ -47,7 +47,7 @@ export default function SingleTrackCard({
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={track.album?.images[0].url}
+        src={chooseImage(track.album?.images, 80).url}
         alt={track.name}
         id={`cover-image-${track.id ?? ""}`}
       />

@@ -4,8 +4,7 @@ import { decode } from "html-entities";
 import { useRouter } from "next/router";
 
 import { useContextMenu, useOnScreen } from "hooks";
-import { handleAsyncError } from "utils";
-import { getSiteUrl } from "utils/environment";
+import { chooseImage, handleAsyncError } from "utils";
 
 export enum CardType {
   SIMPLE = "simple",
@@ -96,14 +95,7 @@ export default function CardContent({
       ></div>
       {images && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img
-          loading="lazy"
-          src={
-            images[0]?.url ??
-            (images[1]?.url || `${getSiteUrl()}/defaultSongCover.jpeg`)
-          }
-          alt={title}
-        />
+        <img loading="lazy" src={chooseImage(images, 300).url} alt={title} />
       )}
       <div>
         <strong>{title}</strong>

@@ -10,7 +10,7 @@ import {
   useTranslations,
 } from "hooks";
 import { ITrack } from "types/spotify";
-import { ContentType, getSiteUrl, templateReplace, ToastMessage } from "utils";
+import { chooseImage, ContentType, templateReplace, ToastMessage } from "utils";
 
 interface ITrackImage {
   mouseEnter: boolean;
@@ -97,11 +97,7 @@ export function TrackImage({
       <style jsx>{`
         button.playButton {
           background-image: ${type === "presentation"
-            ? `url(${
-                track.album?.images?.[2]?.url ??
-                track.album?.images?.[1]?.url ??
-                `${getSiteUrl()}/defaultSongCover.jpeg`
-              })`
+            ? `url(${chooseImage(track.album?.images, 50).url})`
             : "unset"};
         }
         button.playButton {

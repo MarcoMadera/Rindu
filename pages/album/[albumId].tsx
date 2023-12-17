@@ -18,9 +18,9 @@ import { useAnalytics, useAuth, useHeader, useSpotify, useToast } from "hooks";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
 import {
+  chooseImage,
   ContentType,
   getAuth,
-  getSiteUrl,
   getTranslations,
   isCorruptedTrack,
   Page,
@@ -123,11 +123,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
       <PageHeader
         type={getPageHeaderByAlbumType(album?.album_type)}
         title={album?.name ?? ""}
-        coverImg={
-          album?.images?.[0]?.url ??
-          album?.images?.[1]?.url ??
-          `${getSiteUrl()}/defaultSongCover.jpeg`
-        }
+        coverImg={chooseImage(album?.images, 300).url}
         artists={album?.artists ?? []}
         totalTracks={album?.tracks.total ?? 0}
         release_date={album?.release_date ?? "1"}

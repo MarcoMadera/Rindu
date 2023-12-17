@@ -22,9 +22,9 @@ import {
 } from "hooks";
 import { HeaderType } from "types/pageHeader";
 import {
+  chooseImage,
   fullFilledValue,
   getAuth,
-  getSiteUrl,
   getTopTracksCards,
   getTranslations,
   Page,
@@ -63,11 +63,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
       <PageHeader
         type={HeaderType.Profile}
         title={currentUser?.display_name ?? ""}
-        coverImg={
-          currentUser?.images?.[0]?.url ??
-          currentUser?.images?.[1]?.url ??
-          `${getSiteUrl()}/defaultSongCover.jpeg`
-        }
+        coverImg={chooseImage(currentUser?.images, 300).url}
         totalPublicPlaylists={currentUserPlaylists?.total ?? 0}
         totalFollowers={currentUser?.followers?.total ?? 0}
         data={currentUser}

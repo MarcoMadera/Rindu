@@ -26,6 +26,7 @@ import {
 } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
 import {
+  chooseImage,
   ContentType,
   exitFullScreen,
   getMainColorFromImage,
@@ -121,7 +122,7 @@ export default function FullScreenPlayer(): ReactElement | null {
                   <div className="next-track-container__image">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={nextTracks?.[0].album?.images[0].url}
+                      src={chooseImage(nextTracks?.[0].album?.images, 50).url}
                       alt={nextTracks?.[0].name}
                       width={50}
                       height={50}
@@ -147,7 +148,7 @@ export default function FullScreenPlayer(): ReactElement | null {
               <div className="player__track__image">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={currentlyPlaying.album?.images[0].url}
+                  src={chooseImage(currentlyPlaying.album?.images, 500).url}
                   alt={currentlyPlaying.name}
                   id={"cover-image"}
                 />

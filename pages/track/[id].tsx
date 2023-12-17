@@ -25,10 +25,10 @@ import {
 } from "hooks";
 import { HeaderType } from "types/pageHeader";
 import {
+  chooseImage,
   ContentType,
   getAuth,
   getLyrics,
-  getSiteUrl,
   getTranslations,
   LyricsAction,
   Page,
@@ -158,11 +158,7 @@ export default function TrackPage({
       <PageHeader
         type={HeaderType.Song}
         title={track?.name ?? ""}
-        coverImg={
-          track?.album?.images?.[0]?.url ??
-          track?.album?.images?.[1]?.url ??
-          `${getSiteUrl()}/defaultSongCover.jpeg`
-        }
+        coverImg={chooseImage(track?.album?.images, 300).url}
         duration_s={track?.duration_ms ? track?.duration_ms / 1000 : 0}
         artists={track?.artists ?? []}
         release_date={track?.album?.release_date ?? ""}
@@ -230,7 +226,7 @@ export default function TrackPage({
         ) : null}
         {artistInfo && (
           <BigPill
-            img={artistInfo.images?.[0]?.url}
+            img={chooseImage(artistInfo.images, 100).url}
             title={translations.artist}
             subTitle={artistInfo.name}
             href={`/artist/${artistInfo.id}`}

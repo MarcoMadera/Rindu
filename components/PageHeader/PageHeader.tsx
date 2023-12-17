@@ -25,6 +25,7 @@ import { HeaderProps, HeaderType } from "types/pageHeader";
 import {
   formatNumber,
   formatTime,
+  getIdFromUri,
   getMainColorFromImage,
   getYear,
 } from "utils";
@@ -57,7 +58,7 @@ export default function PageHeader({
   const isPlaylist = type === HeaderType.Playlist;
   const isOwner = user?.id === pageDetails?.owner?.id;
   const enableEditPlaylist =
-    !!(pageDetails?.id && isPlaylist && isOwner) &&
+    !!(pageDetails?.uri && isPlaylist && isOwner) &&
     router.asPath.includes("/playlist/");
   const [pageHeaderImg, setPageHeaderImg] = useState(coverImg);
   const [pageHeaderTitle, setPageHeaderTitle] = useState(title);
@@ -134,7 +135,7 @@ export default function PageHeader({
                       title: "Edit Details",
                       modalElement: (
                         <EditPlaylistDetails
-                          id={pageDetails?.id}
+                          id={getIdFromUri(pageDetails.uri, "id")}
                           name={pageHeaderTitle}
                           description={pageHeaderDescription}
                           coverImg={pageHeaderImg}

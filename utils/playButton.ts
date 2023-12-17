@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
+import { getIdFromUri } from "./getIdFromUri";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { IPageDetails, ITrack } from "types/spotify";
 import { NewToast } from "types/toast";
@@ -125,15 +126,16 @@ export async function handlePremiumPlay(
   }
 
   if (playRes.ok) {
-    setPlaylistPlayingId(uriId ?? pageDetails?.id);
+    const id = getIdFromUri(pageDetails?.uri, "id");
+    setPlaylistPlayingId(uriId ?? id);
     const source =
       track || isSingle
         ? track?.uri || pageDetails?.uri
         : uri ?? pageDetails?.uri;
     const isCollection = source?.split(":")?.[3];
     setPlayedSource(
-      isCollection && pageDetails?.type && pageDetails?.id
-        ? `spotify:${pageDetails?.type}:${pageDetails?.id}`
+      isCollection && pageDetails?.type && id
+        ? `spotify:${pageDetails?.type}:${id}`
         : source
     );
   }
@@ -168,6 +170,6 @@ export function handleNonPremiumPlay(
     player.nextTrack();
   }
   if (pageDetails) {
-    setPlaylistPlayingId(pageDetails.id);
+    setPlaylistPlayingId(getIdFromUri(pageDetails?.uri, "id"));
   }
 }

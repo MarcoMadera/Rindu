@@ -13,8 +13,10 @@ import {
 } from "hooks";
 import { AsType } from "types/heading";
 import {
+  chooseImage,
   ContentType,
   formatTime,
+  getIdFromUri,
   getSiteUrl,
   getTimeAgo,
   handlePlayCurrentTrackError,
@@ -99,9 +101,10 @@ export default function EpisodeCard({
       const source = pageDetails?.uri;
       const isCollection = source?.split(":")?.[3];
       setPlaylistPlayingId(undefined);
+      const id = getIdFromUri(pageDetails?.uri, "id");
       setPlayedSource(
-        isCollection && pageDetails?.type && pageDetails?.id
-          ? `spotify:${pageDetails.type}:${pageDetails.id}`
+        isCollection && pageDetails?.type && id
+          ? `spotify:${pageDetails.type}:${id}`
           : source ?? item.uri
       );
     } catch (error) {
@@ -132,7 +135,7 @@ export default function EpisodeCard({
         <div className="coverImage">
           <div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={item.images?.[1]?.url} alt={item.name} />
+            <img src={chooseImage(item.images, 112).url} alt={item.name} />
           </div>
         </div>
         <div className="header">

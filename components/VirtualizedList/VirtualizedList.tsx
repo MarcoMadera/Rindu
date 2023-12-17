@@ -12,7 +12,12 @@ import { CardTrack } from "components";
 import { CardType } from "components/CardTrack/CardTrack";
 import { useAuth, useSpotify } from "hooks";
 import { ITrack } from "types/spotify";
-import { getTracksFromLibrary, isServer, mapPlaylistItems } from "utils";
+import {
+  getIdFromUri,
+  getTracksFromLibrary,
+  isServer,
+  mapPlaylistItems,
+} from "utils";
 import {
   checkTracksInLibrary,
   getTracksFromPlaylist,
@@ -72,7 +77,7 @@ export default function VirtualizedList({
       const data = isLibrary
         ? await getTracksFromLibrary(startIndex, accessToken)
         : await getTracksFromPlaylist(
-            pageDetails?.id ?? "",
+            getIdFromUri(pageDetails?.uri, "id") ?? "",
             startIndex,
             accessToken
           );
@@ -91,7 +96,7 @@ export default function VirtualizedList({
       addTracksToPlaylists,
       isGeneratedPlaylist,
       isLibrary,
-      pageDetails?.id,
+      pageDetails?.uri,
     ]
   );
 

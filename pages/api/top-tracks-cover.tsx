@@ -181,16 +181,18 @@ export default async function topTracksCover(
               alignItems: "center",
             }}
           >
-            <img
-              src={imageUrl}
-              width={140}
-              height={140}
-              style={{
-                border: "4px solid white",
-                borderRadius: "10px",
-                zIndex: 1,
-              }}
-            />
+            {imageUrl && (
+              <img
+                src={imageUrl}
+                width={140}
+                height={140}
+                style={{
+                  border: "4px solid white",
+                  borderRadius: "10px",
+                  zIndex: 1,
+                }}
+              />
+            )}
           </div>
         </div>
       ),

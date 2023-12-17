@@ -11,7 +11,7 @@ import {
   useToast,
   useTranslations,
 } from "hooks";
-import { ContentType, templateReplace, ToastMessage } from "utils";
+import { chooseImage, ContentType, templateReplace, ToastMessage } from "utils";
 import {
   checkEpisodesInLibrary,
   checkTracksInLibrary,
@@ -71,10 +71,7 @@ export default function NowPlaying(): ReactElement | null {
           <Link href={`/${type}/${id}`}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={
-                currentlyPlaying.album?.images[2]?.url ??
-                currentlyPlaying.album?.images[1]?.url
-              }
+              src={chooseImage(currentlyPlaying.album?.images, 64).url}
               alt={currentlyPlaying.album?.name}
               width={64}
               height={64}
@@ -84,10 +81,7 @@ export default function NowPlaying(): ReactElement | null {
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={
-                currentlyPlaying.album?.images[2]?.url ??
-                currentlyPlaying.album?.images[1]?.url
-              }
+              src={chooseImage(currentlyPlaying.album?.images, 64).url}
               alt={currentlyPlaying.album?.name}
               width={64}
               height={64}

@@ -13,6 +13,7 @@ import {
   useTranslations,
 } from "hooks";
 import {
+  chooseImage,
   ContentType,
   getAllMyPlaylists,
   templateReplace,
@@ -168,10 +169,7 @@ export default function SideBar(): ReactElement {
                 <Link href={`/${type}/${id}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={
-                      currentlyPlaying.album?.images[0]?.url ??
-                      currentlyPlaying.album?.images[1]?.url
-                    }
+                    src={chooseImage(currentlyPlaying.album?.images, 400).url}
                     alt={currentlyPlaying.album?.name}
                   />
                 </Link>
@@ -179,10 +177,7 @@ export default function SideBar(): ReactElement {
                 <>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={
-                      currentlyPlaying.album?.images[0]?.url ??
-                      currentlyPlaying.album?.images[1]?.url
-                    }
+                    src={chooseImage(currentlyPlaying.album?.images, 400).url}
                     alt={currentlyPlaying.album?.name}
                   />
                 </>

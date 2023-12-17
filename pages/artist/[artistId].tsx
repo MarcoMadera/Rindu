@@ -29,12 +29,12 @@ import {
 import { HeaderType } from "types/pageHeader";
 import {
   ArtistScrobbleInfo,
+  chooseImage,
   fullFilledValue,
   getArtistInfo,
   getAuth,
   getCarouselItems,
   getSetLists,
-  getSiteUrl,
   getTranslations,
   Page,
   serverRedirect,
@@ -196,11 +196,7 @@ export default function ArtistPage({
       <PageHeader
         type={HeaderType.Artist}
         title={currentArtist?.name ?? ""}
-        coverImg={
-          currentArtist?.images?.[0]?.url ??
-          currentArtist?.images?.[1]?.url ??
-          `${getSiteUrl()}/defaultSongCover.jpeg`
-        }
+        coverImg={chooseImage(currentArtist?.images, 300).url}
         totalFollowers={currentArtist?.followers?.total ?? 0}
         popularity={currentArtist?.popularity ?? 0}
         banner={banner ?? ""}
