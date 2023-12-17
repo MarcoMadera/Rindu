@@ -23,9 +23,9 @@ import { AsType } from "types/heading";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
 import {
+  chooseImage,
   ContentType,
   getAuth,
-  getSiteUrl,
   getTranslations,
   Page,
   serverRedirect,
@@ -135,11 +135,7 @@ const Shows: NextPage<PlaylistProps> = ({ show }) => {
       <PageHeader
         type={HeaderType.Podcast}
         title={show?.name ?? ""}
-        coverImg={
-          show?.images?.[0]?.url ??
-          show?.images?.[1]?.url ??
-          `${getSiteUrl()}/defaultSongCover.jpeg`
-        }
+        coverImg={chooseImage(show?.images, 300).url}
         ownerDisplayName={show?.publisher ?? ""}
         ownerId={show?.id ?? ""}
       />

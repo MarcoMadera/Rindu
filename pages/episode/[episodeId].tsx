@@ -16,8 +16,8 @@ import { useHeader, useSpotify } from "hooks";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
 import {
+  chooseImage,
   getAuth,
-  getSiteUrl,
   getTranslations,
   Page,
   serverRedirect,
@@ -112,11 +112,7 @@ export default function EpisodePage({
       <PageHeader
         type={HeaderType.Episode}
         title={episode?.name ?? "PodCast"}
-        coverImg={
-          episode?.show?.images?.[0]?.url ??
-          episode?.show?.images?.[1]?.url ??
-          `${getSiteUrl()}/defaultSongCover.jpeg`
-        }
+        coverImg={chooseImage(episode?.show.images, 300).url}
         ownerId={episode?.show?.id ?? ""}
         ownerDisplayName={episode?.show?.name ?? ""}
       />

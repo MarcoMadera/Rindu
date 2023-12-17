@@ -9,6 +9,7 @@ import { DisplayInFullScreen } from "types/spotify";
 import {
   calculateBannerOpacity,
   calculateHeaderOpacity,
+  chooseImage,
   isFullScreen,
   isServer,
   setOpacityStyles,
@@ -133,7 +134,10 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
             </a>
           ) : null}
           {user ? (
-            <UserWidget name={user.display_name} img={user.images?.[0]?.url} />
+            <UserWidget
+              name={user.display_name}
+              img={chooseImage(user.images, 40).url}
+            />
           ) : (
             <div className="userWidget"></div>
           )}

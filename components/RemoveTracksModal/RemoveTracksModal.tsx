@@ -11,6 +11,7 @@ import {
   analyzePlaylist,
   ContentType,
   divideArray,
+  getIdFromUri,
   templateReplace,
   ToastMessage,
 } from "utils";
@@ -66,7 +67,7 @@ export default function RemoveTracksModal({
     setIsLoadingComplete(false);
 
     analyzePlaylist(
-      pageDetails.id,
+      getIdFromUri(pageDetails?.uri, "id"),
       pageDetails.tracks?.total,
       isLibrary,
       accessToken,
@@ -125,7 +126,11 @@ export default function RemoveTracksModal({
   async function handleRemoveTracksFromPlaylist() {
     const indexes = [...new Set([...corruptedSongsIdx, ...duplicateTracksIdx])];
     try {
-      await removeTracks(pageDetails?.id, indexes, pageDetails?.snapshot_id);
+      await removeTracks(
+        getIdFromUri(pageDetails?.uri, "id"),
+        indexes,
+        pageDetails?.snapshot_id
+      );
       setAllTracks((tracks) => {
         return tracks.filter((_, i) => {
           if (indexes.includes(i)) {

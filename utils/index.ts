@@ -59,3 +59,5 @@ export * from "./wait";
 export * from "./within";
 export * from "./findIndexOrLast";
 export * from "./errors";
+export * from "./generateSrcSet";
+export * from "./chooseImage";

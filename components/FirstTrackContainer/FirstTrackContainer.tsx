@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { ArtistList, Heading, PlayButton } from "components";
 import { useAuth, useContextMenu, useOnScreen } from "hooks";
 import { ITrack } from "types/spotify";
-import { getMainColorFromImage } from "utils";
+import { chooseImage, getMainColorFromImage } from "utils";
 
 interface FirstTrackContainerProps {
   preview?: string | null;
@@ -68,7 +68,7 @@ export default function FirstTrackContainer({
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={track.album?.images[1].url}
+            src={chooseImage(track.album?.images, 100).url}
             width={100}
             height={100}
             alt=""
@@ -88,7 +88,7 @@ export default function FirstTrackContainer({
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={track.album?.images[1].url}
+            src={chooseImage(track.album?.images, 100).url}
             width={100}
             height={100}
             alt=""

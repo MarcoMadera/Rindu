@@ -24,6 +24,7 @@ import {
 import { ITrack } from "types/spotify";
 import {
   ContentType,
+  getIdFromUri,
   handlePlayCurrentTrackError,
   playCurrentTrack,
   templateReplace,
@@ -165,10 +166,17 @@ function CardTrack({
 
       const source = pageDetails?.uri;
       const isCollection = source?.split(":")?.[3];
-      setPlaylistPlayingId(isSingleTrack ? undefined : pageDetails?.id);
+      setPlaylistPlayingId(
+        isSingleTrack ? undefined : getIdFromUri(pageDetails?.uri, "id")
+      );
       setPlayedSource(
-        isCollection && pageDetails?.type && pageDetails?.id
-          ? `spotify:${pageDetails.type}:${pageDetails.id}`
+        isCollection &&
+          pageDetails?.type &&
+          getIdFromUri(pageDetails?.uri, "id")
+          ? `spotify:${pageDetails.type}:${getIdFromUri(
+              pageDetails?.uri,
+              "id"
+            )}`
           : source ?? track?.uri
       );
     } catch (error) {
@@ -216,7 +224,7 @@ function CardTrack({
         if (isPlaying && isTheSameAsCurrentlyPlaying) {
           player?.pause();
           setIsPlaying(false);
-          setPlaylistPlayingId(pageDetails?.id);
+          setPlaylistPlayingId(getIdFromUri(pageDetails?.uri, "id"));
         } else if (isPlayable) {
           if (isPremium) {
             (player as Spotify.Player)?.activateElement();

@@ -37,7 +37,7 @@ export interface IPageDetails {
   snapshot_id?: string;
   owner?: { id?: string; display_name?: string };
   followers?: { total?: number };
-  images?: { url?: string }[];
+  images?: SpotifyApi.ImageObject[];
 }
 
 export interface ITrackArtist {
@@ -55,7 +55,7 @@ export interface ITrack {
   album?: {
     id?: string;
     name?: string;
-    images: { url?: string; width?: number | null; height?: number | null }[];
+    images: Spotify.Image[];
     type?: "track" | "album" | "episode" | "ad";
     uri?: string;
     release_date?: string;

@@ -3,7 +3,7 @@ import { ReactElement } from "react";
 import Link from "next/link";
 
 import { Grid, Heading } from "components";
-import { colors } from "utils";
+import { chooseImage, colors } from "utils";
 
 interface IBrowseCategoriesProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
@@ -23,7 +23,7 @@ export default function BrowseCategories({
             className="BrowseCategories-category"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={icons[0].url} alt={name} />
+            <img src={chooseImage(icons, 100).url} alt={name} />
             <Heading number={3} as="h2">
               {name}
             </Heading>

@@ -30,7 +30,13 @@ import {
 import { PlaylistProps } from "pages/playlist/[playlist]";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
-import { ContentType, getSiteUrl, templateReplace, ToastMessage } from "utils";
+import {
+  chooseImage,
+  ContentType,
+  getIdFromUri,
+  templateReplace,
+  ToastMessage,
+} from "utils";
 import {
   addItemsToPlaylist,
   checkUsersFollowAPlaylist,
@@ -79,13 +85,13 @@ const Playlist: NextPage<
     async function fetchData() {
       const userFollowThisPlaylist = await checkUsersFollowAPlaylist(
         [user?.id ?? ""],
-        pageDetails?.id,
+        getIdFromUri(pageDetails?.uri, "id"),
         accessToken
       );
       setIsFollowingThisPlaylist(!!userFollowThisPlaylist?.[0]);
     }
     fetchData();
-  }, [accessToken, pageDetails?.id, user?.id, isMyPlaylist]);
+  }, [accessToken, pageDetails?.uri, user?.id, isMyPlaylist]);
 
   useEffect(() => {
     if (!pageDetails) {
@@ -112,7 +118,7 @@ const Playlist: NextPage<
         ?.getCurrentState()
         .then((e) => {
           if (e?.context.uri === pageDetails?.uri) {
-            setPlaylistPlayingId(pageDetails?.id);
+            setPlaylistPlayingId(getIdFromUri(pageDetails?.uri, "id"));
           }
         })
         .catch((err) => {
@@ -170,11 +176,7 @@ const Playlist: NextPage<
         }
         title={pageDetails?.name ?? ""}
         description={pageDetails?.description ?? ""}
-        coverImg={
-          pageDetails?.images?.[0]?.url ??
-          pageDetails?.images?.[1]?.url ??
-          `${getSiteUrl()}/defaultSongCover.jpeg`
-        }
+        coverImg={chooseImage(pageDetails?.images, 300).url}
         ownerDisplayName={pageDetails?.owner?.display_name ?? ""}
         ownerId={pageDetails?.owner?.id ?? ""}
         totalFollowers={pageDetails?.followers?.total ?? 0}
@@ -218,7 +220,7 @@ const Playlist: NextPage<
                           active={isFollowingThisPlaylist}
                           handleLike={async () => {
                             const followRes = await followPlaylist(
-                              pageDetails?.id
+                              getIdFromUri(pageDetails?.uri, "id")
                             );
                             if (followRes) {
                               setIsFollowingThisPlaylist(true);
@@ -238,7 +240,7 @@ const Playlist: NextPage<
                           }}
                           handleDislike={async () => {
                             const unfollowRes = await unfollowPlaylist(
-                              pageDetails?.id
+                              getIdFromUri(pageDetails?.uri, "id")
                             );
                             if (unfollowRes) {
                               setIsFollowingThisPlaylist(false);
@@ -320,25 +322,24 @@ const Playlist: NextPage<
                       playlistUri=""
                       track={track}
                       onClickAdd={() => {
-                        if (!pageDetails?.id) return;
-                        addItemsToPlaylist(pageDetails.id, [track.uri]).then(
-                          (res) => {
-                            if (res?.snapshot_id) {
-                              setAllTracks((prev) => {
-                                return [
-                                  ...prev,
-                                  {
-                                    ...track,
-                                    position: prev.length,
-                                    images: track.album.images,
-                                    duration: track.duration_ms,
-                                    added_at: Date.now(),
-                                  },
-                                ];
-                              });
-                            }
+                        const id = getIdFromUri(pageDetails?.uri, "id");
+                        if (!id) return;
+                        addItemsToPlaylist(id, [track.uri]).then((res) => {
+                          if (res?.snapshot_id) {
+                            setAllTracks((prev) => {
+                              return [
+                                ...prev,
+                                {
+                                  ...track,
+                                  position: prev.length,
+                                  images: track.album.images,
+                                  duration: track.duration_ms,
+                                  added_at: Date.now(),
+                                },
+                              ];
+                            });
                           }
-                        );
+                        });
                       }}
                       key={track.id}
                       type={CardType.Presentation}
@@ -364,32 +365,31 @@ const Playlist: NextPage<
                         playlistUri=""
                         track={track}
                         onClickAdd={() => {
-                          if (!pageDetails?.id) return;
-                          addItemsToPlaylist(pageDetails.id, [track.uri]).then(
-                            (res) => {
-                              if (res?.snapshot_id) {
-                                setAllTracks((prev) => {
-                                  return [
-                                    ...prev,
-                                    {
-                                      ...track,
-                                      position: prev.length,
+                          const id = getIdFromUri(pageDetails?.uri, "id");
+                          if (!id) return;
+                          addItemsToPlaylist(id, [track.uri]).then((res) => {
+                            if (res?.snapshot_id) {
+                              setAllTracks((prev) => {
+                                return [
+                                  ...prev,
+                                  {
+                                    ...track,
+                                    position: prev.length,
+                                    images: track.images,
+                                    duration: track.duration_ms,
+                                    added_at: Date.now(),
+                                    album: {
                                       images: track.images,
-                                      duration: track.duration_ms,
-                                      added_at: Date.now(),
-                                      album: {
-                                        images: track.images,
-                                        name: track.name,
-                                        uri: track.uri,
-                                        id: track.id,
-                                        type: "episode",
-                                      },
+                                      name: track.name,
+                                      uri: track.uri,
+                                      id: track.id,
+                                      type: "episode",
                                     },
-                                  ];
-                                });
-                              }
+                                  },
+                                ];
+                              });
                             }
-                          );
+                          });
                         }}
                         key={track.id}
                         type={CardType.Presentation}
