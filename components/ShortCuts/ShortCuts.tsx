@@ -65,10 +65,10 @@ export default function ShortCuts(): ReactElement {
     <div className="shortcuts-container">
       <p>
         {templateReplace(translations.shortCutdescription, [
-          <>
-            <kbd>Ctrl</kbd>
-            <kbd>/</kbd>
-          </>,
+          <Fragment key={"Shortcut to shortcut"}>
+            <kbd key={"Ctrl"}>Ctrl</kbd>
+            <kbd key={"/"}>/</kbd>
+          </Fragment>,
           <kbd key={"?"}>?</kbd>,
         ])}
       </p>

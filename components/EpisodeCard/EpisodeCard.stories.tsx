@@ -4,6 +4,7 @@ import { Meta, StoryFn } from "@storybook/react";
 
 import { EpisodeCard } from "components";
 import { HeaderType } from "types/pageHeader";
+import { ITrack } from "types/spotify";
 
 export default {
   title: "Components/EpisodeCard",
@@ -33,7 +34,7 @@ const Template: StoryFn<typeof EpisodeCard> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  item: {
+  track: {
     audio_preview_url:
       "https://p.scdn.co/mp3-preview/1dca233834f6a9e5a34a9445b92dd133580f9ef1",
     description:
@@ -45,23 +46,27 @@ Default.args = {
     },
     href: "https://api.spotify.com/v1/episodes/5aubkIdfpFOBcHaF8gxYwo",
     id: "5aubkIdfpFOBcHaF8gxYwo",
-    images: [
-      {
-        height: 640,
-        url: "https://i.scdn.co/image/ab6765630000ba8adea5d4cd16f16977604725eb",
-        width: 640,
-      },
-      {
-        height: 300,
-        url: "https://i.scdn.co/image/ab67656300005f1fdea5d4cd16f16977604725eb",
-        width: 300,
-      },
-      {
-        height: 64,
-        url: "https://i.scdn.co/image/ab6765630000f68ddea5d4cd16f16977604725eb",
-        width: 64,
-      },
-    ],
+    album: {
+      name: "Skinny Dipping: The Official Trailer",
+      release_date: "2021-01-20",
+      images: [
+        {
+          height: 640,
+          url: "https://i.scdn.co/image/ab6765630000ba8adea5d4cd16f16977604725eb",
+          width: 640,
+        },
+        {
+          height: 300,
+          url: "https://i.scdn.co/image/ab67656300005f1fdea5d4cd16f16977604725eb",
+          width: 300,
+        },
+        {
+          height: 64,
+          url: "https://i.scdn.co/image/ab6765630000f68ddea5d4cd16f16977604725eb",
+          width: 64,
+        },
+      ],
+    },
     is_externally_hosted: false,
     is_playable: true,
     language: "en",
@@ -71,6 +76,6 @@ Default.args = {
     release_date_precision: "day",
     type: "episode",
     uri: "spotify:episode:5aubkIdfpFOBcHaF8gxYwo",
-  } as SpotifyApi.EpisodeObjectSimplified,
+  } as ITrack,
   position: 0,
 };

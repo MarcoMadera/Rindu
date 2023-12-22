@@ -12,6 +12,7 @@ import {
   useTranslations,
 } from "hooks";
 import { AsType } from "types/heading";
+import { ITrack } from "types/spotify";
 import {
   chooseImage,
   ContentType,
@@ -30,13 +31,13 @@ import {
 } from "utils/spotifyCalls";
 
 interface EpisodeCardProps {
-  item: SpotifyApi.EpisodeObjectSimplified;
+  track: ITrack | undefined;
   position: number;
   savedEpisode: boolean;
 }
 
 export default function EpisodeCard({
-  item,
+  track,
   position,
   savedEpisode,
 }: EpisodeCardProps): ReactElement | null {
@@ -55,7 +56,7 @@ export default function EpisodeCard({
   const { accessToken, setAccessToken, isPremium } = useAuth();
   const { addToast } = useToast();
   const { addContextMenu } = useContextMenu();
-  const isThisEpisodePlaying = currentlyPlaying?.uri === item?.uri;
+  const isThisEpisodePlaying = currentlyPlaying?.uri === track?.uri;
   const [isEpisodeInLibrary, setIsEpisodeInLibrary] = useState<boolean>(
     savedEpisode ?? false
   );
@@ -72,14 +73,15 @@ export default function EpisodeCard({
     }
   }, [shouldUpdateList]);
 
-  if (!item) return null;
+  if (!track) return null;
 
   async function playThisTrack() {
     try {
       await playCurrentTrack(
         {
-          uri: item.uri,
-          preview_url: item.audio_preview_url,
+          position: track?.position,
+          preview_url: track?.preview_url,
+          uri: track?.uri,
         },
         {
           player,
@@ -95,7 +97,7 @@ export default function EpisodeCard({
       );
 
       if (!isPremium) {
-        setCurrentlyPlaying(item);
+        setCurrentlyPlaying(track);
       }
 
       const source = pageDetails?.uri;
@@ -105,7 +107,7 @@ export default function EpisodeCard({
       setPlayedSource(
         isCollection && pageDetails?.type && id
           ? `spotify:${pageDetails.type}:${id}`
-          : source ?? item.uri
+          : source ?? track?.uri
       );
     } catch (error) {
       handlePlayCurrentTrackError(error, {
@@ -125,7 +127,7 @@ export default function EpisodeCard({
         const y = e.pageY;
         addContextMenu({
           type: "cardTrack",
-          data: item,
+          data: track,
           position: { x, y },
         });
       }}
@@ -135,27 +137,34 @@ export default function EpisodeCard({
         <div className="coverImage">
           <div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={chooseImage(item.images, 112).url} alt={item.name} />
+            <img
+              src={chooseImage(track.album?.images, 112).url}
+              alt={track.name}
+            />
           </div>
         </div>
         <div className="header">
-          <Link href={`/episode/${item.id}`}>
+          <Link href={`/episode/${track.id}`}>
             <Heading number={5} as={AsType.SPAN}>
-              {item.name}
+              {track.name}
             </Heading>
           </Link>
         </div>
         <div className="description">
-          <p>{item.description}</p>
+          <p>{track.description}</p>
         </div>
         <div className="metadata">
           <div>
             <p>
-              {item.explicit ? <ExplicitSign /> : null}{" "}
-              {getTimeAgo(+new Date(item.release_date), "en")}
+              {track.explicit ? <ExplicitSign /> : null}{" "}
+              {track?.album?.release_date
+                ? getTimeAgo(+new Date(track?.album?.release_date), "en")
+                : null}
             </p>
             <p>
-              <span>{formatTime(item.duration_ms / 1000)}</span>
+              {track?.duration_ms ? (
+                <span>{formatTime(track.duration_ms / 1000)}</span>
+              ) : null}
             </p>
           </div>
         </div>
@@ -165,9 +174,10 @@ export default function EpisodeCard({
             isAdded={isEpisodeInLibrary}
             shouldUpdateList={shouldUpdateList}
             handleClick={async () => {
+              if (!track?.id) return false;
               if (isEpisodeInLibrary) {
                 const removeEpisodeRes = await removeEpisodesFromLibrary([
-                  item.id,
+                  track?.id,
                 ]);
                 if (removeEpisodeRes) {
                   addToast({
@@ -186,7 +196,7 @@ export default function EpisodeCard({
                 return true;
               } else {
                 const saveEpisodesToLibraryRes = await saveEpisodesToLibrary([
-                  item.id,
+                  track.id,
                 ]);
                 if (saveEpisodesToLibraryRes) {
                   addToast({
@@ -211,7 +221,7 @@ export default function EpisodeCard({
             aria-label="Share"
             onClick={() => {
               navigator.clipboard.writeText(
-                `${getSiteUrl()}/episode/${item.id}`
+                `${getSiteUrl()}/episode/${track.id}`
               );
               addToast({
                 message: translations[ToastMessage.CopiedToClipboard],
@@ -231,7 +241,7 @@ export default function EpisodeCard({
               const y = e.pageY;
               addContextMenu({
                 type: "cardTrack",
-                data: item,
+                data: track,
                 position: { x, y },
               });
             }}

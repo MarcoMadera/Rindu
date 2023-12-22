@@ -76,7 +76,19 @@ const Playlist: NextPage<
   const { addToast } = useToast();
   const { setModalData } = useModal();
 
-  const tracks = useMemo(() => playListTracks ?? [], [playListTracks]);
+  const tracks = useMemo(() => {
+    return (
+      playListTracks?.map((track) => {
+        return {
+          ...track,
+          album: {
+            ...track.album,
+            type: track.type === "episode" ? "show" : "album",
+          },
+        } as ITrack;
+      }) ?? []
+    );
+  }, [playListTracks]);
 
   useEffect(() => {
     if (isMyPlaylist) {

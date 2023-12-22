@@ -120,7 +120,7 @@ export default function Carousel({
               "aria-hidden": shouldFocus ? "false" : "true",
             } as Partial<unknown> & HTMLAttributes<HTMLElement>);
           }
-          return <>{child}</>;
+          return child;
         })}
       </section>
       <style jsx>{`

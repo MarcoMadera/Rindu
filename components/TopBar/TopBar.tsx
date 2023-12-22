@@ -120,7 +120,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
             </button>
           </div>
           <div className="extraElement">
-            {displayElement || displayOnFixed ? <>{element}</> : null}
+            {displayElement || displayOnFixed ? element : null}
           </div>
           {user && !isPremium ? (
             <a

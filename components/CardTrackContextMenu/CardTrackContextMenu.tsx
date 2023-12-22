@@ -14,6 +14,7 @@ import { menuContextStyles } from "styles/menuContextStyles";
 import { ITrack } from "types/spotify";
 import {
   ContentType,
+  getIdFromUri,
   getSiteUrl,
   positionSubMenu,
   templateReplace,
@@ -133,7 +134,7 @@ export default function CardTrackContextMenu({
                       <button
                         type="button"
                         onClick={() => {
-                          if (track?.uri && deviceId) {
+                          if (track?.uri) {
                             addItemsToPlaylist(playlist.id, [track.uri]).then(
                               (res) => {
                                 if (res) {
@@ -196,7 +197,10 @@ export default function CardTrackContextMenu({
       {track?.artists && track.artists?.length > 0 && track.artists?.[0].id && (
         <li>
           <Link
-            href={`/artist/${track.artists[0].id}`}
+            href={`/${getIdFromUri(track.uri, "type")}/${getIdFromUri(
+              track.uri,
+              "id"
+            )}`}
             tabIndex={0}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -210,7 +214,7 @@ export default function CardTrackContextMenu({
               removeContextMenu();
             }}
           >
-            Go to artist
+            Go to {getIdFromUri(track.uri, "type") ?? "artist"}
           </Link>
         </li>
       )}

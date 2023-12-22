@@ -192,14 +192,14 @@ export default function PageHeader({
                   <span className="stat">
                     {formatNumber(Number(stats?.listeners))}{" "}
                     {translations.listeners}
-                    <>&nbsp;&middot;</>&nbsp;
+                    &nbsp;&middot;&nbsp;
                   </span>
                 )}
                 {stats?.playcount && (
                   <span className="stat">
                     {formatNumber(Number(stats?.playcount))}{" "}
                     {translations.plays}
-                    <>&nbsp;&middot;</>&nbsp;
+                    &nbsp;&middot;&nbsp;
                   </span>
                 )}
               </span>
@@ -209,7 +209,7 @@ export default function PageHeader({
                 {!(
                   type === HeaderType.Profile || type === HeaderType.Artist
                 ) ? (
-                  <>&nbsp;&middot;</>
+                  <span>&nbsp;&middot;</span>
                 ) : (
                   ""
                 )}{" "}

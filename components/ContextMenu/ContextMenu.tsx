@@ -1,4 +1,4 @@
-import { ReactElement, useLayoutEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
 import {
   CardContentContextMenu,
@@ -24,7 +24,7 @@ export default function ContextMenu(): ReactElement | null {
     x: false,
     y: false,
   });
-  const contextMenuRef = useRef<HTMLElement>(null);
+  const [element, setElement] = useState<HTMLElement | null>(null);
 
   useEventListener({
     target: document.querySelector("#__next"),
@@ -34,15 +34,15 @@ export default function ContextMenu(): ReactElement | null {
     ignore: !contextMenuData?.data,
   });
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     positionContextMenu({
-      positionData: contextMenuData,
-      elementRef: contextMenuRef,
+      currentPosition: contextMenuData?.position,
+      element: element,
       setPosition: setContextMenuPos,
       setIsOffScreen: setIsContextMenuOffscreen,
       offsets: { x: 30, y: 10 },
     });
-  }, [contextMenuData]);
+  }, [contextMenuData?.position, element]);
 
   if (!contextMenuData) {
     return null;
@@ -66,7 +66,7 @@ export default function ContextMenu(): ReactElement | null {
       <section
         role="menu"
         data-type={contextMenuData.data?.type}
-        ref={contextMenuRef}
+        ref={(element) => setElement(element)}
         style={{ top, left }}
       >
         {contextMenuData.data?.type === "track" ||

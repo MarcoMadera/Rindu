@@ -44,7 +44,7 @@ export interface ITrackArtist {
   name?: string;
   id?: string;
   uri?: string;
-  type?: "artist";
+  type?: "artist" | "show";
 }
 
 export interface ITrack {
@@ -56,7 +56,7 @@ export interface ITrack {
     id?: string;
     name?: string;
     images: Spotify.Image[];
-    type?: "track" | "album" | "episode" | "ad";
+    type?: "track" | "album" | "episode" | "ad" | "show";
     uri?: string;
     release_date?: string;
   };
@@ -70,6 +70,7 @@ export interface ITrack {
   explicit?: boolean;
   added_at?: string | number;
   popularity?: number;
+  description?: string;
 }
 
 export enum DisplayInFullScreen {
