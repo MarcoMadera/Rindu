@@ -1,4 +1,4 @@
-import { Dispatch, RefObject, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 import {
   CONTEXT_MENU_ITEM_HEIGHT,
@@ -13,7 +13,7 @@ import {
 export function calculateContextMenuPosition(
   isOffScreen: boolean,
   maxEdgePosition: number,
-  position: number,
+  position: number | undefined,
   defaultValue: number
 ): number {
   if (isOffScreen) {
@@ -44,11 +44,11 @@ const calculateOffScreenHeight = (height: number, offset = 0) => {
 };
 
 interface IHandlePositioning {
-  positionData:
-    | ICardTrackContextMenuData
-    | ICardContentContextMenuData
+  currentPosition:
+    | ICardTrackContextMenuData["position"]
+    | ICardContentContextMenuData["position"]
     | undefined;
-  elementRef: RefObject<HTMLElement>;
+  element: HTMLElement | null;
   setPosition: Dispatch<
     SetStateAction<{
       x: number;
@@ -68,26 +68,23 @@ interface IHandlePositioning {
 }
 
 export function positionContextMenu({
-  positionData,
-  elementRef,
+  currentPosition,
+  element,
   setPosition,
   setIsOffScreen,
   offsets,
 }: IHandlePositioning): void {
-  if (!positionData?.position?.x || !positionData?.position?.y) {
-    setIsOffScreen({ x: false, y: false });
+  const contextMenuRect = element?.getBoundingClientRect();
+  if (!contextMenuRect || !currentPosition) {
     return;
   }
 
-  const contextMenuRect = elementRef.current?.getBoundingClientRect();
-  if (!contextMenuRect) return;
-
   const isContextMenuWidthOffScreen = isOffScreenWidth(
-    positionData.position.x,
+    currentPosition.x,
     contextMenuRect.width
   );
   const isContextMenuHeightOffScreen = isOffScreenHeight(
-    positionData.position.y,
+    currentPosition.y,
     contextMenuRect.height
   );
 

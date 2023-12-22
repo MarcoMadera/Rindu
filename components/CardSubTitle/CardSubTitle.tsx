@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactNode } from "react";
 
 import { SubTitle } from "components";
 import { CardType } from "components/CardContent";
@@ -13,7 +13,7 @@ interface ICardSubTitle {
 export default function CardSubTitle({
   type,
   item,
-}: ICardSubTitle): ReactElement {
+}: Readonly<ICardSubTitle>): ReactNode {
   const { translations } = useTranslations();
 
   if (type === CardType.ALBUM && "album_type" in item) {
@@ -27,8 +27,8 @@ export default function CardSubTitle({
   }
 
   if (type === CardType.ARTIST) {
-    return <>{translations.artist}</>;
+    return translations.artist;
   }
 
-  return <></>;
+  return null;
 }

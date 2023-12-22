@@ -90,14 +90,14 @@ const Shows: NextPage<PlaylistProps> = ({ show }) => {
           name: show.name,
           images: show.images,
           release_date: episode?.release_date,
-          type: "album",
+          type: "show",
           uri: show.uri,
         },
         artists: [
           {
-            name: show.publisher ?? "",
+            name: show.name ?? show.publisher ?? "",
             id: show.id ?? "",
-            type: "artist",
+            type: "show",
             uri: `spotify:show:${show.id}`,
           },
         ],
@@ -109,6 +109,7 @@ const Shows: NextPage<PlaylistProps> = ({ show }) => {
         position: 1,
         type: "episode",
         uri: episode?.uri,
+        description: episode.description,
       })),
     [show]
   );
@@ -196,11 +197,11 @@ const Shows: NextPage<PlaylistProps> = ({ show }) => {
               {translations.allEpisodes}
             </Heading>
             <div>
-              {show?.episodes.items.map((item, i) => {
+              {allTracks?.map((track, i) => {
                 return (
                   <EpisodeCard
-                    key={item.id}
-                    item={item}
+                    key={track.id}
+                    track={track}
                     position={i}
                     savedEpisode={savedEpisodes[i]}
                   />

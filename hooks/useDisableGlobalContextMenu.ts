@@ -2,10 +2,14 @@ import { useEffect } from "react";
 
 export function useDisableGlobalContextMenu(): void {
   useEffect(() => {
-    window.addEventListener("contextmenu", (e) => e.preventDefault());
+    function preventDefault(e: MouseEvent) {
+      e.preventDefault();
+    }
+
+    window.addEventListener("contextmenu", preventDefault);
 
     return (): void => {
-      window.removeEventListener("contextmenu", (e) => e.preventDefault());
+      window.removeEventListener("contextmenu", preventDefault);
     };
   }, []);
 }

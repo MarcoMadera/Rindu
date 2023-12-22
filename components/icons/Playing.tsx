@@ -16,5 +16,5 @@ export default function Playing(): ReactElement {
       height: 36,
     }
   );
-  return <>{View}</>;
+  return View;
 }
