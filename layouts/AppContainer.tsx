@@ -1,5 +1,4 @@
 import {
-  MutableRefObject,
   PropsWithChildren,
   ReactElement,
   useEffect,
@@ -11,6 +10,7 @@ import {
   FullScreenLyrics,
   FullScreenQueue,
   ResizablePanel,
+  ScrollBar,
   SideBar,
   TopBar,
 } from "components";
@@ -19,7 +19,7 @@ import { DisplayInFullScreen } from "types/spotify";
 import { isFullScreen, isServer } from "utils";
 
 export function AppContainer({ children }: PropsWithChildren): ReactElement {
-  const appRef = useRef<HTMLDivElement>();
+  const appRef = useRef<HTMLDivElement | null>(null);
   const { displayInFullScreen, currentlyPlaying, hideSideBar, setHideSideBar } =
     useSpotify();
   const { lyricsBackgroundColor } = useLyricsContext();
@@ -80,20 +80,19 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
           minWidth={`${leftPanelMinWidth}px`}
           maxWidth={`${leftPanelMaxWidth}px`}
         >
-          <SideBar />
+          <SideBar width={leftPanelWidth} />
           <ResizablePanel.Handle onResize={setLeftPanelDraggedWidth} />
         </ResizablePanel.Item>
         <ResizablePanel.Item defaultSize="100%" id="right">
-          <div
+          <ScrollBar
             className="app"
-            ref={appRef as MutableRefObject<HTMLDivElement>}
             style={{
               "--left-panel-width": `${
                 hideSideBar || isFullScreenApp ? "0" : leftPanelWidth
               }px`,
             }}
           >
-            <TopBar appRef={appRef} />
+            <TopBar />
             {shouldDisplayLyrics ? (
               <FullScreenLyrics />
             ) : shouldDisplayQueue ? (
@@ -101,7 +100,7 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
             ) : (
               children
             )}
-          </div>
+          </ScrollBar>
         </ResizablePanel.Item>
       </ResizablePanel.Group>
       <style jsx>{`
@@ -112,7 +111,7 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
           div.container :global(#left) {
             display: none;
           }
-          .app {
+          :global(.app) {
             width: 100%;
           }
         }
@@ -126,23 +125,23 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
           display: flex;
           width: calc(100vw + 1px);
         }
-        .app {
+        :global(.app) {
           overflow-y: overlay;
           overflow-x: hidden;
           position: relative;
-          width: calc(100vw - var(--left-panel-width, 0) + 2px);
+          width: calc(100vw - var(--left-panel-width, 0px));
         }
-        .app,
-        .app :global(main) {
+        :global(.app),
+        :global(.app main) {
           height: ${isFullScreenApp
             ? "100%"
             : "calc((var(--vh, 1vh) * 100) - 90px)"};
         }
-        .app::-webkit-scrollbar {
+        :global(.app::-webkit-scrollbar) {
           width: 14px;
         }
         @media screen and (max-width: 768px) {
-          .app::-webkit-scrollbar {
+          :global(.app::-webkit-scrollbar) {
             width: 4px;
           }
         }
@@ -152,13 +151,13 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
           div.container {
             height: calc((var(--vh, 1vh) * 100) - ${playerHeight}px);
           }
-          .app {
+          :global(.app) {
             width: 100%;
             height: calc((var(--vh, 1vh) * 100) - ${playerHeight}px);
           }
         }
         @media (max-width: 685px) {
-          .app {
+          :global(.app) {
             height: calc((var(--vh, 1vh) * 100) - ${playerHeight}px);
           }
         }

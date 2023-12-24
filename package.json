@@ -27,7 +27,8 @@
     "next": "14.0.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-virtualized": "9.22.5"
+    "react-virtualized": "9.22.5",
+    "simplebar-react": "^3.2.4"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "7.6.4",

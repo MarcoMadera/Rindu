@@ -19,7 +19,7 @@ export default {
 } as Meta<typeof SideBar>;
 
 const Template: StoryFn<typeof SideBar> = () => {
-  return <SideBar />;
+  return <SideBar width={245} />;
 };
 
 export const Default = Template.bind({});

@@ -20,7 +20,7 @@ export default function ContentContainer({
       <style jsx>{`
       main {
           display: block;
-          margin: ${hasPageHeader ? "-60px auto 0 auto" : "0 auto"};
+          margin: ${hasPageHeader ? "0 auto 0 auto" : "60px auto"};
           padding: ${hasPageHeader ? "0" : "0px 20px 30px"};
           min-height: calc((var(--vh, 1vh) * 100) - 90px);
           width: 100%;
@@ -29,7 +29,7 @@ export default function ContentContainer({
         @media (max-width: 1000px) {
           main {
             width: 100vw;
-            margin: ${hasPageHeader ? "-60px 0 0 0" : "0"};
+            margin: ${hasPageHeader ? "0 0 0 0" : "0"};
           }
         }
       }
