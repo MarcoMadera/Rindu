@@ -147,7 +147,6 @@ export default function PlaylistText({
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 16px;
           margin-left: 2px;
           padding-bottom: 10px;
         }

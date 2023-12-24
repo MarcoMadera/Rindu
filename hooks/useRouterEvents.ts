@@ -14,7 +14,9 @@ export function useRouterEvents(
   const { setModalData } = useModal();
 
   useEffect(() => {
-    const app = appRef?.current;
+    const app =
+      appRef?.current ??
+      document.querySelector("#right .simplebar-content-wrapper");
 
     const handleRouteChange = () => {
       app?.scrollTo(0, 0);

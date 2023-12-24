@@ -52,6 +52,7 @@ export default function FullScreenLyrics(): ReactElement {
       )}
       <style jsx>{`
         :global(.app) {
+          background-color: ${lyricsBackgroundColor};
           position: relative;
         }
         .lyrics-container :global(.lyrics-pip-button) {
@@ -91,6 +92,7 @@ export default function FullScreenLyrics(): ReactElement {
       `}</style>
       <style jsx>{`
         .lyrics-container {
+          margin-top: 60px;
           width: 100%;
           display: flex;
           min-width: calc(100% - 128px);

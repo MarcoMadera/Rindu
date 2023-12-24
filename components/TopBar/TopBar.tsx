@@ -16,7 +16,7 @@ import {
 } from "utils";
 
 interface TopBarProps {
-  appRef?: MutableRefObject<HTMLDivElement | undefined>;
+  appRef?: MutableRefObject<HTMLDivElement | null>;
 }
 
 export default function TopBar({ appRef }: TopBarProps): ReactElement {
@@ -29,7 +29,9 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
   const { setDisplayInFullScreen, displayInFullScreen } = useSpotify();
 
   useRouterEvents(() => {
-    const app = appRef?.current ?? document.querySelector(".app");
+    const app =
+      appRef?.current ??
+      document.querySelector("#right .simplebar-content-wrapper");
     const scrollTop = app?.scrollTop || 0;
     const headerOpacity = calculateHeaderOpacity({
       scrollTop,
@@ -47,7 +49,7 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
     });
 
     setDisplayElement(headerOpacity >= 1 && !!element);
-  }, appRef);
+  });
 
   if (isLoginPage) {
     return (
@@ -261,9 +263,10 @@ export default function TopBar({ appRef }: TopBarProps): ReactElement {
         }
         .container {
           height: 60px;
-          position: sticky;
+          position: fixed;
           top: 0px;
           z-index: 9999999999;
+          width: calc(100vw - var(--left-panel-width, 0px) + 2px);
         }
         @media screen and (max-width: 768px) {
           .extraElement {

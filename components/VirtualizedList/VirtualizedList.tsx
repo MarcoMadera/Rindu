@@ -101,7 +101,9 @@ export default function VirtualizedList({
   );
 
   const scrollElement = !isServer()
-    ? document?.getElementsByClassName("app")?.[0]
+    ? (document.querySelector(
+        "#right .simplebar-content-wrapper"
+      ) as HTMLElement)
     : undefined;
   return (
     <WindowScroller scrollElement={scrollElement}>

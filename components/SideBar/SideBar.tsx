@@ -1,9 +1,9 @@
-import { ReactElement, useEffect } from "react";
+import { PropsWithChildren, ReactElement, useEffect } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { Logo, PlaylistText } from "components";
+import { Logo, PlaylistText, ScrollBar } from "components";
 import { Add, Chevron, Heart, Home, Library, Search } from "components/icons";
 import {
   useAnalytics,
@@ -21,7 +21,9 @@ import {
 } from "utils";
 import { createPlaylist } from "utils/spotifyCalls";
 
-export default function SideBar(): ReactElement {
+export default function SideBar({
+  width,
+}: Readonly<PropsWithChildren<{ width: number }>>): ReactElement {
   const {
     playlists,
     setPlaylists,
@@ -134,19 +136,21 @@ export default function SideBar(): ReactElement {
           </Link>
           <hr />
         </section>
-        <section>
-          {playlists?.map(({ id, uri, name, type }) => {
-            return (
-              <PlaylistText
-                key={id}
-                id={id}
-                uri={uri}
-                name={name}
-                type={type}
-              />
-            );
-          })}
-        </section>
+        <ScrollBar style={{ width: width }}>
+          <section className="playlists">
+            {playlists?.map(({ id, uri, name, type }) => {
+              return (
+                <PlaylistText
+                  key={id}
+                  id={id}
+                  uri={uri}
+                  name={name}
+                  type={type}
+                />
+              );
+            })}
+          </section>
+        </ScrollBar>
         <section
           className={`sidebarImg-container ${
             isShowingSideBarImg ? "animate" : ""
@@ -339,7 +343,7 @@ export default function SideBar(): ReactElement {
         section:nth-of-type(2) :global(a:hover) div {
           opacity: 1;
         }
-        section:nth-of-type(3) {
+        section.playlists {
           min-height: 100%;
           padding: 0 8px 20px 24px;
           height: 100%;
