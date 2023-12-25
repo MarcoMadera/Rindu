@@ -10,7 +10,7 @@ import {
 
 import { useLyrics, useLyricsInPictureInPicture, useSpotify } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
-import { IFormatLyricsResponse } from "utils";
+import { getRandomColor, IFormatLyricsResponse } from "utils";
 
 export interface ILyricsContext {
   lyricsProgressMs: number;
@@ -35,9 +35,8 @@ export function LyricsContextContextProvider({
   const [lyricsProgressMs, setLyricsProgressMs] = useState(0);
   const [lyricLineColor, setLyricLineColor] = useState<string>("#fff");
   const [lyricTextColor, setLyricTextColor] = useState<string>("#fff");
-  const [lyricsBackgroundColor, setLyricsBackgroundColor] = useState<
-    string | undefined
-  >();
+  const [lyricsBackgroundColor, setLyricsBackgroundColor] =
+    useState<string>(getRandomColor());
   const requestLyrics = !!(
     displayInFullScreen === DisplayInFullScreen.Lyrics ||
     (isPictureInPictureLyircsCanvas && document.pictureInPictureElement)
