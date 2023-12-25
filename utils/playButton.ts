@@ -164,7 +164,7 @@ export function handleNonPremiumPlay(
   if (track?.preview_url || allTracks[0]?.preview_url) {
     const audio = track?.preview_url || allTracks[0].preview_url;
     player.src = audio as string;
-    player.play();
+    player.play?.();
     setCurrentlyPlaying(track || allTracks[0]);
   } else {
     player.nextTrack();
