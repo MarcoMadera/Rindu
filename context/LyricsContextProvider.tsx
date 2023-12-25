@@ -15,7 +15,7 @@ import { getRandomColor, IFormatLyricsResponse } from "utils";
 export interface ILyricsContext {
   lyricsProgressMs: number;
   lyricTextColor: string;
-  lyricsBackgroundColor?: string;
+  lyricsBackgroundColor: string;
   lyricLineColor: string;
   lyrics: IFormatLyricsResponse | null;
   lyricsError: string | null;
@@ -23,7 +23,7 @@ export interface ILyricsContext {
   setLyricsProgressMs: Dispatch<SetStateAction<number>>;
   setLyricLineColor: Dispatch<SetStateAction<string>>;
   setLyricTextColor: Dispatch<SetStateAction<string>>;
-  setLyricsBackgroundColor: Dispatch<SetStateAction<string | undefined>>;
+  setLyricsBackgroundColor: Dispatch<SetStateAction<string>>;
 }
 
 const LyricsContext = createContext<ILyricsContext | undefined>(undefined);
