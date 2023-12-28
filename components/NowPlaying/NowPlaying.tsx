@@ -75,6 +75,7 @@ export default function NowPlaying(): ReactElement | null {
               alt={currentlyPlaying.album?.name}
               width={64}
               height={64}
+              id="playing-now-cover"
             />
           </Link>
         ) : (

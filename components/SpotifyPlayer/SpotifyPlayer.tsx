@@ -17,7 +17,13 @@ import {
 import { AppContainer } from "layouts/AppContainer";
 import FullScreenPlayer from "layouts/FullScreenPlayer";
 import { DisplayInFullScreen } from "types/spotify";
-import { isFullScreen, isServer, requestFullScreen, ToastMessage } from "utils";
+import {
+  exitFullScreen,
+  isFullScreen,
+  isServer,
+  requestFullScreen,
+  ToastMessage,
+} from "utils";
 
 export default function SpotifyPlayer(): ReactElement {
   const { user, isPremium } = useAuth();
@@ -117,10 +123,16 @@ export default function SpotifyPlayer(): ReactElement {
     isFullScreen() &&
     (shouldDisplayLyrics || shouldDisplayQueue);
 
+  useEffect(() => {
+    if (displayInFullScreen === DisplayInFullScreen.App && isFullScreen()) {
+      exitFullScreen();
+    }
+  }, [displayInFullScreen]);
+
   return (
     <footer>
       <div ref={ref}>
-        <FullScreenPlayer />
+        {isFullScreenPlayer ? <FullScreenPlayer /> : null}
         {shouldDisplayApp ? <AppContainer /> : null}
       </div>
       <div className="container">

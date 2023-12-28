@@ -44,9 +44,8 @@ export default function ToastCard({
         p {
           font-size: 14px;
           align-items: center;
-          grid-gap: 10px;
           overflow-wrap: break-word;
-          margin: 0 10px;
+          margin: 0;
         }
         article {
           border-radius: 8px;
@@ -74,14 +73,6 @@ export default function ToastCard({
           }
           to {
             opacity: 0;
-          }
-        }
-        div > :global(svg) {
-          align-self: center;
-        }
-        @media screen and (min-width: 500px) {
-          div {
-            max-width: 400px;
           }
         }
       `}</style>

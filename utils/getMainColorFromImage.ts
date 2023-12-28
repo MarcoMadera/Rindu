@@ -2,15 +2,21 @@ import { Dispatch, SetStateAction } from "react";
 
 import { rgbToHex } from "utils";
 
+const cache: Record<string, string> = {};
+
 export function getMainColorFromImage(
   imageId: string,
-  callback: Dispatch<SetStateAction<string>>,
+  callback: Dispatch<SetStateAction<string>> | ((color: string) => void),
   config?: { dsx: number; dwy: number; dw: number; dh: number }
 ): void {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   const img = document.querySelector(`#${imageId}`) as HTMLImageElement;
   if (!img || !ctx) {
+    return;
+  }
+  if (cache[img.src]) {
+    callback(cache[img.src]);
     return;
   }
   const image = new Image();
@@ -48,6 +54,7 @@ export function getMainColorFromImage(
       return;
     }
     const hex = rgbToHex(rgb);
+    cache[img.src] = hex;
     callback(hex);
   };
 }

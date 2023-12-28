@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
 import { decode } from "html-entities";
 import Link from "next/link";
@@ -54,7 +54,7 @@ export default function PageHeader({
   const { translations } = useTranslations();
   const { setModalData } = useModal();
   const { user } = useAuth();
-  const { pageDetails } = useSpotify();
+  const { pageDetails, displayInFullScreen } = useSpotify();
   const isPlaylist = type === HeaderType.Playlist;
   const isOwner = user?.id === pageDetails?.owner?.id;
   const enableEditPlaylist =
@@ -66,11 +66,16 @@ export default function PageHeader({
     useState(description);
 
   useEffect(() => {
-    // This will reset page header image and title when navigating to a new page
-    setPageHeaderImg(coverImg);
-    setPageHeaderTitle(title);
-    setPageHeaderDescription(description);
-  }, [coverImg, title, description]);
+    // This will reset page header image color when navigating to a new page
+    getMainColorFromImage("playlist-cover-image", setHeaderColor);
+  }, [
+    coverImg,
+    title,
+    description,
+    setHeaderColor,
+    displayInFullScreen,
+    router.asPath,
+  ]);
 
   const isAlbumVariant =
     type === HeaderType.Album ||
@@ -91,10 +96,11 @@ export default function PageHeader({
     [HeaderType.Radio]: translations.pageHeaderRadio,
     [HeaderType.Top]: translations.pageHeaderTop,
   };
-  const headingRef = useRef<HTMLHeadingElement>(null);
+  const [headingElement, setHeadingElement] =
+    useState<HTMLHeadingElement | null>(null);
 
   useDynamicFontSize({
-    ref: headingRef,
+    element: headingElement,
     maxFontSize: 120,
     minFontSize: 40,
     maxHeight: 150,
@@ -112,13 +118,13 @@ export default function PageHeader({
         <img
           src={pageHeaderImg}
           alt=""
-          id="cover-image"
-          onLoad={() => {
-            getMainColorFromImage("cover-image", setHeaderColor);
+          id="playlist-cover-image"
+          onLoadedData={() => {
+            getMainColorFromImage("playlist-cover-image", setHeaderColor);
           }}
         />
       ) : (
-        !banner && <div id="cover-image"></div>
+        !banner && <div id="playlist-playlist-cover-image"></div>
       )}
       <div className="playlistInfo">
         <Eyebrow>{headerTypeEyebrowText[type]}</Eyebrow>
@@ -150,7 +156,7 @@ export default function PageHeader({
                   }
                 }}
               >
-                <Heading number={1} ref={headingRef}>
+                <Heading number={1} ref={setHeadingElement}>
                   {pageHeaderTitle}
                 </Heading>
               </button>
@@ -307,7 +313,7 @@ export default function PageHeader({
             font-size: 14px;
             display: inline-block;
           }
-          #cover-image {
+          #playlist-cover-image {
             margin-right: 15px;
             align-self: center;
             align-self: flex-end;
@@ -321,7 +327,7 @@ export default function PageHeader({
               ? "50%"
               : type === HeaderType.Episode || type === HeaderType.Podcast
                 ? "12px"
-                : "0px"};
+                : "4px"};
             object-fit: cover;
             object-position: center center;
           }
@@ -335,7 +341,7 @@ export default function PageHeader({
               justify-content: start;
               width: fit-content;
             }
-            #cover-image {
+            #playlist-cover-image {
               margin: 0;
               margin-top: -40px;
             }

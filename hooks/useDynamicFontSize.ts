@@ -3,7 +3,7 @@ import { useLayoutEffect } from "react";
 import { useOnSmallScreen } from "./useOnSmallScreen";
 
 interface UseDynamicFontSizeProps {
-  ref: React.RefObject<HTMLHeadingElement>;
+  element: HTMLHeadingElement | null;
   maxFontSize: number;
   minFontSize: number;
   maxHeight: number;
@@ -83,7 +83,7 @@ export function fitText(
 }
 
 export function useDynamicFontSize({
-  ref,
+  element,
   maxFontSize,
   minFontSize,
   maxHeight,
@@ -91,7 +91,6 @@ export function useDynamicFontSize({
 }: UseDynamicFontSizeProps): void {
   const isSmallScreen = useOnSmallScreen();
   useLayoutEffect(() => {
-    const element = ref.current;
     if (isSmallScreen) {
       if (!element) return;
       element.style.fontSize = `${minFontSize}px`;
@@ -112,9 +111,9 @@ export function useDynamicFontSize({
       element.style.fontSize = "";
     };
   }, [
-    ref,
+    element,
     maxFontSize,
-    ref.current?.textContent,
+    element?.textContent,
     minFontSize,
     maxHeight,
     lineNum,
