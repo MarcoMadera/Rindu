@@ -29,7 +29,7 @@ export default function ContentContainer({
         @media (max-width: 1000px) {
           main {
             width: 100vw;
-            margin: ${hasPageHeader ? "0 0 0 0" : "0"};
+            margin: ${hasPageHeader ? "0 0 0 0" : "60px auto"};
           }
         }
       }

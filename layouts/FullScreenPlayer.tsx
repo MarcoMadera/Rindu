@@ -46,7 +46,6 @@ export default function FullScreenPlayer(): ReactElement | null {
   const { accessToken } = useAuth();
   const {
     currentlyPlaying,
-    displayInFullScreen,
     nextTracks,
     player,
     setDisplayInFullScreen: setDisplayInFullScreenSpotify,
@@ -80,13 +79,8 @@ export default function FullScreenPlayer(): ReactElement | null {
   );
 
   useEffect(() => {
-    if (!currentlyPlaying?.id) return;
-    getMainColorFromImage("cover-image", setHeaderColor);
-  }, [currentlyPlaying?.id, setHeaderColor]);
-
-  const isFullScreenPlayer = displayInFullScreen === DisplayInFullScreen.Player;
-
-  if (!isFullScreenPlayer) return null;
+    getMainColorFromImage("player-cover-image", setHeaderColor);
+  }, [setHeaderColor, currentlyPlaying]);
 
   return (
     <div ref={playerRef} className="fullScreenPlayer">
@@ -145,155 +139,161 @@ export default function FullScreenPlayer(): ReactElement | null {
           </div>
           <div className="player__track">
             {currentlyPlaying && (
-              <div className="player__track__image">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={chooseImage(currentlyPlaying.album?.images, 500).url}
-                  alt={currentlyPlaying.name}
-                  id={"cover-image"}
-                />
-              </div>
-            )}
-            <div className="player-container">
-              <div className="player__track__info">
-                <div className="player__track__info-text">
-                  <Heading number={2}>
-                    {currentlyPlaying?.id ? (
-                      <Link
-                        href={`/${currentlyPlaying.type ?? "track"}/${
-                          currentlyPlaying.id
-                        }`}
-                        className="trackName"
-                        onContextMenu={(e) => {
-                          e.preventDefault();
-                          const x = e.pageX;
-                          const y = e.pageY;
-                          addContextMenu({
-                            type: "cardTrack",
-                            data: currentlyPlaying,
-                            position: { x, y },
-                          });
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      >
-                        <ScrollableText>{currentlyPlaying.name}</ScrollableText>
-                      </Link>
-                    ) : (
-                      <ScrollableText>{currentlyPlaying?.name}</ScrollableText>
-                    )}
-                  </Heading>
-                  <ScrollableText>
-                    <span className="trackArtists">
-                      <ArtistList
-                        artists={currentlyPlaying?.artists}
-                        onClick={() => {
-                          if (playerRef.current) {
-                            if (isFullScreen()) {
-                              exitFullScreen();
-                            } else {
-                              requestFullScreen(playerRef.current);
-                            }
-                          }
-                        }}
-                      />
-                    </span>
-                  </ScrollableText>
-                </div>
-                <div className="player__track__info-options"></div>
-              </div>
-              <ProgressBar />
-              <div className="player-container__controls">
-                <div className="player-container__controls__left">
-                  {currentlyPlaying && !currentlyPlaying?.is_local && (
-                    <Heart
-                      active={false}
-                      className="navBar-Button"
-                      handleDislike={async () => {
-                        const removeFromLibrary =
-                          currentlyPlaying.type === "episode"
-                            ? removeEpisodesFromLibrary
-                            : removeTracksFromLibrary;
-                        const res = await removeFromLibrary(
-                          [currentlyPlaying.id ?? ""],
-                          accessToken
-                        );
-
-                        if (res) {
-                          addToast({
-                            variant: "success",
-                            message: templateReplace(
-                              translations[ToastMessage.TypeRemovedFrom],
-                              [
-                                `${
-                                  currentlyPlaying.type === "episode"
-                                    ? translations[ContentType.Episode]
-                                    : translations[ContentType.Track]
-                                }`,
-                                translations[ContentType.Library],
-                              ]
-                            ),
-                          });
-                          return true;
-                        }
-                        return null;
-                      }}
-                      handleLike={async () => {
-                        const saveToLibrary =
-                          currentlyPlaying.type === "episode"
-                            ? saveEpisodesToLibrary
-                            : saveTracksToLibrary;
-                        const saveRes = await saveToLibrary(
-                          [currentlyPlaying.id ?? ""],
-                          accessToken
-                        );
-                        if (saveRes) {
-                          addToast({
-                            variant: "success",
-                            message: templateReplace(
-                              translations[ToastMessage.TypeAddedTo],
-                              [
-                                `${
-                                  currentlyPlaying.type === "episode"
-                                    ? translations[ContentType.Episode]
-                                    : translations[ContentType.Track]
-                                }`,
-                                translations[ContentType.Library],
-                              ]
-                            ),
-                          });
-                          return true;
-                        }
-                        return null;
-                      }}
-                    />
-                  )}
-                  {currentlyPlaying?.type === "track" && (
-                    <FullScreenControl
-                      icon={Lyrics}
-                      displayInFullScreen={DisplayInFullScreen.Lyrics}
-                    />
-                  )}
-                  <FullScreenControl
-                    icon={Queue}
-                    displayInFullScreen={DisplayInFullScreen.Queue}
+              <>
+                <div className="player__track__image">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={chooseImage(currentlyPlaying.album?.images, 500).url}
+                    alt={currentlyPlaying.name}
+                    id={"player-cover-image"}
                   />
                 </div>
-                <Player />
-                <div className="player-container__controls__right">
-                  <VolumeControl />
-                  <button
-                    className="navBar-Button fullScreenButton"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDisplayInFullScreenSpotify(DisplayInFullScreen.App);
-                      exitFullScreen();
-                    }}
-                  >
-                    <FullScreenExit />
-                  </button>
+                <div className="player__track__info">
+                  <div className="player__track__info-text">
+                    <Heading number={2}>
+                      {currentlyPlaying?.id ? (
+                        <Link
+                          href={`/${currentlyPlaying.type ?? "track"}/${
+                            currentlyPlaying.id
+                          }`}
+                          className="trackName"
+                          onContextMenu={(e) => {
+                            e.preventDefault();
+                            const x = e.pageX;
+                            const y = e.pageY;
+                            addContextMenu({
+                              type: "cardTrack",
+                              data: currentlyPlaying,
+                              position: { x, y },
+                            });
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                        >
+                          <ScrollableText>
+                            {currentlyPlaying.name}
+                          </ScrollableText>
+                        </Link>
+                      ) : (
+                        <ScrollableText>
+                          {currentlyPlaying?.name}
+                        </ScrollableText>
+                      )}
+                    </Heading>
+                    <ScrollableText>
+                      <span className="trackArtists">
+                        <ArtistList
+                          artists={currentlyPlaying?.artists}
+                          onClick={() => {
+                            if (playerRef.current) {
+                              if (isFullScreen()) {
+                                exitFullScreen();
+                              } else {
+                                requestFullScreen(playerRef.current);
+                              }
+                            }
+                          }}
+                        />
+                      </span>
+                    </ScrollableText>
+                  </div>
+                  <div className="player__track__info-options"></div>
                 </div>
+              </>
+            )}
+          </div>
+          <div className="player-container">
+            <ProgressBar />
+            <div className="player-container__controls">
+              <div className="player-container__controls__left">
+                {currentlyPlaying && !currentlyPlaying?.is_local && (
+                  <Heart
+                    active={false}
+                    className="navBar-Button"
+                    handleDislike={async () => {
+                      const removeFromLibrary =
+                        currentlyPlaying.type === "episode"
+                          ? removeEpisodesFromLibrary
+                          : removeTracksFromLibrary;
+                      const res = await removeFromLibrary(
+                        [currentlyPlaying.id ?? ""],
+                        accessToken
+                      );
+
+                      if (res) {
+                        addToast({
+                          variant: "success",
+                          message: templateReplace(
+                            translations[ToastMessage.TypeRemovedFrom],
+                            [
+                              `${
+                                currentlyPlaying.type === "episode"
+                                  ? translations[ContentType.Episode]
+                                  : translations[ContentType.Track]
+                              }`,
+                              translations[ContentType.Library],
+                            ]
+                          ),
+                        });
+                        return true;
+                      }
+                      return null;
+                    }}
+                    handleLike={async () => {
+                      const saveToLibrary =
+                        currentlyPlaying.type === "episode"
+                          ? saveEpisodesToLibrary
+                          : saveTracksToLibrary;
+                      const saveRes = await saveToLibrary(
+                        [currentlyPlaying.id ?? ""],
+                        accessToken
+                      );
+                      if (saveRes) {
+                        addToast({
+                          variant: "success",
+                          message: templateReplace(
+                            translations[ToastMessage.TypeAddedTo],
+                            [
+                              `${
+                                currentlyPlaying.type === "episode"
+                                  ? translations[ContentType.Episode]
+                                  : translations[ContentType.Track]
+                              }`,
+                              translations[ContentType.Library],
+                            ]
+                          ),
+                        });
+                        return true;
+                      }
+                      return null;
+                    }}
+                  />
+                )}
+                {currentlyPlaying?.type === "track" && (
+                  <FullScreenControl
+                    icon={Lyrics}
+                    displayInFullScreen={DisplayInFullScreen.Lyrics}
+                  />
+                )}
+                <FullScreenControl
+                  icon={Queue}
+                  displayInFullScreen={DisplayInFullScreen.Queue}
+                />
+              </div>
+              <Player />
+              <div className="player-container__controls__right">
+                <VolumeControl />
+                <button
+                  className="navBar-Button fullScreenButton"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDisplayInFullScreenSpotify(DisplayInFullScreen.App);
+                    exitFullScreen();
+                  }}
+                >
+                  <FullScreenExit />
+                </button>
               </div>
             </div>
           </div>
@@ -344,8 +344,8 @@ export default function FullScreenPlayer(): ReactElement | null {
         .player__track {
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          align-items: center;
+          justify-content: end;
+          align-items: flex-start;
           height: 100%;
           position: relative;
           background-color: var(--header-color);
@@ -359,17 +359,13 @@ export default function FullScreenPlayer(): ReactElement | null {
           user-select: none;
         }
         .player-container {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
           z-index: 1;
-          min-height: 250px;
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
           gap: 2rem;
+          margin: 0.5rem 0 2rem 0;
         }
         .player-container :global(.player *) {
           display: flex;
@@ -428,22 +424,12 @@ export default function FullScreenPlayer(): ReactElement | null {
         .navBar-Button.fullScreenButton:hover {
           color: #27da65;
         }
-        .player__track__image {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          z-index: 1;
-          display: flex;
-          flex-direction: column;
-        }
-        #cover-image {
+        #player-cover-image {
           inset: 0px;
           box-sizing: border-box;
           padding: 0px;
           border: none;
-          margin: auto auto 250px 24px;
+          margin: auto auto 0 24px;
           display: block;
           border-radius: 0.375rem;
           object-fit: cover;
@@ -455,6 +441,7 @@ export default function FullScreenPlayer(): ReactElement | null {
           align-items: center;
           align-self: center;
           justify-content: center;
+          max-width: 100%;
         }
         .next-track-container {
           background: #1b1b1f;
@@ -535,6 +522,17 @@ export default function FullScreenPlayer(): ReactElement | null {
           width: 100%;
         }
         @media screen and (max-width: 768px) {
+          .player-container {
+            min-height: unset;
+            justify-content: start;
+            gap: 0;
+          }
+          .player-container :global(.progressBar) {
+            margin: 1rem;
+          }
+          .player__track {
+            justify-content: end;
+          }
           .player-container__controls {
             grid-template-columns: 1fr 3fr 1fr;
             grid-template-rows: 1fr 1fr;
@@ -557,13 +555,15 @@ export default function FullScreenPlayer(): ReactElement | null {
           .player_header {
             display: flex;
             justify-content: center;
+            padding: 24px 2rem 0;
           }
           .player_header__left,
           .player_header__right {
             display: none;
           }
-          #cover-image {
-            margin: 32px auto;
+          #player-cover-image {
+            margin: 0.5rem auto;
+            max-width: calc(100% - 3rem);
           }
         }
       `}</style>

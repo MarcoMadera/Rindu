@@ -42,6 +42,12 @@ export default function Toast(): ReactElement | null {
             position: relative;
             z-index: 993332323233232399;
           }
+          @media screen and (max-width: 500px) {
+            section {
+              max-width: calc(100% -2rem);
+              width: max-content;
+            }
+          }
         `}</style>
       </section>
     </PortalTarget>

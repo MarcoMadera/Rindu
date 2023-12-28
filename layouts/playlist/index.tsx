@@ -173,6 +173,7 @@ const Playlist: NextPage<
         </Head>
       )}
       <PageHeader
+        key={pageDetails?.uri}
         type={
           pageDetails?.type === "concert"
             ? HeaderType.Concert
