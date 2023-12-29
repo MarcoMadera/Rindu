@@ -9,7 +9,7 @@ interface IGridProps {
 
 export default function Grid({
   children,
-  minWidthItem = "180px",
+  minWidthItem = "190px",
   maxWidthItem = "1fr",
   marginTop = "20px",
   marginBottom = "0px",
