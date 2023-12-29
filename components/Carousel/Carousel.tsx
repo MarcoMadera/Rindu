@@ -127,6 +127,9 @@ export default function Carousel({
         .carousel-container {
           margin: 10px 0 30px;
         }
+        section.carousel-content > :global(*) {
+          width: min-content;
+        }
         .header {
           display: flex;
           justify-content: space-between;
