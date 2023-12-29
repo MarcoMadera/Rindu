@@ -61,6 +61,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
   return (
     <ContentContainer hasPageHeader>
       <PageHeader
+        key={currentUser?.uri}
         type={HeaderType.Profile}
         title={currentUser?.display_name ?? ""}
         coverImg={chooseImage(currentUser?.images, 300).url}
