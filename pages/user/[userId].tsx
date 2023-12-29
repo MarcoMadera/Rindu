@@ -6,7 +6,6 @@ import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { useRouter } from "next/router";
 
 import {
-  Carousel,
   ContentContainer,
   Grid,
   Heading,
@@ -72,7 +71,10 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
       <ContentContainer>
         {isThisUser && (
           <>
-            <Carousel title={translations.topTracksPlaylistHeading} gap={24}>
+            <Heading id={"title-topTracksPlaylistHeading"} number={2}>
+              {translations.topTracksPlaylistHeading}
+            </Heading>
+            <Grid>
               {getTopTracksCards(user, translations).map((item) => {
                 if (!item) return null;
                 const { images, name, id, subTitle, url } = item;
@@ -88,7 +90,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
                   />
                 );
               })}
-            </Carousel>
+            </Grid>
             {playlists?.length > 0 && (
               <>
                 <Heading id={"title-playlist"} number={2}>

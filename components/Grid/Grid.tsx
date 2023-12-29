@@ -31,6 +31,9 @@ export default function Grid({
           grid-template-rows: auto;
           transition: 400ms ease-in;
         }
+        div > :global(*) {
+          width: 100%;
+        }
         @media (max-width: 420px) {
           div {
             grid-template-columns: repeat(
