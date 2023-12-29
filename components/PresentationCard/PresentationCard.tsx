@@ -1,7 +1,5 @@
 import { HTMLAttributes, ReactElement } from "react";
 
-import { useRouter } from "next/router";
-
 import { CardContent, PlayButton } from "components";
 import { CardType } from "components/CardContent";
 import { useAuth, useSpotify } from "hooks";
@@ -34,8 +32,6 @@ function PresentationCard({
     ? undefined
     : `spotify:${type || "track"}:${id}`;
   const { isPremium } = useAuth();
-  const router = useRouter();
-  const isCollection = router.pathname.includes("collection");
   const { allTracks } = useSpotify();
 
   return (
@@ -80,7 +76,6 @@ function PresentationCard({
           background-color: #181818;
           transition: background-color 0.25s ease;
           border-radius: calc(var(--card-container-border-radius) + 2px);
-          width: ${isCollection ? "unset" : "min-content"};
         }
         span {
           position: absolute;
