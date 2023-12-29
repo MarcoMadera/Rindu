@@ -156,6 +156,7 @@ export default function TrackPage({
         </Head>
       )}
       <PageHeader
+        key={track?.uri}
         type={HeaderType.Song}
         title={track?.name ?? ""}
         coverImg={chooseImage(track?.album?.images, 300).url}

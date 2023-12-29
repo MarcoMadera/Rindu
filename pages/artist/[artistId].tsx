@@ -194,6 +194,7 @@ export default function ArtistPage({
   return (
     <ContentContainer hasPageHeader>
       <PageHeader
+        key={currentArtist?.uri}
         type={HeaderType.Artist}
         title={currentArtist?.name ?? ""}
         coverImg={chooseImage(currentArtist?.images, 300).url}

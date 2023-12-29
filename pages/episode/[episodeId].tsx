@@ -110,6 +110,7 @@ export default function EpisodePage({
         </Head>
       )}
       <PageHeader
+        key={episode?.uri}
         type={HeaderType.Episode}
         title={episode?.name ?? "PodCast"}
         coverImg={chooseImage(episode?.show.images, 300).url}

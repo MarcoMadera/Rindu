@@ -121,6 +121,7 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
   return (
     <ContentContainer hasPageHeader>
       <PageHeader
+        key={album?.uri}
         type={getPageHeaderByAlbumType(album?.album_type)}
         title={album?.name ?? ""}
         coverImg={chooseImage(album?.images, 300).url}
