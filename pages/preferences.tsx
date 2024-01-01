@@ -141,7 +141,7 @@ export default function PreferencesPage({
         .inputs-container {
           display: grid;
           gap: 8px 24px;
-          grid-template-columns: 2fr 1fr;
+          grid-template-columns: 1fr 250px;
         }
         .label-container {
           align-items: center;
