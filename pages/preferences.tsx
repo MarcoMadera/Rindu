@@ -1,5 +1,6 @@
 import { ChangeEvent, ReactElement, useEffect, useState } from "react";
 
+import DOMPurify from "dompurify";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { useRouter } from "next/router";
@@ -46,7 +47,10 @@ export default function PreferencesPage({
   }, [router, trackWithGoogleAnalytics]);
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    const value = DOMPurify.sanitize(event.target.value);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    setSearchTerm(value);
   };
 
   const handleDeleteSearch = () => {

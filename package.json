@@ -21,6 +21,7 @@
   "dependencies": {
     "@vercel/analytics": "1.1.1",
     "cheerio": "1.0.0-rc.12",
+    "dompurify": "^3.0.6",
     "fast-levenshtein": "3.0.0",
     "html-entities": "2.4.0",
     "lottie-react": "2.4.0",
@@ -42,6 +43,7 @@
     "@storybook/theming": "7.6.4",
     "@testing-library/jest-dom": "6.1.5",
     "@testing-library/react": "14.1.2",
+    "@types/dompurify": "^3.0.5",
     "@types/fast-levenshtein": "0.0.4",
     "@types/jest": "29.5.11",
     "@types/react": "18.2.43",

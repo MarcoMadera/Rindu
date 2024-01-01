@@ -7,6 +7,8 @@ import {
   ReactNode,
 } from "react";
 
+import { escapeRegExp } from "lodash";
+
 interface TextHighlighterProps {
   text: string;
 }
@@ -18,7 +20,8 @@ export default function TextHighlighter({
   const highlightText = (children: ReactNode): ReactNode => {
     return Children.map(children, (child: ReactNode) => {
       if (typeof child === "string") {
-        const parts = child.split(new RegExp(`(${text})`, "gi"));
+        const escapedText = escapeRegExp(text);
+        const parts = child.split(new RegExp(`(${escapedText})`, "gi"));
 
         return parts.map((part, index) =>
           part.toLowerCase() === text.toLowerCase() ? (
