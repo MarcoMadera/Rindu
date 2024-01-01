@@ -4,6 +4,7 @@ export { default as Broom } from "./Broom";
 export { default as Chevron } from "./Chevron";
 export { default as Clock } from "./Clock";
 export { default as DeviceConnect } from "./DeviceConnect";
+export { default as Delete } from "./Delete";
 export { default as ExternalLink } from "./ExternalLink";
 export { default as FullScreen } from "./FullScreen";
 export { default as FullScreenExit } from "./FullScreenExit";

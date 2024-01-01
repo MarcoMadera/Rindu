@@ -1,12 +1,17 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ChangeEvent, ReactElement, useEffect, useState } from "react";
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { useRouter } from "next/router";
 
-import { ContentContainer, Heading } from "components";
-import SelectControl from "components/SelectControl";
-import { useAnalytics, useTranslations } from "hooks";
+import {
+  ContentContainer,
+  Heading,
+  Searchable,
+  SearchInput,
+  SelectControl,
+} from "components";
+import { useAnalytics, useSpotify, useTranslations } from "hooks";
 import { AsType } from "types/heading";
 import {
   getAuth,
@@ -27,64 +32,101 @@ interface PreferencesProps {
 
 export default function PreferencesPage({
   lang,
-}: PreferencesProps): ReactElement {
+}: Readonly<PreferencesProps>): ReactElement {
   const { translations } = useTranslations();
   const [language, setLanguage] = useState(lang);
   const [isReload, setIsReload] = useState(false);
   const { trackWithGoogleAnalytics } = useAnalytics();
   const router = useRouter();
+  const { setIgnoreShortcuts } = useSpotify();
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     trackWithGoogleAnalytics();
   }, [router, trackWithGoogleAnalytics]);
 
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleDeleteSearch = () => {
+    setSearchTerm("");
+  };
+
   return (
     <ContentContainer>
       <div className="preferences-container">
-        <Heading number={3} as={AsType.H1}>
-          {translations.preferences}
-        </Heading>
-        <Heading number={4} as={AsType.H2}>
-          {translations.language}
-        </Heading>
         <div className="inputs-container">
-          <div className="label-container">
-            <label htmlFor="language">{translations.languageLabel}</label>
-          </div>
-          <div className="select-container">
-            <SelectControl
-              options={[
-                { label: translations.spanish, value: "es" },
-                { label: translations.english, value: "en" },
-              ]}
-              id="language"
-              defaultValue={language}
-              onChange={(e) => {
-                setLanguage(e.target.value);
-                setIsReload(true);
-              }}
-            />
-          </div>
-          {isReload && (
-            <div>
-              <button
-                className="reload button"
-                onClick={() => {
-                  makeCookie({
-                    name: "language",
-                    value: language,
-                    age: 60 * 60 * 24 * 30 * 2,
-                  });
-
-                  setIsReload(false);
-                  window.location.reload();
-                }}
-              >
-                {translations.reload}
-              </button>
-            </div>
-          )}
+          <Heading number={3} as={AsType.H1}>
+            {translations.preferences}
+          </Heading>
+          <SearchInput
+            hide={!searchTerm}
+            handleDeleteSearch={handleDeleteSearch}
+            type="text"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            onFocus={() => {
+              setIgnoreShortcuts.on();
+            }}
+            onBlur={() => {
+              setIgnoreShortcuts.off();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === " ") {
+                e.stopPropagation();
+              }
+            }}
+            autoComplete="false"
+            autoCorrect="false"
+            spellCheck="false"
+          />
         </div>
+        <Searchable searchTerm={searchTerm}>
+          <>
+            <Heading number={4} as={AsType.H2}>
+              {translations.language}
+            </Heading>
+            <div className="inputs-container">
+              <div className="label-container">
+                <label htmlFor="language">{translations.languageLabel}</label>
+              </div>
+              <div className="select-container">
+                <SelectControl
+                  options={[
+                    { label: translations.spanish, value: "es" },
+                    { label: translations.english, value: "en" },
+                  ]}
+                  id="language"
+                  defaultValue={language}
+                  onChange={(e) => {
+                    setLanguage(e.target.value);
+                    setIsReload(true);
+                  }}
+                />
+              </div>
+            </div>
+          </>
+        </Searchable>
+        {isReload && (
+          <div>
+            <button
+              className="reload button"
+              onClick={() => {
+                makeCookie({
+                  name: "language",
+                  value: language,
+                  age: 60 * 60 * 24 * 30 * 2,
+                });
+
+                setIsReload(false);
+                window.location.reload();
+              }}
+            >
+              {translations.reload}
+            </button>
+          </div>
+        )}
       </div>
       <style jsx>{`
         .preferences-container {
@@ -177,21 +219,21 @@ export async function getServerSideProps({
 }): Promise<{
   props: Partial<PreferencesProps>;
 }> {
-  const country = (query.country || "US") as string;
+  const country = (query.country ?? "US") as string;
   const cookies = req?.headers?.cookie ?? "";
   const language =
-    takeCookie("language", cookies) || getLanguageByCountry(country);
+    takeCookie("language", cookies) ?? getLanguageByCountry(country);
   const translations = getTranslations(country, Page.Preferences);
   if (!cookies) {
     serverRedirect(res, "/");
     return { props: {} };
   }
 
-  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+  const { accessToken, user } = (await getAuth(res, cookies)) ?? {};
 
   return {
     props: {
-      user: user || null,
+      user: user ?? null,
       accessToken: accessToken ?? null,
       translations,
       lang: language,

@@ -76,3 +76,6 @@ export { default as LyricsPIPButton } from "./LyricsPIPButton";
 export { default as PortalTarget } from "./PortalTarget";
 export { default as SearchResults } from "./SearchResults";
 export { default as ScrollBar } from "./ScrollBar";
+export { default as Searchable } from "./Searchable";
+export { default as TextHighlighter } from "./TextHighlighter";
+export { default as SearchInput } from "./SearchInput";
