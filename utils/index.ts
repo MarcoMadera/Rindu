@@ -61,3 +61,4 @@ export * from "./findIndexOrLast";
 export * from "./errors";
 export * from "./generateSrcSet";
 export * from "./chooseImage";
+export * from "./extractTextFromChildren";
