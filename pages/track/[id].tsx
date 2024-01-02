@@ -402,7 +402,6 @@ export async function getServerSideProps({
         track.artists[0].name,
         track.name,
         id,
-        accessToken,
         LyricsAction.LoadTrackPage
       ),
       6000

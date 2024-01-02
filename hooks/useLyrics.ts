@@ -44,7 +44,7 @@ export function useLyrics({ requestLyrics }: { requestLyrics: boolean }): {
     }
 
     within(
-      getLyrics(artist, title, trackId, accessToken, LyricsAction.Fullscreen),
+      getLyrics(artist, title, trackId, LyricsAction.Fullscreen),
       40000,
       artist + title
     ).then((res) => {
