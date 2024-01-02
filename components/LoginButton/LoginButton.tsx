@@ -1,16 +1,22 @@
 import { ReactElement } from "react";
 
 import { useTranslations } from "hooks";
-import { getSpotifyLoginURL } from "utils";
+import { getSpotifyLoginURL, isServer } from "utils";
 
 export default function LoginButton(): ReactElement {
   const { translations } = useTranslations();
 
+  const handleClick = async () => {
+    if (isServer()) return;
+    const url = await getSpotifyLoginURL();
+    window.location.href = url;
+  };
+
   return (
     <>
-      <a href={getSpotifyLoginURL()}>{translations.loginButton}</a>
+      <button onClick={handleClick}>{translations.loginButton}</button>
       <style jsx>{`
-        a {
+        button {
           border-radius: 500px;
           text-decoration: none;
           color: #fff;
@@ -29,17 +35,17 @@ export default function LoginButton(): ReactElement {
           border: 1px solid #ffffffb3;
           will-change: transform;
         }
-        a:focus,
-        a:hover {
+        button:focus,
+        button:hover {
           transform: scale(1.06);
           background-color: #000;
           border: 1px solid #fff;
         }
-        a:active {
+        button:active {
           transform: scale(1);
         }
         @media screen and (min-width: 0px) and (max-width: 780px) {
-          a {
+          button {
             padding: 8px 24px;
           }
         }

@@ -8,6 +8,7 @@ import { ExternalLink } from "components/icons";
 import { useAuth, useModal, useTranslations } from "hooks";
 import {
   ACCESS_TOKEN_COOKIE,
+  CODE_VERIFIER_COOKIE,
   eatCookie,
   EXPIRE_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
@@ -171,6 +172,7 @@ export default function UserWidget({
               eatCookie(ACCESS_TOKEN_COOKIE);
               eatCookie(REFRESH_TOKEN_COOKIE);
               eatCookie(EXPIRE_TOKEN_COOKIE);
+              eatCookie(CODE_VERIFIER_COOKIE);
               router.push("/");
               setUser(null);
               setIsLogin(false);

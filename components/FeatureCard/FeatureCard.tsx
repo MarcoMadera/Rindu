@@ -8,8 +8,8 @@ interface IFeatureCard {
   description: string;
   imageSrc: string;
   imageAlt: string;
-  anchorHref: string;
-  anchorText: string;
+  onCTAClick: () => void;
+  ctaText: string;
 }
 
 export default function FeatureCard({
@@ -18,8 +18,8 @@ export default function FeatureCard({
   description,
   imageSrc,
   imageAlt,
-  anchorHref,
-  anchorText,
+  onCTAClick,
+  ctaText,
 }: IFeatureCard): ReactElement {
   return (
     <CardContainer className="featured-card">
@@ -31,7 +31,7 @@ export default function FeatureCard({
         <span>{eyeBrowText}</span>
         <h2>{titleText}</h2>
         <p>{description}</p>
-        <a href={anchorHref}>{anchorText}</a>
+        <button onClick={onCTAClick}>{ctaText}</button>
       </div>
       <style jsx>{`
         img {

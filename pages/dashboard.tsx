@@ -367,7 +367,7 @@ export async function getServerSideProps({
   };
 
   if (query.code) {
-    const authorization = await getAuthorizationByCode(query.code);
+    const authorization = await getAuthorizationByCode(query.code, cookies);
     if (authorization) {
       tokens = authorization;
     }
