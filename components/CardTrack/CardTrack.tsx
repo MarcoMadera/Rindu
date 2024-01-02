@@ -104,7 +104,7 @@ function CardTrack({
   const { addToast } = useToast();
   const { translations } = useTranslations();
   const isVisible = useOnScreen(trackRef);
-  const { setAccessToken, isPremium } = useAuth();
+  const { isPremium } = useAuth();
 
   const isSmallScreen = useOnSmallScreen((isSmall) => {
     if (isSmall) {
@@ -154,7 +154,6 @@ function CardTrack({
           playlistUri,
           isSingleTrack,
           position,
-          setAccessToken,
           uri,
           uris,
         }

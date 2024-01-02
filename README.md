@@ -13,19 +13,19 @@ npm run dev
 
 For the project to work properly a `.env.local` file similar to [`.env.example`](https://github.com/MarcoMadera/spotify-playlists-cleaner/blob/master/.env.example) is required.
 
-https://github.com/MarcoMadera/Rindu/blob/6f94bfe195f0d9497fd13060429b2f30ff795a83/.env.example#L1-L8
+https://github.com/MarcoMadera/Rindu/blob/main/.env.example#L1-L7
 
-To get the client ID and client secret, go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/).
+To get the client ID, go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/).
 
-Create a new app and copy the client ID and client secret.
+Create a new app and copy the client ID.
 
-Create a `.env.local` file and paste the client ID and client secret as the example [`.env.example`](https://github.com/MarcoMadera/spotify-playlists-cleaner/blob/master/.env.example).
+Create a `.env.local` file and paste the client ID as the example [`.env.example`](https://github.com/MarcoMadera/spotify-playlists-cleaner/blob/master/.env.example).
 
 In the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/) for your app, go to "edit settings" and click "Add redirect URI" and paste the following URL: http://localhost:3000/dashboard
 
-You can get the SETLIST_FM_API_KEY [here](https://api.setlist.fm/docs/1.0/index.html) and paste it in the `.env.local`.
+You can get the SETLIST_FM_API_KEY [here](https://api.setlist.fm/docs/1.0/index.html) and paste it into the `.env.local`.
 
-**Important:** The `.env.local` file with client id, client secret and apikeys is not pushed to GitHub.
+**Important:** The `.env.local` file with client ID and API keys is not pushed to GitHub.
 
 Now you can run the project locally.
 
@@ -49,7 +49,7 @@ You can find the coverage of the tests at [coverage.rindu.marcomadera.com](https
 
 ## **About the project**
 
-Built with ReactJs/NextJs. It started as a simple script to clean spotify playlists. It served as a way to clean my playlists and to learn how to use the [Spotify API](https://developer.spotify.com/documentation/web-api/).
+Built with ReactJs/NextJs. It started as a simple script to clean Spotify playlists. It served as a way to clean my playlists and learn how to use the [Spotify API](https://developer.spotify.com/documentation/web-api/).
 
 It has been taking shape similar to what a clone of Spotify is. It is intended to add features such as creating dynamic playlists, advanced search, and background noises.
 

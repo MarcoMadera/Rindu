@@ -39,7 +39,7 @@ export default function PlaylistText({
     setReconnectionError,
   } = useSpotify();
   const router = useRouter();
-  const { accessToken, setAccessToken, isPremium } = useAuth();
+  const { accessToken, isPremium } = useAuth();
   const { addToast } = useToast();
   const { translations } = useTranslations();
 
@@ -56,14 +56,9 @@ export default function PlaylistText({
   const onDoubleClick = useCallback(() => {
     if (uri && accessToken && deviceId && isPremium) {
       (player as Spotify.Player)?.activateElement();
-      play(
-        accessToken,
-        deviceId,
-        {
-          context_uri: uri,
-        },
-        setAccessToken
-      ).then((res) => {
+      play(accessToken, deviceId, {
+        context_uri: uri,
+      }).then((res) => {
         if (res.status === 404) {
           (player as Spotify.Player).disconnect();
           addToast({
@@ -86,7 +81,6 @@ export default function PlaylistText({
     id,
     isPremium,
     player,
-    setAccessToken,
     setPlayedSource,
     setPlaylistPlayingId,
     setReconnectionError,

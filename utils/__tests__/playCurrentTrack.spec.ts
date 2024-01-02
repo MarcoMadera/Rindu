@@ -27,8 +27,6 @@ describe("playCurrentTrack", () => {
     play: jest.fn(),
   } as unknown as AudioPlayer;
 
-  const setAccessToken = jest.fn();
-
   const config = {
     player,
     user,
@@ -38,7 +36,6 @@ describe("playCurrentTrack", () => {
     playlistUri: "playlistUri",
     isSingleTrack: true,
     position: 0,
-    setAccessToken,
     uri: "spotify:track:123",
     isPremium: true,
   };

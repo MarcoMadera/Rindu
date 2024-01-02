@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { SetStateAction } from "react";
 
 import { BadRequestError, NotFoundError } from "./errors";
 import { ContentType, ToastMessage } from "./getTranslations";
@@ -82,7 +82,6 @@ interface IPlayConfig {
   player: AudioPlayer | Spotify.Player | undefined;
   isSingleTrack?: boolean;
   position?: number;
-  setAccessToken: Dispatch<SetStateAction<string | undefined>>;
   uri?: string;
   uris?: string[];
 }
@@ -106,7 +105,6 @@ export async function playCurrentTrack(
     playlistUri,
     isSingleTrack,
     position,
-    setAccessToken,
     uri,
     uris,
   } = config;
@@ -146,7 +144,7 @@ export async function playCurrentTrack(
     ? singleTrackConfiguration
     : trackConfiguration;
 
-  const res = await play(accessToken, deviceId, playConfig, setAccessToken);
+  const res = await play(accessToken, deviceId, playConfig);
 
   if (res.ok) {
     return;

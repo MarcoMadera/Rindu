@@ -8,7 +8,12 @@ import {
 
 import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
 import { ITrack } from "types/spotify";
-import { ToastMessage } from "utils";
+import {
+  ACCESS_TOKEN_COOKIE,
+  makeCookie,
+  REFRESH_TOKEN_COOKIE,
+  ToastMessage,
+} from "utils";
 import { refreshAccessToken, transferPlayback } from "utils/spotifyCalls";
 
 export interface AudioPlayer extends HTMLAudioElement {
@@ -183,10 +188,23 @@ export function useSpotifyPlayer({ name }: { name: string }): {
     window.onSpotifyWebPlaybackSDKReady = () => {
       spotifyPlayer.current = new window.Spotify.Player({
         getOAuthToken: async (callback: CallableFunction) => {
-          const { access_token } = (await refreshAccessToken()) || {};
+          const { access_token, refresh_token } =
+            (await refreshAccessToken()) ?? {};
+          if (refresh_token) {
+            makeCookie({
+              name: REFRESH_TOKEN_COOKIE,
+              value: refresh_token,
+              age: 60 * 60 * 24 * 30 * 2,
+            });
+          }
           if (access_token) {
             callback(access_token);
             setAccessToken(access_token);
+            makeCookie({
+              name: ACCESS_TOKEN_COOKIE,
+              value: access_token,
+              age: 60 * 60 * 24 * 30 * 2,
+            });
           }
         },
         name,
