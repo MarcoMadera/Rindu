@@ -1,6 +1,7 @@
 export const ACCESS_TOKEN_COOKIE = "qs";
 export const REFRESH_TOKEN_COOKIE = "rs";
 export const EXPIRE_TOKEN_COOKIE = "ex";
+export const CODE_VERIFIER_COOKIE = "cv";
 export const MONTHS = [
   "ENE",
   "FEB",

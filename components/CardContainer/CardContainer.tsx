@@ -24,12 +24,12 @@ export default function CardContainer({
           margin: 0 auto;
         }
         section:nth-child(odd),
-        section:nth-child(odd) :global(a) {
+        section:nth-child(odd) :global(button) {
           background-color: rgb(253, 186, 239);
           color: #000;
         }
         section:nth-child(even),
-        section:nth-child(even) :global(a) {
+        section:nth-child(even) :global(button) {
           background-color: rgb(112, 83, 120);
           color: #fff;
         }
@@ -67,7 +67,7 @@ export default function CardContainer({
           word-spacing: 1.4px;
           line-height: 1.6;
         }
-        section :global(a) {
+        section :global(button) {
           margin: 32px 0 0 0;
           font-size: 16px;
           font-weight: 500;

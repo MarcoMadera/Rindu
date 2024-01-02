@@ -17,6 +17,9 @@ export default function TextHighlighter({
   text,
   children,
 }: PropsWithChildren<TextHighlighterProps>): ReactElement {
+  if (!text) {
+    return <>{children}</>;
+  }
   const highlightText = (children: ReactNode): ReactNode => {
     return Children.map(children, (child: ReactNode) => {
       if (typeof child === "string") {

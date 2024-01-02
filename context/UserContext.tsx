@@ -11,6 +11,8 @@ import {
 
 import { useRouter } from "next/router";
 
+import { CODE_VERIFIER_COOKIE, eatCookie } from "utils";
+
 export interface IUserContext {
   isLogin: boolean;
   user: SpotifyApi.UserObjectPrivate | null;
@@ -46,6 +48,7 @@ export function UserContextProvider({
   useEffect(() => {
     if (router.query.code && isLogin) {
       router.replace("/dashboard", undefined, { shallow: true });
+      eatCookie(CODE_VERIFIER_COOKIE);
     }
   }, [router, isLogin]);
 

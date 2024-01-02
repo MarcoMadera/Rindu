@@ -444,7 +444,7 @@ export interface IFeaturesTranslations {
   imageSrc: string;
   imageAlt: string;
   anchorType: string;
-  anchorText: string;
+  ctaText: string;
 }
 
 const featuresTranslationsEN: IFeaturesTranslations[] = [
@@ -457,7 +457,7 @@ const featuresTranslationsEN: IFeaturesTranslations[] = [
       "https://res.cloudinary.com/marcomadera/image/upload/v1645938505/Spotify-Cleaner-App/Mu2_viopob.jpg",
     imageAlt: "A woman wearing headphones",
     anchorType: "login",
-    anchorText: "Find out how",
+    ctaText: "Find out how",
   },
   {
     eyeBrowText: "WITHOUT COMPLICATIONS",
@@ -468,7 +468,7 @@ const featuresTranslationsEN: IFeaturesTranslations[] = [
       "https://res.cloudinary.com/marcomadera/image/upload/v1645938507/Spotify-Cleaner-App/Mu3_xbb08n.jpg",
     imageAlt: "A man jumping in the air",
     anchorType: "login",
-    anchorText: "Find out how",
+    ctaText: "Find out how",
   },
   {
     eyeBrowText: "ELIMINATE DISTRACTIONS",
@@ -479,7 +479,7 @@ const featuresTranslationsEN: IFeaturesTranslations[] = [
       "https://res.cloudinary.com/marcomadera/image/upload/v1645938509/Spotify-Cleaner-App/Mu4_vigcfb.jpg",
     imageAlt: "A woman with her arms out",
     anchorType: "login",
-    anchorText: "Find out how",
+    ctaText: "Find out how",
   },
   {
     eyeBrowText: "THE FEATURES YOU LOVE",
@@ -490,7 +490,7 @@ const featuresTranslationsEN: IFeaturesTranslations[] = [
       "https://res.cloudinary.com/marcomadera/image/upload/v1645938516/Spotify-Cleaner-App/Mu5_n7u3cf.jpg",
     imageAlt: "A woman stretching the leg",
     anchorType: "login",
-    anchorText: "Find out how",
+    ctaText: "Find out how",
   },
 ];
 const featuresTranslationsES: IFeaturesTranslations[] = [
@@ -503,7 +503,7 @@ const featuresTranslationsES: IFeaturesTranslations[] = [
       "https://res.cloudinary.com/marcomadera/image/upload/v1645938505/Spotify-Cleaner-App/Mu2_viopob.jpg",
     imageAlt: "Una mujer usando audífonos",
     anchorType: "login",
-    anchorText: "Descubre como",
+    ctaText: "Descubre como",
   },
   {
     eyeBrowText: "SIN COMPLICACIONES",
@@ -514,7 +514,7 @@ const featuresTranslationsES: IFeaturesTranslations[] = [
       "https://res.cloudinary.com/marcomadera/image/upload/v1645938507/Spotify-Cleaner-App/Mu3_xbb08n.jpg",
     imageAlt: "Un hombre saltando en el aire",
     anchorType: "login",
-    anchorText: "Descubre como",
+    ctaText: "Descubre como",
   },
   {
     eyeBrowText: "ELIMINA DISTRACCIONES",
@@ -525,7 +525,7 @@ const featuresTranslationsES: IFeaturesTranslations[] = [
       "https://res.cloudinary.com/marcomadera/image/upload/v1645938509/Spotify-Cleaner-App/Mu4_vigcfb.jpg",
     imageAlt: "Una mujer con los brazos extendidos",
     anchorType: "login",
-    anchorText: "Descubre como",
+    ctaText: "Descubre como",
   },
   {
     eyeBrowText: "LAS FUNCIONALIDADES QUE AMAS",
@@ -536,7 +536,7 @@ const featuresTranslationsES: IFeaturesTranslations[] = [
       "https://res.cloudinary.com/marcomadera/image/upload/v1645938516/Spotify-Cleaner-App/Mu5_n7u3cf.jpg",
     imageAlt: "Una mujer estirando la pierna",
     anchorType: "login",
-    anchorText: "Descubre como",
+    ctaText: "Descubre como",
   },
 ];
 

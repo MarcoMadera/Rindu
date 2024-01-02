@@ -14,6 +14,7 @@ import { useAnalytics, useAuth } from "hooks";
 import {
   ACCESS_TOKEN_COOKIE,
   getSpotifyLoginURL,
+  isServer,
   REFRESH_TOKEN_COOKIE,
   removeTokensFromCookieServer,
   takeCookie,
@@ -38,7 +39,7 @@ interface IFeature {
   imageSrc: string;
   imageAlt: string;
   anchorType: string;
-  anchorText: string;
+  ctaText: string;
 }
 
 const Home: NextPage<HomeProps> = ({ translations }) => {
@@ -53,7 +54,11 @@ const Home: NextPage<HomeProps> = ({ translations }) => {
     setIsLogin(false);
   }, [setIsLogin]);
 
-  const spotifyLoginUrl = getSpotifyLoginURL();
+  const onCTAClick = async () => {
+    if (isServer()) return;
+    const url = await getSpotifyLoginURL();
+    window.location.href = url;
+  };
   const features = JSON.parse(translations.features) as IFeaturesTranslations[];
 
   return (
@@ -80,8 +85,8 @@ const Home: NextPage<HomeProps> = ({ translations }) => {
             eyeBrowText={feature.eyeBrowText}
             imageSrc={feature.imageSrc}
             imageAlt={feature.imageAlt}
-            anchorHref={spotifyLoginUrl}
-            anchorText={feature.anchorText}
+            onCTAClick={onCTAClick}
+            ctaText={feature.ctaText}
           />
         );
       })}
@@ -91,7 +96,9 @@ const Home: NextPage<HomeProps> = ({ translations }) => {
         </div>
         <div>
           <p>{translations.concludeSectionDescription}</p>
-          <a href={spotifyLoginUrl}>{translations.concludeSectionCta}</a>
+          <button onClick={onCTAClick}>
+            {translations.concludeSectionCta}
+          </button>
         </div>
       </CardContainer>
       <style jsx>
@@ -142,6 +149,52 @@ const Home: NextPage<HomeProps> = ({ translations }) => {
           main :global(.conclude) div {
             padding: 0;
           }
+          main :global(button) {
+            border: 1px solid #72727280;
+            cursor: pointer;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            font-family: sans-serif;
+            background-color: transparent;
+            border-radius: 9999px;
+            cursor: pointer;
+            position: relative;
+            text-align: center;
+            text-decoration: none;
+            text-transform: none;
+            touch-action: manipulation;
+            transition-duration: 33ms;
+            transition-property: background-color, border-color, color,
+              box-shadow, filter, transform;
+            user-select: none;
+            vertical-align: middle;
+            transform: translate3d(0px, 0px, 0px);
+            padding-block-start: 3px;
+            padding-block-end: 3px;
+            padding-inline-start: 15px;
+            padding-inline-end: 15px;
+            border: 1px solid 727272;
+            color: #fff;
+            min-inline-size: 0px;
+            min-block-size: 32px;
+            display: inline-flex;
+            -webkit-box-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            justify-content: center;
+          }
+          main :global(button:hover) {
+            transform: scale(1.04);
+            border: 1px solid #fff;
+          }
+          main :global(button:active) {
+            opacity: 0.7;
+            outline: none;
+            transform: scale(1);
+            border: 1px solid #727272;
+          }
           @media screen and (min-width: 0px) and (max-width: 1100px) {
             main :global(section.info) {
               display: block;
@@ -176,7 +229,7 @@ export async function getServerSideProps({
   req: NextApiRequest;
   query: NextParsedUrlQuery & { country?: string };
 }): Promise<GetStaticPropsResult<HomeProps>> {
-  const country = query?.country || "US";
+  const country = query?.country ?? "US";
   const translations = getTranslations(country, Page.Home);
   const cookies = req?.headers?.cookie;
 
@@ -186,7 +239,7 @@ export async function getServerSideProps({
   const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE, cookies);
 
   if (refreshToken) {
-    const { access_token } = (await refreshAccessToken(refreshToken)) || {};
+    const { access_token } = (await refreshAccessToken(refreshToken)) ?? {};
 
     if (!access_token) {
       removeTokensFromCookieServer(res);
