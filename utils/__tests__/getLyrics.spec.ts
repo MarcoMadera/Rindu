@@ -13,7 +13,6 @@ describe("getLyrics", () => {
       "artistName",
       "songTitle",
       "trackId",
-      "token",
       LyricsAction.Fullscreen
     );
     expect(response).toStrictEqual({
@@ -29,7 +28,6 @@ describe("getLyrics", () => {
       "artistName",
       "songTitle",
       "trackId",
-      "token",
       LyricsAction.Fullscreen
     );
     expect(response).toBeNull();
@@ -44,7 +42,6 @@ describe("getLyrics", () => {
         "artistName",
         "songTitle",
         "trackId",
-        "token",
         LyricsAction.Fullscreen
       );
     } catch (error) {

@@ -46,7 +46,6 @@ export async function getLyrics(
   artistName: string,
   title: string,
   trackId?: string | null,
-  accessToken?: string,
   action?: LyricsAction
 ): Promise<GetLyrics> {
   if (action === LyricsAction.Fullscreen) {
@@ -58,7 +57,7 @@ export async function getLyrics(
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ trackId, accessToken }),
+        body: JSON.stringify({ trackId }),
       }
     );
     if (resSyncedLyrics.ok) {

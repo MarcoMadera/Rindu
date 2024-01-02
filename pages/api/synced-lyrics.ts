@@ -19,7 +19,7 @@ async function getToken(): Promise<string | null> {
           "sec-fetch-mode": "cors",
           "sec-fetch-site": "same-origin",
           "spotify-app-version": "1.1.54.35.ge9dace1d",
-          cookie: process.env.SPOTIFY_ACCESS_COOKIE as string,
+          cookie: process.env.SPOTIFY_ACCESS_COOKIE ?? "",
         },
       }
     );
@@ -30,7 +30,7 @@ async function getToken(): Promise<string | null> {
     console.warn(
       `Warning: https://open.spotify.com/get_access_token null token with status: ${
         res.status
-      } and cookie: ${process.env.SPOTIFY_ACCESS_COOKIE || "no cookie"}`
+      } and cookie: ${process.env.SPOTIFY_ACCESS_COOKIE ?? "no cookie"}`
     );
     return null;
   } catch (err) {
