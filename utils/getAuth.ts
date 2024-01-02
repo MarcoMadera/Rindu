@@ -16,12 +16,23 @@ export async function getAuth(
     tokens?.access_token ?? takeCookie(ACCESS_TOKEN_COOKIE, cookies);
   const user = await getMe(accessTokenFromCookie, cookies);
   if (refreshToken && !user) {
-    const { access_token } = (await refreshAccessToken(refreshToken)) ?? {};
+    const { access_token, refresh_token } =
+      (await refreshAccessToken(refreshToken)) ?? {};
 
     if (!access_token) {
       serverRedirect(res, "/");
       return null;
     }
+    const expireCookieDate = new Date();
+    expireCookieDate.setTime(
+      expireCookieDate.getTime() + 1000 * 60 * 60 * 24 * 30
+    );
+    res?.setHeader("Set-Cookie", [
+      `${ACCESS_TOKEN_COOKIE}=${access_token}; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax; Secure;`,
+    ]);
+    res?.setHeader("Set-Cookie", [
+      `${REFRESH_TOKEN_COOKIE}=${refresh_token}; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax; Secure;`,
+    ]);
 
     const userFromRefreshedToken = await getMe(access_token, cookies);
 

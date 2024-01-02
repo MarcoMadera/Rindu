@@ -29,7 +29,6 @@ export default async function login(
       redirect_uri: process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URL as string,
       code: body.code,
       client_id: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID as string,
-      client_secret: process.env.SPOTIFY_CLIENT_SECRET as string,
     };
     if (body.code_verifier) {
       params["code_verifier"] = body.code_verifier;

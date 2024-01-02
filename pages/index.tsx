@@ -239,7 +239,8 @@ export async function getServerSideProps({
   const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE, cookies);
 
   if (refreshToken) {
-    const { access_token } = (await refreshAccessToken(refreshToken)) ?? {};
+    const { access_token, refresh_token } =
+      (await refreshAccessToken(refreshToken)) ?? {};
 
     if (!access_token) {
       removeTokensFromCookieServer(res);
@@ -253,6 +254,9 @@ export async function getServerSideProps({
 
     res?.setHeader("Set-Cookie", [
       `${ACCESS_TOKEN_COOKIE}=${access_token}; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax; Secure;`,
+    ]);
+    res?.setHeader("Set-Cookie", [
+      `${REFRESH_TOKEN_COOKIE}=${refresh_token}; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax; Secure;`,
     ]);
 
     if (res) {

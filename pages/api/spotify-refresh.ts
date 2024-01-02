@@ -17,10 +17,7 @@ export default async function refresh(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
-  const {
-    NEXT_PUBLIC_SPOTIFY_CLIENT_ID: client_id = "",
-    SPOTIFY_CLIENT_SECRET: client_secret = "",
-  } = process.env;
+  const { NEXT_PUBLIC_SPOTIFY_CLIENT_ID: client_id = "" } = process.env;
   const cookies = req.headers.cookie;
 
   const refreshTokenFromCookie = takeCookie(REFRESH_TOKEN_COOKIE, cookies);
@@ -35,13 +32,11 @@ export default async function refresh(
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Basic ${Buffer.from(
-            `${client_id}:${client_secret}`
-          ).toString("base64")}`,
         },
         body: new URLSearchParams({
           grant_type: "refresh_token",
-          refresh_token: body.refreshToken || refreshTokenFromCookie || "",
+          refresh_token: body.refreshToken ?? refreshTokenFromCookie ?? "",
+          client_id,
         }),
       }
     );
@@ -55,7 +50,7 @@ export default async function refresh(
         data.access_token
       }; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax;`,
       `${REFRESH_TOKEN_COOKIE}=${
-        body.refreshToken || refreshTokenFromCookie || ""
+        body.refreshToken ?? refreshTokenFromCookie ?? ""
       }; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax;`,
       `${EXPIRE_TOKEN_COOKIE}=${
         data.expires_in

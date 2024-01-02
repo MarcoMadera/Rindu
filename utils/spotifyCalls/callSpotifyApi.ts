@@ -1,6 +1,6 @@
 import { refreshAccessToken } from "./refreshAccessToken";
-import { ACCESS_TOKEN_COOKIE } from "utils/constants";
-import { takeCookie } from "utils/cookies";
+import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "utils/constants";
+import { makeCookie, takeCookie } from "utils/cookies";
 
 interface ICallSpotifyApi {
   endpoint: string;
@@ -31,8 +31,18 @@ export async function callSpotifyApi({
   });
 
   if (res.ok && res.status === 401 && !retry) {
-    const { access_token } = (await refreshAccessToken()) ?? {};
-    if (access_token) {
+    const { access_token, refresh_token } = (await refreshAccessToken()) ?? {};
+    if (access_token && refresh_token) {
+      makeCookie({
+        name: REFRESH_TOKEN_COOKIE,
+        value: refresh_token,
+        age: 60 * 60 * 24 * 30 * 2,
+      });
+      makeCookie({
+        name: ACCESS_TOKEN_COOKIE,
+        value: access_token,
+        age: 60 * 60 * 24 * 30 * 2,
+      });
       return callSpotifyApi({
         endpoint,
         method,

@@ -71,7 +71,6 @@ export async function handlePremiumPlay(
   deviceId: string,
   accessToken: string,
   addToast: (toast: NewToast) => void,
-  setAccessToken: Dispatch<SetStateAction<string | undefined>>,
   setReconnectionError: Dispatch<SetStateAction<boolean>>,
   setPlaylistPlayingId: Dispatch<SetStateAction<string | undefined>>,
   setPlayedSource: Dispatch<SetStateAction<string | undefined>>,
@@ -109,12 +108,7 @@ export async function handlePremiumPlay(
     allTracks
   );
 
-  const playRes = await play(
-    accessToken,
-    deviceId,
-    playOptions,
-    setAccessToken
-  );
+  const playRes = await play(accessToken, deviceId, playOptions);
 
   if (playRes.status === 404) {
     player?.disconnect();

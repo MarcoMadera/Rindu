@@ -34,6 +34,11 @@ export function useRefreshAccessToken(): void {
         if (res?.access_token) {
           setAccessToken(res.access_token);
           makeCookie({
+            name: REFRESH_TOKEN_COOKIE,
+            value: res.refresh_token,
+            age: 60 * 60 * 24 * 30 * 2,
+          });
+          makeCookie({
             name: ACCESS_TOKEN_COOKIE,
             value: res.access_token,
             age: 60 * 60 * 24 * 30 * 2,

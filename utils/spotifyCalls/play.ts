@@ -1,13 +1,9 @@
-import { Dispatch, SetStateAction } from "react";
-
-import { callSpotifyApi, refreshAccessToken } from "utils/spotifyCalls";
+import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function play(
   accessToken: string,
   deviceId: string,
-  options: { context_uri?: string; uris?: string[]; offset?: number },
-  setAccessToken: Dispatch<SetStateAction<string | undefined>>,
-  ignore?: boolean
+  options: { context_uri?: string; uris?: string[]; offset?: number }
 ): Promise<Response> {
   const { context_uri, offset, uris } = options;
   const body: {
@@ -33,13 +29,5 @@ export async function play(
     accessToken,
     body: JSON.stringify(body),
   });
-
-  if (res.status === 401 && !ignore) {
-    const { access_token: newAccessToken } = (await refreshAccessToken()) || {};
-    if (newAccessToken) {
-      setAccessToken(newAccessToken);
-      await play(newAccessToken, deviceId, options, setAccessToken, true);
-    }
-  }
   return res;
 }

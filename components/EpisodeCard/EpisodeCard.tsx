@@ -53,7 +53,7 @@ export default function EpisodeCard({
     setReconnectionError,
     setPlayedSource,
   } = useSpotify();
-  const { accessToken, setAccessToken, isPremium } = useAuth();
+  const { accessToken, isPremium } = useAuth();
   const { addToast } = useToast();
   const { addContextMenu } = useContextMenu();
   const isThisEpisodePlaying = currentlyPlaying?.uri === track?.uri;
@@ -92,7 +92,6 @@ export default function EpisodeCard({
           playlistUri: pageDetails?.uri,
           isSingleTrack: true,
           position,
-          setAccessToken,
         }
       );
 

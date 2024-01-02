@@ -44,7 +44,7 @@ export default function PlayButton({
     setPlayedSource,
     setReconnectionError,
   } = useSpotify();
-  const { accessToken, user, setAccessToken, isPremium } = useAuth();
+  const { accessToken, user, isPremium } = useAuth();
   const { addToast } = useToast();
   const uriId = uri?.split(":")?.[2];
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -81,7 +81,6 @@ export default function PlayButton({
               deviceId,
               accessToken,
               addToast,
-              setAccessToken,
               setReconnectionError,
               setPlaylistPlayingId,
               setPlayedSource,
