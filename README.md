@@ -13,7 +13,7 @@ npm run dev
 
 For the project to work properly a `.env.local` file similar to [`.env.example`](https://github.com/MarcoMadera/spotify-playlists-cleaner/blob/master/.env.example) is required.
 
-https://github.com/MarcoMadera/Rindu/blob/main/.env.example#L1-L7
+https://github.com/MarcoMadera/Rindu/blob/e5810f6d72f76eadd1c50dc278c6a5e9a017fe98/.env.example#L1-L7
 
 To get the client ID, go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/).
 
