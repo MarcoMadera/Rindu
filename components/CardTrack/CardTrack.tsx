@@ -38,7 +38,6 @@ export enum CardType {
 }
 interface ICardTrackProps {
   track: ITrack | undefined;
-  accessToken: string | undefined;
   playlistUri: string;
   style?: CSSProperties;
   isTrackInLibrary: boolean | undefined;
@@ -69,7 +68,6 @@ function checkTrackAsCurrentlyPlaying(
 }
 
 function CardTrack({
-  accessToken,
   track,
   playlistUri,
   isTrackInLibrary,
@@ -81,7 +79,7 @@ function CardTrack({
   uri,
   visualPosition,
   uris,
-}: ICardTrackProps): ReactElement | null {
+}: Readonly<ICardTrackProps>): ReactElement | null {
   const {
     allTracks,
     deviceId,
@@ -149,7 +147,6 @@ function CardTrack({
           allTracks,
           player,
           isPremium,
-          accessToken,
           deviceId,
           playlistUri,
           isSingleTrack,
@@ -428,7 +425,6 @@ function CardTrack({
 export default memo(CardTrack, (prevProps, nextProps) => {
   return (
     prevProps.track?.id === nextProps.track?.id &&
-    prevProps.accessToken === nextProps.accessToken &&
     prevProps.playlistUri === nextProps.playlistUri &&
     prevProps.isTrackInLibrary === nextProps.isTrackInLibrary &&
     prevProps.isSingleTrack === nextProps.isSingleTrack &&

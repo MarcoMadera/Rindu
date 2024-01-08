@@ -14,11 +14,9 @@ interface StorybookModal extends StorybookConfigurationModalProps {
 function StorybookModal({
   open,
   handleClose,
-  setAccessToken,
   setProduct,
   setIsLogin,
   setLanguage,
-  accessToken,
   product,
   isLogin,
   language,
@@ -30,10 +28,8 @@ function StorybookModal({
         title: "Configuration",
         modalElement: (
           <StorybookConfigurationModal
-            setAccessToken={setAccessToken}
             setProduct={setProduct}
             setIsLogin={setIsLogin}
-            accessToken={accessToken}
             product={product}
             isLogin={isLogin}
             language={language}
@@ -64,9 +60,6 @@ export const WithConfiguration = (Story, context) => {
     {}
   );
   const [openModal, setOpenModal] = useState(false);
-  const [accessToken, setAccessToken] = useState(
-    context.globals.accessToken || ""
-  );
   const [product, setProduct] = useState(context.globals.product || "premium");
   const [isLogin, setIsLogin] = useState(context.globals.isLogin || true);
 
@@ -102,8 +95,8 @@ export const WithConfiguration = (Story, context) => {
           !context.parameters.container?.backgroundTheme
             ? "transparent"
             : context.parameters.container?.backgroundTheme === "dark"
-            ? "#121212"
-            : "#fff"
+              ? "#121212"
+              : "#fff"
         }`,
         ...context.parameters.container?.style,
       }}
@@ -138,7 +131,6 @@ export const WithConfiguration = (Story, context) => {
               spotify: "https://open.spotify.com/user/12133024755",
             },
           } as SpotifyApi.UserObjectPrivate,
-          accessToken,
         }}
         spotifyValue={context.parameters.spotifyValue}
         contextMenuValue={context.parameters.contextMenuValue}
@@ -150,10 +142,6 @@ export const WithConfiguration = (Story, context) => {
             if (openModal) {
               setOpenModal(false);
             }
-          }}
-          setAccessToken={(accessToken) => {
-            setAccessToken(accessToken);
-            context.globals.accessToken = accessToken;
           }}
           setProduct={(product) => {
             setProduct(product);
@@ -168,7 +156,6 @@ export const WithConfiguration = (Story, context) => {
             context.globals.language = language;
           }}
           language={defaultLanguage || language}
-          accessToken={accessToken}
           product={product}
           isLogin={isLogin}
         />

@@ -1,9 +1,10 @@
+import type { ServerApiContext } from "types/serverContext";
 import { handleJsonResponse } from "utils";
 import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function checkIfUserFollowAlbums(
   albumIds?: string[],
-  accessToken?: string
+  context?: ServerApiContext
 ): Promise<boolean[] | null> {
   if (!albumIds) return null;
 
@@ -12,7 +13,7 @@ export async function checkIfUserFollowAlbums(
   const res = await callSpotifyApi({
     endpoint: `/me/albums/contains?ids=${ids}`,
     method: "GET",
-    accessToken,
+    context,
   });
 
   return handleJsonResponse<boolean[]>(res);

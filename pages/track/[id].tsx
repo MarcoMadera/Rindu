@@ -1,7 +1,6 @@
 import { ReactElement, useEffect, useState } from "react";
 
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 
 import {
@@ -49,7 +48,6 @@ import {
 interface TrackPageProps {
   track: SpotifyApi.TrackObjectFull | null;
   lyrics: string | null;
-  accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
   translations: Record<string, string>;
 }
@@ -57,11 +55,13 @@ interface TrackPageProps {
 export default function TrackPage({
   track,
   lyrics,
-}: Readonly<TrackPageProps>): ReactElement {
+}: InferGetServerSidePropsType<
+  typeof getServerSideProps
+>): ReactElement | null {
   const { setElement, setHeaderColor } = useHeader({
     showOnFixed: false,
   });
-  const { user, accessToken } = useAuth();
+  const { user } = useAuth();
   const [tracksInLibrary, setTracksInLibrary] = useState<string[]>([]);
   const [showMoreTopTracks, setShowMoreTopTracks] = useToggle(false);
   const [artistTopTracks, setArtistTopTracks] = useState<
@@ -121,32 +121,36 @@ export default function TrackPage({
   }, [track]);
 
   useEffect(() => {
-    if (!track || !accessToken) return;
-    getArtistTopTracks(
-      track.artists[0].id,
-      user?.country ?? "US",
-      accessToken
-    ).then((res) => {
-      if (res && Array.isArray(res.tracks)) {
-        setArtistTopTracks(res.tracks);
-        const trackIds = res.tracks.map((track) => track.id);
-        checkTracksInLibrary(trackIds).then((tracksInLibrary) => {
-          if (tracksInLibrary) {
-            setTracksInLibrary((value) => {
-              const likedTracks = trackIds.filter((_, i) => tracksInLibrary[i]);
-              return [...value, ...likedTracks];
-            });
-          }
-        });
+    if (!track) return;
+    getArtistTopTracks(track.artists[0].id, user?.country ?? "US").then(
+      (res) => {
+        if (res && Array.isArray(res.tracks)) {
+          setArtistTopTracks(res.tracks);
+          const trackIds = res.tracks.map((track) => track.id);
+          checkTracksInLibrary(trackIds).then((tracksInLibrary) => {
+            if (tracksInLibrary) {
+              setTracksInLibrary((value) => {
+                const likedTracks = trackIds.filter(
+                  (_, i) => tracksInLibrary[i]
+                );
+                return [...value, ...likedTracks];
+              });
+            }
+          });
+        }
       }
-    });
+    );
 
-    getArtistById(track.artists[0].id, accessToken).then((res) => {
+    getArtistById(track.artists[0].id).then((res) => {
       if (res) {
         setArtistInfo(res);
       }
     });
-  }, [accessToken, track, user?.country]);
+  }, [track, user?.country]);
+
+  if (!track) {
+    return null;
+  }
 
   return (
     <ContentContainer hasPageHeader>
@@ -266,7 +270,6 @@ export default function TrackPage({
 
               return (
                 <CardTrack
-                  accessToken={accessToken ?? ""}
                   isTrackInLibrary={isTrackInLibrary}
                   playlistUri=""
                   track={artistTrack}
@@ -372,28 +375,17 @@ export default function TrackPage({
   );
 }
 
-export async function getServerSideProps({
-  params: { id },
-  req,
-  res,
-  query,
-}: {
-  params: { id: string };
-  req: NextApiRequest;
-  res: NextApiResponse;
-  query: NextParsedUrlQuery;
-}): Promise<{
-  props: TrackPageProps | null;
-}> {
-  const country = (query.country ?? "US") as string;
+export const getServerSideProps = (async (context) => {
+  const id = context.params?.id;
+  const country = (context.query.country ?? "US") as string;
   const translations = getTranslations(country, Page.Track);
-  const cookies = req?.headers?.cookie;
-  if (!cookies) {
-    serverRedirect(res, "/");
-    return { props: null };
+  const cookies = context.req?.headers?.cookie;
+  if (!cookies || !id) {
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
-  const { accessToken, user } = (await getAuth(res, cookies)) ?? {};
-  const track = await getTrack(id, user?.country ?? "US", accessToken, cookies);
+  const { user } = (await getAuth(context)) ?? {};
+  const track = await getTrack(id, user?.country ?? "US", context);
   let lyrics: string | null = null;
 
   if (track?.name && track.artists[0].name) {
@@ -415,9 +407,8 @@ export async function getServerSideProps({
     props: {
       track,
       lyrics,
-      accessToken: accessToken ?? null,
       user: user ?? null,
       translations,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<TrackPageProps>, { id: string }>;

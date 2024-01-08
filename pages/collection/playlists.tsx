@@ -1,8 +1,7 @@
 import { ReactElement, useEffect } from "react";
 
 import { decode } from "html-entities";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 
 import {
@@ -30,7 +29,6 @@ import {
 } from "utils";
 
 interface CollectionPlaylistsProps {
-  accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
   translations: Translations["collectionPlaylists"];
 }
@@ -81,7 +79,7 @@ export default function CollectionPlaylists(): ReactElement {
                   title={name}
                   subTitle={
                     decode(description) ||
-                    `${translations.by} ${owner.display_name || owner.id}`
+                    `${translations.by} ${owner.display_name ?? owner.id}`
                   }
                   id={id}
                 />
@@ -93,32 +91,21 @@ export default function CollectionPlaylists(): ReactElement {
   );
 }
 
-export async function getServerSideProps({
-  res,
-  req,
-  query,
-}: {
-  res: NextApiResponse;
-  req: NextApiRequest;
-  query: NextParsedUrlQuery;
-}): Promise<{
-  props: CollectionPlaylistsProps | null;
-}> {
-  const country = (query.country ?? "US") as string;
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
   const translations = getTranslations(country, Page.CollectionPlaylists);
-  const cookies = req?.headers?.cookie;
+  const cookies = context.req?.headers?.cookie;
   if (!cookies) {
-    serverRedirect(res, "/");
-    return { props: null };
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
 
-  const { accessToken, user } = (await getAuth(res, cookies)) ?? {};
+  const { user } = (await getAuth(context)) ?? {};
 
   return {
     props: {
       user: user ?? null,
-      accessToken: accessToken ?? null,
       translations,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<CollectionPlaylistsProps>>;

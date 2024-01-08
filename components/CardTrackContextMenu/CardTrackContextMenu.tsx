@@ -36,7 +36,6 @@ export default function CardTrackContextMenu({
 }: Readonly<ICardTrackContextMenu>): ReactElement {
   const { addToast } = useToast();
   const { deviceId, playlists } = useSpotify();
-  const { accessToken } = useAuth();
   const { removeContextMenu, setModalData } = useContextMenu();
   const { translations } = useTranslations();
 
@@ -74,7 +73,7 @@ export default function CardTrackContextMenu({
             type="button"
             onClick={() => {
               if (track?.uri && deviceId) {
-                addToQueue(track.uri, deviceId, accessToken).then((res) => {
+                addToQueue(track.uri, deviceId).then((res) => {
                   if (res) {
                     addToast({
                       variant: "success",
@@ -263,7 +262,7 @@ export default function CardTrackContextMenu({
                 track.type === "episode"
                   ? saveEpisodesToLibrary
                   : saveTracksToLibrary;
-              saveToLibrary([track.id ?? ""], accessToken).then((res) => {
+              saveToLibrary([track.id ?? ""]).then((res) => {
                 if (res) {
                   addToast({
                     variant: "success",

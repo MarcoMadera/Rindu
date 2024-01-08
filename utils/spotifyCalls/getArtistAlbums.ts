@@ -1,3 +1,4 @@
+import type { ServerApiContext } from "types/serverContext";
 import { handleJsonResponse } from "utils";
 import { callSpotifyApi } from "utils/spotifyCalls";
 
@@ -12,16 +13,14 @@ export async function getArtistAlbums(
   id: string,
   market: string,
   include_groups: Include_groups,
-  accessToken?: string,
-  cookies?: string
+  context?: ServerApiContext
 ): Promise<SpotifyApi.ArtistsAlbumsResponse | null> {
   if (!id) return null;
 
   const res = await callSpotifyApi({
     endpoint: `/artists/${id}/albums?include_groups=${include_groups}&market=${market}`,
     method: "GET",
-    accessToken,
-    cookies,
+    context,
   });
 
   return handleJsonResponse<SpotifyApi.ArtistsAlbumsResponse>(res);

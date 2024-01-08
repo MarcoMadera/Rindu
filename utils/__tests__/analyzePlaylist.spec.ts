@@ -11,9 +11,7 @@ jest.mock<typeof import("utils")>("utils/getAllTracksFromPlaylist", () => ({
   getAllTracksFromPlaylist: jest.fn(),
 }));
 
-const { track, accessToken } = jest.requireActual<IUtilsMocks>(
-  "./__mocks__/mocks.ts"
-);
+const { track } = jest.requireActual<IUtilsMocks>("./__mocks__/mocks.ts");
 
 describe("analyzePlaylist", () => {
   const translations = getTranslations("US", Page.Playlist);
@@ -24,7 +22,6 @@ describe("analyzePlaylist", () => {
       undefined,
       undefined,
       false,
-      accessToken,
       translations
     );
     expect(result).toBeNull();
@@ -33,13 +30,7 @@ describe("analyzePlaylist", () => {
   it("should return empty array values if there are not tracks", async () => {
     expect.assertions(1);
     (getAllTracksFromPlaylist as jest.Mock).mockResolvedValue([]);
-    const result = await analyzePlaylist(
-      "id",
-      20,
-      true,
-      accessToken,
-      translations
-    );
+    const result = await analyzePlaylist("id", 20, true, translations);
     expect(result).toStrictEqual({
       corruptedSongsIndexes: [],
       duplicateTracksIndexes: [],
@@ -74,13 +65,7 @@ describe("analyzePlaylist", () => {
       getAllTracksFromPlaylist as jest.Mock<Promise<ITrack[]>>
     ).mockResolvedValue(tracks);
 
-    const result = await analyzePlaylist(
-      "id",
-      20,
-      true,
-      accessToken,
-      translations
-    );
+    const result = await analyzePlaylist("id", 20, true, translations);
     expect(result).toStrictEqual({
       corruptedSongsIndexes: [],
       duplicateTracksIndexes: [1, 2],
@@ -111,13 +96,7 @@ describe("analyzePlaylist", () => {
       getAllTracksFromPlaylist as jest.Mock<Promise<ITrack[]>>
     ).mockResolvedValue(tracks);
 
-    const result = await analyzePlaylist(
-      "id",
-      20,
-      true,
-      accessToken,
-      translations
-    );
+    const result = await analyzePlaylist("id", 20, true, translations);
 
     expect(result?.tracksToRemove).toStrictEqual([
       tracks[0],
@@ -150,13 +129,7 @@ describe("analyzePlaylist", () => {
       getAllTracksFromPlaylist as jest.Mock<Promise<ITrack[]>>
     ).mockResolvedValue(tracks);
 
-    const result = await analyzePlaylist(
-      "id",
-      20,
-      true,
-      accessToken,
-      translations
-    );
+    const result = await analyzePlaylist("id", 20, true, translations);
     expect(result?.tracksToRemove).toStrictEqual([tracks[0]]);
   });
 });

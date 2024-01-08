@@ -1,19 +1,18 @@
+import type { ServerApiContext } from "types/serverContext";
 import { handleJsonResponse } from "utils";
 import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function getCategories(
   country: string,
   limit?: number,
-  accessToken?: string,
-  cookies?: string
+  context?: ServerApiContext
 ): Promise<SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null> {
   const res = await callSpotifyApi({
     endpoint: `/browse/categories?country=${country}&limit=${
       limit ?? 5
     }&market=from_token`,
     method: "GET",
-    accessToken,
-    cookies,
+    context,
   });
 
   const data =

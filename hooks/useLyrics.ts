@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useAuth, useSpotify, useToggle } from "hooks";
+import { useSpotify, useToggle } from "hooks";
 import {
   formatLyrics,
   getLyrics,
@@ -24,7 +24,6 @@ export function useLyrics({ requestLyrics }: { requestLyrics: boolean }): {
     id?: string | null;
     data: GetLyrics;
   }>({ error: null, data: null, id: null });
-  const { accessToken } = useAuth();
   const artist = currentlyPlaying?.artists?.[0].name;
   const title = currentlyPlaying?.name;
   const trackId = currentlyPlaying?.id;
@@ -58,15 +57,7 @@ export function useLyrics({ requestLyrics }: { requestLyrics: boolean }): {
       setLoading.reset();
       setLyricsError(null);
     };
-  }, [
-    accessToken,
-    artist,
-    setLoading,
-    setLyricsError,
-    title,
-    trackId,
-    requestLyrics,
-  ]);
+  }, [artist, setLoading, setLyricsError, title, trackId, requestLyrics]);
 
   useEffect(() => {
     if (!requestLyrics) return;

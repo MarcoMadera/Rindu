@@ -1,7 +1,6 @@
 import { ReactElement, useEffect, useMemo, useState } from "react";
 
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
 
@@ -31,14 +30,13 @@ import {
 
 interface EpisodePageProps {
   episode: SpotifyApi.EpisodeObject | null;
-  accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
   translations: Record<string, string>;
 }
 
 export default function EpisodePage({
   episode,
-}: EpisodePageProps): ReactElement {
+}: InferGetServerSidePropsType<typeof getServerSideProps>): ReactElement {
   const { setElement } = useHeader({
     showOnFixed: false,
   });
@@ -96,7 +94,7 @@ export default function EpisodePage({
   useEffect(() => {
     if (!episode) return;
     checkEpisodesInLibrary([episode.id]).then((res) => {
-      if (res && res[0]) {
+      if (res?.[0]) {
         setIsEpisodeInLibrary(true);
       }
     });
@@ -244,40 +242,30 @@ export default function EpisodePage({
   );
 }
 
-export async function getServerSideProps({
-  params: { episodeId },
-  req,
-  res,
-  query,
-}: {
-  params: { episodeId: string };
-  req: NextApiRequest;
-  res: NextApiResponse;
-  query: NextParsedUrlQuery;
-}): Promise<{
-  props: EpisodePageProps | null;
-}> {
-  const country = (query.country || "US") as string;
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
   const translations = getTranslations(country, Page.Episode);
-  const cookies = req?.headers?.cookie;
-  if (!cookies) {
-    serverRedirect(res, "/");
-    return { props: null };
+  const cookies = context.req?.headers?.cookie;
+  const episodeId = context.params?.episodeId;
+  if (!cookies || !episodeId) {
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
-  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+  const { user } = (await getAuth(context)) ?? {};
   const episode = await getEpisodeById(
     episodeId,
     user?.country ?? "US",
-    accessToken,
-    cookies
+    context
   );
 
   return {
     props: {
       episode,
-      accessToken: accessToken ?? null,
       user: user ?? null,
       translations,
     },
   };
-}
+}) satisfies GetServerSideProps<
+  Partial<EpisodePageProps>,
+  { episodeId: string }
+>;

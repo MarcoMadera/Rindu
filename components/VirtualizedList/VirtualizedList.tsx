@@ -1,4 +1,4 @@
-import { ReactElement, useCallback, useState } from "react";
+import { CSSProperties, ReactElement, useCallback, useState } from "react";
 
 import {
   AutoSizer,
@@ -10,16 +10,12 @@ import {
 
 import { CardTrack } from "components";
 import { CardType } from "components/CardTrack/CardTrack";
-import { useAuth, useSpotify } from "hooks";
+import { useSpotify } from "hooks";
 import { ITrack } from "types/spotify";
-import {
-  getIdFromUri,
-  getTracksFromLibrary,
-  isServer,
-  mapPlaylistItems,
-} from "utils";
+import { getIdFromUri, isServer, mapPlaylistItems } from "utils";
 import {
   checkTracksInLibrary,
+  getMyLikedSongs,
   getTracksFromPlaylist,
 } from "utils/spotifyCalls";
 
@@ -35,9 +31,8 @@ export default function VirtualizedList({
   initialTracksInLibrary,
   isLibrary,
   isGeneratedPlaylist,
-}: Props): ReactElement | null {
+}: Readonly<Props>): ReactElement | null {
   const { allTracks, pageDetails, setAllTracks } = useSpotify();
-  const { accessToken } = useAuth();
   const [tracksInLibrary, setTracksInLibrary] = useState<boolean[] | null>(
     initialTracksInLibrary
   );
@@ -75,29 +70,19 @@ export default function VirtualizedList({
     async ({ startIndex }: IndexRange) => {
       if (isGeneratedPlaylist) return;
       const data = isLibrary
-        ? await getTracksFromLibrary(startIndex, accessToken)
+        ? await getMyLikedSongs(50, startIndex)
         : await getTracksFromPlaylist(
             getIdFromUri(pageDetails?.uri, "id") ?? "",
-            startIndex,
-            accessToken
+            startIndex
           );
       const items = data?.items;
       const tracks = mapPlaylistItems(items, startIndex);
       if (!tracks) return;
       const trackIds = tracks.map((track) => track.id ?? "");
-      const tracksInLibrary = await checkTracksInLibrary(
-        trackIds,
-        accessToken || ""
-      );
+      const tracksInLibrary = await checkTracksInLibrary(trackIds);
       addTracksToPlaylists(tracks, tracksInLibrary, startIndex);
     },
-    [
-      accessToken,
-      addTracksToPlaylists,
-      isGeneratedPlaylist,
-      isLibrary,
-      pageDetails?.uri,
-    ]
+    [addTracksToPlaylists, isGeneratedPlaylist, isLibrary, pageDetails?.uri]
   );
 
   const scrollElement = !isServer()
@@ -105,6 +90,30 @@ export default function VirtualizedList({
         "#right .simplebar-content-wrapper"
       ) as HTMLElement)
     : undefined;
+
+  function RowRenderer({
+    key,
+    style,
+    index,
+  }: Readonly<{
+    key: string;
+    style: CSSProperties;
+    index: number;
+  }>) {
+    return (
+      <CardTrack
+        key={key}
+        style={style}
+        track={allTracks?.[index]}
+        playlistUri={pageDetails?.uri ?? ""}
+        isTrackInLibrary={tracksInLibrary?.[allTracks?.[index]?.position ?? -1]}
+        isSingleTrack={isGeneratedPlaylist}
+        type={type}
+        position={allTracks?.[index]?.position}
+      />
+    );
+  }
+
   return (
     <WindowScroller scrollElement={scrollElement}>
       {({ height, isScrolling, onChildScroll, scrollTop }) => {
@@ -118,7 +127,7 @@ export default function VirtualizedList({
                   }}
                   loadMoreRows={loadMoreRows}
                   rowCount={
-                    (pageDetails?.tracks?.total || allTracks?.length) ?? 0
+                    pageDetails?.tracks?.total ?? allTracks?.length ?? 0
                   }
                 >
                   {({ onRowsRendered, registerChild }) => (
@@ -131,30 +140,12 @@ export default function VirtualizedList({
                       onScroll={onChildScroll}
                       overscanRowCount={2}
                       rowCount={
-                        (pageDetails?.tracks?.total || allTracks?.length) ?? 0
+                        pageDetails?.tracks?.total ?? allTracks?.length ?? 0
                       }
                       rowHeight={65}
                       scrollTop={scrollTop}
                       width={width}
-                      rowRenderer={({ index, style, key }) => {
-                        return (
-                          <CardTrack
-                            accessToken={accessToken}
-                            key={key}
-                            style={style}
-                            track={allTracks?.[index]}
-                            playlistUri={pageDetails?.uri ?? ""}
-                            isTrackInLibrary={
-                              tracksInLibrary?.[
-                                allTracks?.[index]?.position ?? -1
-                              ]
-                            }
-                            isSingleTrack={isGeneratedPlaylist}
-                            type={type}
-                            position={allTracks?.[index]?.position}
-                          />
-                        );
-                      }}
+                      rowRenderer={RowRenderer}
                     />
                   )}
                 </InfiniteLoader>

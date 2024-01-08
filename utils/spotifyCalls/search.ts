@@ -1,15 +1,16 @@
+import type { ServerApiContext } from "types/serverContext";
 import { handleJsonResponse } from "utils";
 import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function search(
   query: string,
-  accessToken?: string
+  context?: ServerApiContext
 ): Promise<SpotifyApi.SearchResponse | null> {
   const q = query.replaceAll(" ", "+");
   const res = await callSpotifyApi({
     endpoint: `/search?q=${q}&type=album,track,artist,playlist,show,episode&market=from_token&limit=10`,
     method: "GET",
-    accessToken,
+    context,
   });
 
   return handleJsonResponse<SpotifyApi.SearchResponse>(res);
@@ -17,13 +18,13 @@ export async function search(
 
 export async function searchArtist(
   query: string,
-  accessToken?: string
+  context?: ServerApiContext
 ): Promise<SpotifyApi.ArtistObjectFull[] | null> {
   const q = query.replaceAll(" ", "+");
   const res = await callSpotifyApi({
     endpoint: `/search?q=${q}&type=artist&market=from_token&limit=1`,
     method: "GET",
-    accessToken,
+    context,
   });
 
   const data = await handleJsonResponse<SpotifyApi.SearchResponse>(res);
@@ -36,13 +37,14 @@ export async function searchArtist(
 
 export async function searchTrack(
   query: string,
-  accessToken?: string
+  limit: number = 10,
+  context?: ServerApiContext
 ): Promise<SpotifyApi.TrackObjectFull[] | null> {
   const q = query.replaceAll(" ", "+");
   const res = await callSpotifyApi({
-    endpoint: `/search?q=${q}&type=track&market=from_token&limit=10`,
+    endpoint: `/search?q=${q}&type=track&market=from_token&limit=${limit}`,
     method: "GET",
-    accessToken,
+    context,
   });
   const data = await handleJsonResponse<SpotifyApi.SearchResponse>(res);
 
@@ -55,14 +57,14 @@ export async function searchTrack(
 
 export async function searchPlaylist(
   query?: string,
-  accessToken?: string
+  context?: ServerApiContext
 ): Promise<SpotifyApi.PlaylistObjectFull[] | null> {
   if (!query) return null;
   const q = query.replaceAll(" ", "+");
   const res = await callSpotifyApi({
     endpoint: `/search?q=${q}&type=playlist&market=from_token&limit=50`,
     method: "GET",
-    accessToken,
+    context,
   });
   const data = await handleJsonResponse<SpotifyApi.PlaylistSearchResponse>(res);
 

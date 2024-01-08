@@ -4,13 +4,7 @@ import Link from "next/link";
 
 import { ArtistList, PictureInPictureButton, ScrollableText } from "components";
 import { Chevron, Heart } from "components/icons";
-import {
-  useAuth,
-  useContextMenu,
-  useSpotify,
-  useToast,
-  useTranslations,
-} from "hooks";
+import { useContextMenu, useSpotify, useToast, useTranslations } from "hooks";
 import { chooseImage, ContentType, templateReplace, ToastMessage } from "utils";
 import {
   checkEpisodesInLibrary,
@@ -23,7 +17,6 @@ import {
 
 export default function NowPlaying(): ReactElement | null {
   const [isLikedTrack, setIsLikedTrack] = useState(false);
-  const { accessToken } = useAuth();
   const {
     playedSource,
     isShowingSideBarImg,
@@ -42,10 +35,10 @@ export default function NowPlaying(): ReactElement | null {
       currentlyPlaying.type === "episode"
         ? checkEpisodesInLibrary
         : checkTracksInLibrary;
-    checkInLibrary([currentlyPlaying.id], accessToken || "").then((res) => {
+    checkInLibrary([currentlyPlaying.id]).then((res) => {
       setIsLikedTrack(!!res?.[0]);
     });
-  }, [accessToken, currentlyPlaying?.id, currentlyPlaying?.type]);
+  }, [currentlyPlaying?.id, currentlyPlaying?.type]);
 
   if (!currentlyPlaying) return null;
 
@@ -126,10 +119,7 @@ export default function NowPlaying(): ReactElement | null {
               currentlyPlaying.type === "episode"
                 ? removeEpisodesFromLibrary
                 : removeTracksFromLibrary;
-            const res = await removeFromLibrary(
-              [currentlyPlaying.id ?? ""],
-              accessToken
-            );
+            const res = await removeFromLibrary([currentlyPlaying.id ?? ""]);
 
             if (res) {
               addToast({
@@ -155,10 +145,7 @@ export default function NowPlaying(): ReactElement | null {
               currentlyPlaying.type === "episode"
                 ? saveEpisodesToLibrary
                 : saveTracksToLibrary;
-            const saveRes = await saveToLibrary(
-              [currentlyPlaying.id ?? ""],
-              accessToken
-            );
+            const saveRes = await saveToLibrary([currentlyPlaying.id ?? ""]);
             if (saveRes) {
               addToast({
                 variant: "success",

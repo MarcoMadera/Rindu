@@ -1,12 +1,9 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { takeCookie } from "utils";
-
 export function middleware(request: NextRequest): NextResponse {
   const { nextUrl: url, geo } = request;
-  const cookies = request.headers.get("cookie") || "";
-  const language = takeCookie("language", cookies);
+  const language = request.cookies.get("language")?.value;
   if (language) {
     if (language === "es") {
       url.searchParams.set("country", "MX");
@@ -15,7 +12,7 @@ export function middleware(request: NextRequest): NextResponse {
       url.searchParams.set("country", "US");
     }
   } else {
-    const country = geo?.country || "US";
+    const country = geo?.country ?? "US";
     url.searchParams.set("country", country);
   }
 

@@ -5,6 +5,7 @@ import { RefreshTokenResponse } from "types/spotify";
 import {
   ACCESS_TOKEN_COOKIE,
   EXPIRE_TOKEN_COOKIE,
+  makeCookie,
   REFRESH_TOKEN_COOKIE,
   takeCookie,
 } from "utils";
@@ -15,12 +16,11 @@ interface IRefreshBody {
 
 export default async function refresh(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse<RefreshTokenResponse | string>
 ): Promise<void> {
   const { NEXT_PUBLIC_SPOTIFY_CLIENT_ID: client_id = "" } = process.env;
-  const cookies = req.headers.cookie;
-
-  const refreshTokenFromCookie = takeCookie(REFRESH_TOKEN_COOKIE, cookies);
+  const context = { req, res };
+  const refreshTokenFromCookie = takeCookie(REFRESH_TOKEN_COOKIE, context);
   const body = req.body as IRefreshBody;
   try {
     if (!body.refreshToken && !refreshTokenFromCookie) {
@@ -45,17 +45,25 @@ export default async function refresh(
     expireCookieDate.setTime(
       expireCookieDate.getTime() + 1000 * 60 * 60 * 24 * 30
     );
-    res.setHeader("Set-Cookie", [
-      `${ACCESS_TOKEN_COOKIE}=${
-        data.access_token
-      }; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax;`,
-      `${REFRESH_TOKEN_COOKIE}=${
-        body.refreshToken ?? refreshTokenFromCookie ?? ""
-      }; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax;`,
-      `${EXPIRE_TOKEN_COOKIE}=${
-        data.expires_in
-      }; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax;`,
-    ]);
+
+    makeCookie({
+      name: ACCESS_TOKEN_COOKIE,
+      value: data.access_token,
+      age: expireCookieDate.getTime(),
+      context,
+    });
+    makeCookie({
+      name: REFRESH_TOKEN_COOKIE,
+      value: body.refreshToken ?? refreshTokenFromCookie ?? "",
+      age: expireCookieDate.getTime(),
+      context,
+    });
+    makeCookie({
+      name: EXPIRE_TOKEN_COOKIE,
+      value: data.expires_in.toString(),
+      age: expireCookieDate.getTime(),
+      context,
+    });
 
     return res.json(data);
   } catch (error) {

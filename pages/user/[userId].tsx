@@ -1,8 +1,7 @@
-import { useEffect } from "react";
+import { ReactElement, useEffect } from "react";
 
 import { decode } from "html-entities";
-import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 
 import {
@@ -33,16 +32,17 @@ import { getPlaylistsFromUser, getUserById } from "utils/spotifyCalls";
 
 interface CurrentUserProps {
   currentUser: SpotifyApi.UserObjectPublic | null;
-  accessToken?: string;
   user: SpotifyApi.UserObjectPrivate | null;
   currentUserPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse | null;
   translations: Record<string, string>;
 }
 
-const CurrentUser: NextPage<CurrentUserProps> = ({
+const CurrentUser = ({
   currentUser,
   currentUserPlaylists,
-}) => {
+}: InferGetServerSidePropsType<
+  typeof getServerSideProps
+>): ReactElement | null => {
   const { trackWithGoogleAnalytics } = useAnalytics();
   const { user } = useAuth();
   const { translations } = useTranslations();
@@ -56,6 +56,10 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
     }
     trackWithGoogleAnalytics();
   }, [currentUser, router, trackWithGoogleAnalytics]);
+
+  if (!currentUser) {
+    return null;
+  }
 
   return (
     <ContentContainer hasPageHeader>
@@ -106,7 +110,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
                         title={name}
                         subTitle={
                           decode(description) ||
-                          `${translations.by} ${owner.display_name || owner.id}`
+                          `${translations.by} ${owner.display_name ?? owner.id}`
                         }
                         id={id}
                       />
@@ -135,7 +139,7 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
                           subTitle={
                             decode(description) ||
                             `${translations.by} ${
-                              owner.display_name || owner.id
+                              owner.display_name ?? owner.id
                             }`
                           }
                           id={id}
@@ -154,31 +158,22 @@ const CurrentUser: NextPage<CurrentUserProps> = ({
 
 export default CurrentUser;
 
-export async function getServerSideProps({
-  params: { userId },
-  req,
-  res,
-  query,
-}: {
-  params: { userId: string };
-  req: NextApiRequest;
-  res: NextApiResponse;
-  query: NextParsedUrlQuery;
-}): Promise<{
-  props: CurrentUserProps | null;
-}> {
-  const country = (query.country || "US") as string;
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
   const translations = getTranslations(country, Page.User);
-  const cookies = req?.headers?.cookie;
+  const cookies = context.req?.headers?.cookie;
 
-  if (!cookies) {
-    serverRedirect(res, "/");
-    return { props: null };
+  if (!cookies || !context.params) {
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
 
-  const { accessToken, user } = (await getAuth(res, cookies)) || {};
-  const currentUserProm = getUserById(userId, accessToken);
-  const currentUserPlaylistsProm = getPlaylistsFromUser(userId, accessToken);
+  const { user } = (await getAuth(context)) ?? {};
+  const currentUserProm = getUserById(context.params.userId, context);
+  const currentUserPlaylistsProm = getPlaylistsFromUser(
+    context.params.userId,
+    context
+  );
 
   const [currentUser, currentUserPlaylists] = await Promise.allSettled([
     currentUserProm,
@@ -188,10 +183,9 @@ export async function getServerSideProps({
   return {
     props: {
       currentUser: fullFilledValue(currentUser),
-      accessToken,
       user: user ?? null,
       currentUserPlaylists: fullFilledValue(currentUserPlaylists),
       translations,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<CurrentUserProps>, { userId: string }>;

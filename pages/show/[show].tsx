@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { ReactElement, useEffect, useMemo, useState } from "react";
 
-import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import {
   ContentContainer,
@@ -12,13 +11,7 @@ import {
   PlaylistTopBarExtraField,
 } from "components";
 import { Heart } from "components/icons";
-import {
-  useAuth,
-  useHeader,
-  useSpotify,
-  useToast,
-  useTranslations,
-} from "hooks";
+import { useHeader, useSpotify, useToast, useTranslations } from "hooks";
 import { AsType } from "types/heading";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
@@ -42,14 +35,16 @@ import {
 
 interface PlaylistProps {
   show: SpotifyApi.SingleShowResponse | null;
-  accessToken?: string;
   user: SpotifyApi.UserObjectPrivate | null;
   translations: Record<string, string>;
 }
 
-const Shows: NextPage<PlaylistProps> = ({ show }) => {
+const Shows = ({
+  show,
+}: InferGetServerSidePropsType<
+  typeof getServerSideProps
+>): ReactElement | null => {
   const [isShowInLibrary, setIsShowInLibrary] = useState(false);
-  const { accessToken } = useAuth();
   const { translations } = useTranslations();
   const { setPageDetails, setAllTracks } = useSpotify();
   const { addToast } = useToast();
@@ -63,14 +58,11 @@ const Shows: NextPage<PlaylistProps> = ({ show }) => {
 
   useEffect(() => {
     async function fetchData() {
-      const userFollowThisShow = await checkIfUserFollowShows(
-        [show?.id || ""],
-        accessToken
-      );
+      const userFollowThisShow = await checkIfUserFollowShows([show?.id ?? ""]);
       setIsShowInLibrary(!!userFollowThisShow?.[0]);
     }
     fetchData();
-  }, [accessToken, show?.id]);
+  }, [show?.id]);
 
   useEffect(() => {
     if (!show?.episodes.items) return;
@@ -131,6 +123,10 @@ const Shows: NextPage<PlaylistProps> = ({ show }) => {
     });
   }, [setPageDetails, show]);
 
+  if (!show) {
+    return null;
+  }
+
   return (
     <ContentContainer hasPageHeader>
       <PageHeader
@@ -147,7 +143,7 @@ const Shows: NextPage<PlaylistProps> = ({ show }) => {
             uri={show?.uri}
             size={56}
             centerSize={28}
-            allTracks={allTracks || []}
+            allTracks={allTracks ?? []}
           />
           <div className="info">
             <Heart
@@ -275,36 +271,24 @@ const Shows: NextPage<PlaylistProps> = ({ show }) => {
 
 export default Shows;
 
-export async function getServerSideProps({
-  params: { show },
-  req,
-  res,
-  query,
-}: {
-  params: { show: string };
-  req: NextApiRequest;
-  res: NextApiResponse;
-  query: NextParsedUrlQuery;
-}): Promise<{
-  props: PlaylistProps | null;
-}> {
-  const country = (query.country || "US") as string;
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
+  const show = context.params?.show;
   const translations = getTranslations(country, Page.Episode);
-  const cookies = req?.headers?.cookie;
-  if (!cookies) {
-    serverRedirect(res, "/");
-    return { props: null };
+  const cookies = context.req?.headers?.cookie;
+  if (!cookies || !show) {
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
-  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+  const { user } = (await getAuth(context)) ?? {};
 
-  const showData = await getShow(show, accessToken);
+  const showData = await getShow(show, context);
 
   return {
     props: {
       show: showData,
-      accessToken,
       user: user ?? null,
       translations,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<PlaylistProps>, { show: string }>;

@@ -69,7 +69,6 @@ export async function getCurrentState(
 export async function handlePremiumPlay(
   player: Spotify.Player | undefined,
   deviceId: string,
-  accessToken: string,
   addToast: (toast: NewToast) => void,
   setReconnectionError: Dispatch<SetStateAction<boolean>>,
   setPlaylistPlayingId: Dispatch<SetStateAction<string | undefined>>,
@@ -108,7 +107,7 @@ export async function handlePremiumPlay(
     allTracks
   );
 
-  const playRes = await play(accessToken, deviceId, playOptions);
+  const playRes = await play(deviceId, playOptions);
 
   if (playRes.status === 404) {
     player?.disconnect();

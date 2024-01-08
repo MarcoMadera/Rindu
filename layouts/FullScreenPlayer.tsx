@@ -15,7 +15,6 @@ import {
 } from "components";
 import { FullScreenExit, Heart, Lyrics, Queue } from "components/icons";
 import {
-  useAuth,
   useClickPreventionOnDoubleClick,
   useContextMenu,
   useFullScreenControl,
@@ -43,7 +42,6 @@ import {
 } from "utils/spotifyCalls";
 
 export default function FullScreenPlayer(): ReactElement | null {
-  const { accessToken } = useAuth();
   const {
     currentlyPlaying,
     nextTracks,
@@ -216,10 +214,9 @@ export default function FullScreenPlayer(): ReactElement | null {
                         currentlyPlaying.type === "episode"
                           ? removeEpisodesFromLibrary
                           : removeTracksFromLibrary;
-                      const res = await removeFromLibrary(
-                        [currentlyPlaying.id ?? ""],
-                        accessToken
-                      );
+                      const res = await removeFromLibrary([
+                        currentlyPlaying.id ?? "",
+                      ]);
 
                       if (res) {
                         addToast({
@@ -245,10 +242,9 @@ export default function FullScreenPlayer(): ReactElement | null {
                         currentlyPlaying.type === "episode"
                           ? saveEpisodesToLibrary
                           : saveTracksToLibrary;
-                      const saveRes = await saveToLibrary(
-                        [currentlyPlaying.id ?? ""],
-                        accessToken
-                      );
+                      const saveRes = await saveToLibrary([
+                        currentlyPlaying.id ?? "",
+                      ]);
                       if (saveRes) {
                         addToast({
                           variant: "success",

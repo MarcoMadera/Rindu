@@ -33,15 +33,14 @@ export default function SideBar({
     setIsShowingSideBarImg,
     playedSource,
   } = useSpotify();
-  const { accessToken, user } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const { addToast } = useToast();
   const { translations } = useTranslations();
   const { trackWithGoogleAnalytics } = useAnalytics();
 
   useEffect(() => {
-    if (!accessToken) return;
-    getAllMyPlaylists(accessToken)
+    getAllMyPlaylists()
       .then((res) => {
         if (res) {
           setPlaylists(res.items);
@@ -56,7 +55,7 @@ export default function SideBar({
           exFatal: "0",
         });
       });
-  }, [accessToken, setPlaylists, trackWithGoogleAnalytics]);
+  }, [setPlaylists, trackWithGoogleAnalytics]);
 
   const type = playedSource?.split(":")?.[1];
   const id = playedSource?.split(":")?.[2];
@@ -86,7 +85,7 @@ export default function SideBar({
             onClick={(e) => {
               e.stopPropagation();
               if (!user?.id) return;
-              createPlaylist(user.id, { accessToken })
+              createPlaylist(user.id)
                 .then(async (res) => {
                   if (!res) {
                     addToast({

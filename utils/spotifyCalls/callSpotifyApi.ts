@@ -1,12 +1,12 @@
 import { refreshAccessToken } from "./refreshAccessToken";
-import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "utils/constants";
-import { makeCookie, takeCookie } from "utils/cookies";
+import type { ServerApiContext } from "types/serverContext";
+import { ACCESS_TOKEN_COOKIE } from "utils/constants";
+import { takeCookie } from "utils/cookies";
 
 interface ICallSpotifyApi {
   endpoint: string;
   method: string;
-  accessToken?: string | null;
-  cookies?: string;
+  context: ServerApiContext | undefined;
   body?: BodyInit | null;
   retry?: boolean;
 }
@@ -14,8 +14,7 @@ interface ICallSpotifyApi {
 export async function callSpotifyApi({
   endpoint,
   method,
-  accessToken,
-  cookies,
+  context,
   body,
   retry,
 }: ICallSpotifyApi): Promise<Response> {
@@ -23,35 +22,20 @@ export async function callSpotifyApi({
     method,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        accessToken ?? takeCookie(ACCESS_TOKEN_COOKIE, cookies) ?? ""
-      }`,
+      Authorization: `Bearer ${takeCookie(ACCESS_TOKEN_COOKIE, context)}`,
     },
     body,
   });
 
   if (res.ok && res.status === 401 && !retry) {
-    const { access_token, refresh_token } = (await refreshAccessToken()) ?? {};
-    if (access_token && refresh_token) {
-      makeCookie({
-        name: REFRESH_TOKEN_COOKIE,
-        value: refresh_token,
-        age: 60 * 60 * 24 * 30 * 2,
-      });
-      makeCookie({
-        name: ACCESS_TOKEN_COOKIE,
-        value: access_token,
-        age: 60 * 60 * 24 * 30 * 2,
-      });
-      return callSpotifyApi({
-        endpoint,
-        method,
-        accessToken: access_token,
-        cookies,
-        body,
-        retry: true,
-      });
-    }
+    await refreshAccessToken(context);
+    return callSpotifyApi({
+      endpoint,
+      method,
+      context,
+      body,
+      retry: true,
+    });
   }
 
   return res;

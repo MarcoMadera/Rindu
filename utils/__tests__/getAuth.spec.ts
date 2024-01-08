@@ -1,4 +1,4 @@
-import { NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 
 import { IUtilsMocks } from "types/mocks";
 import { getAuth } from "utils";
@@ -15,12 +15,21 @@ const nextApiResponse = {
   end: jest.fn(),
 } as unknown as NextApiResponse;
 
+const nextApiRequest = {
+  cookies: {},
+} as unknown as NextApiRequest;
+
+const context = {
+  req: nextApiRequest,
+  res: nextApiResponse,
+};
+
 describe("getAuth", () => {
   it("should return the correct auth", async () => {
     expect.assertions(1);
     setupCookies();
     (getMe as jest.Mock).mockResolvedValue(user);
-    const auth = await getAuth(nextApiResponse, "test");
+    const auth = await getAuth(context);
     expect(auth).toStrictEqual({ user, accessToken });
   });
 
@@ -29,7 +38,7 @@ describe("getAuth", () => {
     setupCookies();
     (getMe as jest.Mock).mockResolvedValue(null);
     (refreshAccessToken as jest.Mock).mockResolvedValue(null);
-    const auth = await getAuth(nextApiResponse, "test");
+    const auth = await getAuth(context);
     expect(auth).toBeNull();
   });
 
@@ -40,7 +49,7 @@ describe("getAuth", () => {
     (refreshAccessToken as jest.Mock).mockResolvedValue(
       refreshAccessTokenResponse
     );
-    const auth = await getAuth(nextApiResponse, "test");
+    const auth = await getAuth(context);
     expect(auth).toBeNull();
   });
 
@@ -53,7 +62,7 @@ describe("getAuth", () => {
     (refreshAccessToken as jest.Mock).mockResolvedValue(
       refreshAccessTokenResponse
     );
-    const auth = await getAuth(nextApiResponse, "test");
+    const auth = await getAuth(context);
     expect(auth).toStrictEqual({ user, accessToken });
   });
 
@@ -63,7 +72,7 @@ describe("getAuth", () => {
     (getMe as jest.Mock)
       .mockResolvedValueOnce(null)
       .mockResolvedValueOnce(null);
-    const auth = await getAuth(nextApiResponse, "test");
+    const auth = await getAuth(context);
     expect(auth).toBeNull();
   });
 });

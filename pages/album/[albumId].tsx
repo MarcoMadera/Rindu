@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
-import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 
 import {
@@ -38,20 +37,21 @@ import {
 
 interface AlbumPageProps {
   album: SpotifyApi.SingleAlbumResponse | null;
-  accessToken?: string;
   user: SpotifyApi.UserObjectPrivate | null;
   tracks: ITrack[] | null;
   tracksInLibrary: boolean[] | null;
   translations: Record<string, string>;
 }
 
-const AlbumPage: NextPage<AlbumPageProps> = ({
+const AlbumPage = ({
   album,
   tracks,
   tracksInLibrary,
   translations,
-}) => {
-  const { user, accessToken } = useAuth();
+}: InferGetServerSidePropsType<
+  typeof getServerSideProps
+>): ReactElement | null => {
+  const { user } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
   const { setAllTracks, setPageDetails, allTracks } = useSpotify();
   const router = useRouter();
@@ -64,13 +64,12 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
 
   useEffect(() => {
     (async () => {
-      const userFollowThisAlbum = await checkIfUserFollowAlbums(
-        [album?.id || ""],
-        accessToken
-      );
+      const userFollowThisAlbum = await checkIfUserFollowAlbums([
+        album?.id ?? "",
+      ]);
       setIsFollowingThisAlbum(!!userFollowThisAlbum?.[0]);
     })();
-  }, [accessToken, album?.id, user?.id]);
+  }, [album?.id, user?.id]);
 
   useEffect(() => {
     if (!album) {
@@ -94,7 +93,6 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
       tracks: { total: album.tracks.total },
     });
   }, [
-    accessToken,
     album,
     router,
     setAllTracks,
@@ -117,6 +115,8 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
         return HeaderType.Album;
     }
   }
+
+  if (!album) return null;
 
   return (
     <ContentContainer hasPageHeader>
@@ -252,34 +252,20 @@ const AlbumPage: NextPage<AlbumPageProps> = ({
 
 export default AlbumPage;
 
-export async function getServerSideProps({
-  params: { albumId },
-  req,
-  res,
-  query,
-}: {
-  params: { albumId: string };
-  req: NextApiRequest;
-  res: NextApiResponse;
-  query: NextParsedUrlQuery;
-}): Promise<{
-  props: AlbumPageProps | null;
-}> {
-  const country = (query.country || "US") as string;
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
   const translations = getTranslations(country, Page.Album);
-  const cookies = req ? req.headers?.cookie : undefined;
-  if (!cookies) {
-    serverRedirect(res, "/");
-    return { props: null };
+  const cookies = context.req.headers?.cookie;
+  const albumId = context.params?.albumId;
+  if (!cookies || !albumId) {
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
-  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+  const { user } = (await getAuth(context)) ?? {};
 
-  const album = await getAlbumById(albumId, user?.country ?? "US", accessToken);
+  const album = await getAlbumById(albumId, user?.country ?? "US", context);
   const trackIds = album?.tracks.items.map(({ id }: { id: string }) => id);
-  const tracksInLibrary = await checkTracksInLibrary(
-    trackIds ?? [],
-    accessToken || ""
-  );
+  const tracksInLibrary = await checkTracksInLibrary(trackIds ?? [], context);
   const tracks: ITrack[] | undefined = album?.tracks.items.map((track, i) => {
     return {
       ...track,
@@ -299,11 +285,10 @@ export async function getServerSideProps({
   return {
     props: {
       album,
-      accessToken,
       user: user ?? null,
       tracks: tracks ?? null,
       tracksInLibrary,
       translations,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<AlbumPageProps>, { albumId: string }>;

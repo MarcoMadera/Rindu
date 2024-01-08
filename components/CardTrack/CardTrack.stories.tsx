@@ -100,7 +100,6 @@ export const Default = Template.bind({});
 Default.args = {
   track,
   position: 0,
-  accessToken: "",
   style: {},
   type: CardType.Playlist,
   isTrackInLibrary: false,
@@ -114,7 +113,6 @@ export const WithAddButton = Template.bind({});
 WithAddButton.args = {
   track,
   position: 0,
-  accessToken: "",
   style: {},
   type: CardType.Presentation,
   isTrackInLibrary: false,

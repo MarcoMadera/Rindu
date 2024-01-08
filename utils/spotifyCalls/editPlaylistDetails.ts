@@ -1,10 +1,11 @@
+import type { ServerApiContext } from "types/serverContext";
 import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function editPlaylistDetails(
   playlistId: string | undefined | null,
   name: string,
   description?: string,
-  accessToken?: string
+  context?: ServerApiContext
 ): Promise<boolean | null> {
   if (!playlistId) return null;
 
@@ -14,8 +15,8 @@ export async function editPlaylistDetails(
   const res = await callSpotifyApi({
     endpoint: `/playlists/${playlistId}`,
     method: "PUT",
-    accessToken,
     body: JSON.stringify(body),
+    context,
   });
 
   return res.ok;

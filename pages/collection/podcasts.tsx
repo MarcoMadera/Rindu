@@ -1,7 +1,6 @@
 import { ReactElement, useEffect, useState } from "react";
 
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 
 import {
@@ -12,7 +11,7 @@ import {
   PresentationCard,
 } from "components";
 import { CardType } from "components/CardContent";
-import { useAnalytics, useAuth, useHeader, useSpotify } from "hooks";
+import { useAnalytics, useHeader, useSpotify } from "hooks";
 import {
   getAllMyShows,
   getAuth,
@@ -22,14 +21,12 @@ import {
 } from "utils";
 
 interface CollectionPodcastsProps {
-  accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
   translations: Record<string, string>;
 }
 
 export default function CollectionPlaylists(): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
-  const { accessToken } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
   const [shows, setShows] = useState<SpotifyApi.SavedShowObject[]>([]);
   const { isPlaying } = useSpotify();
@@ -45,15 +42,13 @@ export default function CollectionPlaylists(): ReactElement {
   }, [setElement, setHeaderColor]);
 
   useEffect(() => {
-    if (!accessToken) return;
-
     async function getShows() {
-      const allShows = await getAllMyShows(accessToken as string);
+      const allShows = await getAllMyShows();
       if (!allShows) return;
       setShows(allShows.items);
     }
     getShows();
-  }, [accessToken, setShows]);
+  }, [setShows]);
 
   useEffect(() => {
     trackWithGoogleAnalytics();
@@ -89,32 +84,21 @@ export default function CollectionPlaylists(): ReactElement {
   );
 }
 
-export async function getServerSideProps({
-  res,
-  req,
-  query,
-}: {
-  res: NextApiResponse;
-  req: NextApiRequest;
-  query: NextParsedUrlQuery;
-}): Promise<{
-  props: CollectionPodcastsProps | null;
-}> {
-  const country = (query.country || "US") as string;
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
   const translations = getTranslations(country, Page.CollectionPodcasts);
-  const cookies = req?.headers?.cookie;
+  const cookies = context.req?.headers?.cookie;
   if (!cookies) {
-    serverRedirect(res, "/");
-    return { props: null };
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
 
-  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+  const { user } = (await getAuth(context)) ?? {};
 
   return {
     props: {
-      user: user || null,
-      accessToken: accessToken ?? null,
+      user: user ?? null,
       translations,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<CollectionPodcastsProps>>;

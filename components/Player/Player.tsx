@@ -21,7 +21,7 @@ export default function Player(): ReactElement {
     suffleState,
     repeatState,
   } = useSpotify();
-  const { accessToken, isPremium } = useAuth();
+  const { isPremium } = useAuth();
   const { addToast } = useToast();
   const { translations } = useTranslations();
 
@@ -47,7 +47,7 @@ export default function Player(): ReactElement {
               });
               return;
             }
-            suffle(!suffleState, deviceId, accessToken);
+            suffle(!suffleState, deviceId);
           }}
           className="button playerButton suffle"
         >
@@ -123,7 +123,7 @@ export default function Player(): ReactElement {
               return;
             }
             (player as Spotify.Player).activateElement().then(() => {
-              repeat(state, deviceId, accessToken);
+              repeat(state, deviceId);
             });
           }}
           className="button playerButton repeat"

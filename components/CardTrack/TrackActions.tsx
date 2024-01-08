@@ -1,13 +1,7 @@
 import { Dispatch, ReactElement, SetStateAction, useRef } from "react";
 
 import { Heart, ThreeDots } from "components/icons";
-import {
-  useAuth,
-  useContextMenu,
-  useOnScreen,
-  useToast,
-  useTranslations,
-} from "hooks";
+import { useContextMenu, useOnScreen, useToast, useTranslations } from "hooks";
 import { ITrack } from "types/spotify";
 import { ContentType, formatTime, templateReplace, ToastMessage } from "utils";
 import {
@@ -32,9 +26,8 @@ export function TrackActions({
   isTrackInLibrary,
   track,
   onClickAdd,
-}: ITrackActions): ReactElement {
+}: Readonly<ITrackActions>): ReactElement {
   const trackRef = useRef<HTMLDivElement>(null);
-  const { accessToken } = useAuth();
   const { addContextMenu } = useContextMenu();
   const { addToast } = useToast();
   const { translations } = useTranslations();
@@ -52,7 +45,7 @@ export function TrackActions({
             track.type === "episode"
               ? saveEpisodesToLibrary
               : saveTracksToLibrary;
-          const saveRes = await saveToLibrary([track.id ?? ""], accessToken);
+          const saveRes = await saveToLibrary([track.id ?? ""]);
           if (saveRes) {
             setIsLikedTrack(true);
             addToast({
@@ -75,10 +68,7 @@ export function TrackActions({
             track.type === "episode"
               ? removeEpisodesFromLibrary
               : removeTracksFromLibrary;
-          const removeRes = await removeFromLibrary(
-            [track.id ?? ""],
-            accessToken
-          );
+          const removeRes = await removeFromLibrary([track.id ?? ""]);
           if (removeRes) {
             setIsLikedTrack(false);
             addToast({

@@ -2,12 +2,11 @@ import { ReactElement } from "react";
 
 import { CardTrack, ContentContainer, Heading } from "components";
 import { CardType } from "components/CardTrack";
-import { useAuth, useSpotify, useTranslations } from "hooks";
+import { useSpotify, useTranslations } from "hooks";
 
 export default function FullScreenQueue(): ReactElement {
   const { previousTracks, currentlyPlaying, nextTracks, playlistPlayingId } =
     useSpotify();
-  const { accessToken } = useAuth();
   const playlistUri = playlistPlayingId
     ? `spotify:playlist:${playlistPlayingId}`
     : "";
@@ -24,7 +23,6 @@ export default function FullScreenQueue(): ReactElement {
             <CardTrack
               key={track.id}
               track={track}
-              accessToken={accessToken}
               playlistUri={playlistUri}
               isTrackInLibrary={false}
               type={CardType.Presentation}
@@ -39,7 +37,6 @@ export default function FullScreenQueue(): ReactElement {
             <CardTrack
               key={currentlyPlaying.id}
               track={currentlyPlaying}
-              accessToken={accessToken}
               playlistUri={playlistUri}
               isTrackInLibrary={false}
               type={CardType.Presentation}
@@ -54,7 +51,6 @@ export default function FullScreenQueue(): ReactElement {
             <CardTrack
               key={track.id}
               track={track}
-              accessToken={accessToken}
               playlistUri={playlistUri}
               isTrackInLibrary={false}
               type={CardType.Presentation}

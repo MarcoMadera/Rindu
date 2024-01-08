@@ -76,7 +76,6 @@ function filterTracksByUri(allTracks: ITrack[]) {
 interface IPlayConfig {
   allTracks: ITrack[];
   isPremium: boolean;
-  accessToken: string | undefined;
   deviceId: string | undefined;
   playlistUri: string | undefined;
   player: AudioPlayer | Spotify.Player | undefined;
@@ -100,7 +99,6 @@ export async function playCurrentTrack(
     player,
     isPremium,
     allTracks,
-    accessToken,
     deviceId,
     playlistUri,
     isSingleTrack,
@@ -118,7 +116,7 @@ export async function playCurrentTrack(
     return;
   }
 
-  if (!accessToken || !deviceId) {
+  if (!deviceId) {
     throw new BadRequestError();
   }
 
@@ -144,7 +142,7 @@ export async function playCurrentTrack(
     ? singleTrackConfiguration
     : trackConfiguration;
 
-  const res = await play(accessToken, deviceId, playConfig);
+  const res = await play(deviceId, playConfig);
 
   if (res.ok) {
     return;
