@@ -235,7 +235,7 @@ export const getServerSideProps = (async (context) => {
     }
 
     if (context.res) {
-      serverRedirect(context.res, "/dashboard", false);
+      serverRedirect(context.res, "/dashboard");
     } else {
       Router.replace("/dashboard");
     }
