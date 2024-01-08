@@ -5,6 +5,7 @@ import {
   handleJsonResponse,
   makeCookie,
   REFRESH_TOKEN_COOKIE,
+  removeTokensFromCookieServer,
   takeCookie,
 } from "utils";
 
@@ -38,5 +39,7 @@ export async function refreshAccessToken(
       value: data.access_token,
       context,
     });
+  } else {
+    removeTokensFromCookieServer(context?.res);
   }
 }
