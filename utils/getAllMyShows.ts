@@ -1,10 +1,8 @@
 import { getMyShows } from "utils/spotifyCalls";
 
-export async function getAllMyShows(
-  accessToken: string
-): Promise<SpotifyApi.UsersSavedShowsResponse | null> {
+export async function getAllMyShows(): Promise<SpotifyApi.UsersSavedShowsResponse | null> {
   const limit = 50;
-  const showsData = await getMyShows(0, accessToken);
+  const showsData = await getMyShows(0);
   if (!showsData) return null;
 
   let restShowsData: SpotifyApi.UsersSavedShowsResponse | undefined;
@@ -15,7 +13,7 @@ export async function getAllMyShows(
   }
 
   for (let i = 1; i < max; i++) {
-    const resAlbumsData = await getMyShows(limit * i, accessToken);
+    const resAlbumsData = await getMyShows(limit * i);
     if (!resAlbumsData) return null;
     if (restShowsData) {
       restShowsData = {

@@ -1,7 +1,6 @@
 import { ReactElement, useEffect, useState } from "react";
 
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 
 import {
@@ -22,14 +21,13 @@ import { getCategories } from "utils/spotifyCalls";
 
 interface SearchPageProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
-  accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
   translations: Record<string, string>;
 }
 
 export default function SearchPage({
   categories,
-}: Readonly<SearchPageProps>): ReactElement {
+}: InferGetServerSidePropsType<typeof getServerSideProps>): ReactElement {
   const { setElement, setHeaderColor } = useHeader({ showOnFixed: true });
   const [searchResponse, setSearchResponse] =
     useState<SpotifyApi.SearchResponse | null>(null);
@@ -76,45 +74,29 @@ export default function SearchPage({
           <Heading number={3} as="h1">
             {translations.browseAll}
           </Heading>
-          <BrowseCategories categories={categories} />
+          {categories ? <BrowseCategories categories={categories} /> : null}
         </>
       )}
     </ContentContainer>
   );
 }
 
-export async function getServerSideProps({
-  req,
-  res,
-  query,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-  query: NextParsedUrlQuery;
-}): Promise<{
-  props: SearchPageProps | null;
-}> {
-  const country = (query.country ?? "US") as string;
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
   const translations = getTranslations(country, Page.Search);
-  const cookies = req?.headers?.cookie;
+  const cookies = context.req?.headers?.cookie;
   if (!cookies) {
-    serverRedirect(res, "/");
-    return { props: null };
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
-  const { accessToken, user } = (await getAuth(res, cookies)) ?? {};
-  const categories = await getCategories(
-    user?.country ?? "US",
-    50,
-    accessToken,
-    cookies
-  );
+  const { user } = (await getAuth(context)) ?? {};
+  const categories = await getCategories(user?.country ?? "US", 50, context);
 
   return {
     props: {
-      categories,
-      accessToken: accessToken ?? null,
+      categories: categories ?? null,
       user: user ?? null,
       translations,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<SearchPageProps>>;

@@ -3,30 +3,26 @@ import { ReactElement, useState } from "react";
 import { FormToggle, Heading, SelectControl, TextControl } from "components";
 import { useTranslations } from "hooks";
 import { AsType } from "types/heading";
-import { Language } from "utils";
+import { ACCESS_TOKEN_COOKIE, Language, makeCookie } from "utils";
 
 export interface StorybookConfigurationModalProps {
-  setAccessToken: (accessToken: string) => void;
   setProduct: (product: string) => void;
   setIsLogin: (isLogin: boolean) => void;
   setLanguage: (language: Language) => void;
-  accessToken: string;
   product: string;
   isLogin: boolean;
   language: Language;
 }
 
 export default function StorybookConfigurationModal({
-  setAccessToken,
   setProduct,
   setIsLogin,
-  accessToken,
   product,
   isLogin,
   language,
   setLanguage,
-}: StorybookConfigurationModalProps): ReactElement {
-  const [inputAccessToken, setInputAccessToken] = useState(accessToken);
+}: Readonly<StorybookConfigurationModalProps>): ReactElement {
+  const [inputAccessToken, setInputAccessToken] = useState("");
   const [isLoggedInput, setIsLoggedInput] = useState(isLogin);
   const { translations } = useTranslations();
   return (
@@ -101,7 +97,11 @@ export default function StorybookConfigurationModal({
             value={inputAccessToken}
             onChange={(e) => {
               setInputAccessToken(e.target.value);
-              setAccessToken(e.target.value);
+              makeCookie({
+                name: ACCESS_TOKEN_COOKIE,
+                value: e.target.value,
+                age: 60 * 60 * 24 * 30 * 2,
+              });
             }}
             popupText="This is the access token that will be used to make requests to the Spotify API."
           />

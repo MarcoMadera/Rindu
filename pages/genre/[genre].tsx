@@ -1,7 +1,6 @@
 import { ReactElement, useEffect } from "react";
 
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 
 import { ContentContainer, Grid, Heading, PresentationCard } from "components";
@@ -22,7 +21,6 @@ import {
 interface CategoryProps {
   categoryInfo: SpotifyApi.SingleCategoryResponse | null;
   playlists: SpotifyApi.PagingObject<SpotifyApi.PlaylistObjectSimplified> | null;
-  accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
   translations: Record<string, string>;
 }
@@ -30,7 +28,7 @@ interface CategoryProps {
 export default function Category({
   categoryInfo,
   playlists,
-}: CategoryProps): ReactElement {
+}: InferGetServerSidePropsType<typeof getServerSideProps>): ReactElement {
   const { setHeaderColor } = useHeader();
   const { isPlaying } = useSpotify();
 
@@ -42,7 +40,7 @@ export default function Category({
     <ContentContainer>
       {!isPlaying && (
         <Head>
-          <title>Rindu - {categoryInfo?.name || "Generos"}</title>
+          <title>Rindu - {categoryInfo?.name ?? "Generos"}</title>
         </Head>
       )}
       {categoryInfo && <Heading number={1}>{categoryInfo.name}</Heading>}
@@ -69,36 +67,20 @@ export default function Category({
   );
 }
 
-export async function getServerSideProps({
-  params: { genre },
-  req,
-  res,
-  query,
-}: {
-  params: { genre: string };
-  req: NextApiRequest;
-  res: NextApiResponse;
-  query: NextParsedUrlQuery;
-}): Promise<{
-  props: CategoryProps | null;
-}> {
-  const country = (query.country || "US") as string;
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
   const translations = getTranslations(country, Page.Genre);
-  const cookies = req?.headers?.cookie;
-  if (!cookies) {
-    serverRedirect(res, "/");
-    return { props: null };
+  const cookies = context.req?.headers?.cookie;
+  const genre = context.params?.genre;
+  if (!cookies || !genre) {
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
-  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+  const { user } = (await getAuth(context)) ?? {};
 
-  const categoryInfoProm = getSingleCategoryInfo(genre, accessToken, cookies);
+  const categoryInfoProm = getSingleCategoryInfo(genre, context);
 
-  const categoriesProm = getCategoryPlaylists(
-    genre,
-    user?.country,
-    accessToken,
-    cookies
-  );
+  const categoriesProm = getCategoryPlaylists(genre, user?.country, context);
 
   const [categoryInfo, categories] = await Promise.allSettled([
     categoryInfoProm,
@@ -109,9 +91,8 @@ export async function getServerSideProps({
     props: {
       categoryInfo: fullFilledValue(categoryInfo),
       playlists: fullFilledValue(categories)?.playlists ?? null,
-      accessToken: accessToken ?? null,
       user: user ?? null,
       translations,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<CategoryProps>, { genre: string }>;

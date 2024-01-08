@@ -1,5 +1,6 @@
-import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { ReactElement } from "react";
+
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import PlaylistLayout from "layouts/playlist";
 import { IPageDetails, ITrack } from "types/spotify";
@@ -19,12 +20,15 @@ export interface PlaylistProps {
   pageDetails: IPageDetails | null;
   tracksInLibrary: boolean[] | null;
   playListTracks: ITrack[] | null;
-  accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
   translations: Record<string, string>;
 }
 
-const Playlist: NextPage<PlaylistProps> = (props) => {
+const Playlist = (
+  props: InferGetServerSidePropsType<typeof getServerSideProps>
+): ReactElement | null => {
+  if (!props.pageDetails) return null;
+
   return (
     <PlaylistLayout
       pageDetails={props.pageDetails}
@@ -32,7 +36,6 @@ const Playlist: NextPage<PlaylistProps> = (props) => {
       playListTracks={props.playListTracks}
       tracksInLibrary={props.tracksInLibrary}
       user={props.user}
-      accessToken={props.accessToken}
       translations={props.translations}
       isGeneratedPlaylist={true}
     />
@@ -41,32 +44,21 @@ const Playlist: NextPage<PlaylistProps> = (props) => {
 
 export default Playlist;
 
-export async function getServerSideProps({
-  req,
-  res,
-  query,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-  query: NextParsedUrlQuery;
-}): Promise<{
-  props: PlaylistProps | null;
-}> {
-  const country = (query.country || "US") as string;
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
   const translations = getTranslations(country, Page.TopTracks);
-  const cookies = req?.headers?.cookie;
+  const cookies = context.req?.headers?.cookie;
   if (!cookies) {
-    serverRedirect(res, "/");
-    return { props: null };
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
-  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+  const { user } = (await getAuth(context)) ?? {};
 
   const usersTopTracksProm = getMyTop(
     TopType.TRACKS,
-    accessToken,
     50,
     "medium_term",
-    cookies
+    context
   );
 
   const [usersTopTracksSettledResult] = await Promise.allSettled([
@@ -74,8 +66,8 @@ export async function getServerSideProps({
   ]);
   const usersTopTracks = fullFilledValue(usersTopTracksSettledResult);
   if (!usersTopTracks) {
-    serverRedirect(res, "/");
-    return { props: null };
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
   const allTracks = usersTopTracks.items;
   const playListTracks =
@@ -88,12 +80,11 @@ export async function getServerSideProps({
           };
         })
       : null;
-  const usersTopTracksIds = playListTracks?.map((item) => item.id) || [];
+  const usersTopTracksIds = playListTracks?.map((item) => item.id) ?? [];
 
   const tracksInLibrary = await checkTracksInLibrary(
     usersTopTracksIds,
-    accessToken,
-    cookies
+    context
   );
   const pageTitle = `${translations.title} - ${translations.mediumTerm}`;
 
@@ -104,7 +95,7 @@ export async function getServerSideProps({
         url: `${getSiteUrl()}/api/top-tracks-cover?title=${
           translations.mediumTerm
         }&color=${TOP_TRACKS_MEDIUM_TERM_COLOR}&imageUrl=${
-          user?.images?.[0]?.url || ""
+          user?.images?.[0]?.url ?? ""
         }`,
       },
     ],
@@ -114,7 +105,7 @@ export async function getServerSideProps({
     },
     type: "top",
     tracks: {
-      total: playListTracks?.length || 0,
+      total: playListTracks?.length ?? 0,
     },
   };
 
@@ -123,9 +114,8 @@ export async function getServerSideProps({
       pageDetails,
       tracksInLibrary,
       playListTracks,
-      accessToken: accessToken ?? null,
       user: user ?? null,
       translations,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<PlaylistProps>>;

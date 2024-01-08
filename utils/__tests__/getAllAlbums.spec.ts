@@ -4,8 +4,9 @@ import { getMyAlbums } from "utils/spotifyCalls";
 
 jest.mock("utils/spotifyCalls");
 
-const { savedAlbum, paginObject, accessToken } =
-  jest.requireActual<IUtilsMocks>("./__mocks__/mocks.ts");
+const { savedAlbum, paginObject } = jest.requireActual<IUtilsMocks>(
+  "./__mocks__/mocks.ts"
+);
 
 const getAlbums = (number: number): SpotifyApi.SavedAlbumObject[] => {
   const albums: SpotifyApi.SavedAlbumObject[] = Array.from(
@@ -25,7 +26,7 @@ describe("getAllAlbums", () => {
       >
     ).mockResolvedValue(paginObject);
 
-    const allAlbums = await getAllAlbums(accessToken);
+    const allAlbums = await getAllAlbums();
     expect(getMyAlbums).toHaveBeenCalledTimes(1);
     expect(allAlbums).toBeDefined();
     expect(allAlbums?.items).toHaveLength(0);
@@ -45,7 +46,7 @@ describe("getAllAlbums", () => {
       >
     ).mockResolvedValue(null);
 
-    const allAlbums = await getAllAlbums(accessToken);
+    const allAlbums = await getAllAlbums();
     expect(getMyAlbums).toHaveBeenCalledTimes(1);
     expect(allAlbums).toBeNull();
     (
@@ -69,7 +70,7 @@ describe("getAllAlbums", () => {
       })
       .mockResolvedValueOnce(null);
 
-    const allAlbums = await getAllAlbums(accessToken);
+    const allAlbums = await getAllAlbums();
     expect(getMyAlbums).toHaveBeenCalledTimes(2);
     expect(allAlbums).toBeNull();
     (
@@ -92,7 +93,7 @@ describe("getAllAlbums", () => {
       items: getAlbums(50),
     });
 
-    const allAlbums = await getAllAlbums(accessToken);
+    const allAlbums = await getAllAlbums();
     expect(getMyAlbums).toHaveBeenCalledTimes(1);
     expect(allAlbums).toBeDefined();
     expect(allAlbums?.items).toHaveLength(50);
@@ -122,7 +123,7 @@ describe("getAllAlbums", () => {
         items: getAlbums(10),
       });
 
-    const allAlbums = await getAllAlbums(accessToken);
+    const allAlbums = await getAllAlbums();
     expect(getMyAlbums).toHaveBeenCalledTimes(2);
     expect(allAlbums).toBeDefined();
     expect(allAlbums?.items).toHaveLength(60);
@@ -162,7 +163,7 @@ describe("getAllAlbums", () => {
         items: getAlbums(20),
       });
 
-    const allAlbums = await getAllAlbums(accessToken);
+    const allAlbums = await getAllAlbums();
     expect(getMyAlbums).toHaveBeenCalledTimes(4);
     expect(allAlbums).toBeDefined();
     expect(allAlbums?.items).toHaveLength(170);

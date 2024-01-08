@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
 import { decode } from "html-entities";
-import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 
 import {
@@ -26,10 +25,12 @@ import {
   getTopTracksCards,
   getTracksOfTheWeek,
   getTranslations,
+  makeCookie,
   Page,
   REFRESH_TOKEN_COOKIE,
   serverRedirect,
   takeCookie,
+  Translations,
 } from "utils";
 import {
   checkTracksInLibrary,
@@ -64,7 +65,6 @@ interface FeaturedPlaylistsMapped {
 
 interface DashboardProps {
   user: SpotifyApi.UserObjectPrivate | null;
-  accessToken: string | null;
   featuredPlaylists: FeaturedPlaylistsMapped | null;
   newReleases: SpotifyApi.ListOfNewReleasesResponse | null;
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
@@ -72,13 +72,13 @@ interface DashboardProps {
   topArtists: SpotifyApi.UsersTopArtistsResponse | null;
   tracksRecommendations: ITrack[] | null;
   tracksInLibrary: boolean[] | null;
-  translations: Record<string, string>;
+  translations: Translations["dashboard"];
   artistOfTheWeek: SpotifyApi.ArtistObjectFull[] | null;
   tracksOfTheWeek: ITrack[] | null;
   thisPlaylists: MappedPlaylist[] | null;
 }
 
-const Dashboard: NextPage<DashboardProps> = ({
+const Dashboard = ({
   featuredPlaylists,
   newReleases,
   categories,
@@ -89,8 +89,8 @@ const Dashboard: NextPage<DashboardProps> = ({
   artistOfTheWeek,
   tracksOfTheWeek,
   thisPlaylists,
-}) => {
-  const { user, accessToken } = useAuth();
+}: InferGetServerSidePropsType<typeof getServerSideProps>): ReactElement => {
+  const { user } = useAuth();
   const { setHeaderColor } = useHeader({
     showOnFixed: true,
     alwaysDisplayColor: false,
@@ -114,17 +114,11 @@ const Dashboard: NextPage<DashboardProps> = ({
       getRecommendations({
         seed_tracks: seeds.slice(0, 5),
         market: user?.country,
-        accessToken,
       }).then((tracks) => {
         if (Array.isArray(tracks)) setRecentListeningRecommendations(tracks);
       });
     }
-  }, [
-    recentlyPlayed,
-    user,
-    accessToken,
-    recentListeningRecommendations.length,
-  ]);
+  }, [recentlyPlayed, user, recentListeningRecommendations.length]);
 
   useEffect(() => {
     setHeaderColor("#242424");
@@ -345,34 +339,31 @@ const Dashboard: NextPage<DashboardProps> = ({
 };
 export default Dashboard;
 
-export async function getServerSideProps({
-  res,
-  req,
-  query,
-}: {
-  res: NextApiResponse;
-  req: NextApiRequest;
-  query: NextParsedUrlQuery & { code?: string };
-}): Promise<{
-  props: Partial<DashboardProps>;
-}> {
-  const country = (query.country ?? "US") as string;
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
   const translations = getTranslations(country, Page.Dashboard);
-  const cookies = req?.headers?.cookie ?? "";
   const lastFMAPIKey = process.env.LAST_FM_API_KEY as string;
   let tokens: Record<string, string | null> | AuthorizationResponse = {
-    accessToken: takeCookie(ACCESS_TOKEN_COOKIE, cookies),
-    refreshToken: takeCookie(REFRESH_TOKEN_COOKIE, cookies),
-    expiresIn: takeCookie(EXPIRE_TOKEN_COOKIE, cookies),
+    accessToken: takeCookie(ACCESS_TOKEN_COOKIE, context),
+    refreshToken: takeCookie(REFRESH_TOKEN_COOKIE, context),
+    expiresIn: takeCookie(EXPIRE_TOKEN_COOKIE, context),
   };
 
-  if (query.code) {
-    const authorization = await getAuthorizationByCode(query.code, cookies);
+  if (context.query.code) {
+    const authorization = await getAuthorizationByCode(
+      context.query.code as string,
+      context
+    );
+
     if (authorization) {
-      tokens = authorization;
+      tokens = {
+        accessToken: authorization.access_token,
+        refreshToken: authorization.refresh_token,
+        expiresIn: authorization.expires_in?.toString(),
+      };
     }
-    if (!tokens.access_token) {
-      serverRedirect(res, "/");
+    if (!tokens.accessToken) {
+      serverRedirect(context.res, "/");
       return {
         props: {
           translations,
@@ -380,67 +371,42 @@ export async function getServerSideProps({
       };
     }
 
-    const expireCookieDate = new Date();
-    expireCookieDate.setTime(
-      expireCookieDate.getTime() + 1000 * 60 * 60 * 24 * 30
-    );
-    res.setHeader("Set-Cookie", [
-      `${ACCESS_TOKEN_COOKIE}=${
-        tokens.access_token ?? ""
-      }; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax; Secure;`,
-      `${REFRESH_TOKEN_COOKIE}=${
-        tokens.refresh_token ?? ""
-      }; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax; Secure;`,
-      `${EXPIRE_TOKEN_COOKIE}=${
-        tokens.expires_in ?? ""
-      }; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax; Secure;`,
-    ]);
+    makeCookie({
+      context,
+      name: ACCESS_TOKEN_COOKIE,
+      value: tokens.accessToken,
+    });
+    makeCookie({
+      context,
+      name: REFRESH_TOKEN_COOKIE,
+      value: tokens.refreshToken ?? "",
+    });
+    makeCookie({
+      context,
+      name: EXPIRE_TOKEN_COOKIE,
+      value: tokens.expiresIn ?? "",
+    });
   }
-
-  const { accessToken, user } = (await getAuth(res, cookies, tokens)) ?? {};
+  const { user } = (await getAuth(context)) ?? {};
   const artistsOfTheWeekProm = getArtistsOfTheWeek(lastFMAPIKey);
   const tracksOfTheWeekProm = getTracksOfTheWeek(lastFMAPIKey);
 
   const featuredPlaylistsProm = getFeaturedPlaylists(
     user?.country ?? "US",
     10,
-    accessToken,
-    cookies
+    context
   );
-  const newReleasesProm = getNewReleases(
-    user?.country ?? "US",
-    10,
-    accessToken,
-    cookies
-  );
+  const newReleasesProm = getNewReleases(user?.country ?? "US", 10, context);
 
-  const categoriesProm = getCategories(
-    user?.country ?? "US",
-    30,
-    accessToken,
-    cookies
-  );
-  const topTracksProm = getMyTop(
-    TopType.TRACKS,
-    accessToken,
-    10,
-    "short_term",
-    cookies
-  );
+  const categoriesProm = getCategories(user?.country ?? "US", 30, context);
+  const topTracksProm = getMyTop(TopType.TRACKS, 10, "short_term", context);
   const topTracksMediumProm = getMyTop(
     TopType.TRACKS,
-    accessToken,
     30,
     "medium_term",
-    cookies
+    context
   );
-  const topArtistsProm = getMyTop(
-    TopType.ARTISTS,
-    accessToken,
-    20,
-    "long_term",
-    cookies
-  );
+  const topArtistsProm = getMyTop(TopType.ARTISTS, 20, "long_term", context);
 
   const [
     featuredPlaylists,
@@ -468,7 +434,7 @@ export async function getServerSideProps({
   const tracksRecommendationsProm = getRecommendations({
     seed_tracks: seed_tracks.slice(0, 5),
     market: user?.country ?? "US",
-    accessToken,
+    context,
   });
 
   const artistsOfTheWeekSettled = fullFilledValue(artistsOfTheWeek);
@@ -490,7 +456,7 @@ export async function getServerSideProps({
 
   if (artistsOfTheWeekSettled) {
     artistsOfTheWeekSettled.artists.artist.forEach((artist) => {
-      searchedArtistsPromises.push(searchArtist(artist.name, accessToken));
+      searchedArtistsPromises.push(searchArtist(artist.name, context));
     });
   }
 
@@ -501,7 +467,8 @@ export async function getServerSideProps({
           `track:${track.name}${
             track?.artist?.name ? `%20artist:${track?.artist?.name}` : ""
           }`,
-          accessToken
+          10,
+          context
         )
       );
     });
@@ -510,7 +477,7 @@ export async function getServerSideProps({
   if (topTracksMediumSettled) {
     topTracksMediumSettled.items.forEach((track) => {
       searchedPlaylistsPromises.push(
-        searchPlaylist(`This is ${track.artists[0].name}`, accessToken)
+        searchPlaylist(`This is ${track.artists[0].name}`, context)
       );
     });
   }
@@ -577,8 +544,7 @@ export async function getServerSideProps({
 
   const tracksInLibrary = await checkTracksInLibrary(
     recommendedTracksIds,
-    accessToken,
-    cookies
+    context
   );
 
   function mappedFeaturedPlaylists(
@@ -636,7 +602,6 @@ export async function getServerSideProps({
   return {
     props: {
       user: user ?? null,
-      accessToken: accessToken ?? null,
       featuredPlaylists:
         mappedFeaturedPlaylists(fullFilledValue(featuredPlaylists)) ?? null,
       newReleases: fullFilledValue(newReleases),
@@ -653,4 +618,4 @@ export async function getServerSideProps({
       translations,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<DashboardProps>>;

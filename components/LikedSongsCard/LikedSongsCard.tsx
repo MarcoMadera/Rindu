@@ -14,8 +14,8 @@ interface ILikedSongsCardProps {
 
 export default function LikedSongsCard({
   likedSongs: likedSongsProps,
-}: ILikedSongsCardProps): ReactElement | null {
-  const { accessToken, user } = useAuth();
+}: Readonly<ILikedSongsCardProps>): ReactElement | null {
+  const { user } = useAuth();
   const [likedSongs, setLikedSongs] = useState<
     SpotifyApi.PlaylistTrackResponse | null | undefined
   >(likedSongsProps);
@@ -26,12 +26,12 @@ export default function LikedSongsCard({
   useEffect(() => {
     if (likedSongs) return;
     async function getLikedSongs() {
-      const likedSongs = await getMyLikedSongs(10, accessToken);
+      const likedSongs = await getMyLikedSongs(10);
       setLikedSongs(likedSongs);
     }
 
     getLikedSongs();
-  }, [accessToken, likedSongs]);
+  }, [likedSongs]);
 
   if (!user || !likedSongs) return null;
 

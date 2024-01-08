@@ -1,12 +1,11 @@
 import { ReactElement, useEffect } from "react";
 
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
 import { ContentContainer, NavigationTopBarExtraField } from "components";
-import { useHeader, useOnSmallScreen } from "hooks";
+import { useHeader, useOnSmallScreen, useTranslations } from "hooks";
 import {
   getAuth,
   getTranslations,
@@ -17,14 +16,12 @@ import {
 
 interface ICollectionProps {
   translations: Translations["collection"];
-  accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
 }
 
-export default function Collection({
-  translations,
-}: ICollectionProps): ReactElement {
+export default function Collection(): ReactElement {
   const router = useRouter();
+  const { translations } = useTranslations();
   const { setElement, setHeaderColor } = useHeader();
 
   const isSmallScreen = useOnSmallScreen();
@@ -82,31 +79,20 @@ export default function Collection({
   );
 }
 
-export async function getServerSideProps({
-  res,
-  req,
-  query,
-}: {
-  res: NextApiResponse;
-  req: NextApiRequest;
-  query: NextParsedUrlQuery;
-}): Promise<{
-  props: ICollectionProps | null;
-}> {
-  const country = (query.country ?? "US") as string;
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
   const translations = getTranslations(country, Page.Collection);
-  const cookies = req?.headers?.cookie;
+  const cookies = context.req?.headers?.cookie;
   if (!cookies) {
-    serverRedirect(res, "/");
-    return { props: null };
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
-  const { accessToken, user } = (await getAuth(res, cookies)) ?? {};
+  const { user } = (await getAuth(context)) ?? {};
 
   return {
     props: {
       translations,
       user: user ?? null,
-      accessToken: accessToken ?? null,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<ICollectionProps>>;

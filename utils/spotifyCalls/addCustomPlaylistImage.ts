@@ -1,11 +1,11 @@
 import { callSpotifyApi } from "./callSpotifyApi";
+import type { ServerApiContext } from "types/serverContext";
 
 interface IAddCustomPlaylistImage {
   user_id: string | undefined;
   playlist_id: string | undefined;
   imageId?: string;
-  accessToken?: string;
-  cookies?: string;
+  context?: ServerApiContext;
 }
 
 const getCoverData = (imageId?: string) => {
@@ -31,8 +31,7 @@ export async function addCustomPlaylistImage({
   user_id,
   playlist_id,
   imageId,
-  accessToken,
-  cookies,
+  context,
 }: IAddCustomPlaylistImage): Promise<boolean> {
   if (!playlist_id || !user_id) return false;
 
@@ -42,8 +41,7 @@ export async function addCustomPlaylistImage({
   const res = await callSpotifyApi({
     endpoint: `/users/${user_id}/playlists/${playlist_id}/images`,
     method: "PUT",
-    accessToken,
-    cookies,
+    context,
     body: coverData,
   });
 

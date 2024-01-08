@@ -1,9 +1,10 @@
+import type { ServerApiContext } from "types/serverContext";
 import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function play(
-  accessToken: string,
   deviceId: string,
-  options: { context_uri?: string; uris?: string[]; offset?: number }
+  options: { context_uri?: string; uris?: string[]; offset?: number },
+  context?: ServerApiContext
 ): Promise<Response> {
   const { context_uri, offset, uris } = options;
   const body: {
@@ -26,8 +27,8 @@ export async function play(
   const res = await callSpotifyApi({
     endpoint: `/me/player/play?device_id=${deviceId}`,
     method: "PUT",
-    accessToken,
     body: JSON.stringify(body),
+    context,
   });
   return res;
 }

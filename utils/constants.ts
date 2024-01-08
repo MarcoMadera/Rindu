@@ -1,3 +1,5 @@
+import { Language } from "./getTranslations";
+
 export const ACCESS_TOKEN_COOKIE = "qs";
 export const REFRESH_TOKEN_COOKIE = "rs";
 export const EXPIRE_TOKEN_COOKIE = "ex";
@@ -48,3 +50,4 @@ export const CONTEXT_MENU_TOP_BOTTOM_OFFSET = CONTEXT_MENU_SIDE_OFFSET * 2;
 export const LINE_HEIGHT = 40;
 export const LYRICS_PIP_HEADER_HEIGH = 100;
 export const LYRICS_PADDING_LEFT = 10;
+export const DEFAULT_LANGUAGE = Language.EN;

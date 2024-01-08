@@ -1,12 +1,6 @@
-import { useEffect } from "react";
+import { ReactElement, useEffect } from "react";
 
-import {
-  GetStaticPropsResult,
-  NextApiRequest,
-  NextApiResponse,
-  NextPage,
-} from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Router from "next/router";
 
 import { CardContainer, FeatureCard, Hero } from "components";
@@ -17,6 +11,7 @@ import {
   isServer,
   REFRESH_TOKEN_COOKIE,
   removeTokensFromCookieServer,
+  serverRedirect,
   takeCookie,
 } from "utils";
 import {
@@ -28,7 +23,6 @@ import {
 import { refreshAccessToken } from "utils/spotifyCalls";
 
 interface HomeProps {
-  accessToken?: string | null;
   translations: Translations["home"];
 }
 
@@ -42,7 +36,9 @@ interface IFeature {
   ctaText: string;
 }
 
-const Home: NextPage<HomeProps> = ({ translations }) => {
+const Home = ({
+  translations,
+}: InferGetServerSidePropsType<typeof getServerSideProps>): ReactElement => {
   const { setIsLogin } = useAuth();
 
   const { trackWithGoogleAnalytics } = useAnalytics();
@@ -220,54 +216,32 @@ const Home: NextPage<HomeProps> = ({ translations }) => {
 
 export default Home;
 
-export async function getServerSideProps({
-  res,
-  req,
-  query,
-}: {
-  res: NextApiResponse;
-  req: NextApiRequest;
-  query: NextParsedUrlQuery & { country?: string };
-}): Promise<GetStaticPropsResult<HomeProps>> {
-  const country = query?.country ?? "US";
+export const getServerSideProps = (async (context) => {
+  const country = (context.query?.country as string) ?? "US";
   const translations = getTranslations(country, Page.Home);
-  const cookies = req?.headers?.cookie;
 
-  if (!cookies) {
-    return { props: { accessToken: null, translations } };
+  if (!context.req.cookies) {
+    return { props: { translations } };
   }
-  const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE, cookies);
+
+  const refreshToken = takeCookie(REFRESH_TOKEN_COOKIE, context);
 
   if (refreshToken) {
-    const { access_token, refresh_token } =
-      (await refreshAccessToken(refreshToken)) ?? {};
-
+    await refreshAccessToken(context);
+    const access_token = takeCookie(ACCESS_TOKEN_COOKIE, context);
     if (!access_token) {
-      removeTokensFromCookieServer(res);
-      return { props: { accessToken: null, translations } };
+      removeTokensFromCookieServer(context.res);
+      return { props: { translations } };
     }
 
-    const expireCookieDate = new Date();
-    expireCookieDate.setTime(
-      expireCookieDate.getTime() + 1000 * 60 * 60 * 24 * 30
-    );
-
-    res?.setHeader("Set-Cookie", [
-      `${ACCESS_TOKEN_COOKIE}=${access_token}; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax; Secure;`,
-    ]);
-    res?.setHeader("Set-Cookie", [
-      `${REFRESH_TOKEN_COOKIE}=${refresh_token}; Path=/; expires=${expireCookieDate.toUTCString()}; SameSite=Lax; Secure;`,
-    ]);
-
-    if (res) {
-      res.writeHead(307, { Location: "/dashboard" });
-      res.end();
+    if (context.res) {
+      serverRedirect(context.res, "/dashboard", false);
     } else {
       Router.replace("/dashboard");
     }
-    return { props: { accessToken: access_token, translations } };
+    return { props: { translations } };
   }
-  removeTokensFromCookieServer(res);
+  removeTokensFromCookieServer(context.res);
 
-  return { props: { accessToken: null, translations } };
-}
+  return { props: { translations } };
+}) satisfies GetServerSideProps<HomeProps>;

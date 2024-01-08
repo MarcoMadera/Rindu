@@ -59,7 +59,6 @@ export async function analyzePlaylist(
   id: string | undefined,
   totalTracks: number | undefined,
   isLibrary: boolean,
-  accessToken: string,
   translations: Record<string, string>
 ): Promise<{
   tracks: ITrack[];
@@ -68,15 +67,10 @@ export async function analyzePlaylist(
   tracksToRemove: ITrack[];
   summary: string | ReactNode[];
 } | null> {
-  if (!id || !accessToken || !totalTracks) {
+  if (!id || !totalTracks) {
     return null;
   }
-  const tracks = await getAllTracksFromPlaylist(
-    id,
-    totalTracks,
-    isLibrary,
-    accessToken
-  );
+  const tracks = await getAllTracksFromPlaylist(id, totalTracks, isLibrary);
   const duplicatesTracksIdxId = findDuplicateSongs(tracks);
   const duplicateTracksIndexes = duplicatesTracksIdxId.map(({ index }) => {
     return index;

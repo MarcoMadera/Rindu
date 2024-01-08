@@ -2,7 +2,6 @@ import { ReactElement } from "react";
 
 import { CardTrack, Carousel, FirstTrackContainer } from "components";
 import { CardType } from "components/CardTrack/CardTrack";
-import { useAuth } from "hooks";
 import { ITrack } from "types/spotify";
 import { divideArray, isCorruptedTrack } from "utils";
 interface MainTracksProps {
@@ -15,8 +14,7 @@ export default function MainTracks({
   title,
   tracksRecommendations,
   tracksInLibrary,
-}: MainTracksProps): ReactElement {
-  const { accessToken } = useAuth();
+}: Readonly<MainTracksProps>): ReactElement {
   const filteredTracks = tracksRecommendations?.filter(
     (track, index, self) => index === self.findIndex((t) => t.id === track.id)
   );
@@ -49,11 +47,10 @@ export default function MainTracks({
                   return null;
                 }
                 const index = i * 5 + chunkIndex;
-                const uris = filteredTracks?.map((track) => track.uri || "");
+                const uris = filteredTracks?.map((track) => track.uri ?? "");
 
                 return (
                   <CardTrack
-                    accessToken={accessToken ?? ""}
                     isTrackInLibrary={tracksInLibrary?.[index] ?? false}
                     playlistUri=""
                     track={track}

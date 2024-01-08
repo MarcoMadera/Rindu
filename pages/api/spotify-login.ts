@@ -13,11 +13,11 @@ export default async function login(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
-  const cookies = req.headers.cookie;
   const body = req.body as ILoginBody;
+  const context = { req, res };
   if (body.accessToken) {
     try {
-      const data = await getMe(body.accessToken, cookies);
+      const data = await getMe(context);
       return res.json(data);
     } catch (err) {
       return res.status(400).json(err);

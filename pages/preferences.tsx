@@ -1,8 +1,7 @@
 import { ChangeEvent, ReactElement, useEffect, useState } from "react";
 
 import DOMPurify from "dompurify";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 
 import {
@@ -15,6 +14,7 @@ import {
 import { useAnalytics, useSpotify, useTranslations } from "hooks";
 import { AsType } from "types/heading";
 import {
+  DEFAULT_LANGUAGE,
   getAuth,
   getLanguageByCountry,
   getTranslations,
@@ -26,14 +26,15 @@ import {
 
 interface PreferencesProps {
   user: SpotifyApi.UserObjectPrivate | null;
-  accessToken: string | null;
   translations: Record<string, string>;
   lang: string;
 }
 
 export default function PreferencesPage({
   lang,
-}: Readonly<PreferencesProps>): ReactElement {
+}: Readonly<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+>): ReactElement {
   const { translations } = useTranslations();
   const [language, setLanguage] = useState(lang);
   const [isReload, setIsReload] = useState(false);
@@ -47,9 +48,7 @@ export default function PreferencesPage({
   }, [router, trackWithGoogleAnalytics]);
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     const value = DOMPurify.sanitize(event.target.value);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     setSearchTerm(value);
   };
 
@@ -119,8 +118,7 @@ export default function PreferencesPage({
               onClick={() => {
                 makeCookie({
                   name: "language",
-                  value: language,
-                  age: 60 * 60 * 24 * 30 * 2,
+                  value: language ?? DEFAULT_LANGUAGE,
                 });
 
                 setIsReload(false);
@@ -212,35 +210,25 @@ export default function PreferencesPage({
   );
 }
 
-export async function getServerSideProps({
-  res,
-  req,
-  query,
-}: {
-  res: NextApiResponse;
-  req: NextApiRequest;
-  query: NextParsedUrlQuery & { code?: string };
-}): Promise<{
-  props: Partial<PreferencesProps>;
-}> {
-  const country = (query.country ?? "US") as string;
-  const cookies = req?.headers?.cookie ?? "";
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
+  const cookies = context.req?.headers?.cookie ?? "";
   const language =
-    takeCookie("language", cookies) ?? getLanguageByCountry(country);
+    takeCookie("language", context) ?? getLanguageByCountry(country);
   const translations = getTranslations(country, Page.Preferences);
+
   if (!cookies) {
-    serverRedirect(res, "/");
+    serverRedirect(context.res, "/");
     return { props: {} };
   }
 
-  const { accessToken, user } = (await getAuth(res, cookies)) ?? {};
+  const { user } = (await getAuth(context)) ?? {};
 
   return {
     props: {
       user: user ?? null,
-      accessToken: accessToken ?? null,
       translations,
       lang: language,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<PreferencesProps>>;

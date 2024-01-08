@@ -40,7 +40,7 @@ export default function EpisodeCard({
   track,
   position,
   savedEpisode,
-}: EpisodeCardProps): ReactElement | null {
+}: Readonly<EpisodeCardProps>): ReactElement | null {
   const {
     isPlaying,
     currentlyPlaying,
@@ -53,7 +53,7 @@ export default function EpisodeCard({
     setReconnectionError,
     setPlayedSource,
   } = useSpotify();
-  const { accessToken, isPremium } = useAuth();
+  const { isPremium } = useAuth();
   const { addToast } = useToast();
   const { addContextMenu } = useContextMenu();
   const isThisEpisodePlaying = currentlyPlaying?.uri === track?.uri;
@@ -87,7 +87,6 @@ export default function EpisodeCard({
           player,
           isPremium,
           allTracks,
-          accessToken,
           deviceId,
           playlistUri: pageDetails?.uri,
           isSingleTrack: true,

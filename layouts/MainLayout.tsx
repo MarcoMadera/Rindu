@@ -8,7 +8,7 @@ import { AppContainer } from "layouts/AppContainer";
 
 export default function MainLayout({
   children,
-}: PropsWithChildren): ReactElement {
+}: Readonly<PropsWithChildren>): ReactElement {
   const router = useRouter();
   const isLoginPage = router.pathname === "/";
 

@@ -9,7 +9,7 @@ import {
 } from "react";
 
 import { Search } from "components/icons";
-import { useAuth, useSpotify, useTranslations } from "hooks";
+import { useSpotify, useTranslations } from "hooks";
 import { isCorruptedTrack } from "utils";
 import { search } from "utils/spotifyCalls";
 
@@ -29,7 +29,6 @@ export default function SearchInputElement({
   const { setAllTracks, setIgnoreShortcuts } = useSpotify();
   const isFromSearch = source === "search";
   const { translations } = useTranslations();
-  const { accessToken } = useAuth();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -58,7 +57,7 @@ export default function SearchInputElement({
 
   useEffect(() => {
     async function searchQuery() {
-      const searchData = await search(query, accessToken);
+      const searchData = await search(query);
       setData(searchData);
       if (searchData?.tracks?.items.length && source === "search") {
         setAllTracks(() => {
@@ -77,7 +76,7 @@ export default function SearchInputElement({
     if (shouldSearch && query) {
       searchQuery();
     }
-  }, [query, shouldSearch, setData, setAllTracks, source, accessToken]);
+  }, [query, shouldSearch, setData, setAllTracks, source]);
 
   return (
     <div>

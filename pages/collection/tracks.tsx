@@ -1,5 +1,6 @@
-import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { ReactElement } from "react";
+
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import PlaylistLayout from "layouts/playlist";
 import { ISpotifyContext, ITrack } from "types/spotify";
@@ -16,12 +17,14 @@ interface PlaylistProps {
   pageDetails: ISpotifyContext["pageDetails"];
   playListTracks: ITrack[];
   tracksInLibrary: boolean[] | null;
-  accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
   translations: Record<string, string>;
 }
 
-const Playlist: NextPage<PlaylistProps> = (props) => {
+const Playlist = (
+  props: InferGetServerSidePropsType<typeof getServerSideProps>
+): ReactElement | null => {
+  if (!props.pageDetails) return null;
   return (
     <PlaylistLayout
       isLibrary={true}
@@ -29,7 +32,6 @@ const Playlist: NextPage<PlaylistProps> = (props) => {
       playListTracks={props.playListTracks}
       tracksInLibrary={props.tracksInLibrary}
       user={props.user}
-      accessToken={props.accessToken}
       translations={props.translations}
     />
   );
@@ -37,27 +39,17 @@ const Playlist: NextPage<PlaylistProps> = (props) => {
 
 export default Playlist;
 
-export async function getServerSideProps({
-  req,
-  res,
-  query,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-  query: NextParsedUrlQuery;
-}): Promise<{
-  props: PlaylistProps | null;
-}> {
-  const country = (query.country || "US") as string;
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
   const translations = getTranslations(country, Page.CollectionTracks);
-  const cookies = req?.headers?.cookie;
+  const cookies = context.req?.headers?.cookie;
   if (!cookies) {
-    serverRedirect(res, "/");
-    return { props: null };
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
-  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+  const { user } = (await getAuth(context)) ?? {};
 
-  const playListTracks = await getMyLikedSongs(50, accessToken, cookies);
+  const playListTracks = await getMyLikedSongs(50, 0, context);
   const trackIds = playListTracks?.items
     ?.filter(({ track }) => {
       if (track?.id) {
@@ -66,13 +58,10 @@ export async function getServerSideProps({
       return false;
     })
     .map(({ track }) => track?.id) as string[] | undefined;
-  const tracksInLibrary = await checkTracksInLibrary(
-    trackIds ?? [],
-    accessToken || ""
-  );
+  const tracksInLibrary = await checkTracksInLibrary(trackIds ?? [], context);
 
   if (!playListTracks) {
-    return { props: null };
+    return { props: {} };
   }
 
   const pageDetails: ISpotifyContext["pageDetails"] = {
@@ -107,9 +96,8 @@ export async function getServerSideProps({
           };
         }
       ),
-      accessToken: accessToken ?? null,
       user: user ?? null,
       translations,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<PlaylistProps>>;

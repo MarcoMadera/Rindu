@@ -7,7 +7,7 @@ import { templateReplace, ToastMessage } from "utils";
 import { getAvailableDevices, transferPlayback } from "utils/spotifyCalls";
 
 export default function DeviceConnectControl(): ReactElement {
-  const { accessToken, isPremium } = useAuth();
+  const { isPremium } = useAuth();
   const { deviceId } = useSpotify();
   const { addToast } = useToast();
   const { translations } = useTranslations();
@@ -56,11 +56,9 @@ export default function DeviceConnectControl(): ReactElement {
                     }`}
                     onClick={async () => {
                       if (isActive || !device.id) return;
-                      if (!accessToken) return;
-                      const transferPlaybackResponse = await transferPlayback(
-                        [device.id],
-                        { accessToken }
-                      );
+                      const transferPlaybackResponse = await transferPlayback([
+                        device.id,
+                      ]);
                       if (transferPlaybackResponse) {
                         addToast({
                           message: templateReplace(
@@ -97,7 +95,7 @@ export default function DeviceConnectControl(): ReactElement {
           }
 
           if (devices.length === 0) {
-            getAvailableDevices(accessToken).then((res) => {
+            getAvailableDevices().then((res) => {
               if (res?.devices) {
                 setDevices(res.devices);
               }

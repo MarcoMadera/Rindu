@@ -1,5 +1,6 @@
-import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { ReactElement } from "react";
+
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import PlaylistLayout from "layouts/playlist";
 import { PlaylistProps } from "pages/playlist/[playlist]";
@@ -14,17 +15,22 @@ import {
   serverRedirect,
   SetList,
 } from "utils";
-import { getArtistById } from "utils/spotifyCalls";
+import { getArtistById, searchTrack } from "utils/spotifyCalls";
 
 interface ConcertProps extends PlaylistProps {
   setList: SetList | null;
   artist: SpotifyApi.SingleArtistResponse | null;
 }
 
-const Playlist: NextPage<ConcertProps> = (props) => {
-  const artistName = props.setList?.artist.name || props.artist?.name || "";
-  const concertDate = props.setList?.eventDate || "";
-  const venue = props.setList?.venue.name || "";
+const Playlist = (
+  props: InferGetServerSidePropsType<typeof getServerSideProps>
+): ReactElement | null => {
+  const artistName = props.setList?.artist.name ?? props.artist?.name ?? "";
+  const concertDate = props.setList?.eventDate ?? "";
+  const venue = props.setList?.venue.name ?? "";
+
+  if (!props.pageDetails) return null;
+
   return (
     <PlaylistLayout
       isLibrary={false}
@@ -33,20 +39,19 @@ const Playlist: NextPage<ConcertProps> = (props) => {
         images: [
           {
             url: `${getSiteUrl()}/api/concert-cover?artist=${artistName}&date=${concertDate}&venue=${venue}&img=${
-              props.artist?.images[0].url || ""
+              props.artist?.images[0].url ?? ""
             }`,
           },
         ],
         ...props.pageDetails,
         owner: {
-          display_name: props.pageDetails?.owner?.display_name || "",
-          id: props.artist?.id || "",
+          display_name: props.pageDetails?.owner?.display_name ?? "",
+          id: props.artist?.id ?? "",
         },
       }}
       playListTracks={props.playListTracks}
       tracksInLibrary={props.tracksInLibrary}
       user={props.user}
-      accessToken={props.accessToken}
       translations={props.translations}
     />
   );
@@ -54,33 +59,22 @@ const Playlist: NextPage<ConcertProps> = (props) => {
 
 export default Playlist;
 
-export async function getServerSideProps({
-  params: { id },
-  req,
-  res,
-  query,
-}: {
-  params: { id: string };
-  req: NextApiRequest;
-  res: NextApiResponse;
-  query: NextParsedUrlQuery;
-}): Promise<{
-  props: ConcertProps | null;
-}> {
-  const country = (query.country || "US") as string;
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
   const translations = getTranslations(country, Page.Concert);
-  const cookies = req?.headers?.cookie;
-  if (!cookies) {
-    serverRedirect(res, "/");
-    return { props: null };
+  const cookies = context.req?.headers?.cookie;
+  const id = context.params?.id;
+  if (!cookies || !id) {
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
-  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+  const { user } = (await getAuth(context)) ?? {};
   const artistId = id.split(".")[0];
   const setListId = id.split(".")[1];
 
   const setListAPIKey = process.env.SETLIST_FM_API_KEY;
   const setListProm = getSetList(setListId, setListAPIKey);
-  const artistProm = getArtistById(artistId, accessToken);
+  const artistProm = getArtistById(artistId, context);
   const [setListSettled, artistSettled] = await Promise.allSettled([
     setListProm,
     artistProm,
@@ -104,39 +98,33 @@ export async function getServerSideProps({
 
   const playListTracks = await Promise.all(
     trackList.map(async (track, position) => {
-      if (!track.name || !track.artists?.[0].name || !accessToken) return null;
-      const searchResult = await fetch(
-        `https://api.spotify.com/v1/search?q=track: ${track.name} artist: ${track.artists[0].name}&type=track&limit=1`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+      if (!track.name || !track.artists?.[0].name) return null;
+      const searchResultJson = await searchTrack(
+        `track: ${track.name} artist: ${track.artists[0].name}`,
+        1,
+        context
       );
-      const searchResultJson =
-        (await searchResult.json()) as SpotifyApi.SearchResponse;
-      const trackResult = searchResultJson.tracks?.items[0];
+      const trackResult = searchResultJson?.[0];
       return trackResult
-        ? { ...trackResult, position, added_at: setList?.eventDate || "" }
+        ? { ...trackResult, position, added_at: setList?.eventDate ?? "" }
         : { ...track, position };
     })
   );
 
   return {
     props: {
-      accessToken: accessToken || null,
       user: user ?? null,
       playListTracks: playListTracks.filter((track) => track) as ITrack[],
       pageDetails: {
         id,
         type: "concert",
-        description: setList?.info || "",
-        name: setList?.tour?.name || setList?.venue?.name || artist?.name || "",
+        description: setList?.info ?? "",
+        name: setList?.tour?.name ?? setList?.venue?.name ?? artist?.name ?? "",
         tracks: {
-          total: trackList.length || 0,
+          total: trackList.length ?? 0,
         },
         owner: {
-          display_name: artist?.name || setList?.artist?.name || "",
+          display_name: artist?.name ?? setList?.artist?.name ?? "",
         },
       },
       tracksInLibrary: [],
@@ -145,4 +133,4 @@ export async function getServerSideProps({
       artist,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<ConcertProps>, { id: string }>;

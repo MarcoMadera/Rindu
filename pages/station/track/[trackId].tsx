@@ -1,5 +1,6 @@
-import { NextApiRequest, NextApiResponse, NextPage } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { ReactElement } from "react";
+
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import PlaylistLayout from "layouts/playlist";
 import { IPageDetails, ITrack } from "types/spotify";
@@ -20,12 +21,17 @@ export interface PlaylistProps {
   pageDetails: IPageDetails | null;
   tracksInLibrary: boolean[] | null;
   playListTracks: ITrack[] | null;
-  accessToken: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
   translations: Record<string, string>;
 }
 
-const Playlist: NextPage<PlaylistProps> = (props) => {
+const Playlist = (
+  props: InferGetServerSidePropsType<typeof getServerSideProps>
+): ReactElement | null => {
+  if (!props.pageDetails) {
+    return null;
+  }
+
   return (
     <PlaylistLayout
       pageDetails={props.pageDetails}
@@ -33,7 +39,6 @@ const Playlist: NextPage<PlaylistProps> = (props) => {
       playListTracks={props.playListTracks}
       tracksInLibrary={props.tracksInLibrary}
       user={props.user}
-      accessToken={props.accessToken}
       translations={props.translations}
       isGeneratedPlaylist={true}
     />
@@ -42,47 +47,32 @@ const Playlist: NextPage<PlaylistProps> = (props) => {
 
 export default Playlist;
 
-export async function getServerSideProps({
-  params: { trackId },
-  req,
-  res,
-  query,
-}: {
-  params: { trackId: string };
-  req: NextApiRequest;
-  res: NextApiResponse;
-  query: NextParsedUrlQuery;
-}): Promise<{
-  props: PlaylistProps | null;
-}> {
-  const country = (query.country || "US") as string;
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
+  const trackId = context.params?.trackId;
   const translations = getTranslations(country, Page.Radio);
-  const cookies = req?.headers?.cookie;
-  if (!cookies) {
-    serverRedirect(res, "/");
-    return { props: null };
+  const cookies = context.req?.headers?.cookie;
+  if (!cookies || !trackId) {
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
-  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+  const { user } = (await getAuth(context)) ?? {};
 
   const recommendedTracksProm = getRecommendations({
     seed_tracks: [trackId],
     limit: 29,
     market: user?.country,
-    accessToken,
+    context,
   });
-  const currentTrackProm = getTrack(
-    trackId,
-    user?.country || "US",
-    accessToken
-  );
+  const currentTrackProm = getTrack(trackId, user?.country ?? "US", context);
 
   const [recommendedTracksSettledResult, currentTrackSettledResult] =
     await Promise.allSettled([recommendedTracksProm, currentTrackProm]);
   const recommendedTracks = fullFilledValue(recommendedTracksSettledResult);
   const currentTrack = fullFilledValue(currentTrackSettledResult);
   if (!currentTrack || !recommendedTracks) {
-    serverRedirect(res, "/");
-    return { props: null };
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
   const allTracks = [currentTrack, ...recommendedTracks];
   const playListTracks =
@@ -95,17 +85,16 @@ export async function getServerSideProps({
           };
         })
       : null;
-  const recommendedTracksIds = playListTracks?.map((item) => item.id) || [];
+  const recommendedTracksIds = playListTracks?.map((item) => item.id) ?? [];
 
   const tracksInLibrary = await checkTracksInLibrary(
     recommendedTracksIds,
-    accessToken,
-    cookies
+    context
   );
 
   const tracks: ITrack[] = playListTracks ? [...playListTracks] : [];
 
-  const mostPopularTracks = tracks?.sort(
+  const mostPopularTracks = tracks?.toSorted(
     (a, b) => (b.popularity || 0) - (a.popularity || 0)
   );
   const albumCovers = mostPopularTracks.map((track) => {
@@ -117,8 +106,8 @@ export async function getServerSideProps({
     (cover) => cover?.url !== currentTrackAlbumCover
   );
 
-  const cover2 = filteredAlbumCovers[0]?.url || albumCovers[0]?.url || "";
-  const cover3 = filteredAlbumCovers[1]?.url || albumCovers[0]?.url || "";
+  const cover2 = filteredAlbumCovers[0]?.url ?? albumCovers[0]?.url ?? "";
+  const cover3 = filteredAlbumCovers[1]?.url ?? albumCovers[0]?.url ?? "";
 
   const imageUrl = `/api/radio-cover?cover1=${currentTrackAlbumCover}&cover2=${cover2}&cover3=${cover3}&name=${currentTrack.name}`;
 
@@ -136,7 +125,7 @@ export async function getServerSideProps({
     },
     type: "radio",
     tracks: {
-      total: playListTracks?.length || 0,
+      total: playListTracks?.length ?? 0,
     },
   };
 
@@ -145,9 +134,8 @@ export async function getServerSideProps({
       pageDetails,
       tracksInLibrary,
       playListTracks,
-      accessToken: accessToken ?? null,
       user: user ?? null,
       translations,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<PlaylistProps>, { trackId: string }>;

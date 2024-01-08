@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useState } from "react";
 
 import { useRouter } from "next/router";
 
-import { useAuth, useTranslations } from "hooks";
+import { useTranslations } from "hooks";
 import {
   checkIfUserFollowArtistUser,
   follow,
@@ -16,17 +16,16 @@ export default function FollowButton({
 }: {
   type: Follow_type;
   id?: string;
-}): ReactElement {
-  const { accessToken } = useAuth();
+}): Readonly<ReactElement> {
   const [isFollowing, setIsFollowing] = useState(false);
   const { translations } = useTranslations();
   const router = useRouter();
 
   useEffect(() => {
-    checkIfUserFollowArtistUser(type, id, accessToken).then((res) => {
+    checkIfUserFollowArtistUser(type, id).then((res) => {
       setIsFollowing(res);
     });
-  }, [type, accessToken, id, router]);
+  }, [type, id, router]);
 
   return (
     <button
@@ -35,13 +34,13 @@ export default function FollowButton({
       onClick={(e) => {
         e.stopPropagation();
         if (isFollowing) {
-          unFollow(type, id, accessToken).then((res) => {
+          unFollow(type, id).then((res) => {
             if (res) {
               setIsFollowing(false);
             }
           });
         } else {
-          follow(type, id, accessToken).then((res) => {
+          follow(type, id).then((res) => {
             if (res) {
               setIsFollowing(true);
             }

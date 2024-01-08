@@ -55,7 +55,7 @@ const Playlist: NextPage<
   isGeneratedPlaylist,
 }) => {
   const router = useRouter();
-  const { user, accessToken, isPremium } = useAuth();
+  const { user, isPremium } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
   const {
     player,
@@ -97,13 +97,12 @@ const Playlist: NextPage<
     async function fetchData() {
       const userFollowThisPlaylist = await checkUsersFollowAPlaylist(
         [user?.id ?? ""],
-        getIdFromUri(pageDetails?.uri, "id"),
-        accessToken
+        getIdFromUri(pageDetails?.uri, "id")
       );
       setIsFollowingThisPlaylist(!!userFollowThisPlaylist?.[0]);
     }
     fetchData();
-  }, [accessToken, pageDetails?.uri, user?.id, isMyPlaylist]);
+  }, [pageDetails?.uri, user?.id, isMyPlaylist]);
 
   useEffect(() => {
     if (!pageDetails) {
@@ -286,7 +285,6 @@ const Playlist: NextPage<
                       handleSaveToPlaylistClick({
                         allTracks,
                         addToast,
-                        accessToken,
                         pageDetails,
                         router,
                         setPlaylists,
@@ -330,7 +328,6 @@ const Playlist: NextPage<
                 {searchedData.tracks?.items?.map((track, i) => {
                   return (
                     <CardTrack
-                      accessToken={accessToken ?? ""}
                       isTrackInLibrary={tracksInLibrary?.[i] ?? false}
                       playlistUri=""
                       track={track}
@@ -373,7 +370,6 @@ const Playlist: NextPage<
                   {searchedData.episodes.items?.map((track, i) => {
                     return (
                       <CardTrack
-                        accessToken={accessToken ?? ""}
                         isTrackInLibrary={tracksInLibrary?.[i] ?? false}
                         playlistUri=""
                         track={track}

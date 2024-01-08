@@ -25,12 +25,8 @@ jest.mock<NextRouter>("next/router", () => ({
   useRouter: jest.fn(),
 }));
 
-const {
-  getAllTranslations,
-  mockPlaylistTrackResponse,
-  accessToken,
-  nextRouterMock,
-} = jest.requireActual<IUtilsMocks>("utils/__tests__/__mocks__/mocks.ts");
+const { getAllTranslations, mockPlaylistTrackResponse, nextRouterMock } =
+  jest.requireActual<IUtilsMocks>("utils/__tests__/__mocks__/mocks.ts");
 
 interface ISetupProps {
   appContextProviderProps?: Partial<
@@ -64,7 +60,6 @@ describe("likedSongsCard", () => {
     const { translations, routerMock } = setup({
       appContextProviderProps: {
         userValue: {
-          accessToken,
           user: {
             id: "likedSongsCardId",
           },
@@ -73,7 +68,7 @@ describe("likedSongsCard", () => {
     });
 
     await waitFor(() => {
-      expect(getMyLikedSongs).toHaveBeenCalledWith(10, accessToken);
+      expect(getMyLikedSongs).toHaveBeenCalledWith(10);
     });
 
     const cardTitle = screen.getByText(translations.likedSongsCardTitle);
@@ -101,7 +96,6 @@ describe("likedSongsCard", () => {
     const { translations } = setup({
       appContextProviderProps: {
         userValue: {
-          accessToken,
           user: {
             id: "likedSongsCardId",
           },
@@ -110,7 +104,7 @@ describe("likedSongsCard", () => {
     });
 
     await waitFor(() => {
-      expect(getMyLikedSongs).toHaveBeenCalledWith(10, accessToken);
+      expect(getMyLikedSongs).toHaveBeenCalledWith(10);
     });
 
     const cardTitle = screen.getByText(translations.likedSongsCardTitle);

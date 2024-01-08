@@ -1,7 +1,6 @@
 import { ReactElement, useEffect } from "react";
 
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 
 import {
@@ -68,7 +67,6 @@ interface ArtistPageProps {
   singleAlbums: IMappedAlbums | null;
   appearAlbums: IMappedAlbums | null;
   relatedArtists: SpotifyApi.ArtistsRelatedArtistsResponse | null;
-  accessToken?: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
   setLists: SetLists | null;
   artistInfo: ArtistScrobbleInfo | null;
@@ -87,8 +85,10 @@ export default function ArtistPage({
   artistInfo,
   albums,
   compilations,
-}: ArtistPageProps): ReactElement {
-  const { user, accessToken } = useAuth();
+}: InferGetServerSidePropsType<
+  typeof getServerSideProps
+>): ReactElement | null {
+  const { user } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
   const banner = artistInfo?.banner;
   const { setElement } = useHeader({
@@ -103,12 +103,12 @@ export default function ArtistPage({
   const { translations } = useTranslations();
 
   useEffect(() => {
-    if (!currentArtist || !accessToken || !user) {
+    if (!currentArtist || !user) {
       router.push("/");
       return;
     }
     trackWithGoogleAnalytics();
-  }, [accessToken, currentArtist, router, trackWithGoogleAnalytics, user]);
+  }, [currentArtist, router, trackWithGoogleAnalytics, user]);
 
   useEffect(() => {
     setElement(() => <PlaylistTopBarExtraField uri={currentArtist?.uri} />);
@@ -191,6 +191,8 @@ export default function ArtistPage({
     },
   ];
 
+  if (!currentArtist) return null;
+
   return (
     <ContentContainer hasPageHeader>
       <PageHeader
@@ -228,7 +230,6 @@ export default function ArtistPage({
                 }
                 return (
                   <CardTrack
-                    accessToken={accessToken ?? ""}
                     isTrackInLibrary={false}
                     playlistUri=""
                     track={track}
@@ -410,68 +411,52 @@ export default function ArtistPage({
   );
 }
 
-export async function getServerSideProps({
-  params: { artistId },
-  req,
-  res,
-  query,
-}: {
-  params: { artistId: string };
-  req: NextApiRequest;
-  res: NextApiResponse;
-  query: NextParsedUrlQuery;
-}): Promise<{
-  props: ArtistPageProps | null;
-}> {
-  const country = (query.country || "US") as string;
+export const getServerSideProps = (async (context) => {
+  const country = (context.query.country ?? "US") as string;
   const translations = getTranslations(country, Page.Artist);
-  const cookies = req?.headers?.cookie;
-  if (!cookies) {
-    serverRedirect(res, "/");
-    return { props: null };
+  const cookies = context.req?.headers?.cookie;
+  const artistId = context.params?.artistId;
+  if (!cookies || !artistId) {
+    serverRedirect(context.res, "/");
+    return { props: {} };
   }
-  const { accessToken, user } = (await getAuth(res, cookies)) || {};
+  const { user } = (await getAuth(context)) ?? {};
 
-  const currentArtist = await getArtistById(artistId, accessToken, cookies);
+  const currentArtist = await getArtistById(artistId, context);
   const setListAPIKey = process.env.SETLIST_FM_API_KEY;
   const setListsProm = getSetLists(currentArtist?.name, setListAPIKey);
   const artistInfoProm = getArtistInfo(currentArtist?.name);
   const topTracksProm = getArtistTopTracks(
     artistId,
     user?.country ?? "US",
-    accessToken,
-    cookies
+    context
   );
   const singleAlbumsProm = getArtistAlbums(
     artistId,
     user?.country ?? "US",
     Include_groups.Single,
-    accessToken,
-    cookies
+    context
   );
   const appearAlbumsProm = getArtistAlbums(
     artistId,
     user?.country ?? "US",
     Include_groups.AppearsOn,
-    accessToken,
-    cookies
+    context
   );
   const albumsProm = getArtistAlbums(
     artistId,
     user?.country ?? "US",
     Include_groups.Album,
-    accessToken,
-    cookies
+    context
   );
   const compilationsProm = getArtistAlbums(
     artistId,
     user?.country ?? "US",
     Include_groups.Compilation,
-    accessToken,
-    cookies
+    context
   );
 
-  const relatedArtistsProm = getRelatedArtists(artistId, accessToken, cookies);
+  const relatedArtistsProm = getRelatedArtists(artistId, context);
 
   const [
     setLists,
@@ -517,7 +502,6 @@ export async function getServerSideProps({
       appearAlbums: mapAlbumData(fullFilledValue(appearAlbums)),
       topTracks: fullFilledValue(topTracks),
       relatedArtists: fullFilledValue(relatedArtists),
-      accessToken: accessToken ?? null,
       user: user ?? null,
       setLists: fullFilledValue(setLists),
       artistInfo: fullFilledValue(artistInfo),
@@ -526,4 +510,4 @@ export async function getServerSideProps({
       translations,
     },
   };
-}
+}) satisfies GetServerSideProps<Partial<ArtistPageProps>, { artistId: string }>;

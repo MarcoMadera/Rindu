@@ -1,10 +1,8 @@
 import { getUserPlaylists } from "utils/spotifyCalls";
 
-export async function getAllMyPlaylists(
-  accessToken: string
-): Promise<SpotifyApi.ListOfCurrentUsersPlaylistsResponse | null> {
+export async function getAllMyPlaylists(): Promise<SpotifyApi.ListOfCurrentUsersPlaylistsResponse | null> {
   const limit = 50;
-  const playlistsData = await getUserPlaylists(accessToken, 0, 50);
+  const playlistsData = await getUserPlaylists(0, 50);
 
   let restPlaylistsData:
     | SpotifyApi.ListOfCurrentUsersPlaylistsResponse
@@ -18,16 +16,14 @@ export async function getAllMyPlaylists(
   }
 
   for (let i = 1; i < max; i++) {
-    const resPlaylistsData = await getUserPlaylists(accessToken, limit * i, 50);
+    const resPlaylistsData = await getUserPlaylists(limit * i, 50);
     if (restPlaylistsData && resPlaylistsData) {
       restPlaylistsData = {
         ...restPlaylistsData,
         items: [...restPlaylistsData.items, ...resPlaylistsData.items],
       };
-    } else {
-      if (resPlaylistsData) {
-        restPlaylistsData = resPlaylistsData;
-      }
+    } else if (resPlaylistsData) {
+      restPlaylistsData = resPlaylistsData;
     }
   }
   if (!restPlaylistsData) {

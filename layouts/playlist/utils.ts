@@ -15,7 +15,6 @@ export async function handleSaveToPlaylistClick({
   user,
   pageDetails,
   allTracks,
-  accessToken,
   setPlaylists,
   router,
 }: {
@@ -25,11 +24,9 @@ export async function handleSaveToPlaylistClick({
   allTracks: ITrack[];
   setPlaylists: React.Dispatch<React.SetStateAction<PlaylistItems>>;
   router: NextRouter;
-  accessToken?: string;
 }): Promise<void> {
   try {
     const playlist = await createCustomPlaylist({
-      accessToken: accessToken ?? "",
       user,
       pageDetails,
     });
@@ -45,12 +42,10 @@ export async function handleSaveToPlaylistClick({
       playlistId: playlist?.id ?? "",
       uris,
       setPlaylists,
-      accessToken,
     });
 
     await navigateToPlaylistPage({
       playlistId: playlist?.id ?? "",
-      accessToken,
       router,
       addToast,
     });
@@ -65,12 +60,11 @@ export async function handleSaveToPlaylistClick({
 }
 
 async function createCustomPlaylist({
-  accessToken,
   user,
   pageDetails,
 }: Pick<
   Parameters<typeof handleSaveToPlaylistClick>[0],
-  "accessToken" | "user" | "pageDetails"
+  "user" | "pageDetails"
 >) {
   const playlist = await createPlaylist(user?.id, {
     name: pageDetails?.name,
@@ -83,10 +77,9 @@ async function createCustomPlaylist({
   await addCustomPlaylistImage({
     user_id: user?.id,
     playlist_id: playlist.id,
-    accessToken,
   });
 
-  return getPlaylistDetails(playlist.id, accessToken);
+  return getPlaylistDetails(playlist.id);
 }
 
 function getTrackUris(tracks: ITrack[]) {
@@ -97,14 +90,13 @@ async function addTracksToPlaylist({
   playlistId,
   uris,
   setPlaylists,
-  accessToken,
-}: Pick<
-  Parameters<typeof handleSaveToPlaylistClick>[0],
-  "setPlaylists" | "accessToken"
-> & { playlistId: SpotifyApi.PlaylistObjectSimplified["id"]; uris: string[] }) {
+}: Pick<Parameters<typeof handleSaveToPlaylistClick>[0], "setPlaylists"> & {
+  playlistId: SpotifyApi.PlaylistObjectSimplified["id"];
+  uris: string[];
+}) {
   await addItemsToPlaylist(playlistId, uris);
 
-  const userPlaylists = await getAllMyPlaylists(accessToken || "");
+  const userPlaylists = await getAllMyPlaylists();
   if (userPlaylists) {
     setPlaylists(userPlaylists.items);
   }
@@ -112,14 +104,13 @@ async function addTracksToPlaylist({
 
 async function navigateToPlaylistPage({
   playlistId,
-  accessToken,
   router,
   addToast,
 }: Pick<
   Parameters<typeof handleSaveToPlaylistClick>[0],
-  "accessToken" | "router" | "addToast"
+  "router" | "addToast"
 > & { playlistId: SpotifyApi.PlaylistObjectSimplified["id"] }) {
-  const playlist = await getPlaylistDetails(playlistId, accessToken);
+  const playlist = await getPlaylistDetails(playlistId);
 
   if (playlist?.tracks && playlist?.tracks?.total > 0) {
     await router.push(`/playlist/${playlistId}`);

@@ -15,9 +15,7 @@ jest.mock<typeof import("utils/spotifyCalls")>(
     }) as unknown as typeof import("utils/spotifyCalls")
 );
 
-const { track, user, accessToken } = jest.requireActual<IUtilsMocks>(
-  "./__mocks__/mocks.ts"
-);
+const { track, user } = jest.requireActual<IUtilsMocks>("./__mocks__/mocks.ts");
 
 describe("playCurrentTrack", () => {
   const player = {
@@ -31,7 +29,6 @@ describe("playCurrentTrack", () => {
     player,
     user,
     allTracks: [track],
-    accessToken,
     deviceId: "deviceId",
     playlistUri: "playlistUri",
     isSingleTrack: true,

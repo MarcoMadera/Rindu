@@ -44,7 +44,7 @@ export default function PlayButton({
     setPlayedSource,
     setReconnectionError,
   } = useSpotify();
-  const { accessToken, user, isPremium } = useAuth();
+  const { user, isPremium } = useAuth();
   const { addToast } = useToast();
   const uriId = uri?.split(":")?.[2];
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -68,7 +68,7 @@ export default function PlayButton({
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          if (!accessToken || (!pageDetails && !track && !uri) || !user) {
+          if ((!pageDetails && !track && !uri) || !user) {
             return;
           }
           if (isPremium && deviceId) {
@@ -79,7 +79,6 @@ export default function PlayButton({
             handlePremiumPlay(
               player as Spotify.Player,
               deviceId,
-              accessToken,
               addToast,
               setReconnectionError,
               setPlaylistPlayingId,

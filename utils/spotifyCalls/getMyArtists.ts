@@ -1,13 +1,14 @@
+import type { ServerApiContext } from "types/serverContext";
 import { handleJsonResponse } from "utils";
 import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function getMyArtists(
-  accessToken: string
+  context?: ServerApiContext
 ): Promise<SpotifyApi.UsersFollowedArtistsResponse | null> {
   const res = await callSpotifyApi({
     endpoint: "/me/following?type=artist&limit=50",
     method: "GET",
-    accessToken,
+    context,
   });
 
   return handleJsonResponse<SpotifyApi.UsersFollowedArtistsResponse>(res);

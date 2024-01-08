@@ -18,8 +18,6 @@ export interface IUserContext {
   user: SpotifyApi.UserObjectPrivate | null;
   setIsLogin: Dispatch<SetStateAction<boolean>>;
   setUser: Dispatch<SetStateAction<SpotifyApi.UserObjectPrivate | null>>;
-  accessToken: string | undefined;
-  setAccessToken: Dispatch<SetStateAction<string | undefined>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -39,7 +37,6 @@ export function UserContextProvider({
     propsValue?.user ?? null
   );
   const [isLogin, setIsLogin] = useState<boolean>(!!propsValue?.user?.uri);
-  const [accessToken, setAccessToken] = useState<string>();
 
   useEffect(() => {
     setIsLogin(!!user?.uri);
@@ -58,19 +55,9 @@ export function UserContextProvider({
       user,
       setIsLogin,
       setUser,
-      accessToken,
-      setAccessToken,
       ...propsValue,
     }),
-    [
-      isLogin,
-      user,
-      setIsLogin,
-      setUser,
-      accessToken,
-      setAccessToken,
-      propsValue,
-    ]
+    [isLogin, user, setIsLogin, setUser, propsValue]
   );
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

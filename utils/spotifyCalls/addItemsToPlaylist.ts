@@ -1,17 +1,16 @@
+import type { ServerApiContext } from "types/serverContext";
 import { handleJsonResponse } from "utils";
 import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function addItemsToPlaylist(
   playlist_id: string,
   uris: string[],
-  accessToken?: string,
-  cookies?: string
+  context?: ServerApiContext
 ): Promise<SpotifyApi.AddTracksToPlaylistResponse | null> {
   const res = await callSpotifyApi({
     endpoint: `/playlists/${playlist_id}/tracks`,
     method: "POST",
-    accessToken,
-    cookies,
+    context,
     body: JSON.stringify(uris),
   });
 

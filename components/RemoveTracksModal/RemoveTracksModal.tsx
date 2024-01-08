@@ -4,7 +4,7 @@ import { List, ListRowProps } from "react-virtualized";
 
 import { Button, CardTrack, Heading, LoadingSpinner } from "components";
 import { CardType } from "components/CardTrack/CardTrack";
-import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
+import { useSpotify, useToast, useTranslations } from "hooks";
 import { AsType } from "types/heading";
 import { IPageDetails, ITrack } from "types/spotify";
 import {
@@ -27,16 +27,13 @@ function renderListRow({
   index,
   tracksToRemove,
   pageDetails,
-  accessToken,
 }: ListRowProps & {
-  accessToken?: string;
   tracksToRemove: ITrack[];
   pageDetails: IPageDetails | null;
 }): ReactElement {
   return (
     <div style={{ ...style, width: "100%" }} key={key}>
       <CardTrack
-        accessToken={accessToken}
         isTrackInLibrary={false}
         track={tracksToRemove[index]}
         playlistUri={pageDetails?.uri ?? ""}
@@ -49,9 +46,8 @@ function renderListRow({
 
 export default function RemoveTracksModal({
   isLibrary,
-}: RemoveTracksModalProps): ReactElement {
+}: Readonly<RemoveTracksModalProps>): ReactElement {
   const { removeTracks, pageDetails, setAllTracks } = useSpotify();
-  const { accessToken } = useAuth();
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const { addToast } = useToast();
   const [duplicateTracksIdx, setDuplicateTracksIdx] = useState<number[]>([]);
@@ -63,14 +59,13 @@ export default function RemoveTracksModal({
   );
 
   useEffect(() => {
-    if (!pageDetails || !accessToken) return;
+    if (!pageDetails) return;
     setIsLoadingComplete(false);
 
     analyzePlaylist(
       getIdFromUri(pageDetails?.uri, "id"),
       pageDetails.tracks?.total,
       isLibrary,
-      accessToken,
       translations
     ).then((res) => {
       if (!res) return;
@@ -82,7 +77,7 @@ export default function RemoveTracksModal({
       setTitle(res.summary);
       setIsLoadingComplete(true);
     });
-  }, [accessToken, isLibrary, pageDetails, setAllTracks, translations]);
+  }, [isLibrary, pageDetails, setAllTracks, translations]);
 
   async function handleRemoveTracksFromLibrary() {
     const ids = tracksToRemove
@@ -90,9 +85,7 @@ export default function RemoveTracksModal({
       .filter((id) => id) as string[];
 
     const idChunks = divideArray(ids, 50);
-    const promises = idChunks.map((ids) =>
-      removeTracksFromLibrary(ids, accessToken)
-    );
+    const promises = idChunks.map((ids) => removeTracksFromLibrary(ids));
     try {
       await Promise.all(promises);
       setAllTracks((tracks) => {
@@ -194,7 +187,6 @@ export default function RemoveTracksModal({
                   ...listRowProps,
                   tracksToRemove,
                   pageDetails,
-                  accessToken,
                 })
               }
             />

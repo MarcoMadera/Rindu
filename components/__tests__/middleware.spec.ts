@@ -21,6 +21,9 @@ describe("middleware", () => {
       headers: {
         get: () => "",
       },
+      cookies: {
+        get: () => ({ value: "ES" }),
+      },
     } as unknown as NextRequest;
 
     jest

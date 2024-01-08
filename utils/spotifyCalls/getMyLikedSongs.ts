@@ -1,16 +1,16 @@
+import type { ServerApiContext } from "types/serverContext";
 import { handleJsonResponse } from "utils";
 import { callSpotifyApi } from "utils/spotifyCalls";
 
 export async function getMyLikedSongs(
-  limit: number,
-  accessToken?: string,
-  cookies?: string | undefined
+  limit: number = 50,
+  offset: number = 0,
+  context?: ServerApiContext | undefined
 ): Promise<SpotifyApi.PlaylistTrackResponse | null> {
   const res = await callSpotifyApi({
-    endpoint: `/me/tracks?limit=${limit}&offset=0&market=from_token`,
+    endpoint: `/me/tracks?limit=${limit}&offset=${offset}&market=from_token`,
     method: "GET",
-    accessToken,
-    cookies,
+    context,
   });
 
   return handleJsonResponse<SpotifyApi.PlaylistTrackResponse>(res);

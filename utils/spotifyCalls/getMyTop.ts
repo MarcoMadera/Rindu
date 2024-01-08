@@ -1,3 +1,4 @@
+import type { ServerApiContext } from "types/serverContext";
 import { handleJsonResponse } from "utils";
 import { callSpotifyApi } from "utils/spotifyCalls";
 
@@ -8,10 +9,9 @@ export enum TopType {
 
 export async function getMyTop<T extends TopType>(
   type: TopType | T,
-  accessToken?: string | null,
   limit?: number,
   time_range?: "medium_term" | "short_term" | "long_term",
-  cookies?: string | undefined
+  context?: ServerApiContext
 ): Promise<
   T extends TopType.TRACKS
     ? SpotifyApi.UsersTopTracksResponse | null
@@ -22,8 +22,7 @@ export async function getMyTop<T extends TopType>(
       limit ?? 10
     }`,
     method: "GET",
-    accessToken,
-    cookies,
+    context,
   });
 
   return handleJsonResponse<
