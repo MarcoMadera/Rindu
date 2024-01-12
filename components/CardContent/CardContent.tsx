@@ -35,7 +35,7 @@ export default function CardContent({
   title,
   subTitle,
   url,
-}: ICardContent): ReactElement {
+}: Readonly<ICardContent>): ReactElement {
   const router = useRouter();
   const handlerRef = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(handlerRef, "-150px");

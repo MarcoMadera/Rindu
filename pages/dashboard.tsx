@@ -502,9 +502,9 @@ export const getServerSideProps = (async (context) => {
     if (
       fullFilledItem &&
       i <= searchedArtistsPromisesLenght &&
-      fullFilledItem[0]
+      fullFilledItem[0]?.type === "artist"
     ) {
-      artistResult.push(fullFilledItem[0] as SpotifyApi.ArtistObjectFull);
+      artistResult.push(fullFilledItem[0]);
       return;
     }
     const hasFulfilledItem = fullFilledItem?.[0];
@@ -517,8 +517,8 @@ export const getServerSideProps = (async (context) => {
       isAfterArtistsPromises &&
       isBeforeOrEqualTracksPromises;
 
-    if (isValidTrack) {
-      tracksResult.push(fullFilledItem[0] as SpotifyApi.TrackObjectFull);
+    if (isValidTrack && fullFilledItem[0].type === "track") {
+      tracksResult.push(fullFilledItem[0]);
       return;
     }
 
@@ -526,14 +526,16 @@ export const getServerSideProps = (async (context) => {
       fullFilledItem &&
       i > searchedArtistsPromisesLenght + searchedPlaylistsPromisesLength
     ) {
-      const playlists = (
-        fullFilledItem as SpotifyApi.PlaylistObjectFull[]
-      ).filter((playlist) => playlist.owner.display_name === "Spotify");
+      const playlists = fullFilledItem.filter(
+        (playlist) =>
+          playlist.type === "playlist" &&
+          playlist?.owner.display_name === "Spotify"
+      );
       if (!playlists[0]) return;
       const isDuplicate = thisPlaylistsResult.some(
-        (playlist) => playlist.id === playlists[0].id
+        (playlist) => playlist.id === playlists[0]?.id
       );
-      if (!isDuplicate) {
+      if (!isDuplicate && "tracks" in playlists[0]) {
         thisPlaylistsResult.push(playlists[0]);
       }
     }

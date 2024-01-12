@@ -20,49 +20,50 @@ export default function TextHighlighter({
   if (!text) {
     return <>{children}</>;
   }
-  const highlightText = (children: ReactNode): ReactNode => {
-    return Children.map(children, (child: ReactNode) => {
-      if (typeof child === "string") {
-        const escapedText = escapeRegExp(text);
-        const parts = child.split(new RegExp(`(${escapedText})`, "gi"));
 
-        return parts.map((part, index) =>
-          part.toLowerCase() === text.toLowerCase() ? (
-            <mark key={`highlight-${index}`}>
-              {part}
-              <style jsx>{`
-                mark {
-                  background-color: #2e77d0;
-                  border-radius: 4px;
-                  color: #fff;
-                }
-              `}</style>
-            </mark>
-          ) : (
-            part
-          )
-        );
-      }
+  return (
+    <>
+      {Children.map(children, (child: ReactNode) => {
+        if (typeof child === "string") {
+          const escapedText = escapeRegExp(text);
+          const parts = child.split(new RegExp(`(${escapedText})`, "gi"));
 
-      if (
-        isValidElement(child) &&
-        "props" in child &&
-        "children" in child.props
-      ) {
-        return cloneElement(
-          child,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          child.props,
-          <TextHighlighter text={text}>
-            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-            {child?.props?.children}
-          </TextHighlighter>
-        );
-      }
+          return parts.map((part, index) =>
+            part.toLowerCase() === text.toLowerCase() ? (
+              <mark key={`highlight-${index}`}>
+                {part}
+                <style jsx>{`
+                  mark {
+                    background-color: #2e77d0;
+                    border-radius: 4px;
+                    color: #fff;
+                  }
+                `}</style>
+              </mark>
+            ) : (
+              part
+            )
+          );
+        }
 
-      return child;
-    });
-  };
+        if (
+          isValidElement(child) &&
+          "props" in child &&
+          "children" in child.props
+        ) {
+          return cloneElement(
+            child,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            child.props,
+            <TextHighlighter text={text}>
+              {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
+              {child?.props.children}
+            </TextHighlighter>
+          );
+        }
 
-  return <>{highlightText(children)}</>;
+        return child;
+      })}
+    </>
+  );
 }
