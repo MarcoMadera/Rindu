@@ -43,6 +43,7 @@ export default function PlaylistTopBarExtraField({
           align-items: center;
           display: flex;
           white-space: nowrap;
+          max-width: 100%;
         }
       `}</style>
     </div>
