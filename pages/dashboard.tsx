@@ -453,10 +453,13 @@ export const getServerSideProps = (async (context) => {
   const searchedPlaylistsPromises: Promise<
     SpotifyApi.PlaylistObjectFull[] | null
   >[] = [];
+  const artistNamesSearched = new Set<string>();
 
   if (artistsOfTheWeekSettled) {
     artistsOfTheWeekSettled.artists.artist.forEach((artist) => {
+      if (artistNamesSearched.has(artist.name)) return;
       searchedArtistsPromises.push(searchArtist(artist.name, context));
+      artistNamesSearched.add(artist.name);
     });
   }
 
@@ -504,7 +507,12 @@ export const getServerSideProps = (async (context) => {
       i <= searchedArtistsPromisesLenght &&
       fullFilledItem[0]?.type === "artist"
     ) {
-      artistResult.push(fullFilledItem[0]);
+      const isDuplicate = artistResult.some(
+        (artist) => artist.id === fullFilledItem[0]?.id
+      );
+      if (!isDuplicate) {
+        artistResult.push(fullFilledItem[0]);
+      }
       return;
     }
     const hasFulfilledItem = fullFilledItem?.[0];
