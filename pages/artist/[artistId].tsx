@@ -123,7 +123,7 @@ export default function ArtistPage({
     };
 
     const items =
-      topTracks?.tracks.map((track) => ({
+      topTracks?.tracks?.map((track) => ({
         ...track,
         added_at: "",
         track: track,
@@ -222,24 +222,23 @@ export default function ArtistPage({
         ) : null}
         <div className="popular-content">
           <div className="topTracks">
-            {topTracks?.tracks &&
-              topTracks?.tracks?.map((track, i) => {
-                const maxToShow = showMoreTopTracks ? 10 : 5;
-                if (i >= maxToShow) {
-                  return null;
-                }
-                return (
-                  <CardTrack
-                    isTrackInLibrary={false}
-                    playlistUri=""
-                    track={track}
-                    key={track.id}
-                    isSingleTrack
-                    position={i}
-                    type={TrackCardType.Playlist}
-                  />
-                );
-              })}
+            {topTracks?.tracks?.map((track, i) => {
+              const maxToShow = showMoreTopTracks ? 10 : 5;
+              if (i >= maxToShow) {
+                return null;
+              }
+              return (
+                <CardTrack
+                  isTrackInLibrary={false}
+                  playlistUri=""
+                  track={track}
+                  key={track.id}
+                  isSingleTrack
+                  position={i}
+                  type={TrackCardType.Playlist}
+                />
+              );
+            })}
             <TextToggleButton
               isToggle={showMoreTopTracks}
               toggleHandlers={setShowMoreTopTracks}
