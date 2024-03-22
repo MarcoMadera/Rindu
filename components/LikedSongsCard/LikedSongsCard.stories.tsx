@@ -16,8 +16,11 @@ const Template: StoryFn<typeof LikedSongsCard> = (args) => {
   return <LikedSongsCard {...args} />;
 };
 
-export const Default = Template.bind({});
-Default.args = {
-  likedSongs:
-    mockPlaylistTrackResponse as unknown as SpotifyApi.PlaylistTrackResponse,
+export const Default = {
+  render: Template,
+
+  args: {
+    likedSongs:
+      mockPlaylistTrackResponse as unknown as SpotifyApi.PlaylistTrackResponse,
+  },
 };

@@ -18,35 +18,43 @@ export default {
 
 const Template: StoryFn<typeof TopBar> = () => <TopBar />;
 
-export const Default = Template.bind({});
-export const LoggedIn = Template.bind({});
-export const LoggedInWithExtraField = Template.bind({});
+export const Default = {
+  render: Template,
+};
 
-LoggedIn.parameters = {
-  layout: "fullscreen",
-  nextjs: {
-    router: {
-      pathname: "/dashboard",
-      query: {
-        country: "US",
+export const LoggedIn = {
+  render: Template,
+
+  parameters: {
+    layout: "fullscreen",
+    nextjs: {
+      router: {
+        pathname: "/dashboard",
+        query: {
+          country: "US",
+        },
       },
     },
   },
 };
 
-LoggedInWithExtraField.parameters = {
-  layout: "fullscreen",
-  nextjs: {
-    router: {
-      pathname: "/dashboard",
-      query: {
-        country: "US",
+export const LoggedInWithExtraField = {
+  render: Template,
+
+  parameters: {
+    layout: "fullscreen",
+    nextjs: {
+      router: {
+        pathname: "/dashboard",
+        query: {
+          country: "US",
+        },
       },
     },
-  },
-  spotifyValue: { pageDetails: { name: "Skinny Dipping" } },
-  headerValue: {
-    element: <PlaylistTopBarExtraField uri={"2OLNxlrm2OCdATbUaonmEh"} />,
-    displayOnFixed: true,
+    spotifyValue: { pageDetails: { name: "Skinny Dipping" } },
+    headerValue: {
+      element: <PlaylistTopBarExtraField uri={"2OLNxlrm2OCdATbUaonmEh"} />,
+      displayOnFixed: true,
+    },
   },
 };

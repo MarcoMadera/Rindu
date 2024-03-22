@@ -24,4 +24,6 @@ const Template: StoryFn<typeof NowPlaying> = () => {
   return <NowPlaying />;
 };
 
-export const Default = Template.bind({});
+export const Default = {
+  render: Template,
+};

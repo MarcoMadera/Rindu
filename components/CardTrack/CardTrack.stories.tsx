@@ -1,6 +1,4 @@
-import React from "react";
-
-import { Meta, StoryFn } from "@storybook/react";
+import { Meta } from "@storybook/react";
 
 import CardTrack, { CardType } from "./CardTrack";
 import { ITrack } from "types/spotify";
@@ -19,8 +17,6 @@ export default {
     },
   },
 } as Meta<typeof CardTrack>;
-
-const Template: StoryFn<typeof CardTrack> = (args) => <CardTrack {...args} />;
 
 const track = {
   album: {
@@ -96,30 +92,32 @@ const track = {
   uri: "spotify:track:1pCblJqsFVRNc9Xmg0oQz8",
 } as ITrack;
 
-export const Default = Template.bind({});
-Default.args = {
-  track,
-  position: 0,
-  style: {},
-  type: CardType.Playlist,
-  isTrackInLibrary: false,
-  isSingleTrack: false,
-  playlistUri: "",
-  uri: "5aubkIdfpFOBcHaF8gxYwo",
-  onClickAdd: undefined,
+export const Default = {
+  args: {
+    track,
+    position: 0,
+    style: {},
+    type: CardType.Playlist,
+    isTrackInLibrary: false,
+    isSingleTrack: false,
+    playlistUri: "",
+    uri: "5aubkIdfpFOBcHaF8gxYwo",
+    onClickAdd: undefined,
+  },
 };
 
-export const WithAddButton = Template.bind({});
-WithAddButton.args = {
-  track,
-  position: 0,
-  style: {},
-  type: CardType.Presentation,
-  isTrackInLibrary: false,
-  isSingleTrack: false,
-  playlistUri: "",
-  uri: "5aubkIdfpFOBcHaF8gxYwo",
-  onClickAdd: () => {
-    console.info("onClickAdd");
+export const WithAddButton = {
+  args: {
+    track,
+    position: 0,
+    style: {},
+    type: CardType.Presentation,
+    isTrackInLibrary: false,
+    isSingleTrack: false,
+    playlistUri: "",
+    uri: "5aubkIdfpFOBcHaF8gxYwo",
+    onClickAdd: (): void => {
+      console.info("onClickAdd");
+    },
   },
 };

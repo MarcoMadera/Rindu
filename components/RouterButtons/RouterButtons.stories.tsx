@@ -28,4 +28,6 @@ const Template: StoryFn<typeof RouterButtons> = () => {
   );
 };
 
-export const Default = Template.bind({});
+export const Default = {
+  render: Template,
+};

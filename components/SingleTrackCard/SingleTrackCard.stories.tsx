@@ -1,6 +1,4 @@
-import React from "react";
-
-import { Meta, StoryFn } from "@storybook/react";
+import { Meta } from "@storybook/react";
 
 import { track } from "../mocks";
 import { SingleTrackCard } from "components";
@@ -19,11 +17,8 @@ export default {
   },
 } as Meta<typeof SingleTrackCard>;
 
-const Template: StoryFn<typeof SingleTrackCard> = (args) => (
-  <SingleTrackCard {...args} />
-);
-
-export const Default = Template.bind({});
-Default.args = {
-  track: track,
+export const Default = {
+  args: {
+    track: track,
+  },
 };

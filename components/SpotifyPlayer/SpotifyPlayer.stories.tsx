@@ -16,4 +16,6 @@ export default {
 
 const Template: StoryFn<typeof SpotifyPlayer> = () => <SpotifyPlayer />;
 
-export const Default = Template.bind({});
+export const Default = {
+  render: Template,
+};

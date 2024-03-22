@@ -26,15 +26,23 @@ const Template: StoryFn<typeof PageDetails & { playlistPlayingId: string }> = (
   return <PageDetails {...args} />;
 };
 
-export const Default = Template.bind({});
-
-export const WithBanner = Template.bind({});
-WithBanner.args = {
-  banner:
-    "https://www.theaudiodb.com/images/media/artist/fanart/qqwxxp1542730121.jpg",
+export const Default = {
+  render: Template,
 };
 
-export const WithData = Template.bind({});
-WithData.args = {
-  data: track,
+export const WithBanner = {
+  render: Template,
+
+  args: {
+    banner:
+      "https://www.theaudiodb.com/images/media/artist/fanart/qqwxxp1542730121.jpg",
+  },
+};
+
+export const WithData = {
+  render: Template,
+
+  args: {
+    data: track,
+  },
 };

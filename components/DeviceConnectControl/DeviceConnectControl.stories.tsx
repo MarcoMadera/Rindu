@@ -43,4 +43,6 @@ const Template: StoryFn<typeof DeviceConnectControl> = () => (
   </div>
 );
 
-export const Default = Template.bind({});
+export const Default = {
+  render: Template,
+};

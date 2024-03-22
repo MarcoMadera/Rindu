@@ -22,8 +22,11 @@ export default {
 
 const Template: StoryFn<typeof PlayerControls> = () => <PlayerControls />;
 
-export const Default = Template.bind({});
-Default.args = {
-  size: 40,
-  centerSize: 20,
+export const Default = {
+  render: Template,
+
+  args: {
+    size: 40,
+    centerSize: 20,
+  },
 };

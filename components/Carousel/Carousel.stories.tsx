@@ -67,11 +67,13 @@ const Template: StoryFn<
   );
 };
 
-export const Boxes = Template.bind({});
+export const Boxes = {
+  render: Template,
 
-Boxes.args = {
-  title: "The best carousel",
-  gap: 24,
-  boxWidth: 200,
-  totalBoxes: 50,
+  args: {
+    title: "The best carousel",
+    gap: 24,
+    boxWidth: 200,
+    totalBoxes: 50,
+  },
 };

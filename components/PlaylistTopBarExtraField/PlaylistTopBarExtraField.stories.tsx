@@ -23,4 +23,6 @@ const Template: StoryFn<typeof PlaylistTopBarExtraField> = () => {
   return <PlaylistTopBarExtraField />;
 };
 
-export const Default = Template.bind({});
+export const Default = {
+  render: Template,
+};

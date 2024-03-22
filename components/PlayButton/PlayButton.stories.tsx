@@ -1,6 +1,4 @@
-import React from "react";
-
-import { Meta, StoryFn } from "@storybook/react";
+import { Meta } from "@storybook/react";
 
 import { PlayButton } from "components";
 
@@ -12,10 +10,9 @@ export default {
   },
 } as Meta<typeof PlayButton>;
 
-const Template: StoryFn<typeof PlayButton> = (args) => <PlayButton {...args} />;
-
-export const Default = Template.bind({});
-Default.args = {
-  size: 40,
-  centerSize: 20,
+export const Default = {
+  args: {
+    size: 40,
+    centerSize: 20,
+  },
 };

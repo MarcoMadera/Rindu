@@ -1,6 +1,4 @@
-import React from "react";
-
-import { Meta, StoryFn } from "@storybook/react";
+import { Meta } from "@storybook/react";
 
 import { ArtistList } from "components";
 import { artist } from "utils/__tests__/__mocks__/mocks";
@@ -19,10 +17,9 @@ export default {
   },
 } as Meta<typeof ArtistList>;
 
-const Template: StoryFn<typeof ArtistList> = (args) => <ArtistList {...args} />;
-
-export const Default = Template.bind({});
-Default.args = {
-  artists: [artist, artist, artist, artist, artist, artist],
-  maxArtistsToShow: 3,
+export const Default = {
+  args: {
+    artists: [artist, artist, artist, artist, artist, artist],
+    maxArtistsToShow: 3,
+  },
 };

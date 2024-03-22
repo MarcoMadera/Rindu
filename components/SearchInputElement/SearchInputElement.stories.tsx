@@ -24,17 +24,24 @@ const Template: StoryFn<typeof SearchInputElement> = (args) => {
   return <SearchInputElement {...args} />;
 };
 
-export const Search = Template.bind({});
-Search.args = {
-  setData: (() => console.info("setData")) as Dispatch<
-    SetStateAction<SpotifyApi.SearchResponse | null>
-  >,
-  source: "search",
+export const Search = {
+  render: Template,
+
+  args: {
+    setData: (() => console.info("setData")) as Dispatch<
+      SetStateAction<SpotifyApi.SearchResponse | null>
+    >,
+    source: "search",
+  },
 };
-export const Playlist = Template.bind({});
-Playlist.args = {
-  setData: (() => console.info("setData")) as Dispatch<
-    SetStateAction<SpotifyApi.SearchResponse | null>
-  >,
-  source: "playlist",
+
+export const Playlist = {
+  render: Template,
+
+  args: {
+    setData: (() => console.info("setData")) as Dispatch<
+      SetStateAction<SpotifyApi.SearchResponse | null>
+    >,
+    source: "playlist",
+  },
 };

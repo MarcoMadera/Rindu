@@ -29,4 +29,6 @@ const Template: StoryFn<typeof ShortCuts> = () => {
   );
 };
 
-export const Default = Template.bind({});
+export const Default = {
+  render: Template,
+};

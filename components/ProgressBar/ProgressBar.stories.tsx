@@ -23,4 +23,6 @@ const Template: StoryFn<typeof ProgressBar> = () => {
   return <ProgressBar />;
 };
 
-export const Default = Template.bind({});
+export const Default = {
+  render: Template,
+};

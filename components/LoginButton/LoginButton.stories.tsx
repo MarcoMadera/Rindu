@@ -16,4 +16,6 @@ const Template: StoryFn<typeof LoginButton> = () => {
   return <LoginButton />;
 };
 
-export const Default = Template.bind({});
+export const Default = {
+  render: Template,
+};
