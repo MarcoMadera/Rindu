@@ -16,7 +16,10 @@ const Template: StoryFn<typeof Logo> = (args) => {
   return <Logo {...args} />;
 };
 
-export const Default = Template.bind({});
-Default.args = {
-  color: "#000",
+export const Default = {
+  render: Template,
+
+  args: {
+    color: "#000",
+  },
 };

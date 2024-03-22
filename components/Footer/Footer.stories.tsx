@@ -16,4 +16,6 @@ const Template: StoryFn<typeof Footer> = () => {
   return <Footer />;
 };
 
-export const Default = Template.bind({});
+export const Default = {
+  render: Template,
+};

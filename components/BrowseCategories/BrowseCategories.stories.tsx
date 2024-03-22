@@ -44,7 +44,10 @@ const Template: StoryFn<
   <BrowseCategories categories={getCategories(args.totalCategories)} />
 );
 
-export const Default = Template.bind({});
-Default.args = {
-  totalCategories: 30,
+export const Default = {
+  render: Template,
+
+  args: {
+    totalCategories: 30,
+  },
 };

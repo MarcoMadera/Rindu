@@ -29,10 +29,14 @@ const Template: StoryFn<typeof EditPlaylistDetails> = (args) => {
   );
 };
 
-export const Default = Template.bind({});
-Default.args = {
-  id: "37i9dQZF1DXcBWIGoYBM5M",
-  coverImg: "https://i.scdn.co/image/ab67706c0000bebb42d9a147c58fb9d695c1768b",
-  description: "A playlist description",
-  name: "A playlist name",
+export const Default = {
+  render: Template,
+
+  args: {
+    id: "37i9dQZF1DXcBWIGoYBM5M",
+    coverImg:
+      "https://i.scdn.co/image/ab67706c0000bebb42d9a147c58fb9d695c1768b",
+    description: "A playlist description",
+    name: "A playlist name",
+  },
 };

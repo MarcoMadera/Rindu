@@ -1,6 +1,4 @@
-import React from "react";
-
-import { Meta, StoryFn } from "@storybook/react";
+import { Meta } from "@storybook/react";
 
 import { Button } from "components";
 
@@ -15,9 +13,8 @@ export default {
   },
 } as Meta<typeof Button>;
 
-const Template: StoryFn<typeof Button> = (args) => <Button {...args} />;
-
-export const Default = Template.bind({});
-Default.args = {
-  children: "click me",
+export const Default = {
+  args: {
+    children: "click me",
+  },
 };

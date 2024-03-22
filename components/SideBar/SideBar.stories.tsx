@@ -22,4 +22,6 @@ const Template: StoryFn<typeof SideBar> = () => {
   return <SideBar width={245} />;
 };
 
-export const Default = Template.bind({});
+export const Default = {
+  render: Template,
+};

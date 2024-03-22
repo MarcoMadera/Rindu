@@ -29,7 +29,10 @@ const Template: StoryFn<typeof RemoveTracksModal> = (args) => {
   );
 };
 
-export const Default = Template.bind({});
-Default.args = {
-  isLibrary: true,
+export const Default = {
+  render: Template,
+
+  args: {
+    isLibrary: true,
+  },
 };

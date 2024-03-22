@@ -1,6 +1,4 @@
-import React from "react";
-
-import { Meta, StoryFn } from "@storybook/react";
+import { Meta } from "@storybook/react";
 
 import { BigPill } from "components";
 
@@ -21,12 +19,11 @@ export default {
   },
 } as Meta<typeof BigPill>;
 
-const Template: StoryFn<typeof BigPill> = (args) => <BigPill {...args} />;
-
-export const Artist = Template.bind({});
-Artist.args = {
-  img: "https://studiosol-a.akamaihd.net/uploadfile/letras/fotos/6/1/c/a/61ca1dcbc2cdda2af430927f4fe4b98c.jpg",
-  title: "Artist",
-  subTitle: "Billie Eilish",
-  href: "/artist/1",
+export const Artist = {
+  args: {
+    img: "https://studiosol-a.akamaihd.net/uploadfile/letras/fotos/6/1/c/a/61ca1dcbc2cdda2af430927f4fe4b98c.jpg",
+    title: "Artist",
+    subTitle: "Billie Eilish",
+    href: "/artist/1",
+  },
 };

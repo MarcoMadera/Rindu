@@ -21,29 +21,38 @@ const Template: StoryFn<typeof TrackListHeader> = (args) => {
   return <TrackListHeader {...args} />;
 };
 
-export const Album = Template.bind({});
-Album.args = {
-  type: CardType.Album,
-  isPin: true,
-  setIsPin: () => {
-    console.info("pin clicked");
+export const Album = {
+  render: Template,
+
+  args: {
+    type: CardType.Album,
+    isPin: true,
+    setIsPin: (): void => {
+      console.info("pin clicked");
+    },
   },
 };
 
-export const Playlist = Template.bind({});
-Playlist.args = {
-  type: CardType.Playlist,
-  isPin: true,
-  setIsPin: () => {
-    console.info("pin");
+export const Playlist = {
+  render: Template,
+
+  args: {
+    type: CardType.Playlist,
+    isPin: true,
+    setIsPin: (): void => {
+      console.info("pin");
+    },
   },
 };
 
-export const Presentation = Template.bind({});
-Presentation.args = {
-  type: CardType.Presentation,
-  isPin: true,
-  setIsPin: () => {
-    console.info("pin");
+export const Presentation = {
+  render: Template,
+
+  args: {
+    type: CardType.Presentation,
+    isPin: true,
+    setIsPin: (): void => {
+      console.info("pin");
+    },
   },
 };

@@ -19,38 +19,44 @@ const Template: StoryFn<typeof Slider> = (args) => {
   return <Slider {...args} />;
 };
 
-export const WithUpdate = Template.bind({});
-WithUpdate.args = {
-  title: "Interval slider",
-  updateProgress: 1,
-  intervalUpdateAction: {
-    steps: 100 / 12,
-    labelUpdateValue: 1,
-    ms: 1000,
-    shouldUpdate: true,
-  },
-  onDragging: (isDragging) => {
-    console.info("draggin", isDragging);
-  },
-  setLabelValue: (value) => {
-    console.info("label", value);
-  },
-  valueText: "value",
-  initialValuePercent: 0,
-  action: (progressPercent) => {
-    console.info("progressPercent", progressPercent);
+export const WithUpdate = {
+  render: Template,
+
+  args: {
+    title: "Interval slider",
+    updateProgress: 1,
+    intervalUpdateAction: {
+      steps: 100 / 12,
+      labelUpdateValue: 1,
+      ms: 1000,
+      shouldUpdate: true,
+    },
+    onDragging: (isDragging: boolean): void => {
+      console.info("draggin", isDragging);
+    },
+    setLabelValue: (value: string): void => {
+      console.info("label", value);
+    },
+    valueText: "value",
+    initialValuePercent: 0,
+    action: (progressPercent: number): void => {
+      console.info("progressPercent", progressPercent);
+    },
   },
 };
 
-export const Static = Template.bind({});
-Static.args = {
-  title: "Static Slider",
-  setLabelValue: (value) => {
-    console.info("label", value);
-  },
-  valueText: "value",
-  initialValuePercent: 0,
-  action: (progressPercent) => {
-    console.info("progressPercent", progressPercent);
+export const Static = {
+  render: Template,
+
+  args: {
+    title: "Static Slider",
+    setLabelValue: (value: string): void => {
+      console.info("label", value);
+    },
+    valueText: "value",
+    initialValuePercent: 0,
+    action: (progressPercent: number): void => {
+      console.info("progressPercent", progressPercent);
+    },
   },
 };

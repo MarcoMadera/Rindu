@@ -150,8 +150,15 @@ const Template: StoryFn<typeof CardContainer> = () => (
   <CardContainer></CardContainer>
 );
 
-export const Default = Template.bind({});
-export const MultipleContainers = MultipleCardsTemplate.bind({});
-export const MultipleContainersWithContent =
-  MultipleWithContentCardsTemplate.bind({});
-Default.args = {};
+export const Default = {
+  render: Template,
+  args: {},
+};
+
+export const MultipleContainers = {
+  render: MultipleCardsTemplate,
+};
+
+export const MultipleContainersWithContent = {
+  render: MultipleWithContentCardsTemplate,
+};

@@ -1,0 +1,26 @@
+import { Meta, Story } from "@storybook/blocks";
+import { WithConfiguration } from "../.storybook/decorators/WithConfiguration";
+
+<Meta title="Introduction" decorators={[WithConfiguration]} />
+
+# Welcome to Rindu Component Library
+
+Here you can find a list of all the components that are used in Rindu [Github Repository](https://github.com/MarcoMadera/spotify-playlists-cleaner)
+
+Browse component stories now by navigating to them in the sidebar.
+View their code in the `stories` directory to learn how they work.
+
+Some of the components in the Rindu Component Library require an access token to function properly. To obtain an access token, you can follow these steps:
+
+* Go to the [Spotify API Console](https://developer.spotify.com/console/get-current-user) in a new browser tab.
+* Log in to your Spotify account if prompted.
+* Click the "Get Token" button and select the scopes user-read-playback-state and user-modify-playback-state.
+* Click "Request Token" to generate a new access token.
+* Copy the access token to your clipboard.
+
+To use the components that require an access token, once in a component, you can paste the token into the accessToken input of the "Configuration" (<svg viewBox="0 0 1024 1024" width="14px" height="14px"><path d="M512 288a224 224 0 0 0 0 448h2a225 225 0 0 0 52-7 47 47 0 0 0-23-90 130 130 0 0 1-31 3 131 131 0 1 1 127-101v1a47 47 0 1 0 91 19 224 224 0 0 0-218-273zM409 0c-67 14-131 40-186 77v98c0 13-6 25-15 33-8 9-20 15-33 15H77C40 278 14 341 0 409l69 68c9 10 14 22 13 34 1 13-4 25-13 34L0 614c14 68 41 132 78 188h97c13 0 25 6 33 15 9 8 15 20 15 33v97c55 37 119 63 187 77l68-69a46 46 0 0 1 36-13c11 0 23 4 32 13l69 69c68-14 131-40 186-77v-98c0-13 6-25 15-34 8-8 20-14 33-14h98c37-56 63-119 77-186l-69-70c-10-9-14-21-14-34 0-12 4-24 14-34l69-69c-14-67-40-129-77-184h-98c-13 0-25-6-33-15-9-8-15-20-15-33V77C746 40 683 14 615 0l-69 69a46 46 0 0 1-35 14c-11 0-23-5-33-14L409 0zm-28 103l32 32c26 26 61 41 98 41h3c37 0 72-15 98-41l32-31c22 7 43 16 64 26v46c0 37 15 73 42 99 26 27 62 42 99 42h45c11 20 19 41 26 63l-31 31c-26 27-41 63-41 100 0 38 15 74 41 100l32 32c-8 22-17 44-27 65h-45c-37 0-73 15-99 42-27 26-42 62-42 99v44c-21 11-42 20-65 27l-31-31c-26-26-61-41-98-41h-3c-37 0-72 15-98 41l-32 32c-22-8-44-17-65-28v-43c0-37-15-73-42-99-26-27-62-42-99-42h-44c-11-21-20-44-28-67l32-31c26-26 41-62 40-100 1-37-14-73-40-100l-31-30c7-23 16-44 26-65h45c37 0 73-15 99-42 27-26 42-62 42-99v-45c21-10 43-19 65-27z" /></svg>) in the toolbar.
+There you can also change the global values of the components.
+
+Make sure to click the corresponding button to apply the token. You can find more information about each component's usage in its respective story file in the stories directory.
+
+Happy browsing!

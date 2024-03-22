@@ -22,4 +22,6 @@ const Template: StoryFn<typeof ExplicitSign> = () => {
   return <ExplicitSign />;
 };
 
-export const Default = Template.bind({});
+export const Default = {
+  render: Template,
+};

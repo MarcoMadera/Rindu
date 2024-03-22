@@ -26,4 +26,6 @@ const Template: StoryFn<typeof UserWidget> = () => (
   />
 );
 
-export const Default = Template.bind({});
+export const Default = {
+  render: Template,
+};

@@ -18,4 +18,6 @@ const Template: StoryFn<typeof PlaybackExtraControls> = () => {
   return <PlaybackExtraControls />;
 };
 
-export const Default = Template.bind({});
+export const Default = {
+  render: Template,
+};

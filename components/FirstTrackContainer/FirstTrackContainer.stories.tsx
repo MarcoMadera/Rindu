@@ -17,9 +17,12 @@ const Template: StoryFn<typeof FirstTrackContainer> = (args) => {
   return <FirstTrackContainer {...args} />;
 };
 
-export const Default = Template.bind({});
-Default.args = {
-  track: track,
-  backgroundColor: "rgba(171, 202, 165, 0.9)",
-  position: 0,
+export const Default = {
+  render: Template,
+
+  args: {
+    track: track,
+    backgroundColor: "rgba(171, 202, 165, 0.9)",
+    position: 0,
+  },
 };

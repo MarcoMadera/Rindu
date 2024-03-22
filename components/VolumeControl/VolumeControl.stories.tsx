@@ -21,4 +21,6 @@ export default {
 
 const Template: StoryFn<typeof VolumeControl> = () => <VolumeControl />;
 
-export const Default = Template.bind({});
+export const Default = {
+  render: Template,
+};
