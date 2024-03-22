@@ -30,7 +30,7 @@ const LyricsContext = createContext<ILyricsContext | undefined>(undefined);
 
 export function LyricsContextContextProvider({
   children,
-}: PropsWithChildren): ReactElement {
+}: Readonly<PropsWithChildren>): ReactElement {
   const { displayInFullScreen, isPictureInPictureLyircsCanvas } = useSpotify();
   const [lyricsProgressMs, setLyricsProgressMs] = useState(0);
   const [lyricLineColor, setLyricLineColor] = useState<string>("#fff");

@@ -243,7 +243,7 @@ export function SpotifyContextProvider({
       {currentlyPlaying?.name && (
         <Head>
           <title>{`${currentlyPlaying?.name} - ${
-            currentlyPlaying?.artists?.[0].name || "Rindu"
+            currentlyPlaying?.artists?.[0].name ?? "Rindu"
           }`}</title>
         </Head>
       )}

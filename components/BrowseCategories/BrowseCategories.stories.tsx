@@ -1,6 +1,4 @@
-import React, { ComponentProps, ReactElement } from "react";
-
-import { Meta, StoryFn } from "@storybook/react";
+import { Meta } from "@storybook/react";
 
 import { BrowseCategories } from "components";
 import { paginObject } from "utils/__tests__/__mocks__/mocks";
@@ -33,21 +31,10 @@ const getCategories = (number: number) => ({
   })),
 });
 
-const Template: StoryFn<
-  ({
-    totalCategories,
-    ...args
-  }: { totalCategories: number } & ComponentProps<
-    typeof BrowseCategories
-  >) => ReactElement
-> = (args) => (
-  <BrowseCategories categories={getCategories(args.totalCategories)} />
-);
-
 export const Default = {
-  render: Template,
+  render: BrowseCategories,
 
   args: {
-    totalCategories: 30,
+    categories: getCategories(30),
   },
 };

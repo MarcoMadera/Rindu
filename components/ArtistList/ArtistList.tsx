@@ -20,7 +20,7 @@ export default function ArtistList({
   artists,
   maxArtistsToShow,
   onClick,
-}: IArtistListProps): ReactElement | null {
+}: Readonly<IArtistListProps>): ReactElement | null {
   const artistsRef = useRef<HTMLAnchorElement>(null);
   const isVisible = useOnScreen(artistsRef);
   if (!artists) return null;

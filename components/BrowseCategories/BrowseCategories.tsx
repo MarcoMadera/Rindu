@@ -11,7 +11,7 @@ interface IBrowseCategoriesProps {
 
 export default function BrowseCategories({
   categories,
-}: IBrowseCategoriesProps): ReactElement {
+}: Readonly<IBrowseCategoriesProps>): ReactElement {
   return (
     <Grid>
       {categories?.items.map(({ name, id, icons }, i) => {
