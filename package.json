@@ -10,6 +10,7 @@
     "test": "jest --watch",
     "test:ci": "jest --coverage --silent --ci",
     "storybook": "storybook dev -p 6006",
+    "test-storybook": "test-storybook",
     "build-storybook": "storybook build",
     "build-storybook-docs": "storybook build --docs",
     "show-coverage": "sh scripts/open-coverage-report.sh",
@@ -32,6 +33,7 @@
     "simplebar-react": "^3.2.4"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^1.2.25",
     "@storybook/addon-a11y": "8.0.4",
     "@storybook/addon-essentials": "8.0.4",
     "@storybook/addon-interactions": "8.0.4",
@@ -40,6 +42,7 @@
     "@storybook/manager-api": "8.0.4",
     "@storybook/nextjs": "8.0.4",
     "@storybook/react": "8.0.4",
+    "@storybook/test-runner": "0.17.0",
     "@storybook/testing-library": "0.2.2",
     "@storybook/theming": "8.0.4",
     "@testing-library/jest-dom": "6.4.2",

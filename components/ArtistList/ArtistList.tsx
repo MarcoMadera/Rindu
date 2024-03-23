@@ -26,6 +26,7 @@ export default function ArtistList({
   if (!artists) return null;
   const { length } = artists;
 
+  const lastArtistIndex = maxArtistsToShow ? maxArtistsToShow - 1 : length - 1;
   return (
     <span>
       {artists.map((artist, i) => {
@@ -36,7 +37,7 @@ export default function ArtistList({
           return (
             <span key={artist.name} ref={artistsRef} className="ArtistList">
               {artist.name}
-              {i !== length - 1 ? ", " : ""}
+              {i !== lastArtistIndex ? ", " : ""}
             </span>
           );
         }
@@ -60,7 +61,7 @@ export default function ArtistList({
             >
               {artist.name}
             </Link>
-            {i !== length - 1 ? ", " : null}
+            {i !== lastArtistIndex ? ", " : null}
           </Fragment>
         );
       })}
