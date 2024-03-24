@@ -7,9 +7,10 @@ import { PlaylistProps } from "pages/playlist/[playlist]";
 import { ITrack } from "types/spotify";
 import {
   fullFilledValue,
+  GeneratedImageAPI,
   getAuth,
+  getGeneratedImageUrl,
   getSetList,
-  getSiteUrl,
   getTranslations,
   Page,
   serverRedirect,
@@ -25,30 +26,13 @@ interface ConcertProps extends PlaylistProps {
 const Playlist = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ): ReactElement | null => {
-  const artistName = props.setList?.artist.name ?? props.artist?.name ?? "";
-  const concertDate = props.setList?.eventDate ?? "";
-  const venue = props.setList?.venue.name ?? "";
-
   if (!props.pageDetails) return null;
 
   return (
     <PlaylistLayout
       isLibrary={false}
       isGeneratedPlaylist={true}
-      pageDetails={{
-        images: [
-          {
-            url: `${getSiteUrl()}/api/concert-cover?artist=${artistName}&date=${concertDate}&venue=${venue}&img=${
-              props.artist?.images[0].url ?? ""
-            }`,
-          },
-        ],
-        ...props.pageDetails,
-        owner: {
-          display_name: props.pageDetails?.owner?.display_name ?? "",
-          id: props.artist?.id ?? "",
-        },
-      }}
+      pageDetails={props.pageDetails}
       playListTracks={props.playListTracks}
       tracksInLibrary={props.tracksInLibrary}
       user={props.user}
@@ -68,6 +52,7 @@ export const getServerSideProps = (async (context) => {
     serverRedirect(context.res, "/");
     return { props: {} };
   }
+
   const { user } = (await getAuth(context)) ?? {};
   const artistId = id.split(".")[0];
   const setListId = id.split(".")[1];
@@ -111,12 +96,23 @@ export const getServerSideProps = (async (context) => {
     })
   );
 
+  const artistName = setList?.artist.name ?? artist?.name ?? "";
+  const generatedImageUrl = getGeneratedImageUrl(
+    GeneratedImageAPI.ConcertCover,
+    {
+      artist: artistName,
+      date: setList?.eventDate ?? "",
+      venue: setList?.venue.name ?? "",
+      img: artist?.images[0].url ?? "",
+    }
+  );
+
   return {
     props: {
       user: user ?? null,
       playListTracks: playListTracks.filter((track) => track) as ITrack[],
       pageDetails: {
-        id,
+        id: artist?.id ?? "",
         type: "concert",
         description: setList?.info ?? "",
         name: setList?.tour?.name ?? setList?.venue?.name ?? artist?.name ?? "",
@@ -126,11 +122,13 @@ export const getServerSideProps = (async (context) => {
         owner: {
           display_name: artist?.name ?? setList?.artist?.name ?? "",
         },
+        images: [{ url: generatedImageUrl }],
       },
       tracksInLibrary: [],
       translations,
       setList,
       artist,
+      id,
     },
   };
 }) satisfies GetServerSideProps<Partial<ConcertProps>, { id: string }>;

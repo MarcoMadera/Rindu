@@ -35,11 +35,13 @@ interface CurrentUserProps {
   user: SpotifyApi.UserObjectPrivate | null;
   currentUserPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse | null;
   translations: Record<string, string>;
+  topTracksCard: ReturnType<typeof getTopTracksCards>;
 }
 
 const CurrentUser = ({
   currentUser,
   currentUserPlaylists,
+  topTracksCard,
 }: InferGetServerSidePropsType<
   typeof getServerSideProps
 >): ReactElement | null => {
@@ -79,17 +81,17 @@ const CurrentUser = ({
               {translations.topTracksPlaylistHeading}
             </Heading>
             <Grid>
-              {getTopTracksCards(user, translations).map((item) => {
+              {topTracksCard.map((item) => {
                 if (!item) return null;
-                const { images, name, id, subTitle, url } = item;
+                const { images, name, url } = item;
                 return (
                   <PresentationCard
                     type={CardType.SIMPLE}
                     key={name}
                     images={images}
                     title={name}
-                    id={id}
-                    subTitle={subTitle}
+                    id={name}
+                    subTitle={""}
                     url={url}
                   />
                 );
@@ -167,13 +169,11 @@ export const getServerSideProps = (async (context) => {
     serverRedirect(context.res, "/");
     return { props: {} };
   }
-
+  const userId = context.params.userId;
   const { user } = (await getAuth(context)) ?? {};
-  const currentUserProm = getUserById(context.params.userId, context);
-  const currentUserPlaylistsProm = getPlaylistsFromUser(
-    context.params.userId,
-    context
-  );
+  const topTracksCard = getTopTracksCards(user, translations);
+  const currentUserProm = getUserById(userId, context);
+  const currentUserPlaylistsProm = getPlaylistsFromUser(userId, context);
 
   const [currentUser, currentUserPlaylists] = await Promise.allSettled([
     currentUserProm,
@@ -186,6 +186,7 @@ export const getServerSideProps = (async (context) => {
       user: user ?? null,
       currentUserPlaylists: fullFilledValue(currentUserPlaylists),
       translations,
+      topTracksCard,
     },
   };
 }) satisfies GetServerSideProps<Partial<CurrentUserProps>, { userId: string }>;

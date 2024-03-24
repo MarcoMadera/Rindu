@@ -3,6 +3,8 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 
+import { verifyHMACSHA256Token } from "utils";
+
 export const config = {
   runtime: "edge",
 };
@@ -17,8 +19,14 @@ export default async function topTracksCover(
   try {
     const fontData = await font;
     const { searchParams } = new URL(req.url);
-    const { width, height, title, color, imageUrl } =
-      Object.fromEntries(searchParams);
+    const { token, ...params } = Object.fromEntries(searchParams);
+    const { width, height, title, color, imageUrl } = params;
+
+    const isValidToken = await verifyHMACSHA256Token(token, params);
+
+    if (!isValidToken) {
+      return new Response("Invalid request.", { status: 401 });
+    }
 
     return new ImageResponse(
       (

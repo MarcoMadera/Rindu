@@ -1,5 +1,7 @@
 import {
-  getSiteUrl,
+  DEFAULT_SONG_IMAGE_URL,
+  GeneratedImageAPI,
+  getGeneratedImageUrl,
   TOP_TRACKS_LONG_TERM_COLOR,
   TOP_TRACKS_MEDIUM_TERM_COLOR,
   TOP_TRACKS_SHORT_TERM_COLOR,
@@ -8,60 +10,52 @@ import {
 interface TopTracksCard {
   name: string;
   images: { url: string }[];
-  id: string;
-  subTitle: string;
   url: string;
 }
 
 export function getTopTracksCards(
-  user: SpotifyApi.UserObjectPrivate | null,
+  user: SpotifyApi.UserObjectPrivate | null | undefined,
   translations: Record<string, string>
 ): TopTracksCard[] {
-  return [
+  if (!user) {
+    return [];
+  }
+
+  const CARDS: { name: string; color: string; url: string }[] = [
     {
       name: translations.topTracksPlaylistLongTermTitle,
-      images: [
-        {
-          url: `${getSiteUrl()}/api/top-tracks-cover?title=${
-            translations.topTracksPlaylistLongTermTitle
-          }&color=${TOP_TRACKS_LONG_TERM_COLOR}&imageUrl=${
-            user?.images?.[0]?.url || ""
-          }`,
-        },
-      ],
-      id: "top-tracks",
-      subTitle: "",
+      color: TOP_TRACKS_LONG_TERM_COLOR,
       url: "/top/tracks-long-term",
     },
     {
       name: translations.topTracksPlaylistMediumTermTitle,
-      images: [
-        {
-          url: `${getSiteUrl()}/api/top-tracks-cover?title=${
-            translations.topTracksPlaylistMediumTermTitle
-          }&color=${TOP_TRACKS_MEDIUM_TERM_COLOR}&imageUrl=${
-            user?.images?.[0]?.url || ""
-          }`,
-        },
-      ],
-      id: "top-tracks",
-      subTitle: "",
+      color: TOP_TRACKS_MEDIUM_TERM_COLOR,
       url: "/top/tracks-medium-term",
     },
     {
       name: translations.topTracksPlaylistShortTermTitle,
-      images: [
-        {
-          url: `${getSiteUrl()}/api/top-tracks-cover?title=${
-            translations.topTracksPlaylistShortTermTitle
-          }&color=${TOP_TRACKS_SHORT_TERM_COLOR}&imageUrl=${
-            user?.images?.[0]?.url || ""
-          }`,
-        },
-      ],
-      id: "top-tracks",
-      subTitle: "",
+      color: TOP_TRACKS_SHORT_TERM_COLOR,
       url: "/top/tracks-short-term",
     },
   ];
+
+  const topTracksCards = CARDS.map((card) => {
+    const params = {
+      title: card.name,
+      color: card.color,
+      imageUrl: user?.images?.[0]?.url ?? DEFAULT_SONG_IMAGE_URL,
+    };
+    const generatedImageUrl = getGeneratedImageUrl(
+      GeneratedImageAPI.TopTracksCover,
+      params
+    );
+
+    return {
+      name: card.name,
+      images: [{ url: generatedImageUrl }],
+      url: card.url,
+    };
+  });
+
+  return topTracksCards;
 }

@@ -6,7 +6,9 @@ import PlaylistLayout from "layouts/playlist";
 import { IPageDetails, ITrack } from "types/spotify";
 import {
   fullFilledValue,
+  GeneratedImageAPI,
   getAuth,
+  getGeneratedImageUrl,
   getTranslations,
   Page,
   serverRedirect,
@@ -109,16 +111,21 @@ export const getServerSideProps = (async (context) => {
   const cover2 = filteredAlbumCovers[0]?.url ?? albumCovers[0]?.url ?? "";
   const cover3 = filteredAlbumCovers[1]?.url ?? albumCovers[0]?.url ?? "";
 
-  const imageUrl = `/api/radio-cover?cover1=${currentTrackAlbumCover}&cover2=${cover2}&cover3=${cover3}&name=${currentTrack.name}`;
+  const params = {
+    cover1: currentTrackAlbumCover,
+    cover2,
+    cover3,
+    name: currentTrack.name,
+  };
+  const generatedImageUrl = getGeneratedImageUrl(
+    GeneratedImageAPI.RadioCover,
+    params
+  );
 
   const pageDetails: IPageDetails = {
     id: trackId,
     name: `${currentTrack?.name || ""} Radio`,
-    images: [
-      {
-        url: imageUrl,
-      },
-    ],
+    images: [{ url: generatedImageUrl }],
     owner: {
       display_name: "Spotify",
       id: "spotify",

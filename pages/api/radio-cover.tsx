@@ -3,7 +3,7 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 
-import { getRandomColor, hexToHsl } from "utils";
+import { getRandomColor, hexToHsl, verifyHMACSHA256Token } from "utils";
 
 export const config = {
   runtime: "edge",
@@ -21,11 +21,19 @@ export default async function radioCover(
   try {
     const fontData = await font;
     const { searchParams } = new URL(req.url);
-    const { cover1, cover2, cover3, width, height, name } =
-      Object.fromEntries(searchParams);
+    const { token, ...params } = Object.fromEntries(searchParams);
+    const { cover1, cover2, cover3, width, height, name } = params;
+
+    const isValidToken = await verifyHMACSHA256Token(token, params);
+
+    if (!isValidToken) {
+      return new Response("Invalid request.", { status: 401 });
+    }
+
     if (!colors[name]) {
       colors[name] = getRandomColor();
     }
+
     const color = colors[name];
     const [h, s, l] = hexToHsl(color, true) ?? [0, 0, 0];
     const textColor = l > 60 ? "#404040" : "white";

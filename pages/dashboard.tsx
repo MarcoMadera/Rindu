@@ -76,6 +76,7 @@ interface DashboardProps {
   artistOfTheWeek: SpotifyApi.ArtistObjectFull[] | null;
   tracksOfTheWeek: ITrack[] | null;
   thisPlaylists: MappedPlaylist[] | null;
+  topTracksCards: ReturnType<typeof getTopTracksCards>;
 }
 
 const Dashboard = ({
@@ -89,6 +90,7 @@ const Dashboard = ({
   artistOfTheWeek,
   tracksOfTheWeek,
   thisPlaylists,
+  topTracksCards,
 }: InferGetServerSidePropsType<typeof getServerSideProps>): ReactElement => {
   const { user } = useAuth();
   const { setHeaderColor } = useHeader({
@@ -160,17 +162,17 @@ const Dashboard = ({
         </Carousel>
       ) : null}
       <Carousel title={translations.topTracksPlaylistHeading} gap={24}>
-        {getTopTracksCards(user, translations).map((item) => {
+        {topTracksCards?.map((item) => {
           if (!item) return null;
-          const { images, name, id, subTitle, url } = item;
+          const { images, name, url } = item;
           return (
             <PresentationCard
               type={CardType.SIMPLE}
               key={name}
               images={images}
               title={name}
-              id={id}
-              subTitle={subTitle}
+              id={name}
+              subTitle={""}
               url={url}
             />
           );
@@ -388,6 +390,7 @@ export const getServerSideProps = (async (context) => {
     });
   }
   const { user } = (await getAuth(context)) ?? {};
+  const topTracksCards = getTopTracksCards(user, translations);
   const artistsOfTheWeekProm = getArtistsOfTheWeek(lastFMAPIKey);
   const tracksOfTheWeekProm = getTracksOfTheWeek(lastFMAPIKey);
 
@@ -626,6 +629,7 @@ export const getServerSideProps = (async (context) => {
         deserialize(mappedTracksData(tracksRecommendations)) ?? [],
       tracksInLibrary,
       translations,
+      topTracksCards,
     },
   };
 }) satisfies GetServerSideProps<Partial<DashboardProps>>;
