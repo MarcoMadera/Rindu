@@ -5,9 +5,11 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import PlaylistLayout from "layouts/playlist";
 import { IPageDetails, ITrack } from "types/spotify";
 import {
+  DEFAULT_SONG_IMAGE_URL,
   fullFilledValue,
+  GeneratedImageAPI,
   getAuth,
-  getSiteUrl,
+  getGeneratedImageUrl,
   getTranslations,
   Page,
   serverRedirect,
@@ -60,7 +62,7 @@ export const getServerSideProps = (async (context) => {
     usersTopTracksProm,
   ]);
   const usersTopTracks = fullFilledValue(usersTopTracksSettledResult);
-  if (!usersTopTracks) {
+  if (!usersTopTracks || !user) {
     serverRedirect(context.res, "/");
     return { props: {} };
   }
@@ -83,17 +85,19 @@ export const getServerSideProps = (async (context) => {
   );
   const pageTitle = `${translations.title} - ${translations.longTerm}`;
 
+  const generatedImageParams = {
+    title: translations.longTerm,
+    color: TOP_TRACKS_LONG_TERM_COLOR,
+    imageUrl: user?.images?.[0]?.url ?? DEFAULT_SONG_IMAGE_URL,
+  };
+  const generatedImageUrl = getGeneratedImageUrl(
+    GeneratedImageAPI.TopTracksCover,
+    generatedImageParams
+  );
+
   const pageDetails: IPageDetails = {
     name: pageTitle,
-    images: [
-      {
-        url: `${getSiteUrl()}/api/top-tracks-cover?title=${
-          translations.longTerm
-        }&color=${TOP_TRACKS_LONG_TERM_COLOR}&imageUrl=${
-          user?.images?.[0]?.url ?? ""
-        }`,
-      },
-    ],
+    images: [{ url: generatedImageUrl }],
     owner: {
       display_name: "Spotify",
       id: "spotify",

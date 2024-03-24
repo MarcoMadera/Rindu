@@ -1,15 +1,25 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 
+import { verifyHMACSHA256Token } from "utils";
+
 export const config = {
   runtime: "edge",
 };
 
-export default function concertCover(req: NextRequest): ImageResponse | void {
+export default async function concertCover(
+  req: NextRequest
+): Promise<Promise<ImageResponse | void>> {
   try {
     const { searchParams } = new URL(req.url);
-    const { artist, venue, date, img, width, height } =
-      Object.fromEntries(searchParams);
+    const { token, ...params } = Object.fromEntries(searchParams);
+    const { artist, venue, date, img, width, height } = params;
+
+    const isValidToken = await verifyHMACSHA256Token(token, params);
+
+    if (!isValidToken) {
+      return new Response("Invalid request.", { status: 401 });
+    }
 
     return new ImageResponse(
       (

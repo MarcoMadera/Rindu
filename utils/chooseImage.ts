@@ -1,5 +1,5 @@
 import { getSiteUrl } from "./environment";
-const DEFAULT_URL = `${getSiteUrl()}/defaultSongCover.jpeg`;
+export const DEFAULT_SONG_IMAGE_URL = `${getSiteUrl()}/defaultSongCover.jpeg`;
 
 const isValidImage = (
   image: Spotify.Image | undefined
@@ -58,7 +58,7 @@ export function chooseImage(
   targetHeight?: number
 ): Spotify.Image {
   if (!images || images.length === 0) {
-    return { url: DEFAULT_URL };
+    return { url: DEFAULT_SONG_IMAGE_URL };
   }
 
   const closestValidImage = findClosestImage(images, targetWidth, targetHeight);
@@ -70,5 +70,5 @@ export function chooseImage(
     if (imageWithUrl) return imageWithUrl;
   }
 
-  return { url: DEFAULT_URL };
+  return { url: DEFAULT_SONG_IMAGE_URL };
 }
