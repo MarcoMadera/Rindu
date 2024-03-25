@@ -5,11 +5,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { middleware } from "../../middleware";
+import { Locale, LOCALE_COOKIE } from "utils";
 
 describe("middleware", () => {
-  it("should return a NextResponse", () => {
-    expect.assertions(1);
+  it("should redirect and set locale cookie if is not there", () => {
+    expect.assertions(2);
     const request = {
+      url: "myUrl",
       nextUrl: {
         searchParams: {
           set: () => "",
@@ -23,20 +25,23 @@ describe("middleware", () => {
         get: () => "",
       },
       cookies: {
-        get: () => ({ value: "ES" }),
+        get: () => ({
+          value: undefined,
+        }),
         set: () => {},
       },
     } as unknown as NextRequest;
+    const setCookies = jest.fn();
+    const redirection = jest.spyOn(NextResponse, "redirect").mockReturnValue({
+      cookies: { set: setCookies },
+    } as unknown as NextResponse);
 
-    jest
-      .spyOn(NextResponse, "rewrite")
-      .mockReturnValueOnce((() => ({})) as unknown as NextResponse);
-
-    const result = middleware(request);
-    expect(result).toBeDefined();
+    middleware(request);
+    expect(setCookies).toHaveBeenCalledWith(LOCALE_COOKIE, Locale.EN);
+    expect(redirection).toHaveBeenCalledWith(request.url);
   });
 
-  it("should return a NextResponse in api", () => {
+  it("should not return a NextResponse in api if locale cookie is present", () => {
     expect.assertions(1);
     const request = {
       nextUrl: {
@@ -52,7 +57,9 @@ describe("middleware", () => {
         get: () => "",
       },
       cookies: {
-        get: () => ({ value: "ES" }),
+        get: () => ({
+          value: Locale.EN,
+        }),
         set: () => {},
       },
     } as unknown as NextRequest;
@@ -62,6 +69,6 @@ describe("middleware", () => {
       .mockReturnValueOnce((() => ({})) as unknown as NextResponse);
 
     const result = middleware(request);
-    expect(result).toBeDefined();
+    expect(result).toBeUndefined();
   });
 });
