@@ -24,6 +24,7 @@ describe("middleware", () => {
       },
       cookies: {
         get: () => ({ value: "ES" }),
+        set: () => {},
       },
     } as unknown as NextRequest;
 
@@ -52,6 +53,7 @@ describe("middleware", () => {
       },
       cookies: {
         get: () => ({ value: "ES" }),
+        set: () => {},
       },
     } as unknown as NextRequest;
 
