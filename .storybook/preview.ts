@@ -2,6 +2,7 @@ import type { Preview } from "@storybook/react";
 import { WithConfiguration } from "./decorators/WithConfiguration";
 import { DocsPage, DocsContainer } from "@storybook/addon-docs";
 import { themes } from "@storybook/theming";
+import { Locale } from "../utils/getTranslations";
 
 const preview: Preview = {
   parameters: {
@@ -22,7 +23,7 @@ const preview: Preview = {
     },
   },
   globals: {
-    language: "EN",
+    language: Locale.EN,
     accessToken: "",
     product: "premium",
     isLogin: true,
@@ -31,12 +32,12 @@ const preview: Preview = {
     language: {
       name: "Language",
       description: "The language to display the component in",
-      defaultValue: "EN",
+      defaultValue: Locale.EN,
       toolbar: {
         icon: "globe",
         items: [
-          { value: "EN", right: "🇺🇸", title: "English" },
-          { value: "ES", right: "🇪🇸", title: "Español" },
+          { value: Locale.EN, right: "🇺🇸", title: "English" },
+          { value: Locale.ES, right: "🇪🇸", title: "Español" },
         ],
       },
     },

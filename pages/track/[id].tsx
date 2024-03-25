@@ -377,8 +377,7 @@ export default function TrackPage({
 
 export const getServerSideProps = (async (context) => {
   const id = context.params?.id;
-  const country = (context.query.country ?? "US") as string;
-  const translations = getTranslations(country, Page.Track);
+  const translations = getTranslations(Page.Track, context);
   const cookies = context.req?.headers?.cookie;
   if (!cookies || !id) {
     serverRedirect(context.res, "/");

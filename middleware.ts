@@ -1,14 +1,16 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { DEFAULT_LOCALE } from "utils";
+
 export function middleware(request: NextRequest): NextResponse {
-  const { nextUrl: url, geo } = request;
-  const language = request.cookies.get("language")?.value;
+  const { nextUrl: url } = request;
+
+  const nextLocale = request.cookies.get("NEXT_LOCALE")?.value;
   const isApiPage = url.pathname.startsWith("/api");
 
   if (!isApiPage) {
-    const country = language === "es" ? "MX" : geo?.country ?? "US";
-    url.searchParams.set("country", country);
+    url.searchParams.set("locale", nextLocale ?? DEFAULT_LOCALE);
   }
 
   return NextResponse.rewrite(url);

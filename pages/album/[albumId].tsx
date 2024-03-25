@@ -253,8 +253,7 @@ const AlbumPage = ({
 export default AlbumPage;
 
 export const getServerSideProps = (async (context) => {
-  const country = (context.query.country ?? "US") as string;
-  const translations = getTranslations(country, Page.Album);
+  const translations = getTranslations(Page.Album, context);
   const cookies = context.req.headers?.cookie;
   const albumId = context.params?.albumId;
   if (!cookies || !albumId) {

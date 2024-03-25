@@ -411,8 +411,7 @@ export default function ArtistPage({
 }
 
 export const getServerSideProps = (async (context) => {
-  const country = (context.query.country ?? "US") as string;
-  const translations = getTranslations(country, Page.Artist);
+  const translations = getTranslations(Page.Artist, context);
   const cookies = context.req?.headers?.cookie;
   const artistId = context.params?.artistId;
   if (!cookies || !artistId) {

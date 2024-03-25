@@ -1,23 +1,9 @@
-import { Language } from "./getTranslations";
+import { Locale } from "./getTranslations";
 
 export const ACCESS_TOKEN_COOKIE = "qs";
 export const REFRESH_TOKEN_COOKIE = "rs";
 export const EXPIRE_TOKEN_COOKIE = "ex";
 export const CODE_VERIFIER_COOKIE = "cv";
-export const MONTHS = [
-  "ENE",
-  "FEB",
-  "MAR",
-  "ABR",
-  "MAY",
-  "JUN",
-  "JUL",
-  "AGO",
-  "SEP",
-  "OCT",
-  "NOV",
-  "DIC",
-] as const;
 export const SPOTIFY_CLIENT_ID = process.env
   .NEXT_PUBLIC_SPOTIFY_CLIENT_ID as string;
 export const SPOTIFY_REDIRECT_URL = process.env
@@ -50,4 +36,4 @@ export const CONTEXT_MENU_TOP_BOTTOM_OFFSET = CONTEXT_MENU_SIDE_OFFSET * 2;
 export const LINE_HEIGHT = 40;
 export const LYRICS_PIP_HEADER_HEIGH = 100;
 export const LYRICS_PADDING_LEFT = 10;
-export const DEFAULT_LANGUAGE = Language.EN;
+export const DEFAULT_LOCALE = Locale.EN;

@@ -1,3 +1,6 @@
+import { takeCookie } from "./cookies";
+import { ServerApiContext } from "types/serverContext";
+
 export enum Page {
   Home = "home",
   Dashboard = "dashboard",
@@ -24,36 +27,13 @@ export enum Page {
   Preferences = "preferences",
 }
 
-export enum Language {
-  EN = "EN",
-  ES = "ES",
+export enum Locale {
+  EN = "en",
+  ES = "es",
 }
 
-export const spanishCountries = [
-  "AR",
-  "BO",
-  "CL",
-  "CO",
-  "CR",
-  "CU",
-  "DO",
-  "EC",
-  "SV",
-  "GT",
-  "HN",
-  "MX",
-  "NI",
-  "PA",
-  "PY",
-  "PE",
-  "PR",
-  "ES",
-  "UY",
-  "VE",
-];
-
 const shortCutsTranslations = {
-  [Language.EN]: {
+  [Locale.EN]: {
     shortCutsTitle: "Keyboard Shortcuts",
     shortCutdescription: "Press {0} or {1} to toggle this modal.",
     basic: "Basic",
@@ -94,7 +74,7 @@ const shortCutsTranslations = {
     decreaseActivityTabWidth: "Decrease activity tab width",
     increaseActivityTabWidth: "Increase activity tab width",
   },
-  [Language.ES]: {
+  [Locale.ES]: {
     shortCutsTitle: "Atajos del teclado",
     shortCutdescription:
       "Presiona {0} o {1} para activar/desactivar este modal.",
@@ -153,8 +133,8 @@ export enum ContentType {
   Details = "details",
 }
 
-const types: Record<Language, Record<ContentType, string>> = {
-  [Language.EN]: {
+const types: Record<Locale, Record<ContentType, string>> = {
+  [Locale.EN]: {
     [ContentType.Album]: "album",
     [ContentType.Artist]: "artist",
     [ContentType.Playlist]: "playlist",
@@ -168,7 +148,7 @@ const types: Record<Language, Record<ContentType, string>> = {
     [ContentType.Image]: "image",
     [ContentType.Details]: "details",
   },
-  [Language.ES]: {
+  [Locale.ES]: {
     [ContentType.Album]: "álbum",
     [ContentType.Artist]: "artista",
     [ContentType.Playlist]: "playlist",
@@ -218,8 +198,8 @@ export enum ToastMessage {
   PlayerAccountError = "toastMessage.playerAccountError",
 }
 
-const toastMessages: Record<Language, Record<ToastMessage, string>> = {
-  [Language.EN]: {
+const toastMessages: Record<Locale, Record<ToastMessage, string>> = {
+  [Locale.EN]: {
     [ToastMessage.AddedTo]: "Added to {0}",
     [ToastMessage.RemovedFrom]: "Removed from {0}",
     [ToastMessage.TypeAddedTo]: "{0} added to your {1}",
@@ -260,7 +240,7 @@ const toastMessages: Record<Language, Record<ToastMessage, string>> = {
     [ToastMessage.PlayerAccountError]:
       "There was an error with your Spotify account",
   },
-  [Language.ES]: {
+  [Locale.ES]: {
     [ToastMessage.AddedTo]: "Añadido a {0}",
     [ToastMessage.RemovedFrom]: "Eliminado de {0}",
     [ToastMessage.TypeAddedTo]: "{0} añadido a tu {1}",
@@ -304,7 +284,7 @@ const toastMessages: Record<Language, Record<ToastMessage, string>> = {
 };
 
 const sideBarTranslations = {
-  [Language.EN]: {
+  [Locale.EN]: {
     collection: "Your Library",
     createPlaylist: "Create Playlist",
     yourEpisodes: "Your Episodes",
@@ -315,11 +295,11 @@ const sideBarTranslations = {
     account: "Account",
     preferences: "Settings",
     upgradeToPremium: "Upgrade to Premium",
-    ...shortCutsTranslations[Language.EN],
-    ...toastMessages[Language.EN],
-    ...types[Language.EN],
+    ...shortCutsTranslations[Locale.EN],
+    ...toastMessages[Locale.EN],
+    ...types[Locale.EN],
   },
-  [Language.ES]: {
+  [Locale.ES]: {
     collection: "Tu Biblioteca",
     createPlaylist: "Crear Playlist",
     yourEpisodes: "Tus episodios",
@@ -330,18 +310,18 @@ const sideBarTranslations = {
     account: "Cuenta",
     preferences: "Preferencias",
     upgradeToPremium: "Actualizar a Premium",
-    ...shortCutsTranslations[Language.ES],
-    ...toastMessages[Language.ES],
-    ...types[Language.ES],
+    ...shortCutsTranslations[Locale.ES],
+    ...toastMessages[Locale.ES],
+    ...types[Locale.ES],
   },
 };
 const queueTranslations = {
-  [Language.EN]: {
+  [Locale.EN]: {
     previousTracks: "Previous Tracks",
     currentlyPlaying: "Now Playing",
     nextUp: "Next Up",
   },
-  [Language.ES]: {
+  [Locale.ES]: {
     previousTracks: "Canciones anteriores",
     currentlyPlaying: "Reproduciendo",
     nextUp: "Siguiente",
@@ -349,7 +329,7 @@ const queueTranslations = {
 };
 
 const pageHeaderTranslations = {
-  [Language.EN]: {
+  [Locale.EN]: {
     pageHeaderArtist: "ARTIST",
     pageHeaderAlbum: "ALBUM",
     pageHeaderPlaylist: "PLAYLIST",
@@ -371,7 +351,7 @@ const pageHeaderTranslations = {
     listeners: "listeners",
     plays: "plays",
   },
-  [Language.ES]: {
+  [Locale.ES]: {
     pageHeaderArtist: "ARTISTA",
     pageHeaderAlbum: "ÁLBUM",
     pageHeaderPlaylist: "PLAYLIST",
@@ -396,12 +376,12 @@ const pageHeaderTranslations = {
 };
 
 const listHeaderTranslations = {
-  [Language.EN]: {
+  [Locale.EN]: {
     titleListHeader: "TITLE",
     albumListHeader: "ALBUM",
     dateAddedListHeader: "DATE ADDED",
   },
-  [Language.ES]: {
+  [Locale.ES]: {
     titleListHeader: "TÍTULO",
     albumListHeader: "ÁLBUM",
     dateAddedListHeader: "FECHA",
@@ -409,7 +389,7 @@ const listHeaderTranslations = {
 };
 
 const removeTracksModalTranslations = {
-  [Language.EN]: {
+  [Locale.EN]: {
     cleanPlaylist: "CLEAN PLAYLIST",
     analyzingPlaylist: "Analyzing playlist",
     noCorruptOrDuplicateSongs: "No corrupted or duplicated songs",
@@ -422,7 +402,7 @@ const removeTracksModalTranslations = {
       "There are {0} corrupted songs and {1} duplicated songs",
     close: "Close",
   },
-  [Language.ES]: {
+  [Locale.ES]: {
     cleanPlaylist: "LIMPIAR PLAYLIST",
     analyzingPlaylist: "Analizando playlist",
     noCorruptOrDuplicateSongs: "No hay canciones corruptas ni duplicadas",
@@ -541,7 +521,7 @@ const featuresTranslationsES: IFeaturesTranslations[] = [
 ];
 
 export const translations = {
-  [Language.EN]: {
+  [Locale.EN]: {
     [Page.Home]: {
       heroTitle: "Everything you need to enjoy music",
       heroInfoTitle: "Ideal for any type of situation.",
@@ -556,8 +536,8 @@ export const translations = {
       madeBy: "Made by",
     },
     [Page.Dashboard]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
       title: "Dashboard",
       topTracksHeading: "You love these songs",
       featuredPlaylistsHeading: "Enjoy these playlists",
@@ -577,24 +557,24 @@ export const translations = {
       categories: "Categories",
     },
     [Page.Album]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
-      ...pageHeaderTranslations[Language.EN],
-      ...listHeaderTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
+      ...pageHeaderTranslations[Locale.EN],
+      ...listHeaderTranslations[Locale.EN],
       title: "Album",
     },
     [Page.NotFound]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
-      ...pageHeaderTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
+      ...pageHeaderTranslations[Locale.EN],
       title: "NotFound",
     },
     [Page.Playlist]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
-      ...pageHeaderTranslations[Language.EN],
-      ...listHeaderTranslations[Language.EN],
-      ...removeTracksModalTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
+      ...pageHeaderTranslations[Locale.EN],
+      ...listHeaderTranslations[Locale.EN],
+      ...removeTracksModalTranslations[Locale.EN],
       title: "Playlist",
       playlistAddedToLibrary: "Playlist added to your library",
       playlistRemovedFromLibrary: "Playlist removed from your library",
@@ -602,9 +582,9 @@ export const translations = {
       searchPlaceholder: "Search for songs or episodes",
     },
     [Page.Artist]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
-      ...pageHeaderTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
+      ...pageHeaderTranslations[Locale.EN],
       title: "Artist",
       showLess: "SHOW LESS",
       showMore: "SHOW MORE",
@@ -626,8 +606,8 @@ export const translations = {
       by: "By",
     },
     [Page.Search]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
       title: "Search",
       search: "Search",
       searchPlaceholder: "Artists, songs, or podcasts",
@@ -643,33 +623,33 @@ export const translations = {
       by: "By",
     },
     [Page.Concert]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
-      ...pageHeaderTranslations[Language.EN],
-      ...listHeaderTranslations[Language.EN],
-      ...removeTracksModalTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
+      ...pageHeaderTranslations[Locale.EN],
+      ...listHeaderTranslations[Locale.EN],
+      ...removeTracksModalTranslations[Locale.EN],
       title: "Concert",
       searchPlaceholder: "Search for songs or episodes",
       noTracksFound: "No tracks found for this concert",
       saveAsPlaylist: "Save concert to playlist",
     },
     [Page.Radio]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
-      ...pageHeaderTranslations[Language.EN],
-      ...listHeaderTranslations[Language.EN],
-      ...removeTracksModalTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
+      ...pageHeaderTranslations[Locale.EN],
+      ...listHeaderTranslations[Locale.EN],
+      ...removeTracksModalTranslations[Locale.EN],
       title: "Radio",
       searchPlaceholder: "Search for songs or episodes",
       noTracksFound: "No tracks found for this radio",
       saveAsPlaylist: "Save radio to playlist",
     },
     [Page.TopTracks]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
-      ...pageHeaderTranslations[Language.EN],
-      ...listHeaderTranslations[Language.EN],
-      ...removeTracksModalTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
+      ...pageHeaderTranslations[Locale.EN],
+      ...listHeaderTranslations[Locale.EN],
+      ...removeTracksModalTranslations[Locale.EN],
       title: "Tracks",
       searchPlaceholder: "Search for songs or episodes",
       noTracksFound: "No tracks found",
@@ -679,35 +659,35 @@ export const translations = {
       longTerm: "Long term",
     },
     [Page.Episode]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
-      ...pageHeaderTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
+      ...pageHeaderTranslations[Locale.EN],
       title: "Episode",
       about: "About",
       allEpisodes: "All Episodes",
     },
     [Page.Podcast]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
-      ...pageHeaderTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
+      ...pageHeaderTranslations[Locale.EN],
       title: "Podcast",
     },
     [Page.Genre]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
       title: "Genre",
     },
     [Page.Show]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
-      ...pageHeaderTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
+      ...pageHeaderTranslations[Locale.EN],
       title: "Show",
     },
     [Page.Track]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
-      ...pageHeaderTranslations[Language.EN],
-      ...listHeaderTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
+      ...pageHeaderTranslations[Locale.EN],
+      ...listHeaderTranslations[Locale.EN],
       title: "Track",
       playlistAddedToLibrary: "Playlist added to your library",
       playlistRemovedFromLibrary: "Playlist removed from your library",
@@ -720,9 +700,9 @@ export const translations = {
       showLess: "SHOW LESS",
     },
     [Page.User]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
-      ...pageHeaderTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
+      ...pageHeaderTranslations[Locale.EN],
       title: "User",
       followers: "followers",
       by: "By",
@@ -734,11 +714,11 @@ export const translations = {
       playlists: "Playlists",
     },
     [Page.CollectionTracks]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
-      ...pageHeaderTranslations[Language.EN],
-      ...listHeaderTranslations[Language.EN],
-      ...removeTracksModalTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
+      ...pageHeaderTranslations[Locale.EN],
+      ...listHeaderTranslations[Locale.EN],
+      ...removeTracksModalTranslations[Locale.EN],
       title: "Track",
       playlistAddedToLibrary: "Playlist added to your library",
       playlistRemovedFromLibrary: "Playlist removed from your library",
@@ -746,22 +726,22 @@ export const translations = {
       searchPlaceholder: "Search for songs or episodes",
     },
     [Page.CollectionAlbums]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
       title: "Collection Albums",
       album: "Album",
       albums: "Albums",
     },
     [Page.CollectionArtists]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
       title: "Collection Artists",
       artist: "Artist",
       artists: "Artists",
     },
     [Page.CollectionPlaylists]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
       title: "Collection Playlists",
       by: "By",
       likedSongsCardTitle: "Liked Songs",
@@ -769,18 +749,18 @@ export const translations = {
       likedSongsCardDescriptionSingular: "{0} liked song",
     },
     [Page.CollectionPodcasts]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
       title: "Collection Podcasts",
     },
     [Page.Collection]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
       title: "Collection",
     },
     [Page.Preferences]: {
-      ...sideBarTranslations[Language.EN],
-      ...queueTranslations[Language.EN],
+      ...sideBarTranslations[Locale.EN],
+      ...queueTranslations[Locale.EN],
       preferences: "Settings",
       language: "Language",
       languageLabel:
@@ -788,9 +768,11 @@ export const translations = {
       spanish: "Spanish",
       english: "English",
       reload: "Reload",
+      "localLabel.es": "Spanish",
+      "localLabel.en": "English",
     },
   },
-  [Language.ES]: {
+  [Locale.ES]: {
     [Page.Home]: {
       heroTitle: "Todo lo que necesitas para disfrutar de la música",
       heroInfoTitle: "Ideal para cualquier tipo de situación.",
@@ -805,8 +787,8 @@ export const translations = {
       madeBy: "Hecho por",
     },
     [Page.Dashboard]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
       title: "Dashboard",
       topTracksHeading: "Las canciones que más te gustan",
       featuredPlaylistsHeading: "Disfruta de estás playlists",
@@ -826,33 +808,33 @@ export const translations = {
       categories: "Categorias",
     },
     [Page.Album]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
-      ...pageHeaderTranslations[Language.ES],
-      ...listHeaderTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
+      ...pageHeaderTranslations[Locale.ES],
+      ...listHeaderTranslations[Locale.ES],
       title: "Álbum",
     },
     [Page.NotFound]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
       title: "NotFound",
     },
     [Page.Playlist]: {
       title: "Playlist",
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
-      ...pageHeaderTranslations[Language.ES],
-      ...listHeaderTranslations[Language.ES],
-      ...removeTracksModalTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
+      ...pageHeaderTranslations[Locale.ES],
+      ...listHeaderTranslations[Locale.ES],
+      ...removeTracksModalTranslations[Locale.ES],
       playlistAddedToLibrary: "Playlist añadida a tu biblioteca",
       playlistRemovedFromLibrary: "Playlist removida de tu biblioteca",
       playlistSearchHeading: "Busquemos algo para tu playlist",
       searchPlaceholder: "Busca canciones o episodios",
     },
     [Page.Artist]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
-      ...pageHeaderTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
+      ...pageHeaderTranslations[Locale.ES],
       title: "Artist",
       showLess: "MOSTRAR MENOS",
       showMore: "MOSTRAR MÁS",
@@ -874,8 +856,8 @@ export const translations = {
       by: "De",
     },
     [Page.Search]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
       title: "Search",
       search: "Búsqueda",
       searchPlaceholder: "Artistas, canciones, o podcasts",
@@ -891,33 +873,33 @@ export const translations = {
       by: "De",
     },
     [Page.Concert]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
-      ...pageHeaderTranslations[Language.ES],
-      ...listHeaderTranslations[Language.ES],
-      ...removeTracksModalTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
+      ...pageHeaderTranslations[Locale.ES],
+      ...listHeaderTranslations[Locale.ES],
+      ...removeTracksModalTranslations[Locale.ES],
       title: "Concert",
       searchPlaceholder: "Busca canciones o episodios",
       noTracksFound: "No se encontraron canciones para este concierto",
       saveAsPlaylist: "Guardar concierto en playlist",
     },
     [Page.Radio]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
-      ...pageHeaderTranslations[Language.ES],
-      ...listHeaderTranslations[Language.ES],
-      ...removeTracksModalTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
+      ...pageHeaderTranslations[Locale.ES],
+      ...listHeaderTranslations[Locale.ES],
+      ...removeTracksModalTranslations[Locale.ES],
       title: "Radio",
       searchPlaceholder: "Busca canciones o episodios",
       noTracksFound: "No se encontraron canciones para esta radio",
       saveAsPlaylist: "Guardar radio en playlist",
     },
     [Page.TopTracks]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
-      ...pageHeaderTranslations[Language.ES],
-      ...listHeaderTranslations[Language.ES],
-      ...removeTracksModalTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
+      ...pageHeaderTranslations[Locale.ES],
+      ...listHeaderTranslations[Locale.ES],
+      ...removeTracksModalTranslations[Locale.ES],
       title: "Tracks",
       searchPlaceholder: "Busca canciones o episodios",
       noTracksFound: "No se encontraron canciones",
@@ -927,36 +909,36 @@ export const translations = {
       longTerm: "Largo plazo",
     },
     [Page.Episode]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
-      ...pageHeaderTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
+      ...pageHeaderTranslations[Locale.ES],
       title: "Episode",
       about: "Sobre",
       allEpisodes: "Todos los episodios",
     },
     [Page.Podcast]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
-      ...pageHeaderTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
+      ...pageHeaderTranslations[Locale.ES],
       title: "Podcast",
     },
     [Page.Genre]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
       title: "Genre",
     },
     [Page.Show]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
-      ...pageHeaderTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
+      ...pageHeaderTranslations[Locale.ES],
       title: "Show",
     },
     [Page.Track]: {
       title: "Track",
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
-      ...pageHeaderTranslations[Language.ES],
-      ...listHeaderTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
+      ...pageHeaderTranslations[Locale.ES],
+      ...listHeaderTranslations[Locale.ES],
       playlistAddedToLibrary: "Playlist añadida a tu biblioteca",
       playlistRemovedFromLibrary: "Playlist removida de tu biblioteca",
       playlistSearchHeading: "Busquemos algo para tu playlist",
@@ -968,9 +950,9 @@ export const translations = {
       showLess: "MOSTRAR MENOS",
     },
     [Page.User]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
-      ...pageHeaderTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
+      ...pageHeaderTranslations[Locale.ES],
       title: "User",
       followers: "seguidores",
       by: "De",
@@ -982,11 +964,11 @@ export const translations = {
       playlists: "Playlists",
     },
     [Page.CollectionTracks]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
-      ...pageHeaderTranslations[Language.ES],
-      ...listHeaderTranslations[Language.ES],
-      ...removeTracksModalTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
+      ...pageHeaderTranslations[Locale.ES],
+      ...listHeaderTranslations[Locale.ES],
+      ...removeTracksModalTranslations[Locale.ES],
       title: "Tus canciones",
       playlistAddedToLibrary: "Playlist añadida a tu biblioteca",
       playlistRemovedFromLibrary: "Playlist removida de tu biblioteca",
@@ -995,22 +977,22 @@ export const translations = {
       searchPlaceholder: "Busca canciones o episodios",
     },
     [Page.CollectionAlbums]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
       title: "Tus álbumes",
       album: "Álbum",
       albums: "Álbumes",
     },
     [Page.CollectionArtists]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
       title: "Tus artistas",
       artist: "Artista",
       artists: "Artistas",
     },
     [Page.CollectionPlaylists]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
       title: "Tus playlists",
       by: "De",
       likedSongsCardTitle: "Tus me gusta",
@@ -1018,18 +1000,18 @@ export const translations = {
       likedSongsCardDescriptionSingular: "{0} canción gustada",
     },
     [Page.CollectionPodcasts]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
       title: "Tus podcasts",
     },
     [Page.Collection]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
       title: "Colección",
     },
     [Page.Preferences]: {
-      ...sideBarTranslations[Language.ES],
-      ...queueTranslations[Language.ES],
+      ...sideBarTranslations[Locale.ES],
+      ...queueTranslations[Locale.ES],
       preferences: "Preferencias",
       language: "Idioma",
       languageLabel:
@@ -1037,21 +1019,26 @@ export const translations = {
       spanish: "Español",
       english: "Inglés",
       reload: "Volver a cargar",
+      "localLabel.es": "Español",
+      "localLabel.en": "Inglés",
     },
   },
 };
 
-export type Translations = (typeof translations)[Language];
-
-export function getLanguageByCountry(country: string): Language {
-  return spanishCountries.includes(country) ? Language.ES : Language.EN;
-}
+export type Translations = (typeof translations)[Locale];
 
 export function getTranslations<T extends Page>(
-  country: string,
-  page: T
+  page: T,
+  context?: ServerApiContext
 ): Translations[T] {
-  const language = getLanguageByCountry(country);
+  const locale = takeCookie("NEXT_LOCALE", context) ?? Locale.EN;
+  const defaultTranslations = translations[Locale.EN][page];
 
-  return translations[language][page];
+  const translation = translations[locale as Locale][page];
+
+  if (translation) {
+    return translation;
+  }
+
+  return defaultTranslations;
 }

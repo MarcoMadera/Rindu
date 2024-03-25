@@ -50,9 +50,8 @@ const Playlist = (
 export default Playlist;
 
 export const getServerSideProps = (async (context) => {
-  const country = (context.query.country ?? "US") as string;
   const trackId = context.params?.trackId;
-  const translations = getTranslations(country, Page.Radio);
+  const translations = getTranslations(Page.Radio, context);
   const cookies = context.req?.headers?.cookie;
   if (!cookies || !trackId) {
     serverRedirect(context.res, "/");

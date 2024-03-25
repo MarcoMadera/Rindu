@@ -1,7 +1,7 @@
 import { ChangeEvent, ReactElement, useEffect, useState } from "react";
 
 import DOMPurify from "dompurify";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 
 import {
@@ -14,29 +14,23 @@ import {
 import { useAnalytics, useSpotify, useTranslations } from "hooks";
 import { AsType } from "types/heading";
 import {
-  DEFAULT_LANGUAGE,
   getAuth,
-  getLanguageByCountry,
   getTranslations,
+  Locale,
   makeCookie,
   Page,
   serverRedirect,
-  takeCookie,
 } from "utils";
 
 interface PreferencesProps {
   user: SpotifyApi.UserObjectPrivate | null;
   translations: Record<string, string>;
-  lang: string;
+  locale: string;
 }
 
-export default function PreferencesPage({
-  lang,
-}: Readonly<
-  InferGetServerSidePropsType<typeof getServerSideProps>
->): ReactElement {
-  const { translations } = useTranslations();
-  const [language, setLanguage] = useState(lang);
+export default function PreferencesPage(): ReactElement {
+  const { translations, locale: defaultLocale, locales } = useTranslations();
+  const [locale, setLocale] = useState(defaultLocale);
   const [isReload, setIsReload] = useState(false);
   const { trackWithGoogleAnalytics } = useAnalytics();
   const router = useRouter();
@@ -96,14 +90,16 @@ export default function PreferencesPage({
               </div>
               <div className="select-container">
                 <SelectControl
-                  options={[
-                    { label: translations.spanish, value: "es" },
-                    { label: translations.english, value: "en" },
-                  ]}
+                  options={locales.map((value) => {
+                    return {
+                      label: translations["localLabel." + value],
+                      value: value,
+                    };
+                  })}
                   id="language"
-                  defaultValue={language}
+                  defaultValue={locale}
                   onChange={(e) => {
-                    setLanguage(e.target.value);
+                    setLocale(e.target.value);
                     setIsReload(true);
                   }}
                 />
@@ -117,8 +113,8 @@ export default function PreferencesPage({
               className="reload button"
               onClick={() => {
                 makeCookie({
-                  name: "language",
-                  value: language ?? DEFAULT_LANGUAGE,
+                  name: "NEXT_LOCALE",
+                  value: locale ?? Locale.EN,
                 });
 
                 setIsReload(false);
@@ -211,12 +207,8 @@ export default function PreferencesPage({
 }
 
 export const getServerSideProps = (async (context) => {
-  const country = (context.query.country ?? "US") as string;
   const cookies = context.req?.headers?.cookie ?? "";
-  const language =
-    takeCookie("language", context) ?? getLanguageByCountry(country);
-  const translations = getTranslations(country, Page.Preferences);
-
+  const translations = getTranslations(Page.Preferences, context);
   if (!cookies) {
     serverRedirect(context.res, "/");
     return { props: {} };
@@ -228,7 +220,6 @@ export const getServerSideProps = (async (context) => {
     props: {
       user: user ?? null,
       translations,
-      lang: language,
     },
   };
 }) satisfies GetServerSideProps<Partial<PreferencesProps>>;

@@ -8,7 +8,7 @@ import { CardType, ICardContent } from "components/CardContent";
 import { AppContextProvider } from "context/AppContextProvider";
 import { useOnScreen } from "hooks";
 import { IUtilsMocks } from "types/mocks";
-import { Language } from "utils";
+import { Locale } from "utils";
 
 jest.mock("hooks/useOnScreen");
 jest.mock("hooks/useLyricsInPictureInPicture");
@@ -51,7 +51,7 @@ describe("cardContent", () => {
     toastDiv.setAttribute("id", "toast");
     document.body.appendChild(contextMenu);
     document.body.appendChild(toastDiv);
-    const translations = getAllTranslations(Language.EN);
+    const translations = getAllTranslations(Locale.EN);
     const view = render(
       <AppContextProvider
         {...props?.appContextProps}

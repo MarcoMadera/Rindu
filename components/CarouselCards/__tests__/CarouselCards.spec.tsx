@@ -7,7 +7,7 @@ import { AppContextProvider } from "context/AppContextProvider";
 import { useAuth, useOnScreen } from "hooks";
 import { IMappedAlbumItems } from "pages/artist/[artistId]";
 import { IUtilsMocks } from "types/mocks";
-import { Language } from "utils";
+import { Locale } from "utils";
 
 jest.mock("hooks/useLyricsInPictureInPicture");
 jest.mock<typeof import("hooks/useAuth")>("hooks/useAuth");
@@ -30,7 +30,7 @@ function setup({ appContextProviderProps, props }: ISetupProps) {
   (useAuth as jest.Mock).mockReturnValue({ user, accessToken });
   (useOnScreen as jest.Mock).mockReturnValue(true);
 
-  const translations = getAllTranslations(Language.EN);
+  const translations = getAllTranslations(Locale.EN);
   const view = render(
     <AppContextProvider
       translations={translations}

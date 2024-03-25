@@ -1,13 +1,12 @@
 import { ReactElement, useRef } from "react";
 
 import Link from "next/link";
-import { useRouter } from "next/router";
 
 import { CardType } from "./CardTrack";
 import { ArtistList, ExplicitSign } from "components";
-import { useOnScreen } from "hooks";
+import { useOnScreen, useTranslations } from "hooks";
 import { ITrack } from "types/spotify";
-import { chooseImage, getTimeAgo, spanishCountries } from "utils";
+import { chooseImage, getTimeAgo } from "utils";
 
 interface ITrackDetails {
   track: ITrack;
@@ -19,11 +18,9 @@ export function TrackDetails({
   type,
   isSmallScreen,
 }: ITrackDetails): ReactElement {
-  const router = useRouter();
+  const { locale } = useTranslations();
   const trackRef = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(trackRef);
-  const country = router.query.country as string;
-  const locale = spanishCountries.includes(country) ? "es" : "en";
   const date = track?.added_at ? +new Date(track?.added_at) : NaN;
   const displayDate = isNaN(date) ? track?.added_at : getTimeAgo(date, locale);
 

@@ -217,8 +217,7 @@ const Home = ({
 export default Home;
 
 export const getServerSideProps = (async (context) => {
-  const country = (context.query?.country as string) ?? "US";
-  const translations = getTranslations(country, Page.Home);
+  const translations = getTranslations(Page.Home, context);
 
   if (!context.req.cookies) {
     return { props: { translations } };

@@ -68,6 +68,6 @@ export default async function refresh(
     return res.json(data);
   } catch (error) {
     const response = error as ApiError;
-    return res.status(response.statusCode).json(response.message);
+    return res.status(500).json(response.message);
   }
 }

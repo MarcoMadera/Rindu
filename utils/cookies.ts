@@ -56,7 +56,7 @@ export function takeCookie(
   if (context && isServer()) {
     const cookie = getCookie(context, cookieName);
     return cookie;
-  } else if (document) {
+  } else if (global.document) {
     const allCookies = `; ${document.cookie}`;
     const parts = allCookies.split(`; ${cookieName}=`);
     if (parts.length === 2) {

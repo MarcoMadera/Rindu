@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { AppContextProvider } from "../../context/AppContextProvider";
-import { translations, Language } from "../../utils/getTranslations";
+import { translations, Locale } from "../../utils/getTranslations";
 import StorybookConfigurationModal, {
   StorybookConfigurationModalProps,
 } from "../../components/StorybookConfigurationModal";
@@ -50,10 +50,10 @@ function StorybookModal({
 }
 
 export const WithConfiguration = (Story, context) => {
-  const defaultLanguage = context.globals.language?.toUpperCase() || "EN";
+  const defaultLanguage = context.globals.language || Locale.EN;
   const [language, setLanguage] = useState(defaultLanguage);
   const allTranslations: Record<string, string>[] = Object.values(
-    translations[defaultLanguage as Language]
+    translations[defaultLanguage as Locale]
   );
   const allTranslationsFlat = allTranslations.reduce(
     (acc, cur) => ({ ...acc, ...cur }),

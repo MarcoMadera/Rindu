@@ -13,7 +13,7 @@ export default function SetList({
   setLists: SetLists | null;
   artistId?: string | null;
 }): ReactElement | null {
-  const { translations } = useTranslations();
+  const { translations, locale } = useTranslations();
 
   if (!setLists || !artistId) return null;
   return (
@@ -35,7 +35,9 @@ export default function SetList({
               className="set"
             >
               <div className="set-date">
-                <span className="month">{getMonth(Number(month) - 1)}</span>
+                <span className="month">
+                  {getMonth(Number(month) - 1, locale)}
+                </span>
                 <span className="day">{day}</span>
                 <span className="year">{year}</span>
               </div>

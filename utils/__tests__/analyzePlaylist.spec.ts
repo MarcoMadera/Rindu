@@ -14,7 +14,7 @@ jest.mock<typeof import("utils")>("utils/getAllTracksFromPlaylist", () => ({
 const { track } = jest.requireActual<IUtilsMocks>("./__mocks__/mocks.ts");
 
 describe("analyzePlaylist", () => {
-  const translations = getTranslations("US", Page.Playlist);
+  const translations = getTranslations(Page.Playlist);
   it("should return null if no id or accessToken or totalTracks", async () => {
     expect.assertions(1);
 
