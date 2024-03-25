@@ -1,5 +1,5 @@
-import { takeCookie } from "./cookies";
 import { ServerApiContext } from "types/serverContext";
+import { LOCALE_COOKIE, takeCookie } from "utils";
 
 export enum Page {
   Home = "home",
@@ -1031,7 +1031,7 @@ export function getTranslations<T extends Page>(
   page: T,
   context?: ServerApiContext
 ): Translations[T] {
-  const locale = takeCookie("NEXT_LOCALE", context) ?? Locale.EN;
+  const locale = takeCookie(LOCALE_COOKIE, context) ?? Locale.EN;
   const defaultTranslations = translations[Locale.EN][page];
 
   const translation = translations[locale as Locale][page];

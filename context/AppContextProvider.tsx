@@ -12,7 +12,7 @@ import TranslationsContext, {
 import { IUserContext, UserContextProvider } from "context/UserContext";
 import { IContextMenuContext } from "types/contextMenu";
 import { ISpotifyContext } from "types/spotify";
-import { takeCookie } from "utils";
+import { LOCALE_COOKIE, takeCookie } from "utils";
 
 interface AppContextProviderProps {
   toastValue?: IToastContext;
@@ -35,7 +35,7 @@ export function AppContextProvider({
 }: PropsWithChildren<
   AppContextProviderProps & TranslationsContextProviderProps
 >): ReactElement {
-  const locale = takeCookie("NEXT_LOCALE");
+  const locale = takeCookie(LOCALE_COOKIE);
   const translationsValue = useMemo(
     () => ({ translations, locale }),
     [translations, locale]

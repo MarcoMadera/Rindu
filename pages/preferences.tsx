@@ -17,6 +17,7 @@ import {
   getAuth,
   getTranslations,
   Locale,
+  LOCALE_COOKIE,
   makeCookie,
   Page,
   serverRedirect,
@@ -90,6 +91,8 @@ export default function PreferencesPage(): ReactElement {
               </div>
               <div className="select-container">
                 <SelectControl
+                  value={locale}
+                  defaultValue={locale}
                   options={locales.map((value) => {
                     return {
                       label: translations["localLabel." + value],
@@ -97,7 +100,6 @@ export default function PreferencesPage(): ReactElement {
                     };
                   })}
                   id="language"
-                  defaultValue={locale}
                   onChange={(e) => {
                     setLocale(e.target.value);
                     setIsReload(true);
@@ -113,7 +115,7 @@ export default function PreferencesPage(): ReactElement {
               className="reload button"
               onClick={() => {
                 makeCookie({
-                  name: "NEXT_LOCALE",
+                  name: LOCALE_COOKIE,
                   value: locale ?? Locale.EN,
                 });
 
