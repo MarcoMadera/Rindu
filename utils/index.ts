@@ -55,6 +55,7 @@ export * from "./hexToHsl";
 export * from "./hmacToken";
 export * from "./isCorruptedTrack";
 export * from "./mapPlaylistItems";
+export * from "./parseAcceptLanguage";
 export * from "./playButton";
 export * from "./playCurrentTrack";
 export * from "./removeTokensFromCookieServer";

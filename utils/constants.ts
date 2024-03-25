@@ -4,6 +4,7 @@ export const ACCESS_TOKEN_COOKIE = "qs";
 export const REFRESH_TOKEN_COOKIE = "rs";
 export const EXPIRE_TOKEN_COOKIE = "ex";
 export const CODE_VERIFIER_COOKIE = "cv";
+export const LOCALE_COOKIE = "NEXT_LOCALE";
 export const SPOTIFY_CLIENT_ID = process.env
   .NEXT_PUBLIC_SPOTIFY_CLIENT_ID as string;
 export const SPOTIFY_REDIRECT_URL = process.env
