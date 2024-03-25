@@ -1,10 +1,20 @@
 import { ReactElement } from "react";
 
-import { Head, Html, Main, NextScript } from "next/document";
+import Document, {
+  DocumentContext,
+  DocumentProps,
+  Head,
+  Html,
+  Main,
+  NextScript,
+} from "next/document";
 
-export default function MyDocument(): ReactElement {
+import { ServerApiContext } from "types/serverContext";
+import { DEFAULT_LOCALE, LOCALE_COOKIE, takeCookie } from "utils";
+
+export default function MyDocument({ locale }: DocumentProps): ReactElement {
   return (
-    <Html lang="es-MX">
+    <Html lang={locale ?? DEFAULT_LOCALE}>
       <Head>
         <link
           rel="preconnect"
@@ -144,3 +154,17 @@ export default function MyDocument(): ReactElement {
     </Html>
   );
 }
+
+MyDocument.getInitialProps = async (context: DocumentContext) => {
+  const initialProps = await Document.getInitialProps(context);
+
+  if (context.req && "cookies" in context.req) {
+    const locale = takeCookie(
+      LOCALE_COOKIE,
+      context as unknown as ServerApiContext
+    );
+    return { ...initialProps, locale };
+  }
+
+  return { ...initialProps };
+};
