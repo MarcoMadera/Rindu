@@ -19,7 +19,7 @@ export function middleware(request: NextRequest): NextResponse {
   const localeCookie = request.cookies.get(LOCALE_COOKIE)?.value;
   response.cookies.set(LOCALE_COOKIE, localeCookie ?? locale, {
     secure: process.env.NODE_ENV !== "development",
-    sameSite: "strict",
+    sameSite: "lax",
     maxAge: 60 * 60 * 24 * 365,
     path: "/",
   });
