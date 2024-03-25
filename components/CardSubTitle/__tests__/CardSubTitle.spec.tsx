@@ -8,7 +8,7 @@ import { CardType } from "components/CardContent";
 import { AppContextProvider } from "context/AppContextProvider";
 import { useOnScreen } from "hooks";
 import { IUtilsMocks } from "types/mocks";
-import { Language } from "utils";
+import { Locale } from "utils";
 
 jest.mock("hooks/useLyricsInPictureInPicture");
 jest.mock("hooks/useOnScreen");
@@ -41,7 +41,7 @@ describe("cardSubTitle", () => {
       },
     }));
 
-    const translations = getAllTranslations(Language.EN);
+    const translations = getAllTranslations(Locale.EN);
     render(
       <AppContextProvider translations={translations}>
         <CardSubTitle {...props} />

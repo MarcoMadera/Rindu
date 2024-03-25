@@ -1,7 +1,7 @@
 import { NextRouter } from "next/router";
 
 import { ITrack } from "types/spotify";
-import { ArtistScrobbleInfo, Language } from "utils";
+import { ArtistScrobbleInfo, Locale } from "utils";
 import { IRefreshAccessTokenResponse } from "utils/spotifyCalls/refreshAccessToken";
 
 export interface IUtilsMocks {
@@ -28,6 +28,6 @@ export interface IUtilsMocks {
   rejectPromise: <T>(rejectedValue?: T) => Promise<unknown>;
   resolvePromise: <T>(resolvedValue?: T) => Promise<unknown>;
   mockPlaylistTrackResponse: SpotifyApi.PlaylistTrackResponse;
-  getAllTranslations: (language: Language) => Record<string, string>;
+  getAllTranslations: (language: Locale) => Record<string, string>;
   nextRouterMock: NextRouter;
 }

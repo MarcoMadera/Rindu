@@ -5,7 +5,7 @@ import {
   REFRESH_TOKEN_COOKIE,
 } from "utils/constants";
 import { ArtistScrobbleInfo } from "utils/getArtistScrobbleInfo";
-import { Language, translations } from "utils/getTranslations";
+import { Locale, translations } from "utils/getTranslations";
 
 export const accessToken = "accessToken";
 export const refreshToken = "refreshToken";
@@ -234,9 +234,9 @@ export function resolvePromise<T>(resolvedValue?: T): Promise<unknown> {
   );
 }
 
-export function getAllTranslations(language: Language): Record<string, string> {
+export function getAllTranslations(locale: Locale): Record<string, string> {
   const allTranslations: Record<string, string>[] = Object.values(
-    translations[language]
+    translations[locale]
   );
   const allTranslationsFlat = allTranslations.reduce(
     (acc, cur) => ({ ...acc, ...cur }),

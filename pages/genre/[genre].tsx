@@ -68,8 +68,7 @@ export default function Category({
 }
 
 export const getServerSideProps = (async (context) => {
-  const country = (context.query.country ?? "US") as string;
-  const translations = getTranslations(country, Page.Genre);
+  const translations = getTranslations(Page.Genre, context);
   const cookies = context.req?.headers?.cookie;
   const genre = context.params?.genre;
   if (!cookies || !genre) {

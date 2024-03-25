@@ -342,8 +342,7 @@ const Dashboard = ({
 export default Dashboard;
 
 export const getServerSideProps = (async (context) => {
-  const country = (context.query.country ?? "US") as string;
-  const translations = getTranslations(country, Page.Dashboard);
+  const translations = getTranslations(Page.Dashboard, context);
   const lastFMAPIKey = process.env.LAST_FM_API_KEY as string;
   let tokens: Record<string, string | null> | AuthorizationResponse = {
     accessToken: takeCookie(ACCESS_TOKEN_COOKIE, context),

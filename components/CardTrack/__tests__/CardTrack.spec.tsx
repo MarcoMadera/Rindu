@@ -10,7 +10,7 @@ import { IUtilsMocks } from "types/mocks";
 import { ISpotifyContext } from "types/spotify";
 import {
   BadRequestError,
-  Language,
+  Locale,
   NotFoundError,
   playCurrentTrack,
 } from "utils";
@@ -33,7 +33,7 @@ interface ISetup {
 }
 
 function setup(props: ISetup) {
-  const translations = getAllTranslations(Language.EN);
+  const translations = getAllTranslations(Locale.EN);
   const view = render(
     <AppContextProvider {...props.appContextProps} translations={translations}>
       <CardTrack {...props.cardTrackProps} />

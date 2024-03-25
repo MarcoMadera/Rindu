@@ -243,8 +243,7 @@ export default function EpisodePage({
 }
 
 export const getServerSideProps = (async (context) => {
-  const country = (context.query.country ?? "US") as string;
-  const translations = getTranslations(country, Page.Episode);
+  const translations = getTranslations(Page.Episode, context);
   const cookies = context.req?.headers?.cookie;
   const episodeId = context.params?.episodeId;
   if (!cookies || !episodeId) {

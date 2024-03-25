@@ -61,7 +61,7 @@ export default function EpisodeCard({
     savedEpisode ?? false
   );
   const [shouldUpdateList, setShouldUpdateList] = useState<boolean>(false);
-  const { translations } = useTranslations();
+  const { translations, locale } = useTranslations();
   useEffect(() => {
     setIsEpisodeInLibrary(savedEpisode);
     setShouldUpdateList(true);
@@ -156,7 +156,7 @@ export default function EpisodeCard({
             <p>
               {track.explicit ? <ExplicitSign /> : null}{" "}
               {track?.album?.release_date
-                ? getTimeAgo(+new Date(track?.album?.release_date), "en")
+                ? getTimeAgo(+new Date(track?.album?.release_date), locale)
                 : null}
             </p>
             <p>

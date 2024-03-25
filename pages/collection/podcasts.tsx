@@ -85,8 +85,7 @@ export default function CollectionPlaylists(): ReactElement {
 }
 
 export const getServerSideProps = (async (context) => {
-  const country = (context.query.country ?? "US") as string;
-  const translations = getTranslations(country, Page.CollectionPodcasts);
+  const translations = getTranslations(Page.CollectionPodcasts, context);
   const cookies = context.req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(context.res, "/");

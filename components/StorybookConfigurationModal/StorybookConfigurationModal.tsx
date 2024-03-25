@@ -3,15 +3,15 @@ import { ReactElement, useState } from "react";
 import { FormToggle, Heading, SelectControl, TextControl } from "components";
 import { useTranslations } from "hooks";
 import { AsType } from "types/heading";
-import { ACCESS_TOKEN_COOKIE, Language, makeCookie } from "utils";
+import { ACCESS_TOKEN_COOKIE, Locale, makeCookie } from "utils";
 
 export interface StorybookConfigurationModalProps {
   setProduct: (product: string) => void;
   setIsLogin: (isLogin: boolean) => void;
-  setLanguage: (language: Language) => void;
+  setLanguage: (language: Locale) => void;
   product: string;
   isLogin: boolean;
-  language: Language;
+  language: Locale;
 }
 
 export default function StorybookConfigurationModal({
@@ -39,13 +39,13 @@ export default function StorybookConfigurationModal({
         <div className="select-container">
           <SelectControl
             options={[
-              { label: translations.spanish, value: "ES" },
-              { label: translations.english, value: "EN" },
+              { label: translations.spanish, value: Locale.ES },
+              { label: translations.english, value: Locale.EN },
             ]}
             id="language"
             defaultValue={language}
             onChange={(e) => {
-              setLanguage(e.target.value as Language);
+              setLanguage(e.target.value as Locale);
             }}
           />
         </div>

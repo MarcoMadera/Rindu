@@ -6,7 +6,7 @@ import { AppContextProvider } from "context/AppContextProvider";
 import { IUserContext } from "context/UserContext";
 import { useOnScreen } from "hooks";
 import { IUtilsMocks } from "types/mocks";
-import { Language } from "utils";
+import { Locale } from "utils";
 import { getMyLikedSongs } from "utils/spotifyCalls";
 
 jest.mock("hooks/useLyricsInPictureInPicture");
@@ -38,7 +38,7 @@ function setup({ appContextProviderProps }: ISetupProps = {}) {
   (useRouter as jest.Mock).mockReturnValue(routerMock);
   (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
 
-  const translations = getAllTranslations(Language.EN);
+  const translations = getAllTranslations(Locale.EN);
   const view = render(
     <AppContextProvider
       translations={translations}

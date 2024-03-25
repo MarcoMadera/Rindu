@@ -8,7 +8,7 @@ import { CardType } from "components/CardContent";
 import { AppContextProvider } from "context/AppContextProvider";
 import { ICardContentContextMenuData } from "types/contextMenu";
 import { IUtilsMocks } from "types/mocks";
-import { Language } from "utils";
+import { Locale } from "utils";
 import { follow } from "utils/spotifyCalls";
 
 jest.mock("hooks/useLyricsInPictureInPicture");
@@ -51,7 +51,7 @@ describe("cardContentContextMenu", () => {
       },
     }));
 
-    const translations = getAllTranslations(Language.EN);
+    const translations = getAllTranslations(Locale.EN);
     render(
       <AppContextProvider translations={translations}>
         <CardContentContextMenu {...props} />

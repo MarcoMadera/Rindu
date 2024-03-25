@@ -4,6 +4,7 @@ import { BadRequestError, NotFoundError } from "utils/errors";
 import { playCurrentTrack } from "utils/playCurrentTrack";
 import { play } from "utils/spotifyCalls";
 
+jest.mock<typeof import("utils")>("utils");
 jest.mock<typeof import("utils/spotifyCalls")>(
   "utils/spotifyCalls",
   () =>

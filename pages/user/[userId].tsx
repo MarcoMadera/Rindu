@@ -161,8 +161,7 @@ const CurrentUser = ({
 export default CurrentUser;
 
 export const getServerSideProps = (async (context) => {
-  const country = (context.query.country ?? "US") as string;
-  const translations = getTranslations(country, Page.User);
+  const translations = getTranslations(Page.User, context);
   const cookies = context.req?.headers?.cookie;
 
   if (!cookies || !context.params) {
