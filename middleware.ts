@@ -26,7 +26,7 @@ export function middleware(request: NextRequest): NextResponse | void {
     !userAgentObject.browser.name,
   ];
 
-  if (ignoreMiddleware.every((condition) => condition)) return;
+  if (ignoreMiddleware.some((condition) => condition)) return;
 
   const acceptLanguage = request.headers.get("Accept-Language");
   const userLocales = parseAcceptLanguage(acceptLanguage ?? "");
