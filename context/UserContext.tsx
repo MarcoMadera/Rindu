@@ -43,6 +43,10 @@ export function UserContextProvider({
   }, [user]);
 
   useEffect(() => {
+    const isNotFoundPage = router.pathname === "/404";
+    const isErrorPage = router.pathname === "/500";
+
+    if (isNotFoundPage || isErrorPage) return;
     if (router.query.code && isLogin) {
       router.replace("/dashboard", undefined, { shallow: true });
       eatCookie(CODE_VERIFIER_COOKIE);

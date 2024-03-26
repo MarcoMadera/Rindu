@@ -71,9 +71,23 @@ export const getServerSideProps = (async (context) => {
     trackIds as string[],
     context
   );
+
+  const pageDetailsValue = fullFilledValue(pageDetails);
+  if (!pageDetailsValue) {
+    serverRedirect(context.res, "/404");
+    return {
+      props: {
+        pageDetails: pageDetailsValue,
+        tracksInLibrary,
+        playListTracks: deserialize(playListTracks),
+        user: user ?? null,
+        translations,
+      },
+    };
+  }
   return {
     props: {
-      pageDetails: fullFilledValue(pageDetails),
+      pageDetails: pageDetailsValue,
       tracksInLibrary,
       playListTracks: deserialize(playListTracks),
       user: user ?? null,

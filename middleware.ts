@@ -8,7 +8,14 @@ import {
   parseAcceptLanguage,
 } from "utils";
 
+const PUBLIC_FILE = /\.(.*)$/;
+
 export function middleware(request: NextRequest): NextResponse | void {
+  const isApiRoute = request.nextUrl.pathname.startsWith("/api");
+  const isNextRoute = request.nextUrl.pathname.startsWith("/_next");
+  const isPublicFile = PUBLIC_FILE.test(request.nextUrl.pathname);
+  if (isNextRoute || isApiRoute || isPublicFile) return;
+
   const acceptLanguage = request.headers.get("Accept-Language");
   const userLocales = parseAcceptLanguage(acceptLanguage ?? "");
   const locale =
@@ -20,7 +27,7 @@ export function middleware(request: NextRequest): NextResponse | void {
   if (!localeCookie) {
     // Have to redirect here to ensure cookie is available to root layout
     // issue https://github.com/vercel/next.js/issues/49442
-    const response = NextResponse.redirect(request.url);
+    const response = NextResponse.redirect(request.nextUrl);
     response.cookies.set(LOCALE_COOKIE, localeCookieValue);
     return response;
   }

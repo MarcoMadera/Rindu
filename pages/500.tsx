@@ -1,35 +1,29 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement } from "react";
 
-import Head from "next/head";
-import { useRouter } from "next/router";
+import ErrorLayout, { ErrorTranslations } from "layouts/ErrorLayout";
 
-import { ContentContainer, Heading } from "components";
-import { useAnalytics } from "hooks";
-
-export default function Custom500(): ReactElement {
-  const { pathname } = useRouter();
-  const { trackWithGoogleAnalytics } = useAnalytics();
-
-  useEffect(() => {
-    trackWithGoogleAnalytics("exception", {
-      exDescription: `500 internal server error: ${pathname}`,
-      exFatal: "1",
-    });
-  }, [pathname, trackWithGoogleAnalytics]);
+export default function Custom500(): ReactElement | null {
+  const translations: ErrorTranslations = {
+    es: {
+      title: "😱 500 - Error del servidor",
+      description: "¡Ay no! Parece que algo salió mal en nuestro servidor.",
+      description2: "Por favor, intenta nuevamente más tarde.",
+      button: "Volver al inicio",
+    },
+    en: {
+      title: "😱 500 - Server Error",
+      description: "Oh no! It seems something went wrong on our server.",
+      description2: "Please try again later.",
+      button: "Back to home",
+    },
+  };
 
   return (
-    <ContentContainer id="main">
-      <Head>
-        <title>Rindu - 😫 500 - Servidor?</title>
-      </Head>
-      <Heading number={1}>500?</Heading>
-      <p>Ha ocurrido un error en el servidor</p>
-      <style jsx>{`
-        p {
-          font-size: 30px;
-          text-align: center;
-        }
-      `}</style>
-    </ContentContainer>
+    <ErrorLayout
+      errorTranslations={translations}
+      playlistId="6IKQrtMc4c00YzONcUt7QH"
+      exDescription="500 internal server error"
+      clearCookies
+    />
   );
 }

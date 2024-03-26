@@ -1,10 +1,4 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import { useAuth, useSpotify } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
@@ -79,7 +73,7 @@ export function useLyricsInPictureInPicture({
     });
   }, [player, isPremium, setLyricsProgressMs, lyrics]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!requestLyrics) return;
     const newLyricsBackgroundColor = lyrics?.colors?.background
       ? rgbToHex(colorCodedToRGB(lyrics.colors.background))

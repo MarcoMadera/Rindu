@@ -11,6 +11,8 @@ export default function MainLayout({
 }: Readonly<PropsWithChildren>): ReactElement {
   const router = useRouter();
   const isLoginPage = router.pathname === "/";
+  const isNotFoundPage = router.pathname === "/404";
+  const isErrorPage = router.pathname === "/500";
 
   useRefreshAccessToken();
   useDisableGlobalContextMenu();
@@ -19,6 +21,10 @@ export default function MainLayout({
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
   }, []);
+
+  if (isNotFoundPage || isErrorPage) {
+    return <>{children}</>;
+  }
 
   if (isLoginPage) {
     return (
