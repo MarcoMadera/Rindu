@@ -12,6 +12,10 @@ export function useRefreshAccessToken(): void {
 
   useEffect(() => {
     const isLoginPage = router.pathname === "/";
+    const isNotFoundPage = router.pathname === "/404";
+    const isErrorPage = router.pathname === "/500";
+
+    if (isNotFoundPage || isErrorPage) return;
     if (!user?.uri && !isLoginPage) {
       router.push("/");
       return;

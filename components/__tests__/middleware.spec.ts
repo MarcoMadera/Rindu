@@ -10,14 +10,16 @@ import { Locale, LOCALE_COOKIE } from "utils";
 describe("middleware", () => {
   it("should redirect and set locale cookie if is not there", () => {
     expect.assertions(2);
+    const nextUrl = {
+      searchParams: {
+        set: () => "",
+      },
+      pathname: "/dashboard",
+    };
+
     const request = {
       url: "myUrl",
-      nextUrl: {
-        searchParams: {
-          set: () => "",
-        },
-        pathname: "/dashboard",
-      },
+      nextUrl,
       geo: {
         country: "US",
       },
@@ -38,7 +40,7 @@ describe("middleware", () => {
 
     middleware(request);
     expect(setCookies).toHaveBeenCalledWith(LOCALE_COOKIE, Locale.EN);
-    expect(redirection).toHaveBeenCalledWith(request.url);
+    expect(redirection).toHaveBeenCalledWith(nextUrl);
   });
 
   it("should not return a NextResponse in api if locale cookie is present", () => {

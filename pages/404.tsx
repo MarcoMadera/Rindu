@@ -1,35 +1,28 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement } from "react";
 
-import Head from "next/head";
-import { useRouter } from "next/router";
+import ErrorLayout, { ErrorTranslations } from "layouts/ErrorLayout";
 
-import { ContentContainer, Heading } from "components";
-import { useAnalytics } from "hooks";
-
-export default function Custom404(): ReactElement {
-  const { pathname } = useRouter();
-  const { trackWithGoogleAnalytics } = useAnalytics();
-
-  useEffect(() => {
-    trackWithGoogleAnalytics("exception", {
-      exDescription: `500 internal server error: ${pathname}`,
-      exFatal: "1",
-    });
-  }, [pathname, trackWithGoogleAnalytics]);
+export default function Custom404(): ReactElement | null {
+  const translations: ErrorTranslations = {
+    es: {
+      title: "😫 404 - No encontrado",
+      description: "Oops! Parece que no hemos atinado a la nota correcta.",
+      description2: "¿Cómo has llegado aquí?",
+      button: "Volver al inicio",
+    },
+    en: {
+      title: "😫 404 - Not found",
+      description: "Oops! Looks like we've hit a wrong note.",
+      description2: "how did you get here?",
+      button: "Back to home",
+    },
+  };
 
   return (
-    <ContentContainer id="main">
-      <Head>
-        <title>Rindu - 😫 404 - No encontrado</title>
-      </Head>
-      <Heading number={1}>404</Heading>
-      <p>Página no encontrada</p>
-      <style jsx>{`
-        p {
-          font-size: 30px;
-          text-align: center;
-        }
-      `}</style>
-    </ContentContainer>
+    <ErrorLayout
+      errorTranslations={translations}
+      playlistId="37i9dQZF1DXcBWIGoYBM5M"
+      exDescription="404 page not found"
+    />
   );
 }
