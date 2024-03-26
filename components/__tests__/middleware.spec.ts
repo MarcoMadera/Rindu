@@ -24,7 +24,8 @@ describe("middleware", () => {
         country: "US",
       },
       headers: {
-        get: () => "",
+        get: () =>
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0",
       },
       cookies: {
         get: () => ({
@@ -44,6 +45,38 @@ describe("middleware", () => {
   });
 
   it("should not return a NextResponse in api if locale cookie is present", () => {
+    expect.assertions(1);
+    const request = {
+      nextUrl: {
+        searchParams: {
+          set: () => "",
+        },
+        pathname: "/api/top-tracks-cover",
+      },
+      geo: {
+        country: "US",
+      },
+      headers: {
+        get: () =>
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0",
+      },
+      cookies: {
+        get: () => ({
+          value: Locale.EN,
+        }),
+        set: () => {},
+      },
+    } as unknown as NextRequest;
+
+    jest
+      .spyOn(NextResponse, "rewrite")
+      .mockReturnValueOnce((() => ({})) as unknown as NextResponse);
+
+    const result = middleware(request);
+    expect(result).toBeUndefined();
+  });
+
+  it("should not return a NextResponse if userAgent is not valid", () => {
     expect.assertions(1);
     const request = {
       nextUrl: {
