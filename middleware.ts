@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { NextResponse, userAgentFromString } from "next/server";
 
 import {
   DEFAULT_LOCALE,
@@ -14,7 +14,19 @@ export function middleware(request: NextRequest): NextResponse | void {
   const isApiRoute = request.nextUrl.pathname.startsWith("/api");
   const isNextRoute = request.nextUrl.pathname.startsWith("/_next");
   const isPublicFile = PUBLIC_FILE.test(request.nextUrl.pathname);
-  if (isNextRoute || isApiRoute || isPublicFile) return;
+  const userAgent = request.headers.get("User-Agent");
+  if (!userAgent) return;
+  const userAgentObject = userAgentFromString(userAgent);
+
+  const ignoreMiddleware = [
+    isNextRoute,
+    isApiRoute,
+    isPublicFile,
+    userAgentObject.isBot,
+    !userAgentObject.browser.name,
+  ];
+
+  if (ignoreMiddleware.every((condition) => condition)) return;
 
   const acceptLanguage = request.headers.get("Accept-Language");
   const userLocales = parseAcceptLanguage(acceptLanguage ?? "");
