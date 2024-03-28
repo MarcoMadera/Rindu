@@ -46,6 +46,7 @@ export * from "./getSetLists";
 export * from "./getSpotifyLoginURL";
 export * from "./getTimeAgo";
 export * from "./getTopTracksCards";
+export * from "./getTrackAddedDate";
 export * from "./getTracksOfTheWeek";
 export * from "./getTranslations";
 export * from "./getYear";

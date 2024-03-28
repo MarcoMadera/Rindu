@@ -91,7 +91,7 @@ export default function VirtualizedList({
       ) as HTMLElement)
     : undefined;
 
-  function RowRenderer({
+  function rowRenderer({
     key,
     style,
     index,
@@ -145,7 +145,8 @@ export default function VirtualizedList({
                       rowHeight={65}
                       scrollTop={scrollTop}
                       width={width}
-                      rowRenderer={RowRenderer}
+                      rowRenderer={rowRenderer}
+                      tabIndex={-1}
                     />
                   )}
                 </InfiniteLoader>

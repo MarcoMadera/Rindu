@@ -16,7 +16,7 @@ export default function BigPill({
   title,
   subTitle,
   href,
-}: BigPillProps): ReactElement {
+}: Readonly<BigPillProps>): ReactElement {
   return (
     <Link href={href} className="BigPill">
       {img ? (

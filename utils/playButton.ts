@@ -23,7 +23,7 @@ export function getUris(
 
     uris = allTracks ? filteredUris : [];
   }
-  const singleUri = trackUri || uri;
+  const singleUri = trackUri ?? uri;
   if (uris.length === 0 && singleUri) {
     uris.push(singleUri);
   }
@@ -123,7 +123,7 @@ export async function handlePremiumPlay(
     setPlaylistPlayingId(uriId ?? id);
     const source =
       track || isSingle
-        ? track?.uri || pageDetails?.uri
+        ? track?.uri ?? pageDetails?.uri
         : uri ?? pageDetails?.uri;
     const isCollection = source?.split(":")?.[3];
     setPlayedSource(
@@ -155,7 +155,7 @@ export function handleNonPremiumPlay(
     player.allTracks = [track];
   }
   if (track?.preview_url || allTracks[0]?.preview_url) {
-    const audio = track?.preview_url || allTracks[0].preview_url;
+    const audio = track?.preview_url ?? allTracks[0].preview_url;
     player.src = audio as string;
     player.play?.();
     setCurrentlyPlaying(track || allTracks[0]);

@@ -15,6 +15,7 @@ import { useAnalytics, useSpotify, useTranslations } from "hooks";
 import { AsType } from "types/heading";
 import {
   getAuth,
+  getLocale,
   getTranslations,
   Locale,
   LOCALE_COOKIE,
@@ -101,7 +102,8 @@ export default function PreferencesPage(): ReactElement {
                   })}
                   id="language"
                   onChange={(e) => {
-                    setLocale(e.target.value);
+                    setLocale(getLocale(e.target.value));
+
                     setIsReload(true);
                   }}
                 />

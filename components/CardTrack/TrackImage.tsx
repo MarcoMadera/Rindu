@@ -31,7 +31,7 @@ export function TrackImage({
   visualPosition,
   position,
   type,
-}: ITrackImage): ReactElement {
+}: Readonly<ITrackImage>): ReactElement {
   const { currentlyPlaying, player, isPlaying, setIsPlaying } = useSpotify();
   const trackRef = useRef<HTMLDivElement>(null);
   const { addToast } = useToast();

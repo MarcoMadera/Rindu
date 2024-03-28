@@ -43,6 +43,8 @@ function PresentationCard({
         title={title}
         subTitle={subTitle}
         url={url}
+        tabIndex={props.tabIndex}
+        aria-hidden={props["aria-hidden"]}
       />
       <span>
         {!url && (

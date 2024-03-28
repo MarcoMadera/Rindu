@@ -18,3 +18,5 @@ export type Range<F extends number, T extends number> = Exclude<
   Enumerate<T>,
   Enumerate<F>
 >;
+
+export type Booleanish = boolean | "true" | "false";

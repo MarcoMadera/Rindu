@@ -66,7 +66,7 @@ export default function ErrorLayout({
 
   if (!translations) return null;
 
-  const translate = translations[locale as Locale];
+  const translate = translations[locale];
 
   return (
     <ContentContainer id="main">

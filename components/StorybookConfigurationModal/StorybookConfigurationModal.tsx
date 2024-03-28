@@ -3,7 +3,7 @@ import { ReactElement, useState } from "react";
 import { FormToggle, Heading, SelectControl, TextControl } from "components";
 import { useTranslations } from "hooks";
 import { AsType } from "types/heading";
-import { ACCESS_TOKEN_COOKIE, Locale, makeCookie } from "utils";
+import { ACCESS_TOKEN_COOKIE, getLocale, Locale, makeCookie } from "utils";
 
 export interface StorybookConfigurationModalProps {
   setProduct: (product: string) => void;
@@ -45,7 +45,7 @@ export default function StorybookConfigurationModal({
             id="language"
             defaultValue={language}
             onChange={(e) => {
-              setLanguage(e.target.value as Locale);
+              setLanguage(getLocale(e.target.value));
             }}
           />
         </div>

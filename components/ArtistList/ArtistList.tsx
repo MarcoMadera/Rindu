@@ -2,7 +2,6 @@ import { Fragment, ReactElement, useRef } from "react";
 
 import Link from "next/link";
 
-import { useOnScreen } from "hooks";
 import { ITrack, ITrackArtist } from "types/spotify";
 import { getIdFromUri } from "utils";
 
@@ -20,9 +19,8 @@ export default function ArtistList({
   artists,
   maxArtistsToShow,
   onClick,
-}: IArtistListProps): ReactElement | null {
+}: Readonly<IArtistListProps>): ReactElement | null {
   const artistsRef = useRef<HTMLAnchorElement>(null);
-  const isVisible = useOnScreen(artistsRef);
   if (!artists) return null;
   const { length } = artists;
 
@@ -49,8 +47,6 @@ export default function ArtistList({
               href={`/${
                 artist.type ?? getIdFromUri(artist.uri, "type") ?? "artist"
               }/${id}`}
-              tabIndex={isVisible ? 0 : -1}
-              aria-hidden={isVisible ? "false" : "true"}
               ref={artistsRef}
               onClick={(e) => {
                 e.stopPropagation();

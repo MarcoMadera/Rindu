@@ -19,7 +19,7 @@ export function PlayButtonIcon({
   isPlayable,
   visualPosition,
   position,
-}: IPlayButtonIcon): ReactElement {
+}: Readonly<IPlayButtonIcon>): ReactElement {
   if (mouseEnter && isTheSameAsCurrentlyPlaying && isPlaying) {
     return <Pause size={24} fill={"#FFF"} />;
   }

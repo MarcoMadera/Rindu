@@ -14,7 +14,7 @@ export default function CarouselCards({
   items,
   title,
   type,
-}: ICarouselCards): ReactElement {
+}: Readonly<ICarouselCards>): ReactElement {
   return (
     <Carousel title={title} gap={24}>
       {items?.map((item) => {

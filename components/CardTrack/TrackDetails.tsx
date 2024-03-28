@@ -6,7 +6,7 @@ import { CardType } from "./CardTrack";
 import { ArtistList, ExplicitSign } from "components";
 import { useOnScreen, useTranslations } from "hooks";
 import { ITrack } from "types/spotify";
-import { chooseImage, getTimeAgo } from "utils";
+import { chooseImage, getTrackAddedDate } from "utils";
 
 interface ITrackDetails {
   track: ITrack;
@@ -17,12 +17,10 @@ export function TrackDetails({
   track,
   type,
   isSmallScreen,
-}: ITrackDetails): ReactElement {
+}: Readonly<ITrackDetails>): ReactElement {
   const { locale } = useTranslations();
   const trackRef = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(trackRef);
-  const date = track?.added_at ? +new Date(track?.added_at) : NaN;
-  const displayDate = isNaN(date) ? track?.added_at : getTimeAgo(date, locale);
 
   return (
     <>
@@ -46,6 +44,7 @@ export function TrackDetails({
             <Link
               href={`/${track.type ?? "track"}/${track.id}`}
               className="trackName"
+              tabIndex={isVisible ? 0 : -1}
             >
               {track.name}
             </Link>
@@ -56,13 +55,13 @@ export function TrackDetails({
           </span>
         </div>
       </section>
-      {type === "playlist" && track.album && track.album.id ? (
+      {type === "playlist" && track.album?.id ? (
         <>
           <section>
             <p className="trackArtists">
               <Link
                 href={`/${track.album.type ?? "album"}/${track.album.id}`} // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-                tabIndex={-Number(isVisible)}
+                tabIndex={isVisible ? 0 : -1}
                 aria-hidden={!isVisible}
               >
                 {track.album.name}
@@ -70,7 +69,9 @@ export function TrackDetails({
             </p>
           </section>
           <section>
-            <p className="trackArtists">{displayDate}</p>
+            <p className="trackArtists">
+              {getTrackAddedDate(track.added_at, locale)}
+            </p>
           </section>
         </>
       ) : null}

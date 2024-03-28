@@ -20,8 +20,7 @@ export interface IUserContext {
   setUser: Dispatch<SetStateAction<SpotifyApi.UserObjectPrivate | null>>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const UserContext = createContext<IUserContext>(null!);
+const UserContext = createContext<IUserContext | undefined>(undefined);
 export default UserContext;
 
 interface IUserContextProviderProps {

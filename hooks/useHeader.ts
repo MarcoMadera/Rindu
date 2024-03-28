@@ -1,5 +1,6 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 
+import { useCustomContext } from "./useCustomContext";
 import HeaderContext, { IHeaderContext } from "context/HeaderContext";
 
 export function useHeader(
@@ -23,7 +24,7 @@ export function useHeader(
     setDisableOpacityChange,
     setDisableBackground,
     ...context
-  } = useContext(HeaderContext);
+  } = useCustomContext(HeaderContext);
 
   useEffect(() => {
     if (options?.showOnFixed) {

@@ -111,7 +111,7 @@ export function positionSubMenu(
   subMenuContainer: HTMLDivElement,
   menuContainer: HTMLUListElement,
   items: number,
-  hoveredItem: HTMLDivElement
+  hoveredItem: HTMLButtonElement
 ): void {
   const screenHeight = window.innerHeight;
   const menuContainerClientRect = menuContainer.getBoundingClientRect();

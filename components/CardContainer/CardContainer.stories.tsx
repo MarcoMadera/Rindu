@@ -1,6 +1,6 @@
-import React from "react";
+import React, { ReactElement } from "react";
 
-import { Meta, StoryFn } from "@storybook/react";
+import { Meta } from "@storybook/react";
 import Image from "next/image";
 
 import { BigPill, CardContainer, Heading } from "components";
@@ -16,7 +16,7 @@ export default {
   },
 } as Meta<typeof CardContainer>;
 
-const MultipleCardsTemplate: StoryFn<typeof CardContainer> = () => (
+const MultipleCardsTemplate = (): ReactElement => (
   <>
     <CardContainer></CardContainer>
     <CardContainer></CardContainer>
@@ -25,7 +25,7 @@ const MultipleCardsTemplate: StoryFn<typeof CardContainer> = () => (
     <CardContainer></CardContainer>
   </>
 );
-const MultipleWithContentCardsTemplate: StoryFn<typeof CardContainer> = () => (
+const MultipleWithContentCardsTemplate = (): ReactElement => (
   <>
     <CardContainer>
       <div>
@@ -146,12 +146,8 @@ const MultipleWithContentCardsTemplate: StoryFn<typeof CardContainer> = () => (
   </>
 );
 
-const Template: StoryFn<typeof CardContainer> = () => (
-  <CardContainer></CardContainer>
-);
-
 export const Default = {
-  render: Template,
+  render: CardContainer,
   args: {},
 };
 

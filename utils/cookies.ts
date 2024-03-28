@@ -60,7 +60,10 @@ export function takeCookie(
     const allCookies = `; ${document.cookie}`;
     const parts = allCookies.split(`; ${cookieName}=`);
     if (parts.length === 2) {
-      return parts.pop()?.split(";").shift() || null;
+      const cookiesValue = parts.pop()?.split(";").shift();
+      if (!cookiesValue) return null;
+
+      return cookiesValue;
     }
   }
   return null;

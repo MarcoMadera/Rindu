@@ -1,6 +1,7 @@
 import {
   PropsWithChildren,
   ReactElement,
+  ReactNode,
   useEffect,
   useRef,
   useState,
@@ -18,7 +19,9 @@ import { useLyricsContext, useOnSmallScreen, useSpotify } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
 import { isFullScreen, isServer } from "utils";
 
-export function AppContainer({ children }: PropsWithChildren): ReactElement {
+export function AppContainer({
+  children,
+}: Readonly<PropsWithChildren>): ReactElement {
   const appRef = useRef<HTMLDivElement | null>(null);
   const { displayInFullScreen, currentlyPlaying, hideSideBar, setHideSideBar } =
     useSpotify();
@@ -70,6 +73,14 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
     };
   }, [appRef, lyricsBackgroundColor, displayInFullScreen]);
 
+  function renderChildren(): ReactElement | ReactNode {
+    if (shouldDisplayLyrics) return <FullScreenLyrics />;
+
+    if (shouldDisplayQueue) return <FullScreenQueue />;
+
+    return children;
+  }
+
   return (
     <div className="container">
       <div className="overlay"></div>
@@ -93,13 +104,7 @@ export function AppContainer({ children }: PropsWithChildren): ReactElement {
             }}
           >
             <TopBar />
-            {shouldDisplayLyrics ? (
-              <FullScreenLyrics />
-            ) : shouldDisplayQueue ? (
-              <FullScreenQueue />
-            ) : (
-              children
-            )}
+            {renderChildren()}
           </ScrollBar>
         </ResizablePanel.Item>
       </ResizablePanel.Group>

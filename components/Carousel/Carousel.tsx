@@ -116,7 +116,7 @@ export default function Carousel({
             const shouldFocus = number < maxRange && number >= minRange;
             return cloneElement(child, {
               ...child.props,
-              tabIndex: shouldFocus ? 0 : -1,
+              tabIndex: shouldFocus ? undefined : -1,
               "aria-hidden": shouldFocus ? "false" : "true",
             } as Partial<unknown> & HTMLAttributes<HTMLElement>);
           }
