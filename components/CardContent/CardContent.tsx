@@ -1,9 +1,10 @@
-import { ReactElement, useCallback, useRef } from "react";
+import { ReactElement, useCallback, useId, useRef } from "react";
 
 import { decode } from "html-entities";
 import { useRouter } from "next/router";
 
-import { useContextMenu, useOnScreen } from "hooks";
+import { useContextMenu } from "hooks";
+import { Booleanish } from "types/customTypes";
 import { chooseImage, handleAsyncError } from "utils";
 
 export enum CardType {
@@ -26,6 +27,8 @@ export interface ICardContent {
   subTitle: string | ReactElement;
   type: CardType;
   url?: string;
+  tabIndex?: number;
+  "aria-hidden"?: Booleanish;
 }
 
 export default function CardContent({
@@ -35,11 +38,13 @@ export default function CardContent({
   title,
   subTitle,
   url,
+  tabIndex,
+  "aria-hidden": ariaHidden,
 }: Readonly<ICardContent>): ReactElement {
   const router = useRouter();
-  const handlerRef = useRef<HTMLDivElement>(null);
-  const isVisible = useOnScreen(handlerRef, "-150px");
+  const handlerRef = useRef<HTMLButtonElement>(null);
   const { addContextMenu } = useContextMenu();
+  const cardContentId = useId();
   const uri = `spotify:${type}:${id}`;
 
   const handleClick = useCallback(async () => {
@@ -51,18 +56,8 @@ export default function CardContent({
     await router.push(`/${type}/${encodeURIComponent(id)}`);
   }, [id, router, type, url]);
 
-  const handleKeyDown = useCallback(
-    async (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === "Enter") {
-        if (!type) return;
-        await router.push(`/${type}/${encodeURIComponent(id)}`);
-      }
-    },
-    [id, router, type]
-  );
-
   const handleContextMenu = useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       if (type === CardType.SIMPLE && url) return;
       e.preventDefault();
       const x = e.pageX;
@@ -82,23 +77,22 @@ export default function CardContent({
 
   return (
     <article>
-      <div
+      <button
         ref={handlerRef}
         data-testid="cardContent-button"
-        aria-hidden="true"
         className="handler"
         onClick={handleAsyncError(handleClick)}
-        onKeyDown={handleAsyncError(handleKeyDown)}
         onContextMenu={handleContextMenu}
-        role="button"
-        tabIndex={isVisible ? 0 : -1}
-      ></div>
+        aria-labelledby={cardContentId}
+        tabIndex={tabIndex}
+        aria-hidden={ariaHidden}
+      ></button>
       {images && (
         // eslint-disable-next-line @next/next/no-img-element
         <img loading="lazy" src={chooseImage(images, 300).url} alt={title} />
       )}
       <div>
-        <strong>{title}</strong>
+        <strong id={cardContentId}>{title}</strong>
         <p>
           {typeof subTitle === "string"
             ? decode(subTitle).slice(0, 200)
@@ -118,6 +112,8 @@ export default function CardContent({
           background-color: transparent;
           top: 0;
           left: 0;
+          border: none;
+          cursor: pointer;
         }
         strong {
           -webkit-line-clamp: 1;

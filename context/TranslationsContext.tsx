@@ -1,5 +1,7 @@
 import { createContext } from "react";
 
+import { Locale } from "utils";
+
 const TranslationsContext = createContext<
   TranslationsContextProviderValue | undefined
 >(undefined);
@@ -9,7 +11,7 @@ export interface TranslationsContextProviderProps {
 }
 export interface TranslationsContextProviderValue
   extends TranslationsContextProviderProps {
-  locale: string | null;
+  locale: Locale | null;
 }
 
 export default TranslationsContext;

@@ -51,7 +51,7 @@ export default function CardTrackContextMenu({
     (playlist) => playlist.owner.id === user?.id
   );
   const containerRef = useRef<HTMLUListElement>(null);
-  const addToPlaylistOptionRef = useRef<HTMLDivElement>(null);
+  const addToPlaylistOptionRef = useRef<HTMLButtonElement>(null);
 
   useLayoutEffect(() => {
     if (!showAddPlaylistPopup) return;
@@ -102,19 +102,17 @@ export default function CardTrackContextMenu({
       )}
       {userPlaylists.length > 0 && (
         <li>
-          <div
+          <button
             onMouseEnter={() => {
               setShowAddPlaylistPopup(true);
             }}
             onMouseLeave={() => {
               setShowAddPlaylistPopup(false);
             }}
-            role="button"
-            tabIndex={0}
             ref={addToPlaylistOptionRef}
           >
             Add to playlist
-          </div>
+          </button>
           {showAddPlaylistPopup && (
             <div
               ref={playlistsRef}
@@ -125,6 +123,8 @@ export default function CardTrackContextMenu({
               onMouseLeave={() => {
                 setShowAddPlaylistPopup(false);
               }}
+              tabIndex={0}
+              role="menu"
             >
               <ul>
                 {userPlaylists?.map((playlist) => {
@@ -174,7 +174,7 @@ export default function CardTrackContextMenu({
         <li>
           <Link
             href={`${getSiteUrl()}/station/${track.type ?? "track"}/${
-              track?.id || ""
+              track?.id ?? ""
             }`}
             tabIndex={0}
             onKeyDown={(e) => {
@@ -184,7 +184,6 @@ export default function CardTrackContextMenu({
                 removeContextMenu();
               }
             }}
-            role="link"
             onClick={() => {
               removeContextMenu();
             }}
@@ -208,7 +207,6 @@ export default function CardTrackContextMenu({
                 removeContextMenu();
               }
             }}
-            role="link"
             onClick={() => {
               removeContextMenu();
             }}
@@ -229,7 +227,6 @@ export default function CardTrackContextMenu({
                 removeContextMenu();
               }
             }}
-            role="link"
             onClick={() => {
               removeContextMenu();
             }}

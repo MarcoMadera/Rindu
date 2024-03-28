@@ -28,8 +28,7 @@ import {
 import { RemoveTrackError } from "utils";
 import { removeTracksFromPlaylist } from "utils/spotifyCalls";
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SpotifyContext = createContext<ISpotifyContext>(null!);
+const SpotifyContext = createContext<ISpotifyContext | undefined>(undefined);
 export default SpotifyContext;
 
 interface ISpotifyContextProviderProps {
@@ -243,7 +242,7 @@ export function SpotifyContextProvider({
       {currentlyPlaying?.name && (
         <Head>
           <title>{`${currentlyPlaying?.name} - ${
-            currentlyPlaying?.artists?.[0].name || "Rindu"
+            currentlyPlaying?.artists?.[0].name ?? "Rindu"
           }`}</title>
         </Head>
       )}

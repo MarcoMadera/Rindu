@@ -33,7 +33,7 @@ export default function FirstTrackContainer({
     (isPremium && track?.is_playable !== false && !track?.is_local);
   const router = useRouter();
   const cardRef = useRef<HTMLAnchorElement>(null);
-  const isVisible = useOnScreen(cardRef, "-60px");
+  const isVisible = useOnScreen(cardRef, "-150px");
 
   useEffect(() => {
     if (backgroundColor || !track?.id) return;

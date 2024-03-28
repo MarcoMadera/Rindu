@@ -101,7 +101,7 @@ function CardTrack({
   const { addContextMenu } = useContextMenu();
   const { addToast } = useToast();
   const { translations } = useTranslations();
-  const isVisible = useOnScreen(trackRef);
+  const isVisible = useOnScreen(trackRef, "-150px");
   const { isPremium } = useAuth();
 
   const isSmallScreen = useOnSmallScreen((isSmall) => {

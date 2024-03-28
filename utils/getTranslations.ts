@@ -1,5 +1,5 @@
 import { ServerApiContext } from "types/serverContext";
-import { LOCALE_COOKIE, takeCookie } from "utils";
+import { DEFAULT_LOCALE, LOCALE_COOKIE, takeCookie } from "utils";
 
 export enum Page {
   Home = "home",
@@ -1027,18 +1027,26 @@ export const translations = {
 
 export type Translations = (typeof translations)[Locale];
 
+export function isLocale(value: string): value is Locale {
+  return Object.values(Locale).includes(value as Locale);
+}
+
+export function getLocale(value?: string | null): Locale {
+  if (!value || !isLocale(value)) return DEFAULT_LOCALE;
+
+  return value;
+}
+
 export function getTranslations<T extends Page>(
   page: T,
   context?: ServerApiContext
 ): Translations[T] {
-  const locale = takeCookie(LOCALE_COOKIE, context) ?? Locale.EN;
-  const defaultTranslations = translations[Locale.EN][page];
+  const locale = getLocale(takeCookie(LOCALE_COOKIE, context));
 
-  const translation = translations[locale as Locale][page];
-
-  if (translation) {
-    return translation;
+  if (!isLocale(locale)) {
+    const defaultTranslations = translations[Locale.EN][page];
+    return defaultTranslations;
   }
 
-  return defaultTranslations;
+  return translations[locale][page];
 }

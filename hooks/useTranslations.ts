@@ -4,21 +4,21 @@ import TranslationsContext, {
   TranslationsContextProviderProps,
 } from "context/TranslationsContext";
 import { useCustomContext } from "hooks";
-import { DEFAULT_LOCALE } from "utils";
+import { getLocale, Locale } from "utils";
 
 export interface Translations extends TranslationsContextProviderProps {
-  locale: string;
+  locale: Locale;
   locales: string[];
 }
 
 export function useTranslations(): Translations {
   const context = useCustomContext(TranslationsContext);
   const router = useRouter();
-  const { defaultLocale, locales } = router;
+  const { locales } = router;
 
   return {
     ...context,
-    locale: context.locale ?? defaultLocale ?? DEFAULT_LOCALE,
+    locale: getLocale(context.locale),
     locales: locales ?? [],
   };
 }

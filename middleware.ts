@@ -3,7 +3,7 @@ import { NextResponse, userAgentFromString } from "next/server";
 
 import {
   DEFAULT_LOCALE,
-  Locale,
+  isLocale,
   LOCALE_COOKIE,
   parseAcceptLanguage,
 } from "utils";
@@ -30,9 +30,7 @@ export function middleware(request: NextRequest): NextResponse | void {
 
   const acceptLanguage = request.headers.get("Accept-Language");
   const userLocales = parseAcceptLanguage(acceptLanguage ?? "");
-  const locale =
-    userLocales.find((loc) => Object.values(Locale).includes(loc as Locale)) ??
-    DEFAULT_LOCALE;
+  const locale = userLocales.find(isLocale) ?? DEFAULT_LOCALE;
 
   const localeCookie = request.cookies.get(LOCALE_COOKIE)?.value;
   const localeCookieValue = localeCookie ?? locale;

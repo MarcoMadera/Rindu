@@ -1,5 +1,6 @@
-import { useContext, useMemo } from "react";
+import { useMemo } from "react";
 
+import { useCustomContext } from "./useCustomContext";
 import UserContext, { IUserContext } from "../context/UserContext";
 
 interface IUseAuth extends IUserContext {
@@ -7,7 +8,7 @@ interface IUseAuth extends IUserContext {
 }
 
 export function useAuth(): IUseAuth {
-  const context = useContext(UserContext);
+  const context = useCustomContext(UserContext);
 
   const isPremium = useMemo(
     () => context.user?.product === "premium",

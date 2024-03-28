@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AppContextProvider } from "../../context/AppContextProvider";
-import { translations, Locale } from "../../utils/getTranslations";
+import { translations, getLocale } from "../../utils/getTranslations";
+import { StoryFn, StoryContext } from "@storybook/react";
 import StorybookConfigurationModal, {
   StorybookConfigurationModalProps,
 } from "../../components/StorybookConfigurationModal";
@@ -49,11 +50,11 @@ function StorybookModal({
   return null;
 }
 
-export const WithConfiguration = (Story, context) => {
-  const defaultLanguage = context.globals.language || Locale.EN;
-  const [language, setLanguage] = useState(defaultLanguage);
+export const WithConfiguration = (Story: StoryFn, context: StoryContext) => {
+  const initialLanguage = getLocale(context.globals.language);
+  const [language, setLanguage] = useState(initialLanguage);
   const allTranslations: Record<string, string>[] = Object.values(
-    translations[defaultLanguage as Locale]
+    translations[initialLanguage]
   );
   const allTranslationsFlat = allTranslations.reduce(
     (acc, cur) => ({ ...acc, ...cur }),
@@ -87,17 +88,20 @@ export const WithConfiguration = (Story, context) => {
     };
   }, [openModal]);
 
+  const backgrounThemeColor =
+    context.parameters.container?.backgroundTheme === "dark"
+      ? "#121212"
+      : "#fff";
+
+  const backgroundColor = !context.parameters.container?.backgroundTheme
+    ? "transparent"
+    : backgrounThemeColor;
+
   return (
     <div
       style={{
         padding: context.parameters.container?.disablePadding ? "" : "3rem",
-        backgroundColor: `${
-          !context.parameters.container?.backgroundTheme
-            ? "transparent"
-            : context.parameters.container?.backgroundTheme === "dark"
-              ? "#121212"
-              : "#fff"
-        }`,
+        backgroundColor: backgroundColor,
         ...context.parameters.container?.style,
       }}
       id="__next"
@@ -155,7 +159,7 @@ export const WithConfiguration = (Story, context) => {
             setLanguage(language);
             context.globals.language = language;
           }}
-          language={defaultLanguage || language}
+          language={initialLanguage || language}
           product={product}
           isLogin={isLogin}
         />

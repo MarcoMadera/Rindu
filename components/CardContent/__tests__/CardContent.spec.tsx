@@ -1,6 +1,7 @@
 import { ComponentProps } from "react";
 
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { useRouter } from "next/router";
 
 import { CardContent } from "components";
@@ -82,29 +83,31 @@ describe("cardContent", () => {
     );
   });
 
-  it("should keydown enter", () => {
+  it("should keydown enter", async () => {
     expect.assertions(1);
     const push = jest.fn();
 
     setup({}, { push });
     const mytest = screen.getByTestId("cardContent-button");
-    fireEvent.keyDown(mytest, { key: "Enter" });
+    await userEvent.click(mytest);
+    await userEvent.keyboard("[Enter]");
 
     expect(push).toHaveBeenCalledWith("/track/id");
   });
 
-  it("should keydown enter is visible", () => {
+  it("should keydown enter is visible", async () => {
     expect.assertions(2);
     const push = jest.fn();
     setup({ cardContentProps: { images: [{ url: "url" }] } }, { push });
     const mytest = screen.getByTestId("cardContent-button");
     const img = screen.getByRole("img");
-    fireEvent.keyDown(mytest, { key: "Enter" });
+    await userEvent.click(mytest);
+    await userEvent.keyboard("[Enter]");
     expect(img).toBeInTheDocument();
     expect(push).toHaveBeenCalledWith("/track/id");
   });
 
-  it("should keydown enter is visible without url", () => {
+  it("should keydown enter is visible without url", async () => {
     expect.assertions(2);
     const push = jest.fn();
 
@@ -114,7 +117,8 @@ describe("cardContent", () => {
     );
     const mytest = screen.getByTestId("cardContent-button");
     const img = screen.getByRole("img");
-    fireEvent.keyDown(mytest, { key: "Enter" });
+    await userEvent.click(mytest);
+    await userEvent.keyboard("[Enter]");
     expect(img).toBeInTheDocument();
     expect(push).toHaveBeenCalledWith("/track/id");
   });
@@ -142,13 +146,14 @@ describe("cardContent", () => {
     });
   });
 
-  it("should have tabIndex -1 when is not visible", () => {
+  it("should have tabIndex -1 when passed from props", () => {
     expect.assertions(1);
     setup(
       {
         cardContentProps: {
           type: CardType.ARTIST,
           images: [{}] as SpotifyApi.ImageObject[],
+          tabIndex: -1,
         },
       },
       { useOnScreen: false }
@@ -180,7 +185,7 @@ describe("cardContent", () => {
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
   });
 
-  it("should not react onKeyDown Enter or onclick if not passed type", () => {
+  it("should not react onKeyDown Enter or onclick if not passed type", async () => {
     expect.assertions(2);
     const push = jest.fn();
     setup(
@@ -195,7 +200,8 @@ describe("cardContent", () => {
     );
 
     const mytest = screen.getByTestId("cardContent-button");
-    fireEvent.keyDown(mytest, { key: "Enter" });
+    await userEvent.click(mytest);
+    await userEvent.keyboard("[Enter]");
     expect(push).toHaveBeenCalledTimes(0);
     fireEvent.click(mytest);
     expect(push).toHaveBeenCalledTimes(0);

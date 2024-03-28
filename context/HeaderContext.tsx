@@ -24,8 +24,7 @@ export interface IHeaderContext {
   setDisableBackground: Dispatch<SetStateAction<boolean>>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const HeaderContext = createContext<IHeaderContext>(null!);
+const HeaderContext = createContext<IHeaderContext | undefined>(undefined);
 export default HeaderContext;
 
 interface IHeaderContextProviderProps {
