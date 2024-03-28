@@ -4,12 +4,10 @@ export async function callPictureInPicture(
 ): Promise<void> {
   if (!navigator.mediaSession?.metadata?.artwork) return;
   const artwork = navigator.mediaSession.metadata.artwork;
-  async function onLoadedData() {
+  function onLoadedData() {
     video.removeEventListener("loadedmetadata", onLoadedData);
 
-    await video.play();
-    video.requestPictureInPicture();
-    video.pause();
+    video.play().then(video.requestPictureInPicture).then(video.pause);
   }
 
   try {

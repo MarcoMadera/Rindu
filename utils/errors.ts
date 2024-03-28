@@ -48,3 +48,10 @@ export class NotFoundError extends BaseError {
     this.name = "NotFoundError";
   }
 }
+
+export class TimeOutError extends BaseError {
+  constructor() {
+    super("Time out");
+    this.name = "TimeOutError";
+  }
+}

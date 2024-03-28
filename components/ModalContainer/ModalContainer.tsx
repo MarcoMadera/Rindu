@@ -34,7 +34,9 @@ function Modal({
   minHeight,
   setModalData,
   children,
-}: PropsWithChildren<IModalProps>): ReactElement {
+}: PropsWithChildren<
+  Omit<IModalProps, "modalRootId" | "handleClose">
+>): ReactElement {
   const { translations } = useTranslations();
   const modalContainerRef = useRef<HTMLDivElement | null>(null);
   useFocusTrap(modalContainerRef);
@@ -169,16 +171,17 @@ export default function ModalContainer({
   const [targetNode, setTargetNode] = useState<Element>();
 
   useEffect(() => {
-    setTargetNode(
-      document.querySelector(
-        props.modalRootId ? `#${props.modalRootId}` : "#globalModal"
-      ) as Element
-    );
+    const targetSelector = props.modalRootId
+      ? `#${props.modalRootId}`
+      : "#globalModal";
+    setTargetNode(document.querySelector(targetSelector) as Element);
 
-    return () => {
+    function cleanup() {
       setTargetNode(undefined);
       if (handleClose) handleClose();
-    };
+    }
+
+    return cleanup;
   }, [props.modalRootId, handleClose]);
 
   useLayoutEffect(() => {
