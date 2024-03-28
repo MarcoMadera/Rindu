@@ -32,3 +32,8 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# scanner
+.scannerwork
+.sonarlint
+.vscode/settings.json

@@ -1,16 +1,29 @@
+import { TimeOutError } from "./errors";
+
+export type WithinResult<T> = {
+  error: Error | null;
+  data: T | null;
+  id?: string;
+};
+
 export async function within<T>(
   promise: Promise<T | null>,
   duration: number,
   id?: string
-): Promise<{ error: string | null; data: T | null; id?: string }> {
-  // eslint-disable-next-line no-async-promise-executor
-  return new Promise(async (resolve) => {
+): Promise<WithinResult<T>> {
+  return new Promise((resolve) => {
     const timeout = setTimeout(() => {
-      resolve({ error: "timeout", data: null, id });
+      resolve({ error: new TimeOutError(), data: null, id });
     }, duration);
 
-    const data = await promise;
-    clearTimeout(timeout);
-    resolve({ error: null, data, id });
+    promise
+      .then((data) => {
+        clearTimeout(timeout);
+        resolve({ error: null, data, id });
+      })
+      .catch((error: Error) => {
+        clearTimeout(timeout);
+        resolve({ error: error, data: null, id });
+      });
   });
 }

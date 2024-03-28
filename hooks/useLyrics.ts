@@ -7,7 +7,9 @@ import {
   GetLyrics,
   IFormatLyricsResponse,
   LyricsAction,
+  TimeOutError,
   within,
+  WithinResult,
 } from "utils";
 
 export function useLyrics({ requestLyrics }: { requestLyrics: boolean }): {
@@ -19,11 +21,10 @@ export function useLyrics({ requestLyrics }: { requestLyrics: boolean }): {
   const [lyrics, setLyrics] = useState<IFormatLyricsResponse | null>(null);
   const [lyricsLoading, setLoading] = useToggle();
   const [lyricsError, setLyricsError] = useState<string | null>(null);
-  const [res, setRes] = useState<{
-    error: string | null;
-    id?: string | null;
-    data: GetLyrics;
-  }>({ error: null, data: null, id: null });
+  const [res, setRes] = useState<WithinResult<GetLyrics>>({
+    error: null,
+    data: null,
+  });
   const artist = currentlyPlaying?.artists?.[0].name;
   const title = currentlyPlaying?.name;
   const trackId = currentlyPlaying?.id;
@@ -33,7 +34,7 @@ export function useLyrics({ requestLyrics }: { requestLyrics: boolean }): {
     setLoading.on();
     setLyricsError(null);
     setLyrics(null);
-    setRes({ error: null, data: null, id: null });
+    setRes({ error: null, data: null });
 
     if (!artist || !title) {
       setLyrics(null);
@@ -62,7 +63,7 @@ export function useLyrics({ requestLyrics }: { requestLyrics: boolean }): {
   useEffect(() => {
     if (!requestLyrics) return;
     if (!res || !artist || !title || res.id !== artist + title) return;
-    if (res.error === "timeout") {
+    if (TimeOutError.isThisError(res.error)) {
       setLyricsError(
         "Sorry, This seems to be very slow and we don't want to make you wait more"
       );

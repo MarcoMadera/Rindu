@@ -115,14 +115,7 @@ export default function PageHeader({
     >
       {coverImg && !banner ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={pageHeaderImg}
-          alt=""
-          id="playlist-cover-image"
-          onLoadedData={() => {
-            getMainColorFromImage("playlist-cover-image", setHeaderColor);
-          }}
-        />
+        <img src={pageHeaderImg} alt="" id="playlist-cover-image" />
       ) : (
         !banner && <div id="playlist-playlist-cover-image"></div>
       )}
