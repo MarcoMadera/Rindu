@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Meta, StoryFn } from "@storybook/react";
+import { fn } from "@storybook/test";
 
 import { Slider } from "components";
 
@@ -31,9 +32,7 @@ export const WithUpdate = {
       ms: 1000,
       shouldUpdate: true,
     },
-    onDragging: (isDragging: boolean): void => {
-      console.info("draggin", isDragging);
-    },
+    onDragging: fn(),
     setLabelValue: (value: string): void => {
       console.info("label", value);
     },

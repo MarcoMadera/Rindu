@@ -1,21 +1,23 @@
 import { ReactElement, useEffect, useState } from "react";
 
 import {
+  Anchor,
   Button,
   CheckBoxControl,
   SelectControl,
   TextControl,
 } from "components";
+import { Emphasis } from "components/Anchor";
 import { useToast, useToggle, useTranslations } from "hooks";
 import { ToastMessage } from "utils";
 
 export default function EmbedModal({
   type,
   id,
-}: {
+}: Readonly<{
   type: string;
   id: string;
-}): ReactElement {
+}>): ReactElement {
   const [showCode, setShowCode] = useToggle();
   const { addToast } = useToast();
   const [width, setWidth] = useState("100%");
@@ -29,7 +31,7 @@ export default function EmbedModal({
   useEffect(() => {
     const bodyStyle = document.body.getAttribute("style");
     if (bodyStyle) {
-      const headerColor = bodyStyle.match(/--header-color:(.*?);/);
+      const headerColor = RegExp(/--header-color:(.*?);/).exec(bodyStyle);
       if (headerColor) {
         setHeaderColor(headerColor[1]);
       }
@@ -99,13 +101,21 @@ export default function EmbedModal({
       </div>
       <small>
         By embedding a Spotify player on your site, you are agreeing to{" "}
-        <a href="https://developer.spotify.com/terms/" target="_blank">
+        <Anchor
+          href="https://developer.spotify.com/terms/"
+          target="_blank"
+          emphasis={Emphasis.Bold}
+        >
           Spotify&apos;s Developer Terms
-        </a>{" "}
+        </Anchor>{" "}
         and{" "}
-        <a href="https://www.spotify.com/platform-rules/" target="_blank">
+        <Anchor
+          href="https://www.spotify.com/platform-rules/"
+          target="_blank"
+          emphasis={Emphasis.Bold}
+        >
           Spotify Platform Rules
-        </a>
+        </Anchor>
       </small>
       <div className="footer">
         <div
@@ -238,19 +248,6 @@ export default function EmbedModal({
           display: block;
           font-size: 0.8rem;
           margin-bottom: 24px;
-        }
-        a {
-          font-weight: 700;
-          color: #fff;
-          text-decoration: none;
-          touch-action: manipulation;
-        }
-        a:hover,
-        a:focus {
-          text-decoration: underline;
-        }
-        a:focus {
-          outline: none;
         }
 
         .footer {

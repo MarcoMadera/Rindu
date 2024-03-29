@@ -1,6 +1,12 @@
 import { addons } from "@storybook/manager-api";
-import theme from "./theme";
+import { themes } from "@storybook/theming";
 
 addons.setConfig({
-  theme,
+  theme: {
+    ...themes.dark,
+    brandTitle: "Rindu",
+    brandUrl: "https://rindu.marcomadera.com",
+    brandTarget: "_self",
+    appPreviewBg: "#121212",
+  },
 });

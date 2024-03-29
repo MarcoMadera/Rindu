@@ -9,6 +9,7 @@ import {
   ContentContainer,
   Heading,
   PageHeader,
+  Paragraph,
   PlayButton,
   PlaylistTopBarExtraField,
 } from "components";
@@ -226,7 +227,7 @@ export default function TrackPage({
             <Heading number={3} as="h2">
               {translations.lyrics}
             </Heading>
-            <p className="lyrics">{lyrics}</p>
+            <Paragraph>{lyrics}</Paragraph>
           </div>
         ) : null}
         {artistInfo && (

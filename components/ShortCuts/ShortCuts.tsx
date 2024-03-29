@@ -1,6 +1,6 @@
 import { Fragment, ReactElement } from "react";
 
-import { Heading } from "components";
+import { Heading, Kbd } from "components";
 import { useTranslations } from "hooks";
 import { AsType } from "types/heading";
 import { templateReplace } from "utils";
@@ -66,10 +66,10 @@ export default function ShortCuts(): ReactElement {
       <p>
         {templateReplace(translations.shortCutdescription, [
           <Fragment key={"Shortcut to shortcut"}>
-            <kbd key={"Ctrl"}>Ctrl</kbd>
-            <kbd key={"/"}>/</kbd>
+            <Kbd key={"Ctrl"}>Ctrl</Kbd>
+            <Kbd key={"/"}>/</Kbd>
           </Fragment>,
-          <kbd key={"?"}>?</kbd>,
+          <Kbd key={"?"}>?</Kbd>,
         ])}
       </p>
       <div className="shortcuts">
@@ -87,7 +87,7 @@ export default function ShortCuts(): ReactElement {
                         <li key={shortCutName}>
                           <span>{shortCutName}</span>
                           {shortCut[shortCutName].map((key) => {
-                            return <kbd key={key}>{key}</kbd>;
+                            return <Kbd key={key}>{key}</Kbd>;
                           })}
                         </li>
                       );
@@ -112,19 +112,6 @@ export default function ShortCuts(): ReactElement {
           overflow: auto;
           max-width: 100%;
           max-height: 100%;
-        }
-        kbd {
-          border-radius: 4px;
-          box-shadow:
-            0 1px 0 rgba(0, 0, 0, 0.3),
-            inset 0 0 0 1px #fff;
-          box-sizing: border-box;
-          color: inherit;
-          display: inline-block;
-          font-size: 1rem;
-          font-weight: 400;
-          margin: 0 4px;
-          padding: 2px 8px;
         }
         ol,
         ul {

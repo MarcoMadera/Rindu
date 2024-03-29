@@ -13,6 +13,9 @@ export default {
     container: {
       backgroundTheme: "light",
     },
+    backgrounds: {
+      default: "white",
+    },
   },
 } as Meta<typeof CardContainer>;
 
