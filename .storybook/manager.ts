@@ -6,7 +6,8 @@ addons.setConfig({
     ...themes.dark,
     brandTitle: "Rindu",
     brandUrl: "https://rindu.marcomadera.com",
-    brandTarget: "_self",
+    brandTarget: "_blank",
     appPreviewBg: "#121212",
+    brandImage: "/Logo.svg",
   },
 });

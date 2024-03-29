@@ -53,6 +53,7 @@ export { default as PlayerControls } from "./PlayerControls";
 export { default as PlaylistText } from "./PlaylistText";
 export { default as PlaylistTopBarExtraField } from "./PlaylistTopBarExtraField";
 export { default as PortalTarget } from "./PortalTarget";
+export { default as Pre } from "./Pre";
 export { default as PresentationCard } from "./PresentationCard";
 export { default as ProgressBar } from "./ProgressBar";
 export { default as RemoveTracksModal } from "./RemoveTracksModal";
