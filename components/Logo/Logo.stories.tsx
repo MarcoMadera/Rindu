@@ -22,4 +22,22 @@ export const Default = {
   args: {
     color: "#000",
   },
+  parameters: {
+    backgrounds: {
+      default: "white",
+    },
+  },
+};
+
+export const LoggedIn = {
+  render: Template,
+
+  args: {
+    color: "#fff",
+  },
+  parameters: {
+    backgrounds: {
+      default: "spotify",
+    },
+  },
 };

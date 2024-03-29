@@ -2,7 +2,7 @@ import React from "react";
 
 import { Meta, StoryFn } from "@storybook/react";
 
-import { DeviceConnectControl } from "components";
+import { Anchor, DeviceConnectControl, Paragraph } from "components";
 
 export default {
   title: "Components/DeviceConnectControl",
@@ -13,15 +13,15 @@ export default {
 } as Meta<typeof DeviceConnectControl>;
 
 const Template: StoryFn<typeof DeviceConnectControl> = () => (
-  <div style={{ color: "#121212" }}>
+  <Paragraph>
     Go to{" "}
-    <a
+    <Anchor
       href="https://developer.spotify.com/console/get-users-available-devices/"
       target="_blank"
       rel="noreferrer"
     >
       Spotify API
-    </a>{" "}
+    </Anchor>{" "}
     and get an access token, make sure to have the{" "}
     <code>user-read-playback-state</code> and{" "}
     <code>user-modify-playback-state</code> scopes.
@@ -40,7 +40,7 @@ const Template: StoryFn<typeof DeviceConnectControl> = () => (
     >
       <DeviceConnectControl />
     </div>
-  </div>
+  </Paragraph>
 );
 
 export const Default = {

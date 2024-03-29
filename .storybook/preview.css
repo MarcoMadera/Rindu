@@ -11,7 +11,15 @@ body {
 .sbdocs-content h2,
 .sbdocs-content h3,
 .sbdocs-content li {
-  color: #000;
+  color: #e5e5e5;
+}
+
+#storybook-docs .sbdocs {
+  font-family: "Lato", sans-serif;
+  color: #e5e5e5;
+  background-color: #222425;
+  padding: 1rem;
+  overflow: auto;
 }
 
 .sbdocs-content ul {

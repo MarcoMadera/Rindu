@@ -20,6 +20,11 @@ const Template: StoryFn<typeof TopBar> = () => <TopBar />;
 
 export const Default = {
   render: Template,
+  parameters: {
+    backgrounds: {
+      default: "white",
+    },
+  },
 };
 
 export const LoggedIn = {

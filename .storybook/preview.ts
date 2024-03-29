@@ -15,11 +15,33 @@ const preview: Preview = {
         color: /(background|color)$/i,
         date: /Date$/,
       },
+      theme: themes.dark,
     },
     docs: {
-      theme: themes.light,
+      theme: themes.dark,
       container: DocsContainer,
       page: DocsPage,
+    },
+    backgrounds: {
+      default: "spotify",
+      values: [
+        {
+          name: "spotify",
+          value: "#121212",
+        },
+        {
+          name: "twitter",
+          value: "#00aced",
+        },
+        {
+          name: "facebook",
+          value: "#3b5998",
+        },
+        {
+          name: "white",
+          value: "#ffffff",
+        },
+      ],
     },
   },
   globals: {
