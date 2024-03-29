@@ -7,7 +7,6 @@ import { Locale } from "../utils/getTranslations";
 const preview: Preview = {
   parameters: {
     actions: {
-      argTypesRegex: "^on[A-Z].*",
       handles: ["click", "input", "submit"],
     },
     controls: {

@@ -1,7 +1,7 @@
 import type { Meta as MetaObj, StoryObj } from "@storybook/react";
 
-import Paragraph from "./Paragraph";
-import TextHighlighter from "./TextHighlighter";
+import { WhiteSpace } from "./Pre";
+import { Paragraph, Pre, TextHighlighter } from "components";
 
 export default {
   title: "Design System/Code",
@@ -28,7 +28,7 @@ export const BlockCode: StoryObj = {
     <main>
       <Paragraph>
         This is an example of a block code block:
-        <pre>
+        <Pre>
           <code>
             {`const BlockCode: StoryObj = {
   render: () => (
@@ -42,7 +42,24 @@ export const BlockCode: StoryObj = {
     </main>
   );`}
           </code>
-        </pre>
+        </Pre>
+      </Paragraph>
+    </main>
+  ),
+};
+export const BlockCodeNormalWhiteSpace: StoryObj = {
+  render: () => (
+    <main>
+      <Paragraph>
+        This is an example of a block code block with normal whitespace:
+        <Pre whiteSpace={WhiteSpace.Normal}>
+          <code>
+            {
+              // eslint-disable-next-line quotes
+              '<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>'
+            }
+          </code>
+        </Pre>
       </Paragraph>
     </main>
   ),

@@ -57,5 +57,6 @@ export const Static = {
     action: (progressPercent: number): void => {
       console.info("progressPercent", progressPercent);
     },
+    onDragging: fn(),
   },
 };

@@ -5,7 +5,7 @@ import { Meta, StoryFn } from "@storybook/react";
 import { Logo } from "components";
 
 export default {
-  title: "Components/Logo",
+  title: "Design System/Logo",
   component: Logo,
   parameters: {
     layout: "fullscreen",

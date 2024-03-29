@@ -4,10 +4,12 @@ import {
   Anchor,
   Button,
   CheckBoxControl,
+  Pre,
   SelectControl,
   TextControl,
 } from "components";
 import { Emphasis } from "components/Anchor";
+import { WhiteSpace } from "components/Pre";
 import { useToast, useToggle, useTranslations } from "hooks";
 import { ToastMessage } from "utils";
 
@@ -164,7 +166,7 @@ export default function EmbedModal({
         </div>
       </div>
       <section className={showCode ? "show-code" : ""}>
-        <pre>{code}</pre>
+        <Pre whiteSpace={WhiteSpace.Normal}>{code}</Pre>
       </section>
       <style jsx>{`
         :global(.modal) {
@@ -321,15 +323,6 @@ export default function EmbedModal({
         }
         section.show-code {
           height: 130px;
-        }
-        pre {
-          background: hsla(0, 0%, 100%, 0.1);
-          color: #fff;
-          display: block;
-          padding: 12px;
-          white-space: normal;
-          width: 100%;
-          line-height: 1.6;
         }
         .hidden {
           visibility: hidden;
