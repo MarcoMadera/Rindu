@@ -13,13 +13,15 @@ export default function Paragraph(
         p {
           color: #b3b3b3;
           font-weight: 400;
-          letter-spacing: -0.04em;
           margin: 0;
-          white-space: pre-wrap;
+          white-space: pre-line;
           font-size: 1rem;
           line-height: 1.5rem;
           text-transform: none;
           letter-spacing: normal;
+          max-width: 672px;
+          padding-top: 16px;
+          padding-right: 20px;
         }
       `}</style>
     </p>

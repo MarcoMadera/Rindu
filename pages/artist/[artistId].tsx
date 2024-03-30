@@ -10,6 +10,7 @@ import {
   FollowButton,
   Heading,
   PageHeader,
+  Paragraph,
   PlayButton,
   PlaylistTopBarExtraField,
   SetList,
@@ -267,13 +268,21 @@ export default function ArtistPage({
                 {translations.pages.artist.about}
               </Heading>
               {showMoreAbout ? (
-                <p
-                  dangerouslySetInnerHTML={{ __html: artistInfo?.bio?.content }}
-                ></p>
+                <Paragraph>
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: artistInfo?.bio?.content,
+                    }}
+                  ></span>
+                </Paragraph>
               ) : (
-                <p
-                  dangerouslySetInnerHTML={{ __html: artistInfo?.bio?.summary }}
-                ></p>
+                <Paragraph>
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: artistInfo?.bio?.summary,
+                    }}
+                  ></span>
+                </Paragraph>
               )}
               <TextToggleButton
                 isToggle={showMoreAbout}
@@ -296,7 +305,7 @@ export default function ArtistPage({
         )}
         {setLists ? (
           <div className="attribution">
-            <p>
+            <Paragraph>
               {translations.pages.artist.concertSetlistOn}{" "}
               <a
                 href="https://www.setlist.fm/"
@@ -305,7 +314,7 @@ export default function ArtistPage({
               >
                 setlist.fm
               </a>
-            </p>
+            </Paragraph>
           </div>
         ) : null}
       </div>
@@ -350,20 +359,6 @@ export default function ArtistPage({
           border-radius: 10px;
           max-height: 400px;
           aspect-ratio: 1;
-        }
-        p {
-          font-size: 1rem;
-          line-height: 1.5rem;
-          text-transform: none;
-          letter-spacing: normal;
-          box-sizing: border-box;
-          font-family: "Lato", sans-serif;
-          margin: 0px;
-          font-weight: 400;
-          color: #9e9e9e;
-          max-width: 672px;
-          padding-top: 16px;
-          padding-right: 20px;
         }
         .options {
           display: flex;
