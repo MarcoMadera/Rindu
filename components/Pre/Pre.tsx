@@ -3,6 +3,8 @@ import { PropsWithChildren, ReactElement } from "react";
 export enum WhiteSpace {
   Normal = "normal",
   Pre = "pre",
+  PreLine = "pre-line",
+  PreWrap = "pre-wrap",
 }
 
 interface IPre {
@@ -22,7 +24,6 @@ export default function Pre({
           color: #fff;
           display: block;
           padding: 12px;
-          white-space: normal;
           width: 100%;
           line-height: 1.6;
           word-break: normal;

@@ -10,9 +10,6 @@ export default {
   component: BigPill,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
   },
   argTypes: {
     title: { control: "text" },

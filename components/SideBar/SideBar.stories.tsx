@@ -11,7 +11,6 @@ export default {
   parameters: {
     layout: "fullscreen",
     container: {
-      backgroundTheme: "dark",
       disablePadding: true,
       style: {
         maxWidth: "300px",

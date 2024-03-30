@@ -9,9 +9,6 @@ export default {
   component: LoadingSpinner,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
   },
 } as Meta<typeof LoadingSpinner>;
 

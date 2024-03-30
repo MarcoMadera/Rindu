@@ -8,9 +8,6 @@ export default {
   component: SearchInputElement,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
   },
   argTypes: {
     source: {

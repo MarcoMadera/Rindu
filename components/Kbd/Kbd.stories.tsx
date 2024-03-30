@@ -9,9 +9,6 @@ export default {
   component: Kbd,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
   },
 } as Meta<typeof Kbd>;
 

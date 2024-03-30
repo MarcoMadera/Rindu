@@ -8,9 +8,6 @@ export default {
   component: PlaybackExtraControls,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
   },
 } as Meta<typeof PlaybackExtraControls>;
 

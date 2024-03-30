@@ -34,6 +34,7 @@ export const en: ITranslations = {
     playerInitializationError: "There was an error initializing the player",
     playerPlaybackError: "There was an error playing your music",
     playerAccountError: "There was an error with your Spotify account",
+    failToPasteFromClipboard: "Failed to paste from clipboard",
   },
   shortCuts: {
     shortCutsTitle: "Keyboard Shortcuts",
@@ -365,6 +366,21 @@ export const en: ITranslations = {
       reload: "Reload",
       localLabel: { es: "Spanish", en: "English" },
     },
+  },
+  terminal: {
+    title: "Terminal",
+    welcome: "Welcome to the terminal",
+    commandMessages: {
+      help: `Available commands:
+
+      1. help - Display this help message
+      2. clear - Clear the command history`,
+      unrecognizedCommand:
+        "Command not recognized. Type 'help' to see the list of available commands.",
+    },
+  },
+  common: {
+    guest: "Guest",
   },
 };
 

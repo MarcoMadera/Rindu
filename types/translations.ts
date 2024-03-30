@@ -9,6 +9,23 @@ export interface ITranslations {
   removeTracksModal: RemoveTracksModal;
   homeFeatures: HomeFeature[];
   pages: Pages;
+  common: Common;
+  terminal: Terminal;
+}
+
+export interface Common {
+  guest: string;
+}
+
+export interface Terminal {
+  title: string;
+  welcome: string;
+  commandMessages: CommandMessages;
+}
+
+export interface CommandMessages {
+  help: string;
+  unrecognizedCommand: string;
 }
 
 export interface ContentType {
@@ -359,4 +376,5 @@ export interface ToastMessages {
   playerInitializationError: string;
   playerPlaybackError: string;
   playerAccountError: string;
+  failToPasteFromClipboard: string;
 }

@@ -4,9 +4,6 @@ export default {
   title: "Design System/Lists",
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
   },
 } as MetaObj;
 

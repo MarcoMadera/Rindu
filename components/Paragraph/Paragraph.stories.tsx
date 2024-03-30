@@ -10,9 +10,6 @@ export default {
   component: ParagraphComponent,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
   },
 } as MetaObj;
 
