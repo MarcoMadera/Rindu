@@ -10,7 +10,6 @@ export default {
   parameters: {
     layout: "fullscreen",
     container: {
-      backgroundTheme: "dark",
       style: {
         display: "flex",
         flexDirection: "column",

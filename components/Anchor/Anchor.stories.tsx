@@ -8,9 +8,6 @@ export default {
   component: AnchorComponent,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
   },
 } as MetaObj;
 

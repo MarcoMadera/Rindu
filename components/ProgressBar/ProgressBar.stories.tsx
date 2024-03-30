@@ -9,7 +9,6 @@ export default {
   parameters: {
     layout: "fullscreen",
     container: {
-      backgroundTheme: "dark",
       style: {
         width: "100%",
         display: "flex",

@@ -7,9 +7,6 @@ export default {
   component: Button,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
   },
 } as Meta<typeof Button>;
 

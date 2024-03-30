@@ -22,11 +22,19 @@ const preview: Preview = {
       page: DocsPage,
     },
     backgrounds: {
-      default: "spotify",
+      default: "black",
       values: [
         {
-          name: "spotify",
+          name: "black",
           value: "#121212",
+        },
+        {
+          name: "spotify",
+          value: "#1DB954",
+        },
+        {
+          name: "netflix",
+          value: "#E50914",
         },
         {
           name: "twitter",
@@ -35,6 +43,10 @@ const preview: Preview = {
         {
           name: "facebook",
           value: "#3b5998",
+        },
+        {
+          name: "airbnb",
+          value: "#FF5A5F",
         },
         {
           name: "white",

@@ -10,9 +10,6 @@ export default {
   component: NowPlaying,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
     spotifyValue: {
       currentlyPlaying: track,
       isPlaying: true,

@@ -12,9 +12,6 @@ export default {
   component: ArtistList,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
     argTypes: {
       maxArtistsToShow: { control: "number" },
     },

@@ -35,6 +35,7 @@ export const es: ITranslations = {
     playerInitializationError: "Hubo un error al inicializar el reproductor",
     playerPlaybackError: "Hubo un error al reproducir tu música",
     playerAccountError: "Hubo un error con tu cuenta de Spotify",
+    failToPasteFromClipboard: "No se pudo pegar desde el portapapeles",
   },
   shortCuts: {
     shortCutsTitle: "Atajos del teclado",
@@ -366,6 +367,21 @@ export const es: ITranslations = {
       english: "Inglés",
       reload: "Volver a cargar",
       localLabel: { es: "Español", en: "Inglés" },
+    },
+  },
+  common: {
+    guest: "Invitado",
+  },
+  terminal: {
+    title: "Terminal",
+    welcome: "Bienvenido a la terminal",
+    commandMessages: {
+      help: `Comandos disponibles:
+  
+      1. help - Muestra este mensaje de ayuda
+      2. clear - Borra el historial de comandos`,
+      unrecognizedCommand:
+        "Comando no reconocido. Escribe 'help' para ver la lista de comandos disponibles.",
     },
   },
 };

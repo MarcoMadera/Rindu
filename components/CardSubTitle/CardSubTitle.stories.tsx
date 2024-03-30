@@ -9,9 +9,6 @@ export default {
   component: CardSubTitle,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
   },
 } as Meta<typeof CardSubTitle>;
 

@@ -8,9 +8,6 @@ export default {
   component: BrowseCategories,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
     argTypes: {
       totalCategories: { control: "number" },
     },

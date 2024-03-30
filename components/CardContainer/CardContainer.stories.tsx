@@ -10,9 +10,6 @@ export default {
   component: CardContainer,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "light",
-    },
     backgrounds: {
       default: "white",
     },

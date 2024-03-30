@@ -7,9 +7,6 @@ export default {
   component: Heading,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
   },
 } as MetaObj;
 

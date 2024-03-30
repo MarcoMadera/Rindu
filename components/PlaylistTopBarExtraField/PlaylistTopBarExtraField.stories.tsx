@@ -8,9 +8,6 @@ export default {
   component: PlaylistTopBarExtraField,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
     spotifyValue: {
       pageDetails: {
         name: "Собирай меня",

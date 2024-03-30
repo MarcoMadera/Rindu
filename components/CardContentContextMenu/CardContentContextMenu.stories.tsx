@@ -8,9 +8,6 @@ export default {
   component: CardContentContextMenu,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
   },
 } as Meta<typeof CardContentContextMenu>;
 

@@ -10,6 +10,11 @@ export default {
   component: PresentationCard,
   parameters: {
     layout: "fullscreen",
+    container: {
+      style: {
+        maxWidth: "290px",
+      },
+    },
   },
   argTypes: {
     id: {

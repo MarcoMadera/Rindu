@@ -6,9 +6,6 @@ export default {
   title: "Design System/Table",
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
   },
 } as MetaObj;
 

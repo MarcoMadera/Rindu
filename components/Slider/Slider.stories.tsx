@@ -10,9 +10,6 @@ export default {
   component: Slider,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
   },
 } as Meta<typeof Slider>;
 

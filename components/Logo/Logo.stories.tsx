@@ -37,7 +37,7 @@ export const LoggedIn = {
   },
   parameters: {
     backgrounds: {
-      default: "spotify",
+      default: "black",
     },
   },
 };

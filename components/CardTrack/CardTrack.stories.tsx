@@ -7,9 +7,6 @@ export default {
   component: CardTrack,
   parameters: {
     layout: "fullscreen",
-    container: {
-      backgroundTheme: "dark",
-    },
   },
   argTypes: {
     isTrackInLibrary: {
