@@ -2,7 +2,7 @@ import type { Preview } from "@storybook/react";
 import { WithConfiguration } from "./decorators/WithConfiguration";
 import { DocsPage, DocsContainer } from "@storybook/addon-docs";
 import { themes } from "@storybook/theming";
-import { Locale } from "../utils/getTranslations";
+import { Locale } from "../utils/locale";
 
 const preview: Preview = {
   parameters: {

@@ -13,10 +13,10 @@ import {
 export default function FollowButton({
   type,
   id,
-}: {
+}: Readonly<{
   type: Follow_type;
   id?: string;
-}): Readonly<ReactElement> {
+}>): ReactElement {
   const [isFollowing, setIsFollowing] = useState(false);
   const { translations } = useTranslations();
   const router = useRouter();
@@ -48,7 +48,9 @@ export default function FollowButton({
         }
       }}
     >
-      {isFollowing ? translations.following : translations.follow}
+      {isFollowing
+        ? translations.pages.artist.following
+        : translations.pages.artist.follow}
       <style jsx>{`
         button {
           margin-left: 20px;

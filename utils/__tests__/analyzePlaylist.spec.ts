@@ -2,7 +2,7 @@ import { IUtilsMocks } from "types/mocks";
 import { ITrack } from "types/spotify";
 import { analyzePlaylist } from "utils/analyzePlaylist";
 import { getAllTracksFromPlaylist } from "utils/getAllTracksFromPlaylist";
-import { getTranslations, Page } from "utils/getTranslations";
+import { getTranslations } from "utils/getTranslations";
 
 jest.mock<typeof import("utils")>("utils/getAllTracksFromPlaylist", () => ({
   ...jest.requireActual<typeof import("utils")>(
@@ -14,7 +14,7 @@ jest.mock<typeof import("utils")>("utils/getAllTracksFromPlaylist", () => ({
 const { track } = jest.requireActual<IUtilsMocks>("./__mocks__/mocks.ts");
 
 describe("analyzePlaylist", () => {
-  const translations = getTranslations(Page.Playlist);
+  const translations = getTranslations();
   it("should return null if no id or accessToken or totalTracks", async () => {
     expect.assertions(1);
 

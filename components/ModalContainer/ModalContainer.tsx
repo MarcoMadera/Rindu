@@ -66,7 +66,7 @@ function Modal({
               setModalData(null);
             }}
             className="exitButton"
-            title={translations.close}
+            title={translations.removeTracksModal.close}
           >
             <svg
               role="img"

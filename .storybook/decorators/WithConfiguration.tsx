@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { AppContextProvider } from "../../context/AppContextProvider";
-import { translations, getLocale } from "../../utils/getTranslations";
+import { getLocale } from "../../utils/locale";
 import { StoryFn, StoryContext } from "@storybook/react";
 import StorybookConfigurationModal, {
   StorybookConfigurationModalProps,
 } from "../../components/StorybookConfigurationModal";
 import { useModal } from "../../hooks";
+import { translations as allTranslations } from "../../i18n";
 
 interface StorybookModal extends StorybookConfigurationModalProps {
   open: boolean;
@@ -53,13 +54,7 @@ function StorybookModal({
 export const WithConfiguration = (Story: StoryFn, context: StoryContext) => {
   const initialLanguage = getLocale(context.globals.language);
   const [language, setLanguage] = useState(initialLanguage);
-  const allTranslations: Record<string, string>[] = Object.values(
-    translations[initialLanguage]
-  );
-  const allTranslationsFlat = allTranslations.reduce(
-    (acc, cur) => ({ ...acc, ...cur }),
-    {}
-  );
+  const translations = allTranslations[initialLanguage];
   const [openModal, setOpenModal] = useState(false);
   const [product, setProduct] = useState(context.globals.product || "premium");
   const [isLogin, setIsLogin] = useState(context.globals.isLogin || true);
@@ -107,7 +102,7 @@ export const WithConfiguration = (Story: StoryFn, context: StoryContext) => {
       id="__next"
     >
       <AppContextProvider
-        translations={allTranslationsFlat}
+        translations={translations}
         userValue={{
           isLogin: isLogin,
           user: {

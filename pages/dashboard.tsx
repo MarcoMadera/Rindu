@@ -15,6 +15,7 @@ import {
 import { CardType } from "components/CardContent";
 import { useAuth, useHeader, useSpotify, useTranslations } from "hooks";
 import { AuthorizationResponse, ITrack } from "types/spotify";
+import { ITranslations } from "types/translations";
 import {
   ACCESS_TOKEN_COOKIE,
   deserialize,
@@ -26,11 +27,9 @@ import {
   getTracksOfTheWeek,
   getTranslations,
   makeCookie,
-  Page,
   REFRESH_TOKEN_COOKIE,
   serverRedirect,
   takeCookie,
-  Translations,
 } from "utils";
 import {
   checkTracksInLibrary,
@@ -72,7 +71,7 @@ interface DashboardProps {
   topArtists: SpotifyApi.UsersTopArtistsResponse | null;
   tracksRecommendations: ITrack[] | null;
   tracksInLibrary: boolean[] | null;
-  translations: Translations["dashboard"];
+  translations: ITranslations;
   artistOfTheWeek: SpotifyApi.ArtistObjectFull[] | null;
   tracksOfTheWeek: ITrack[] | null;
   thisPlaylists: MappedPlaylist[] | null;
@@ -130,7 +129,7 @@ const Dashboard = ({
     <ContentContainer>
       {topTracks && topTracks.length > 0 ? (
         <TopTracks
-          heading={translations.topTracksHeading}
+          heading={translations.pages.dashboard.topTracksHeading}
           topTracks={topTracks}
         />
       ) : null}
@@ -138,7 +137,8 @@ const Dashboard = ({
       featuredPlaylists?.playlists?.items?.length > 0 ? (
         <Carousel
           title={
-            featuredPlaylists.message ?? translations.featuredPlaylistsHeading
+            featuredPlaylists.message ??
+            translations.pages.dashboard.featuredPlaylistsHeading
           }
           gap={24}
         >
@@ -153,7 +153,7 @@ const Dashboard = ({
                 title={name}
                 subTitle={
                   decode(description) ??
-                  `${translations.by} ${ownerDisplayName ?? ""}`
+                  `${translations.pages.dashboard.by} ${ownerDisplayName ?? ""}`
                 }
                 id={id}
               />
@@ -161,7 +161,10 @@ const Dashboard = ({
           })}
         </Carousel>
       ) : null}
-      <Carousel title={translations.topTracksPlaylistHeading} gap={24}>
+      <Carousel
+        title={translations.pages.dashboard.topTracksPlaylistHeading}
+        gap={24}
+      >
         {topTracksCards?.map((item) => {
           if (!item) return null;
           const { images, name, url } = item;
@@ -179,7 +182,10 @@ const Dashboard = ({
         })}
       </Carousel>
       {artistOfTheWeek && artistOfTheWeek.length > 0 ? (
-        <Carousel title={translations.artistOfTheWeekHeading} gap={24}>
+        <Carousel
+          title={translations.pages.dashboard.artistOfTheWeekHeading}
+          gap={24}
+        >
           {artistOfTheWeek.map((artist) => {
             if (!artist) return null;
             return (
@@ -197,13 +203,16 @@ const Dashboard = ({
       ) : null}
       {tracksOfTheWeek && tracksOfTheWeek.length > 0 && (
         <MainTracks
-          title={translations.tracksOfTheWeekHeading}
+          title={translations.pages.dashboard.tracksOfTheWeekHeading}
           tracksInLibrary={[]}
           tracksRecommendations={tracksOfTheWeek}
         />
       )}
       {recentlyPlayed && recentlyPlayed.length > 0 ? (
-        <Carousel title={translations.recentlyListenedHeading} gap={24}>
+        <Carousel
+          title={translations.pages.dashboard.recentlyListenedHeading}
+          gap={24}
+        >
           {recentlyPlayed.map((track) => {
             return (
               <PresentationCard
@@ -232,7 +241,10 @@ const Dashboard = ({
       ) : null}
       {newReleases && newReleases.albums?.items?.length > 0 ? (
         <Carousel
-          title={newReleases.message ?? translations.newReleasesHeading}
+          title={
+            newReleases.message ??
+            translations.pages.dashboard.newReleasesHeading
+          }
           gap={24}
         >
           {newReleases.albums?.items?.map((item) => {
@@ -253,13 +265,16 @@ const Dashboard = ({
       ) : null}
       {tracksRecommendations && tracksRecommendations.length > 0 && (
         <MainTracks
-          title={translations.tracksRecommendationsHeading}
+          title={translations.pages.dashboard.tracksRecommendationsHeading}
           tracksInLibrary={tracksInLibrary}
           tracksRecommendations={tracksRecommendations}
         />
       )}
       {thisPlaylists && thisPlaylists.length > 0 ? (
-        <Carousel title={translations.thisPlaylistsHeading} gap={24}>
+        <Carousel
+          title={translations.pages.dashboard.thisPlaylistsHeading}
+          gap={24}
+        >
           {thisPlaylists?.map((item) => {
             if (!item) return null;
             const { images, name, description, id, ownerDisplayName } = item;
@@ -271,7 +286,7 @@ const Dashboard = ({
                 title={name}
                 subTitle={
                   decode(description) ??
-                  `${translations.by} ${ownerDisplayName ?? ""}`
+                  `${translations.pages.dashboard.by} ${ownerDisplayName ?? ""}`
                 }
                 id={id}
               />
@@ -281,7 +296,9 @@ const Dashboard = ({
       ) : null}
       {recentListeningRecommendations.length > 0 ? (
         <Carousel
-          title={translations.recentListeningRecommendationsHeading}
+          title={
+            translations.pages.dashboard.recentListeningRecommendationsHeading
+          }
           gap={24}
         >
           {recentListeningRecommendations.map((track) => {
@@ -301,7 +318,10 @@ const Dashboard = ({
         </Carousel>
       ) : null}
       {topArtists && topArtists.items?.length > 0 ? (
-        <Carousel title={translations.topArtistsHeading} gap={24}>
+        <Carousel
+          title={translations.pages.dashboard.topArtistsHeading}
+          gap={24}
+        >
           {topArtists.items?.map((item) => {
             if (!item) return null;
             const { images, name, id } = item;
@@ -319,7 +339,7 @@ const Dashboard = ({
         </Carousel>
       ) : null}
       {categories && categories.items?.length > 0 ? (
-        <Carousel title={translations.categories} gap={24}>
+        <Carousel title={translations.pages.dashboard.categories} gap={24}>
           {categories.items.map((item) => {
             if (!item) return null;
             const { name, id, icons } = item;
@@ -342,7 +362,7 @@ const Dashboard = ({
 export default Dashboard;
 
 export const getServerSideProps = (async (context) => {
-  const translations = getTranslations(Page.Dashboard, context);
+  const translations = getTranslations(context);
   const lastFMAPIKey = process.env.LAST_FM_API_KEY as string;
   let tokens: Record<string, string | null> | AuthorizationResponse = {
     accessToken: takeCookie(ACCESS_TOKEN_COOKIE, context),

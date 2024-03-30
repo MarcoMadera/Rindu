@@ -26,13 +26,11 @@ import {
 import { DisplayInFullScreen } from "types/spotify";
 import {
   chooseImage,
-  ContentType,
   exitFullScreen,
   getMainColorFromImage,
   isFullScreen,
   requestFullScreen,
   templateReplace,
-  ToastMessage,
 } from "utils";
 import {
   removeEpisodesFromLibrary,
@@ -106,7 +104,9 @@ export default function FullScreenPlayer(): ReactElement | null {
               <Logo color="#fff" />
             </div>
             <div className="player_header__center">
-              <Heading number={2}>{translations.currentlyPlaying}</Heading>
+              <Heading number={2}>
+                {translations.queue.currentlyPlaying}
+              </Heading>
             </div>
             <div className="player_header__right">
               {nextTracks.length > 0 && nextTracks?.[0] && (
@@ -222,14 +222,14 @@ export default function FullScreenPlayer(): ReactElement | null {
                         addToast({
                           variant: "success",
                           message: templateReplace(
-                            translations[ToastMessage.TypeRemovedFrom],
+                            translations.toastMessages.typeRemovedFrom,
                             [
                               `${
                                 currentlyPlaying.type === "episode"
-                                  ? translations[ContentType.Episode]
-                                  : translations[ContentType.Track]
+                                  ? translations.contentType.episode
+                                  : translations.contentType.track
                               }`,
-                              translations[ContentType.Library],
+                              translations.contentType.library,
                             ]
                           ),
                         });
@@ -249,14 +249,14 @@ export default function FullScreenPlayer(): ReactElement | null {
                         addToast({
                           variant: "success",
                           message: templateReplace(
-                            translations[ToastMessage.TypeAddedTo],
+                            translations.toastMessages.typeAddedTo,
                             [
                               `${
                                 currentlyPlaying.type === "episode"
-                                  ? translations[ContentType.Episode]
-                                  : translations[ContentType.Track]
+                                  ? translations.contentType.episode
+                                  : translations.contentType.track
                               }`,
-                              translations[ContentType.Library],
+                              translations.contentType.library,
                             ]
                           ),
                         });

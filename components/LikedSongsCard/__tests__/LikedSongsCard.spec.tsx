@@ -71,7 +71,9 @@ describe("likedSongsCard", () => {
       expect(getMyLikedSongs).toHaveBeenCalledWith(10);
     });
 
-    const cardTitle = screen.getByText(translations.likedSongsCardTitle);
+    const cardTitle = screen.getByText(
+      translations.pages.collectionPlaylists.likedSongsCardTitle
+    );
     const pluralDescription = screen.getByText("653 liked songs");
     const heroCardClickHandler = screen.getByTestId("heroCardClickHandler");
 
@@ -107,7 +109,9 @@ describe("likedSongsCard", () => {
       expect(getMyLikedSongs).toHaveBeenCalledWith(10);
     });
 
-    const cardTitle = screen.getByText(translations.likedSongsCardTitle);
+    const cardTitle = screen.getByText(
+      translations.pages.collectionPlaylists.likedSongsCardTitle
+    );
     const singularDescription = screen.getByText("1 liked song");
 
     expect(cardTitle).toBeInTheDocument();

@@ -1,4 +1,4 @@
-import { Locale } from "./getTranslations";
+import { Locale } from "./locale";
 
 export const ACCESS_TOKEN_COOKIE = "qs";
 export const REFRESH_TOKEN_COOKIE = "rs";

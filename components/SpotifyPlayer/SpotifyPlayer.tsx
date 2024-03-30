@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef } from "react";
+import { PropsWithChildren, ReactElement, useEffect, useRef } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -12,23 +12,23 @@ import {
   useSpotify,
   useSpotifyPlayer,
   useToast,
-  useTranslations,
 } from "hooks";
 import { AppContainer } from "layouts/AppContainer";
 import FullScreenPlayer from "layouts/FullScreenPlayer";
 import { DisplayInFullScreen } from "types/spotify";
+import { ITranslations } from "types/translations";
 import {
   exitFullScreen,
   isFullScreen,
   isServer,
   requestFullScreen,
-  ToastMessage,
 } from "utils";
 
-export default function SpotifyPlayer(): ReactElement {
+export default function SpotifyPlayer({
+  translations,
+}: PropsWithChildren<{ translations: ITranslations }>): ReactElement {
   const { user, isPremium } = useAuth();
   const { addToast } = useToast();
-  const { translations } = useTranslations();
   const router = useRouter();
   const { currentlyPlaying, setDisplayInFullScreen, displayInFullScreen } =
     useSpotify();
@@ -44,12 +44,12 @@ export default function SpotifyPlayer(): ReactElement {
     if (isPremium) {
       addToast({
         variant: "info",
-        message: translations[ToastMessage.WelcomePreparing],
+        message: translations.toastMessages.welcomePreparing,
       });
     } else {
       addToast({
         variant: "info",
-        message: translations[ToastMessage.WelcomeReady],
+        message: translations.toastMessages.welcomeReady,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -133,7 +133,7 @@ export default function SpotifyPlayer(): ReactElement {
     <footer>
       <div ref={ref}>
         {isFullScreenPlayer ? <FullScreenPlayer /> : null}
-        {shouldDisplayApp ? <AppContainer /> : null}
+        {shouldDisplayApp ? <AppContainer translations={translations} /> : null}
       </div>
       <div className="container">
         {isPremium ? (
@@ -165,15 +165,15 @@ export default function SpotifyPlayer(): ReactElement {
           <nav>
             <Link href="/dashboard" className="dashboard">
               <Home fill="#ffffffb3" />
-              {translations?.home}
+              {translations.shortCuts.home}
             </Link>
             <Link href="/search" className="search">
               <Search fill="#ffffffb3" />
-              {translations?.search}
+              {translations.shortCuts.search}
             </Link>
             <Link href="/collection" className="collection">
               <Library fill="#ffffffb3" />
-              {translations?.collection}
+              {translations.sideBar.collection}
             </Link>
           </nav>
         </section>

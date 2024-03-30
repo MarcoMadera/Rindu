@@ -1,6 +1,8 @@
 import { IUtilsMocks } from "types/mocks";
 import { getSetLists } from "utils/getSetLists";
 
+jest.mock<typeof import("utils")>("utils");
+
 const { mockFetchSuccess } = jest.requireActual<IUtilsMocks>(
   "./__mocks__/mocks.ts"
 );

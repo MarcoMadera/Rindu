@@ -26,6 +26,7 @@ import {
   useTranslations,
 } from "hooks";
 import { HeaderType } from "types/pageHeader";
+import { ITranslations } from "types/translations";
 import {
   ArtistScrobbleInfo,
   chooseImage,
@@ -35,7 +36,6 @@ import {
   getCarouselItems,
   getSetLists,
   getTranslations,
-  Page,
   serverRedirect,
   SetLists,
 } from "utils";
@@ -70,7 +70,7 @@ interface ArtistPageProps {
   user: SpotifyApi.UserObjectPrivate | null;
   setLists: SetLists | null;
   artistInfo: ArtistScrobbleInfo | null;
-  translations: Record<string, string>;
+  translations: ITranslations;
   albums: IMappedAlbums | null;
   compilations: IMappedAlbums | null;
 }
@@ -166,27 +166,27 @@ export default function ArtistPage({
   const carousels = [
     {
       type: CardType.ALBUM,
-      title: translations.albumsCarouselTitle,
+      title: translations.pages.artist.albumsCarouselTitle,
       items: albums,
     },
     {
       type: CardType.ALBUM,
-      title: translations.singleAlbumsCarouselTitle,
+      title: translations.pages.artist.singleAlbumsCarouselTitle,
       items: singleAlbums,
     },
     {
       type: CardType.ALBUM,
-      title: translations.appearAlbumsCarouselTitle,
+      title: translations.pages.artist.appearAlbumsCarouselTitle,
       items: appearAlbums,
     },
     {
       type: CardType.ALBUM,
-      title: translations.compilationsCarouselTitle,
+      title: translations.pages.artist.compilationsCarouselTitle,
       items: compilations,
     },
     {
       type: CardType.ARTIST,
-      title: translations.relatedArtistsCarouselTitle,
+      title: translations.pages.artist.relatedArtistsCarouselTitle,
       items: relatedArtists,
     },
   ];
@@ -218,7 +218,7 @@ export default function ArtistPage({
       </div>
       <div className="content">
         {topTracks?.tracks && topTracks?.tracks?.length > 0 ? (
-          <Heading number={2}>{translations.popular}</Heading>
+          <Heading number={2}>{translations.pages.artist.popular}</Heading>
         ) : null}
         <div className="popular-content">
           <div className="topTracks">
@@ -242,8 +242,8 @@ export default function ArtistPage({
             <TextToggleButton
               isToggle={showMoreTopTracks}
               toggleHandlers={setShowMoreTopTracks}
-              activeText={translations.showLess}
-              inactiveText={translations.showMore}
+              activeText={translations.pages.artist.showLess}
+              inactiveText={translations.pages.artist.showMore}
             />
           </div>
           <SetList setLists={setLists} artistId={currentArtist?.id} />
@@ -264,7 +264,7 @@ export default function ArtistPage({
           <section className="about">
             <div>
               <Heading number={3} as="h2">
-                {translations.about}
+                {translations.pages.artist.about}
               </Heading>
               {showMoreAbout ? (
                 <p
@@ -278,8 +278,8 @@ export default function ArtistPage({
               <TextToggleButton
                 isToggle={showMoreAbout}
                 toggleHandlers={setShowMoreAbout}
-                activeText={translations.readLess}
-                inactiveText={translations.readMore}
+                activeText={translations.pages.artist.readLess}
+                inactiveText={translations.pages.artist.readMore}
               />
             </div>
             <div className="artist-about-img-container">
@@ -297,7 +297,7 @@ export default function ArtistPage({
         {setLists ? (
           <div className="attribution">
             <p>
-              {translations.concertSetlistOn}{" "}
+              {translations.pages.artist.concertSetlistOn}{" "}
               <a
                 href="https://www.setlist.fm/"
                 target="_blank"
@@ -411,7 +411,7 @@ export default function ArtistPage({
 }
 
 export const getServerSideProps = (async (context) => {
-  const translations = getTranslations(Page.Artist, context);
+  const translations = getTranslations(context);
   const cookies = context.req?.headers?.cookie;
   const artistId = context.params?.artistId;
   if (!cookies || !artistId) {

@@ -15,15 +15,13 @@ import { useHeader, useSpotify, useToast, useTranslations } from "hooks";
 import { AsType } from "types/heading";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
+import { ITranslations } from "types/translations";
 import {
   chooseImage,
-  ContentType,
   getAuth,
   getTranslations,
-  Page,
   serverRedirect,
   templateReplace,
-  ToastMessage,
 } from "utils";
 import {
   checkEpisodesInLibrary,
@@ -36,7 +34,7 @@ import {
 interface PlaylistProps {
   show: SpotifyApi.SingleShowResponse | null;
   user: SpotifyApi.UserObjectPrivate | null;
-  translations: Record<string, string>;
+  translations: ITranslations;
 }
 
 const Shows = ({
@@ -155,10 +153,10 @@ const Shows = ({
                 if (saveRes) {
                   addToast({
                     message: templateReplace(
-                      translations[ToastMessage.TypeAddedTo],
+                      translations.toastMessages.typeAddedTo,
                       [
-                        translations[ContentType.Podcast],
-                        translations[ContentType.Library],
+                        translations.contentType.podcast,
+                        translations.contentType.library,
                       ]
                     ),
                     variant: "success",
@@ -173,10 +171,10 @@ const Shows = ({
                 if (removeRes) {
                   addToast({
                     message: templateReplace(
-                      translations[ToastMessage.TypeRemovedFrom],
+                      translations.toastMessages.typeRemovedFrom,
                       [
-                        translations[ContentType.Podcast],
-                        translations[ContentType.Library],
+                        translations.contentType.podcast,
+                        translations.contentType.library,
                       ]
                     ),
                     variant: "success",
@@ -191,7 +189,7 @@ const Shows = ({
         <div className="content">
           <div className="episodes">
             <Heading number={3} as={AsType.H3}>
-              {translations.allEpisodes}
+              {translations.pages.episode.allEpisodes}
             </Heading>
             <div>
               {allTracks?.map((track, i) => {
@@ -208,7 +206,7 @@ const Shows = ({
           </div>
           <div className="description">
             <Heading number={3} as="h2">
-              {translations.about}
+              {translations.pages.episode.about}
             </Heading>
             <p>{show?.description}</p>
           </div>
@@ -273,7 +271,7 @@ export default Shows;
 
 export const getServerSideProps = (async (context) => {
   const show = context.params?.show;
-  const translations = getTranslations(Page.Episode, context);
+  const translations = getTranslations(context);
   const cookies = context.req?.headers?.cookie;
   if (!cookies || !show) {
     serverRedirect(context.res, "/");

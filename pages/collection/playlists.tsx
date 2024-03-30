@@ -20,17 +20,12 @@ import {
   useTranslations,
   useUserPlaylists,
 } from "hooks";
-import {
-  getAuth,
-  getTranslations,
-  Page,
-  serverRedirect,
-  Translations,
-} from "utils";
+import { ITranslations } from "types/translations";
+import { getAuth, getTranslations, serverRedirect } from "utils";
 
 interface CollectionPlaylistsProps {
   user: SpotifyApi.UserObjectPrivate | null;
-  translations: Translations["collectionPlaylists"];
+  translations: ITranslations;
 }
 
 export default function CollectionPlaylists(): ReactElement {
@@ -61,7 +56,7 @@ export default function CollectionPlaylists(): ReactElement {
     <ContentContainer>
       {!isPlaying && (
         <Head>
-          <title>Rindu - {translations.title}</title>
+          <title>Rindu - {translations.pages.collectionPlaylists.title}</title>
         </Head>
       )}
       <Heading number={3} as="h2">
@@ -79,7 +74,7 @@ export default function CollectionPlaylists(): ReactElement {
                   title={name}
                   subTitle={
                     decode(description) ||
-                    `${translations.by} ${owner.display_name ?? owner.id}`
+                    `${translations.pages.collectionPlaylists.by} ${owner.display_name ?? owner.id}`
                   }
                   id={id}
                 />
@@ -92,7 +87,7 @@ export default function CollectionPlaylists(): ReactElement {
 }
 
 export const getServerSideProps = (async (context) => {
-  const translations = getTranslations(Page.CollectionPlaylists, context);
+  const translations = getTranslations(context);
   const cookies = context.req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(context.res, "/");

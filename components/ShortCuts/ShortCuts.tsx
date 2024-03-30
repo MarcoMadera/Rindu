@@ -9,53 +9,74 @@ export default function ShortCuts(): ReactElement {
   const { translations } = useTranslations();
   const shortCutsGroups: Record<string, Record<string, string[]>[]>[] = [
     {
-      [translations.basic]: [
+      [translations.shortCuts.basic]: [
         {
-          [translations.createNewPlaylist]: ["Alt", "Shift", "P"],
-          [translations.createNewFolder]: ["Ctrl", "Alt", "Shift", "P"],
-          [translations.openContextMenu]: ["Alt", "J"],
-          [translations.openQuickSearch]: ["Ctrl", "K"],
-          [translations.logOut]: ["Alt", "Shift", "F6"],
+          [translations.shortCuts.createNewPlaylist]: ["Alt", "Shift", "P"],
+          [translations.shortCuts.createNewFolder]: [
+            "Ctrl",
+            "Alt",
+            "Shift",
+            "P",
+          ],
+          [translations.shortCuts.openContextMenu]: ["Alt", "J"],
+          [translations.shortCuts.openQuickSearch]: ["Ctrl", "K"],
+          [translations.shortCuts.logOut]: ["Alt", "Shift", "F6"],
         },
       ],
-      [translations.playback]: [
+      [translations.shortCuts.playback]: [
         {
-          [translations.playPause]: ["Space"],
-          [translations.like]: ["Alt", "Shift", "B"],
-          [translations.shuffle]: ["Alt", "S"],
-          [translations.repeat]: ["Alt", "R"],
-          [translations.skipToPrevious]: ["Alt", "←"],
-          [translations.skipToNext]: ["Alt", "→"],
-          [translations.seekBackward]: ["Shift", "←"],
-          [translations.seekForward]: ["Shift", "→"],
-          [translations.raiseVolume]: ["Alt", "↑"],
-          [translations.lowerVolume]: ["Alt", "↓"],
+          [translations.shortCuts.playPause]: ["Space"],
+          [translations.shortCuts.like]: ["Alt", "Shift", "B"],
+          [translations.shortCuts.shuffle]: ["Alt", "S"],
+          [translations.shortCuts.repeat]: ["Alt", "R"],
+          [translations.shortCuts.skipToPrevious]: ["Alt", "←"],
+          [translations.shortCuts.skipToNext]: ["Alt", "→"],
+          [translations.shortCuts.seekBackward]: ["Shift", "←"],
+          [translations.shortCuts.seekForward]: ["Shift", "→"],
+          [translations.shortCuts.raiseVolume]: ["Alt", "↑"],
+          [translations.shortCuts.lowerVolume]: ["Alt", "↓"],
         },
       ],
-      [translations.navigation]: [
+      [translations.shortCuts.navigation]: [
         {
-          [translations.home]: ["Alt", "Shift", "H"],
-          [translations.backInHistory]: ["Ctrl", "←"],
-          [translations.forwardInHistory]: ["Ctrl", "→"],
-          [translations.currentlyPlaying]: ["Alt", "Shift", "J"],
-          [translations.search]: ["Ctrl", "Shift", "L"],
-          [translations.likedSongs]: ["Alt", "Shift", "S"],
-          [translations.queue]: ["Alt", "Shift", "Q"],
-          [translations.yourPlaylists]: ["Alt", "Shift", "1"],
-          [translations.yourPodcasts]: ["Alt", "Shift", "2"],
-          [translations.yourArtists]: ["Alt", "Shift", "3"],
-          [translations.yourAlbums]: ["Alt", "Shift", "4"],
-          [translations.madeForYou]: ["Alt", "Shift", "M"],
-          [translations.newReleases]: ["Alt", "Shift", "N"],
-          [translations.charts]: ["Alt", "Shift", "C"],
+          [translations.shortCuts.home]: ["Alt", "Shift", "H"],
+          [translations.shortCuts.backInHistory]: ["Ctrl", "←"],
+          [translations.shortCuts.forwardInHistory]: ["Ctrl", "→"],
+          [translations.shortCuts.currentlyPlaying]: ["Alt", "Shift", "J"],
+          [translations.shortCuts.search]: ["Ctrl", "Shift", "L"],
+          [translations.shortCuts.likedSongs]: ["Alt", "Shift", "S"],
+          [translations.shortCuts.queue]: ["Alt", "Shift", "Q"],
+          [translations.shortCuts.yourPlaylists]: ["Alt", "Shift", "1"],
+          [translations.shortCuts.yourPodcasts]: ["Alt", "Shift", "2"],
+          [translations.shortCuts.yourArtists]: ["Alt", "Shift", "3"],
+          [translations.shortCuts.yourAlbums]: ["Alt", "Shift", "4"],
+          [translations.shortCuts.madeForYou]: ["Alt", "Shift", "M"],
+          [translations.shortCuts.newReleases]: ["Alt", "Shift", "N"],
+          [translations.shortCuts.charts]: ["Alt", "Shift", "C"],
         },
       ],
-      [translations.layout]: [
+      [translations.shortCuts.layout]: [
         {
-          [translations.decreaseNavigationWidth]: ["Alt", "Shift", "←"],
-          [translations.increaseNavigationWidth]: ["Alt", "Shift", "→"],
-          [translations.decreaseActivityTabWidth]: ["Alt", "Shift", "↑"],
-          [translations.increaseActivityTabWidth]: ["Alt", "Shift", "↓"],
+          [translations.shortCuts.decreaseNavigationWidth]: [
+            "Alt",
+            "Shift",
+            "←",
+          ],
+          [translations.shortCuts.increaseNavigationWidth]: [
+            "Alt",
+            "Shift",
+            "→",
+          ],
+          [translations.shortCuts.decreaseActivityTabWidth]: [
+            "Alt",
+            "Shift",
+            "↑",
+          ],
+          [translations.shortCuts.increaseActivityTabWidth]: [
+            "Alt",
+            "Shift",
+            "↓",
+          ],
         },
       ],
     },
@@ -64,7 +85,7 @@ export default function ShortCuts(): ReactElement {
   return (
     <div className="shortcuts-container">
       <p>
-        {templateReplace(translations.shortCutdescription, [
+        {templateReplace(translations.shortCuts.shortCutdescription, [
           <Fragment key={"Shortcut to shortcut"}>
             <Kbd key={"Ctrl"}>Ctrl</Kbd>
             <Kbd key={"/"}>/</Kbd>

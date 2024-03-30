@@ -1,3 +1,4 @@
+import { ITranslations } from "types/translations";
 import {
   DEFAULT_SONG_IMAGE_URL,
   GeneratedImageAPI,
@@ -15,7 +16,7 @@ interface TopTracksCard {
 
 export function getTopTracksCards(
   user: SpotifyApi.UserObjectPrivate | null | undefined,
-  translations: Record<string, string>
+  translations: ITranslations
 ): TopTracksCard[] {
   if (!user) {
     return [];
@@ -23,17 +24,17 @@ export function getTopTracksCards(
 
   const CARDS: { name: string; color: string; url: string }[] = [
     {
-      name: translations.topTracksPlaylistLongTermTitle,
+      name: translations.pages.dashboard.topTracksPlaylistLongTermTitle,
       color: TOP_TRACKS_LONG_TERM_COLOR,
       url: "/top/tracks-long-term",
     },
     {
-      name: translations.topTracksPlaylistMediumTermTitle,
+      name: translations.pages.dashboard.topTracksPlaylistMediumTermTitle,
       color: TOP_TRACKS_MEDIUM_TERM_COLOR,
       url: "/top/tracks-medium-term",
     },
     {
-      name: translations.topTracksPlaylistShortTermTitle,
+      name: translations.pages.dashboard.topTracksPlaylistShortTermTitle,
       color: TOP_TRACKS_SHORT_TERM_COLOR,
       url: "/top/tracks-short-term",
     },

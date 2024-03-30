@@ -3,7 +3,7 @@ import { Dispatch, ReactElement, SetStateAction, useRef } from "react";
 import { Heart, ThreeDots } from "components/icons";
 import { useContextMenu, useOnScreen, useToast, useTranslations } from "hooks";
 import { ITrack } from "types/spotify";
-import { ContentType, formatTime, templateReplace, ToastMessage } from "utils";
+import { formatTime, templateReplace } from "utils";
 import {
   removeEpisodesFromLibrary,
   removeTracksFromLibrary,
@@ -50,13 +50,13 @@ export function TrackActions({
             setIsLikedTrack(true);
             addToast({
               variant: "success",
-              message: templateReplace(translations[ToastMessage.TypeAddedTo], [
+              message: templateReplace(translations.toastMessages.typeAddedTo, [
                 `${
                   track.type === "episode"
-                    ? translations[ContentType.Episode]
-                    : translations[ContentType.Track]
+                    ? translations.contentType.episode
+                    : translations.contentType.track
                 }`,
-                translations[ContentType.Library],
+                translations.contentType.library,
               ]),
             });
             return true;
@@ -74,14 +74,14 @@ export function TrackActions({
             addToast({
               variant: "success",
               message: templateReplace(
-                translations[ToastMessage.TypeRemovedFrom],
+                translations.toastMessages.typeRemovedFrom,
                 [
                   `${
                     track.type === "episode"
-                      ? translations[ContentType.Episode]
-                      : translations[ContentType.Track]
+                      ? translations.contentType.episode
+                      : translations.contentType.track
                   }`,
-                  translations[ContentType.Library],
+                  translations.contentType.library,
                 ]
               ),
             });

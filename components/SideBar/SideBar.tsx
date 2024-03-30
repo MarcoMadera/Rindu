@@ -5,25 +5,17 @@ import { useRouter } from "next/router";
 
 import { Logo, PlaylistText, ScrollBar } from "components";
 import { Add, Chevron, Heart, Home, Library, Search } from "components/icons";
-import {
-  useAnalytics,
-  useAuth,
-  useSpotify,
-  useToast,
-  useTranslations,
-} from "hooks";
-import {
-  chooseImage,
-  ContentType,
-  getAllMyPlaylists,
-  templateReplace,
-  ToastMessage,
-} from "utils";
+import { useAnalytics, useAuth, useSpotify, useToast } from "hooks";
+import { ITranslations } from "types/translations";
+import { chooseImage, getAllMyPlaylists, templateReplace } from "utils";
 import { createPlaylist } from "utils/spotifyCalls";
 
 export default function SideBar({
   width,
-}: Readonly<PropsWithChildren<{ width: number }>>): ReactElement {
+  translations,
+}: Readonly<
+  PropsWithChildren<{ width: number; translations: ITranslations }>
+>): ReactElement {
   const {
     playlists,
     setPlaylists,
@@ -36,7 +28,6 @@ export default function SideBar({
   const { user } = useAuth();
   const router = useRouter();
   const { addToast } = useToast();
-  const { translations } = useTranslations();
   const { trackWithGoogleAnalytics } = useAnalytics();
 
   useEffect(() => {
@@ -68,15 +59,15 @@ export default function SideBar({
         <section>
           <Link href="/dashboard" className="dashboard">
             <Home fill="#ffffffb3" />
-            {translations?.home}
+            {translations.shortCuts.home}
           </Link>
           <Link href="/search" className="search">
             <Search fill="#ffffffb3" />
-            {translations?.search}
+            {translations.shortCuts.search}
           </Link>
           <Link href="/collection" className="collection">
             <Library fill="#ffffffb3" />
-            {translations?.collection}
+            {translations.sideBar.collection}
           </Link>
         </section>
         <section className="section-2">
@@ -90,8 +81,8 @@ export default function SideBar({
                   if (!res) {
                     addToast({
                       message: templateReplace(
-                        translations[ToastMessage.ErrorCreating],
-                        [translations[ContentType.Playlist]]
+                        translations.toastMessages.errorCreating,
+                        [translations.contentType.playlist]
                       ),
                       variant: "error",
                     });
@@ -122,7 +113,7 @@ export default function SideBar({
             <div>
               <Add />
             </div>
-            {translations?.createPlaylist}
+            {translations.sideBar.createPlaylist}
           </button>
           <Link
             href="/collection/tracks"
@@ -131,7 +122,7 @@ export default function SideBar({
             <div>
               <Heart active={true} style={{ width: 28, height: 28 }} />
             </div>
-            {translations?.likedSongs}
+            {translations.shortCuts.likedSongs}
           </Link>
           <hr />
         </section>
@@ -159,7 +150,7 @@ export default function SideBar({
             <>
               <button
                 type="button"
-                aria-label={translations?.minimizeCoverImage}
+                aria-label={translations.sideBar.minimizeCoverImage}
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsShowingSideBarImg(false);

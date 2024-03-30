@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useMemo } from "react";
 
 import TranslationsContext, {
   TranslationsContextProviderProps,
@@ -8,17 +8,17 @@ import { getLocale, Locale } from "utils";
 
 export interface Translations extends TranslationsContextProviderProps {
   locale: Locale;
-  locales: string[];
+  locales: Locale[];
 }
 
 export function useTranslations(): Translations {
   const context = useCustomContext(TranslationsContext);
-  const router = useRouter();
-  const { locales } = router;
+
+  const locales = useMemo(() => Object.values(Locale), []);
 
   return {
     ...context,
     locale: getLocale(context.locale),
-    locales: locales ?? [],
+    locales: locales,
   };
 }

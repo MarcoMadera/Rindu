@@ -8,13 +8,7 @@ import { useContextMenu, useToast, useTranslations } from "hooks";
 import { menuContextStyles } from "styles/menuContextStyles";
 import { ICardContentContextMenuData } from "types/contextMenu";
 import { Modify } from "types/customTypes";
-import {
-  ContentType,
-  getSiteUrl,
-  handleAsyncError,
-  templateReplace,
-  ToastMessage,
-} from "utils";
+import { getSiteUrl, handleAsyncError, templateReplace } from "utils";
 import {
   follow,
   followAlbums,
@@ -46,7 +40,7 @@ export interface ICardContentContextMenu {
 }
 export default function CardContentContextMenu({
   data,
-}: ICardContentContextMenu): ReactElement {
+}: Readonly<ICardContentContextMenu>): ReactElement {
   const { removeContextMenu, setModalData } = useContextMenu();
   const router = useRouter();
   const { addToast } = useToast();
@@ -89,8 +83,8 @@ export default function CardContentContextMenu({
             onClick={() => {
               saveFunction(data.id);
               addToast({
-                message: templateReplace(translations[ToastMessage.AddedTo], [
-                  translations[ContentType.Library],
+                message: templateReplace(translations.toastMessages.addedTo, [
+                  translations.contentType.library,
                 ]),
                 variant: "success",
               });

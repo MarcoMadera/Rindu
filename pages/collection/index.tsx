@@ -6,16 +6,11 @@ import { useRouter } from "next/router";
 
 import { ContentContainer, NavigationTopBarExtraField } from "components";
 import { useHeader, useOnSmallScreen, useTranslations } from "hooks";
-import {
-  getAuth,
-  getTranslations,
-  Page,
-  serverRedirect,
-  Translations,
-} from "utils";
+import { ITranslations } from "types/translations";
+import { getAuth, getTranslations, serverRedirect } from "utils";
 
 interface ICollectionProps {
-  translations: Translations["collection"];
+  translations: ITranslations;
   user: SpotifyApi.UserObjectPrivate | null;
 }
 
@@ -44,7 +39,7 @@ export default function Collection(): ReactElement {
   return (
     <ContentContainer>
       <Head>
-        <title>Rindu - {translations?.collection}</title>
+        <title>Rindu - {translations.pages.collection.title}</title>
       </Head>
       <div className="navigation-container">
         <NavigationTopBarExtraField selected={0} />
@@ -80,7 +75,7 @@ export default function Collection(): ReactElement {
 }
 
 export const getServerSideProps = (async (context) => {
-  const translations = getTranslations(Page.Collection, context);
+  const translations = getTranslations(context);
   const cookies = context.req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(context.res, "/");

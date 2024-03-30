@@ -16,16 +16,14 @@ import { Heart } from "components/icons";
 import { useAnalytics, useAuth, useHeader, useSpotify, useToast } from "hooks";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
+import { ITranslations } from "types/translations";
 import {
   chooseImage,
-  ContentType,
   getAuth,
   getTranslations,
   isCorruptedTrack,
-  Page,
   serverRedirect,
   templateReplace,
-  ToastMessage,
 } from "utils";
 import {
   checkIfUserFollowAlbums,
@@ -40,7 +38,7 @@ interface AlbumPageProps {
   user: SpotifyApi.UserObjectPrivate | null;
   tracks: ITrack[] | null;
   tracksInLibrary: boolean[] | null;
-  translations: Record<string, string>;
+  translations: ITranslations;
 }
 
 const AlbumPage = ({
@@ -147,10 +145,10 @@ const AlbumPage = ({
                 if (unfollowRes) {
                   addToast({
                     message: templateReplace(
-                      translations[ToastMessage.TypeRemovedFrom],
+                      translations.toastMessages.typeRemovedFrom,
                       [
-                        translations[ContentType.Album],
-                        translations[ContentType.Library],
+                        translations.contentType.album,
+                        translations.contentType.library,
                       ]
                     ),
                     variant: "success",
@@ -165,10 +163,10 @@ const AlbumPage = ({
                 if (followRes) {
                   addToast({
                     message: templateReplace(
-                      translations[ToastMessage.TypeAddedTo],
+                      translations.toastMessages.typeAddedTo,
                       [
-                        translations[ContentType.Album],
-                        translations[ContentType.Library],
+                        translations.contentType.album,
+                        translations.contentType.library,
                       ]
                     ),
                     variant: "success",
@@ -253,7 +251,7 @@ const AlbumPage = ({
 export default AlbumPage;
 
 export const getServerSideProps = (async (context) => {
-  const translations = getTranslations(Page.Album, context);
+  const translations = getTranslations(context);
   const cookies = context.req.headers?.cookie;
   const albumId = context.params?.albumId;
   if (!cookies || !albumId) {

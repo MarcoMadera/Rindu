@@ -2,14 +2,13 @@ import { ReactElement } from "react";
 
 import { LyricsPictureInPicture } from "components/icons";
 import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
-import { ToastMessage } from "utils";
 
 interface ILyricsPIPButtonProps {
   background?: string;
 }
 export default function LyricsPIPButton({
   background,
-}: ILyricsPIPButtonProps): ReactElement {
+}: Readonly<ILyricsPIPButtonProps>): ReactElement {
   const {
     setIsPictureInPictureLyircsCanvas,
     isPictureInPictureLyircsCanvas,
@@ -30,7 +29,7 @@ export default function LyricsPIPButton({
         if (!isPremium) {
           addToast({
             variant: "error",
-            message: translations[ToastMessage.PremiumRequired],
+            message: translations.toastMessages.premiumRequired,
           });
         }
         if (

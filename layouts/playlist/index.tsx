@@ -26,17 +26,12 @@ import {
   useModal,
   useSpotify,
   useToast,
+  useTranslations,
 } from "hooks";
 import { PlaylistProps } from "pages/playlist/[playlist]";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
-import {
-  chooseImage,
-  ContentType,
-  getIdFromUri,
-  templateReplace,
-  ToastMessage,
-} from "utils";
+import { chooseImage, getIdFromUri, templateReplace } from "utils";
 import {
   addItemsToPlaylist,
   checkUsersFollowAPlaylist,
@@ -51,10 +46,10 @@ const Playlist: NextPage<
   playListTracks,
   tracksInLibrary,
   isLibrary,
-  translations,
   isGeneratedPlaylist,
 }) => {
   const router = useRouter();
+  const { translations } = useTranslations();
   const { user, isPremium } = useAuth();
   const { trackWithGoogleAnalytics } = useAnalytics();
   const {
@@ -210,7 +205,9 @@ const Playlist: NextPage<
                     {isMyPlaylist ? (
                       <button
                         type="button"
-                        aria-label={translations?.cleanPlaylist}
+                        aria-label={
+                          translations.removeTracksModal.cleanPlaylist
+                        }
                         className="broom"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -239,10 +236,10 @@ const Playlist: NextPage<
                               addToast({
                                 variant: "success",
                                 message: templateReplace(
-                                  translations[ToastMessage.TypeAddedTo],
+                                  translations.toastMessages.typeAddedTo,
                                   [
-                                    translations[ContentType.Playlist],
-                                    translations[ContentType.Library],
+                                    translations.contentType.playlist,
+                                    translations.contentType.library,
                                   ]
                                 ),
                               });
@@ -259,10 +256,10 @@ const Playlist: NextPage<
                               addToast({
                                 variant: "success",
                                 message: templateReplace(
-                                  translations[ToastMessage.TypeRemovedFrom],
+                                  translations.toastMessages.typeRemovedFrom,
                                   [
-                                    translations[ContentType.Playlist],
-                                    translations[ContentType.Library],
+                                    translations.contentType.playlist,
+                                    translations.contentType.library,
                                   ]
                                 ),
                               });
@@ -292,7 +289,7 @@ const Playlist: NextPage<
                       });
                     }}
                   >
-                    {translations.saveAsPlaylist}
+                    {translations.pages.topTracks.saveAsPlaylist}
                   </button>
                 </div>
               )}
@@ -317,13 +314,13 @@ const Playlist: NextPage<
         playListTracks.length === 0 ? (
           <div className="noTracks">
             <Heading number={3} as="h2" margin="1rem 0">
-              {translations.playlistSearchHeading}
+              {translations.pages.playlist.playlistSearchHeading}
             </Heading>
             <SearchInputElement setData={setSearchedData} source="playlist" />
             {searchedData?.tracks && searchedData.tracks?.items?.length > 0 && (
               <>
                 <Heading number={4} margin="20px 0 0 0">
-                  {translations.songs}
+                  {translations.pages.track.songs}
                 </Heading>
                 {searchedData.tracks?.items?.map((track, i) => {
                   return (
@@ -416,7 +413,7 @@ const Playlist: NextPage<
           playListTracks.length === 0 ? (
           <div className="noTracks">
             <Heading number={3} as="h2" margin="1rem 0">
-              {translations.noTracksFound}
+              {translations.pages.topTracks.noTracksFound}
             </Heading>
           </div>
         ) : null}

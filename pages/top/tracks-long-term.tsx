@@ -4,6 +4,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import PlaylistLayout from "layouts/playlist";
 import { IPageDetails, ITrack } from "types/spotify";
+import { ITranslations } from "types/translations";
 import {
   DEFAULT_SONG_IMAGE_URL,
   fullFilledValue,
@@ -11,7 +12,6 @@ import {
   getAuth,
   getGeneratedImageUrl,
   getTranslations,
-  Page,
   serverRedirect,
   TOP_TRACKS_LONG_TERM_COLOR,
 } from "utils";
@@ -23,7 +23,7 @@ export interface PlaylistProps {
   tracksInLibrary: boolean[] | null;
   playListTracks: ITrack[] | null;
   user: SpotifyApi.UserObjectPrivate | null;
-  translations: Record<string, string>;
+  translations: ITranslations;
 }
 
 const Playlist = (
@@ -47,7 +47,7 @@ const Playlist = (
 export default Playlist;
 
 export const getServerSideProps = (async (context) => {
-  const translations = getTranslations(Page.TopTracks, context);
+  const translations = getTranslations(context);
   const cookies = context.req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(context.res, "/");
@@ -82,10 +82,10 @@ export const getServerSideProps = (async (context) => {
     usersTopTracksIds,
     context
   );
-  const pageTitle = `${translations.title} - ${translations.longTerm}`;
+  const pageTitle = `${translations.pages.topTracks.title} - ${translations.pages.topTracks.longTerm}`;
 
   const generatedImageParams = {
-    title: translations.longTerm,
+    title: translations.pages.topTracks.longTerm,
     color: TOP_TRACKS_LONG_TERM_COLOR,
     imageUrl: user?.images?.[0]?.url ?? DEFAULT_SONG_IMAGE_URL,
   };

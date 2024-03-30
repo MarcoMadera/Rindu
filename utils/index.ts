@@ -55,6 +55,7 @@ export * from "./handleJsonResponse";
 export * from "./hexToHsl";
 export * from "./hmacToken";
 export * from "./isCorruptedTrack";
+export * from "./locale";
 export * from "./mapPlaylistItems";
 export * from "./parseAcceptLanguage";
 export * from "./playButton";

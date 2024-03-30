@@ -19,13 +19,13 @@ import {
   useUserPlaylists,
 } from "hooks";
 import { HeaderType } from "types/pageHeader";
+import { ITranslations } from "types/translations";
 import {
   chooseImage,
   fullFilledValue,
   getAuth,
   getTopTracksCards,
   getTranslations,
-  Page,
   serverRedirect,
 } from "utils";
 import { getPlaylistsFromUser, getUserById } from "utils/spotifyCalls";
@@ -34,7 +34,7 @@ interface CurrentUserProps {
   currentUser: SpotifyApi.UserObjectPublic | null;
   user: SpotifyApi.UserObjectPrivate | null;
   currentUserPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse | null;
-  translations: Record<string, string>;
+  translations: ITranslations;
   topTracksCard: ReturnType<typeof getTopTracksCards>;
 }
 
@@ -78,7 +78,7 @@ const CurrentUser = ({
         {isThisUser && (
           <>
             <Heading id={"title-topTracksPlaylistHeading"} number={2}>
-              {translations.topTracksPlaylistHeading}
+              {translations.pages.user.topTracksPlaylistHeading}
             </Heading>
             <Grid>
               {topTracksCard.map((item) => {
@@ -100,7 +100,7 @@ const CurrentUser = ({
             {playlists?.length > 0 && (
               <>
                 <Heading id={"title-playlist"} number={2}>
-                  {translations.yourPlaylists}
+                  {translations.pages.user.yourPlaylists}
                 </Heading>
                 <Grid>
                   {playlists.map(({ images, name, description, id, owner }) => {
@@ -112,7 +112,7 @@ const CurrentUser = ({
                         title={name}
                         subTitle={
                           decode(description) ||
-                          `${translations.by} ${owner.display_name ?? owner.id}`
+                          `${translations.pages.user.by} ${owner.display_name ?? owner.id}`
                         }
                         id={id}
                       />
@@ -126,7 +126,7 @@ const CurrentUser = ({
         {!isThisUser && currentUserPlaylists && (
           <div style={{ marginTop: "16px" }}>
             <Heading id={"title-playlist"} number={2}>
-              {translations.playlists}
+              {translations.pages.user.playlists}
             </Heading>
             <Grid>
               {currentUserPlaylists?.items.length > 0
@@ -140,7 +140,7 @@ const CurrentUser = ({
                           title={name}
                           subTitle={
                             decode(description) ||
-                            `${translations.by} ${
+                            `${translations.pages.user.by} ${
                               owner.display_name ?? owner.id
                             }`
                           }
@@ -161,7 +161,7 @@ const CurrentUser = ({
 export default CurrentUser;
 
 export const getServerSideProps = (async (context) => {
-  const translations = getTranslations(Page.User, context);
+  const translations = getTranslations(context);
   const cookies = context.req?.headers?.cookie;
 
   if (!cookies || !context.params) {

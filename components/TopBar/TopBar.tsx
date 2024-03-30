@@ -19,7 +19,9 @@ interface TopBarProps {
   appRef?: MutableRefObject<HTMLDivElement | null>;
 }
 
-export default function TopBar({ appRef }: TopBarProps): ReactElement {
+export default function TopBar({
+  appRef,
+}: Readonly<TopBarProps>): ReactElement {
   const { user, isPremium } = useAuth();
   const { element, displayOnFixed, disableBackground, disableOpacityChange } =
     useHeader();

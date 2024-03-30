@@ -15,7 +15,6 @@ import { AsType } from "types/heading";
 import { ITrack } from "types/spotify";
 import {
   chooseImage,
-  ContentType,
   formatTime,
   getIdFromUri,
   getSiteUrl,
@@ -23,7 +22,6 @@ import {
   handlePlayCurrentTrackError,
   playCurrentTrack,
   templateReplace,
-  ToastMessage,
 } from "utils";
 import {
   removeEpisodesFromLibrary,
@@ -180,10 +178,10 @@ export default function EpisodeCard({
                 if (removeEpisodeRes) {
                   addToast({
                     message: templateReplace(
-                      translations[ToastMessage.TypeRemovedFrom],
+                      translations.toastMessages.typeRemovedFrom,
                       [
-                        translations[ContentType.Episode],
-                        translations[ContentType.Library],
+                        translations.contentType.episode,
+                        translations.contentType.library,
                       ]
                     ),
                     variant: "success",
@@ -199,10 +197,10 @@ export default function EpisodeCard({
                 if (saveEpisodesToLibraryRes) {
                   addToast({
                     message: templateReplace(
-                      translations[ToastMessage.TypeAddedTo],
+                      translations.toastMessages.typeAddedTo,
                       [
-                        translations[ContentType.Episode],
-                        translations[ContentType.Library],
+                        translations.contentType.episode,
+                        translations.contentType.library,
                       ]
                     ),
                     variant: "success",
@@ -218,13 +216,20 @@ export default function EpisodeCard({
             type="button"
             aria-label="Share"
             onClick={() => {
-              navigator.clipboard.writeText(
-                `${getSiteUrl()}/episode/${track.id}`
-              );
-              addToast({
-                message: translations[ToastMessage.CopiedToClipboard],
-                variant: "success",
-              });
+              try {
+                navigator.clipboard.writeText(
+                  `${getSiteUrl()}/episode/${track.id}`
+                );
+                addToast({
+                  message: translations.toastMessages.copiedToClipboard,
+                  variant: "success",
+                });
+              } catch {
+                addToast({
+                  message: translations.toastMessages.failedToCopyToClipboard,
+                  variant: "error",
+                });
+              }
             }}
           >
             <Share fill="#ffffffb3" />

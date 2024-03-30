@@ -5,10 +5,12 @@ import { useRouter } from "next/router";
 import { Footer, SpotifyPlayer, TopBar } from "components";
 import { useDisableGlobalContextMenu, useRefreshAccessToken } from "hooks";
 import { AppContainer } from "layouts/AppContainer";
+import { ITranslations } from "types/translations";
 
 export default function MainLayout({
   children,
-}: Readonly<PropsWithChildren>): ReactElement {
+  translations,
+}: Readonly<PropsWithChildren<{ translations: ITranslations }>>): ReactElement {
   const router = useRouter();
   const isLoginPage = router.pathname === "/";
   const isNotFoundPage = router.pathname === "/404";
@@ -33,15 +35,15 @@ export default function MainLayout({
           <TopBar />
           {children}
         </div>
-        <Footer />
+        <Footer translations={translations} />
       </>
     );
   }
 
   return (
     <>
-      <AppContainer>{children}</AppContainer>
-      <SpotifyPlayer />
+      <AppContainer translations={translations}>{children}</AppContainer>
+      <SpotifyPlayer translations={translations} />
     </>
   );
 }

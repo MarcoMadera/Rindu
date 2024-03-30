@@ -1,6 +1,8 @@
 import { IUtilsMocks } from "types/mocks";
 import { getSiteUrl, isProduction, isServer } from "utils/environment";
 
+jest.mock<typeof import("utils")>("utils");
+
 const { setupEnvironment } = jest.requireActual<IUtilsMocks>(
   "./__mocks__/mocks.ts"
 );

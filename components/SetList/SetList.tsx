@@ -9,17 +9,17 @@ import { conjuction, getMonth, SetLists } from "utils";
 export default function SetList({
   setLists,
   artistId,
-}: {
+}: Readonly<{
   setLists: SetLists | null;
   artistId?: string | null;
-}): ReactElement | null {
+}>): ReactElement | null {
   const { translations, locale } = useTranslations();
 
   if (!setLists || !artistId) return null;
   return (
     <div className="set-list">
       <div className="set-list-content">
-        <Heading number={2}>{translations.concerts}</Heading>
+        <Heading number={2}>{translations.pages.artist.concerts}</Heading>
         {setLists?.setlist?.map((set, i) => {
           if (i > 4) return null;
           const date = set.eventDate.split("-");

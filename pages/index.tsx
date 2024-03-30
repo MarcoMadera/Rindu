@@ -5,6 +5,7 @@ import Router from "next/router";
 
 import { CardContainer, FeatureCard, Hero } from "components";
 import { useAnalytics, useAuth } from "hooks";
+import { ITranslations } from "types/translations";
 import {
   ACCESS_TOKEN_COOKIE,
   getSpotifyLoginURL,
@@ -14,16 +15,11 @@ import {
   serverRedirect,
   takeCookie,
 } from "utils";
-import {
-  getTranslations,
-  IFeaturesTranslations,
-  Page,
-  Translations,
-} from "utils/getTranslations";
+import { getTranslations } from "utils/getTranslations";
 import { refreshAccessToken } from "utils/spotifyCalls";
 
 interface HomeProps {
-  translations: Translations["home"];
+  translations: ITranslations;
 }
 
 interface IFeature {
@@ -55,24 +51,23 @@ const Home = ({
     const url = await getSpotifyLoginURL();
     window.location.href = url;
   };
-  const features = JSON.parse(translations.features) as IFeaturesTranslations[];
 
   return (
     <main>
       <Hero
-        heroTitle={translations.heroTitle}
+        heroTitle={translations.pages.home.heroTitle}
         imgAlt="hero image"
         imgSrc="https://res.cloudinary.com/marcomadera/image/upload/v1645938502/Spotify-Cleaner-App/Mu1_ytmhg5.jpg"
       />
       <CardContainer className="info">
         <div>
-          <h2>{translations.heroInfoTitle}</h2>
+          <h2>{translations.pages.home.heroInfoTitle}</h2>
         </div>
         <div>
-          <p>{translations.heroInfoDescription}</p>
+          <p>{translations.pages.home.heroInfoDescription}</p>
         </div>
       </CardContainer>
-      {features.map((feature: IFeature) => {
+      {translations.homeFeatures.map((feature: IFeature) => {
         return (
           <FeatureCard
             key={feature.titleText}
@@ -88,12 +83,12 @@ const Home = ({
       })}
       <CardContainer className="conclude">
         <div>
-          <h2>{translations.concludeSectionTitle}</h2>
+          <h2>{translations.pages.home.concludeSectionTitle}</h2>
         </div>
         <div>
-          <p>{translations.concludeSectionDescription}</p>
+          <p>{translations.pages.home.concludeSectionDescription}</p>
           <button onClick={onCTAClick}>
-            {translations.concludeSectionCta}
+            {translations.pages.home.concludeSectionCta}
           </button>
         </div>
       </CardContainer>
@@ -217,7 +212,7 @@ const Home = ({
 export default Home;
 
 export const getServerSideProps = (async (context) => {
-  const translations = getTranslations(Page.Home, context);
+  const translations = getTranslations(context);
 
   if (!context.req.cookies) {
     return { props: { translations } };

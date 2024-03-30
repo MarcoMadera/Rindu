@@ -17,11 +17,13 @@ import {
 } from "components";
 import { useLyricsContext, useOnSmallScreen, useSpotify } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
+import { ITranslations } from "types/translations";
 import { isFullScreen, isServer } from "utils";
 
 export function AppContainer({
   children,
-}: Readonly<PropsWithChildren>): ReactElement {
+  translations,
+}: Readonly<PropsWithChildren<{ translations: ITranslations }>>): ReactElement {
   const appRef = useRef<HTMLDivElement | null>(null);
   const { displayInFullScreen, currentlyPlaying, hideSideBar, setHideSideBar } =
     useSpotify();
@@ -91,7 +93,7 @@ export function AppContainer({
           minWidth={`${leftPanelMinWidth}px`}
           maxWidth={`${leftPanelMaxWidth}px`}
         >
-          <SideBar width={leftPanelWidth} />
+          <SideBar width={leftPanelWidth} translations={translations} />
           <ResizablePanel.Handle onResize={setLeftPanelDraggedWidth} />
         </ResizablePanel.Item>
         <ResizablePanel.Item defaultSize="100%" id="right">

@@ -12,7 +12,6 @@ import {
   getGeneratedImageUrl,
   getSetList,
   getTranslations,
-  Page,
   serverRedirect,
   SetList,
 } from "utils";
@@ -44,7 +43,7 @@ const Playlist = (
 export default Playlist;
 
 export const getServerSideProps = (async (context) => {
-  const translations = getTranslations(Page.Concert, context);
+  const translations = getTranslations(context);
   const cookies = context.req?.headers?.cookie;
   const id = context.params?.id;
   if (!cookies || !id) {

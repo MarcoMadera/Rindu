@@ -10,7 +10,7 @@ import {
   useTranslations,
 } from "hooks";
 import { ITrack } from "types/spotify";
-import { chooseImage, ContentType, templateReplace, ToastMessage } from "utils";
+import { chooseImage, templateReplace } from "utils";
 
 interface ITrackImage {
   mouseEnter: boolean;
@@ -65,8 +65,8 @@ export function TrackImage({
             addToast({
               variant: "error",
               message: templateReplace(
-                translations[ToastMessage.IsCorruptedAndCannotBePlayed],
-                [translations[ContentType.Track]]
+                translations.toastMessages.isCorruptedAndCannotBePlayed,
+                [translations.contentType.track]
               ),
             });
             return;
@@ -78,7 +78,7 @@ export function TrackImage({
         } else {
           addToast({
             variant: "info",
-            message: translations[ToastMessage.ContentIsUnavailable],
+            message: translations.toastMessages.contentIsUnavailable,
           });
         }
       }}

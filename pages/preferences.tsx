@@ -13,6 +13,7 @@ import {
 } from "components";
 import { useAnalytics, useSpotify, useTranslations } from "hooks";
 import { AsType } from "types/heading";
+import { ITranslations } from "types/translations";
 import {
   getAuth,
   getLocale,
@@ -20,13 +21,12 @@ import {
   Locale,
   LOCALE_COOKIE,
   makeCookie,
-  Page,
   serverRedirect,
 } from "utils";
 
 interface PreferencesProps {
   user: SpotifyApi.UserObjectPrivate | null;
-  translations: Record<string, string>;
+  translations: ITranslations;
   locale: string;
 }
 
@@ -57,7 +57,7 @@ export default function PreferencesPage(): ReactElement {
       <div className="preferences-container">
         <div className="inputs-container">
           <Heading number={3} as={AsType.H1}>
-            {translations.preferences}
+            {translations.pages.preferences.preferences}
           </Heading>
           <SearchInput
             hide={!searchTerm}
@@ -84,11 +84,13 @@ export default function PreferencesPage(): ReactElement {
         <Searchable searchTerm={searchTerm}>
           <>
             <Heading number={4} as={AsType.H2}>
-              {translations.language}
+              {translations.pages.preferences.language}
             </Heading>
             <div className="inputs-container">
               <div className="label-container">
-                <label htmlFor="language">{translations.languageLabel}</label>
+                <label htmlFor="language">
+                  {translations.pages.preferences.languageLabel}
+                </label>
               </div>
               <div className="select-container">
                 <SelectControl
@@ -96,7 +98,7 @@ export default function PreferencesPage(): ReactElement {
                   defaultValue={locale}
                   options={locales.map((value) => {
                     return {
-                      label: translations["localLabel." + value],
+                      label: translations.pages.preferences.localLabel[value],
                       value: value,
                     };
                   })}
@@ -125,7 +127,7 @@ export default function PreferencesPage(): ReactElement {
                 window.location.reload();
               }}
             >
-              {translations.reload}
+              {translations.pages.preferences.reload}
             </button>
           </div>
         )}
@@ -212,7 +214,7 @@ export default function PreferencesPage(): ReactElement {
 
 export const getServerSideProps = (async (context) => {
   const cookies = context.req?.headers?.cookie ?? "";
-  const translations = getTranslations(Page.Preferences, context);
+  const translations = getTranslations(context);
   if (!cookies) {
     serverRedirect(context.res, "/");
     return { props: {} };

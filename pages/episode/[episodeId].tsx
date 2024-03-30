@@ -14,13 +14,8 @@ import {
 import { useHeader, useSpotify } from "hooks";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
-import {
-  chooseImage,
-  getAuth,
-  getTranslations,
-  Page,
-  serverRedirect,
-} from "utils";
+import { ITranslations } from "types/translations";
+import { chooseImage, getAuth, getTranslations, serverRedirect } from "utils";
 import {
   checkEpisodesInLibrary,
   getEpisodeById,
@@ -31,7 +26,7 @@ import {
 interface EpisodePageProps {
   episode: SpotifyApi.EpisodeObject | null;
   user: SpotifyApi.UserObjectPrivate | null;
-  translations: Record<string, string>;
+  translations: ITranslations;
 }
 
 export default function EpisodePage({
@@ -243,7 +238,7 @@ export default function EpisodePage({
 }
 
 export const getServerSideProps = (async (context) => {
-  const translations = getTranslations(Page.Episode, context);
+  const translations = getTranslations(context);
   const cookies = context.req?.headers?.cookie;
   const episodeId = context.params?.episodeId;
   if (!cookies || !episodeId) {

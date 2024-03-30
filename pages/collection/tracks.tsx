@@ -4,11 +4,11 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import PlaylistLayout from "layouts/playlist";
 import { ISpotifyContext, ITrack } from "types/spotify";
+import { ITranslations } from "types/translations";
 import {
   getAuth,
   getTranslations,
   isCorruptedTrack,
-  Page,
   serverRedirect,
 } from "utils";
 import { checkTracksInLibrary, getMyLikedSongs } from "utils/spotifyCalls";
@@ -18,7 +18,7 @@ interface PlaylistProps {
   playListTracks: ITrack[];
   tracksInLibrary: boolean[] | null;
   user: SpotifyApi.UserObjectPrivate | null;
-  translations: Record<string, string>;
+  translations: ITranslations;
 }
 
 const Playlist = (
@@ -40,7 +40,7 @@ const Playlist = (
 export default Playlist;
 
 export const getServerSideProps = (async (context) => {
-  const translations = getTranslations(Page.CollectionTracks, context);
+  const translations = getTranslations(context);
   const cookies = context.req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(context.res, "/");
@@ -70,7 +70,7 @@ export const getServerSideProps = (async (context) => {
         url: "https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png",
       },
     ],
-    name: translations.likedSongs,
+    name: translations.shortCuts.likedSongs,
     owner: {
       id: user?.id,
       display_name: user?.display_name,
