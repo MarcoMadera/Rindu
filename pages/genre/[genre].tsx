@@ -6,11 +6,11 @@ import Head from "next/head";
 import { ContentContainer, Grid, Heading, PresentationCard } from "components";
 import { CardType } from "components/CardContent";
 import { useHeader, useSpotify } from "hooks";
+import { ITranslations } from "types/translations";
 import {
   fullFilledValue,
   getAuth,
   getTranslations,
-  Page,
   serverRedirect,
 } from "utils";
 import {
@@ -22,7 +22,7 @@ interface CategoryProps {
   categoryInfo: SpotifyApi.SingleCategoryResponse | null;
   playlists: SpotifyApi.PagingObject<SpotifyApi.PlaylistObjectSimplified> | null;
   user: SpotifyApi.UserObjectPrivate | null;
-  translations: Record<string, string>;
+  translations: ITranslations;
 }
 
 export default function Category({
@@ -68,7 +68,7 @@ export default function Category({
 }
 
 export const getServerSideProps = (async (context) => {
-  const translations = getTranslations(Page.Genre, context);
+  const translations = getTranslations(context);
   const cookies = context.req?.headers?.cookie;
   const genre = context.params?.genre;
   if (!cookies || !genre) {

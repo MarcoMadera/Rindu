@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 
 import { ITrack } from "types/spotify";
+import { ITranslations } from "types/translations";
 import { findDuplicateSongs } from "utils/findDuplicateSongs";
 import { getAllTracksFromPlaylist } from "utils/getAllTracksFromPlaylist";
 import { templateReplace } from "utils/templateReplace";
@@ -12,7 +13,7 @@ function getSummary(
     corruptedSongsIndexes: number[];
     tracksToRemove: ITrack[];
   },
-  translations: Record<string, string>
+  translations: ITranslations
 ): string | ReactNode[] {
   const has0DuplicateTracks = res.duplicateTracksIndexes.length === 0;
   const has0CorruptedSongs = res.corruptedSongsIndexes.length === 0;
@@ -22,44 +23,44 @@ function getSummary(
   const hasMultipleCorruptedTracks = res.corruptedSongsIndexes.length > 1;
 
   if (has0DuplicateTracks && has0CorruptedSongs) {
-    return translations.noCorruptOrDuplicateSongs;
+    return translations.removeTracksModal.noCorruptOrDuplicateSongs;
   }
 
   if (hasSingleDuplicateTrack && hasSingleCorruptedTrack) {
-    return translations.oneDuplicateOneCorrupt;
+    return translations.removeTracksModal.oneDuplicateOneCorrupt;
   }
 
   if (hasSingleDuplicateTrack && has0CorruptedSongs) {
-    return translations.oneDuplicate;
+    return translations.removeTracksModal.oneDuplicate;
   }
 
   if (has0DuplicateTracks && hasSingleCorruptedTrack) {
-    return translations.oneCorrupt;
+    return translations.removeTracksModal.oneCorrupt;
   }
 
   if (has0DuplicateTracks && hasMultipleCorruptedTracks) {
-    return templateReplace(translations.multipleCorrupt, [
+    return templateReplace(translations.removeTracksModal.multipleCorrupt, [
       res.corruptedSongsIndexes.length,
     ]);
   }
 
   if (hasMultipleDuplicateTracks && has0CorruptedSongs) {
-    return templateReplace(translations.multipleDuplicate, [
+    return templateReplace(translations.removeTracksModal.multipleDuplicate, [
       res.duplicateTracksIndexes.length,
     ]);
   }
 
-  return templateReplace(translations.multipleCorruptAndMultipleDuplicate, [
-    res.corruptedSongsIndexes.length,
-    res.duplicateTracksIndexes.length,
-  ]);
+  return templateReplace(
+    translations.removeTracksModal.multipleCorruptAndMultipleDuplicate,
+    [res.corruptedSongsIndexes.length, res.duplicateTracksIndexes.length]
+  );
 }
 
 export async function analyzePlaylist(
   id: string | undefined,
   totalTracks: number | undefined,
   isLibrary: boolean,
-  translations: Record<string, string>
+  translations: ITranslations
 ): Promise<{
   tracks: ITrack[];
   duplicateTracksIndexes: number[];

@@ -1,13 +1,14 @@
-import { ReactElement } from "react";
+import { PropsWithChildren, ReactElement } from "react";
 
-import { useTranslations } from "hooks";
+import { ITranslations } from "types/translations";
 
-export default function Footer(): ReactElement {
-  const { translations } = useTranslations();
+export default function Footer({
+  translations,
+}: PropsWithChildren<{ translations: ITranslations }>): ReactElement {
   return (
     <footer>
       <p>
-        {translations.madeBy}{" "}
+        {translations.pages.home.madeBy}{" "}
         <a
           href="https://marcomadera.com"
           rel="noreferrer noopener me"

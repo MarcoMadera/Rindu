@@ -12,18 +12,13 @@ import {
 } from "components";
 import { CardType } from "components/CardContent";
 import { useAnalytics, useHeader, useSpotify, useTranslations } from "hooks";
-import {
-  getAuth,
-  getTranslations,
-  Page,
-  serverRedirect,
-  Translations,
-} from "utils";
+import { ITranslations } from "types/translations";
+import { getAuth, getTranslations, serverRedirect } from "utils";
 import { getMyArtists } from "utils/spotifyCalls";
 
 interface CollectionArtistProps {
   user: SpotifyApi.UserObjectPrivate | null;
-  translations: Translations["collectionArtists"];
+  translations: ITranslations;
 }
 
 export default function CollectionPlaylists(): ReactElement {
@@ -61,11 +56,11 @@ export default function CollectionPlaylists(): ReactElement {
     <ContentContainer>
       {!isPlaying && (
         <Head>
-          <title>Rindu - {translations.title}</title>
+          <title>Rindu - {translations.pages.collectionArtists.title}</title>
         </Head>
       )}
       <Heading number={3} as="h2">
-        {translations.artists}
+        {translations.pages.collectionArtists.artists}
       </Heading>
       <Grid>
         {artists?.length > 0
@@ -76,7 +71,7 @@ export default function CollectionPlaylists(): ReactElement {
                   key={id}
                   images={images}
                   title={name}
-                  subTitle={translations.artist}
+                  subTitle={translations.pages.collectionArtists.artist}
                   id={id}
                 />
               );
@@ -88,7 +83,7 @@ export default function CollectionPlaylists(): ReactElement {
 }
 
 export const getServerSideProps = (async (context) => {
-  const translations = getTranslations(Page.CollectionArtists, context);
+  const translations = getTranslations(context);
   const cookies = context.req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(context.res, "/");

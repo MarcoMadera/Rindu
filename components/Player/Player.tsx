@@ -9,7 +9,6 @@ import {
   Suffle,
 } from "components/icons";
 import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
-import { ToastMessage } from "utils";
 import { repeat, suffle } from "utils/spotifyCalls";
 
 export default function Player(): ReactElement {
@@ -36,14 +35,14 @@ export default function Player(): ReactElement {
             if (!isPremium) {
               addToast({
                 variant: "error",
-                message: translations[ToastMessage.PremiumRequired],
+                message: translations.toastMessages.premiumRequired,
               });
               return;
             }
             if (!deviceId) {
               addToast({
                 variant: "error",
-                message: translations[ToastMessage.NoDeviceConnected],
+                message: translations.toastMessages.noDeviceConnected,
               });
               return;
             }
@@ -76,7 +75,7 @@ export default function Player(): ReactElement {
             if (!currentlyPlaying) {
               addToast({
                 variant: "error",
-                message: translations[ToastMessage.NothingPlaying],
+                message: translations.toastMessages.nothingPlaying,
               });
               return;
             }
@@ -104,21 +103,18 @@ export default function Player(): ReactElement {
             if (!isPremium) {
               addToast({
                 variant: "error",
-                message: translations[ToastMessage.PremiumRequired],
+                message: translations.toastMessages.premiumRequired,
               });
               return;
             }
 
-            const state =
-              repeatState === 0
-                ? "context"
-                : repeatState === 1
-                  ? "track"
-                  : "off";
+            const singleRepeatState = repeatState === 1 ? "track" : "off";
+
+            const state = repeatState === 0 ? "context" : singleRepeatState;
             if (!deviceId) {
               addToast({
                 variant: "error",
-                message: translations[ToastMessage.NoDeviceConnected],
+                message: translations.toastMessages.noDeviceConnected,
               });
               return;
             }

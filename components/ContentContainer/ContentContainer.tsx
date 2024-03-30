@@ -17,6 +17,7 @@ export default function ContentContainer({
   return (
     <main>
       {children}
+      <div className="app-footer"></div>
       <style jsx>{`
       main {
           display: block;
@@ -25,6 +26,9 @@ export default function ContentContainer({
           min-height: calc((var(--vh, 1vh) * 100) - 90px);
           width: 100%;
           background: #121212;
+        }
+        .app-footer {
+          height: 1px;
         }
         @media (max-width: 1000px) {
           main {

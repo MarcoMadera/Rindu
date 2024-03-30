@@ -24,17 +24,15 @@ import {
   useTranslations,
 } from "hooks";
 import { HeaderType } from "types/pageHeader";
+import { ITranslations } from "types/translations";
 import {
   chooseImage,
-  ContentType,
   getAuth,
   getLyrics,
   getTranslations,
   LyricsAction,
-  Page,
   serverRedirect,
   templateReplace,
-  ToastMessage,
   within,
 } from "utils";
 import {
@@ -50,7 +48,7 @@ interface TrackPageProps {
   track: SpotifyApi.TrackObjectFull | null;
   lyrics: string | null;
   user: SpotifyApi.UserObjectPrivate | null;
-  translations: Record<string, string>;
+  translations: ITranslations;
 }
 
 export default function TrackPage({
@@ -157,7 +155,7 @@ export default function TrackPage({
     <ContentContainer hasPageHeader>
       {!isPlaying && (
         <Head>
-          <title>Rindu - {track?.name ?? translations.songs}</title>
+          <title>Rindu - {track?.name ?? translations.pages.track.songs}</title>
         </Head>
       )}
       <PageHeader
@@ -190,10 +188,10 @@ export default function TrackPage({
                   addToast({
                     variant: "success",
                     message: templateReplace(
-                      translations[ToastMessage.TypeAddedTo],
+                      translations.toastMessages.typeAddedTo,
                       [
-                        translations[ContentType.Track],
-                        translations[ContentType.Library],
+                        translations.contentType.track,
+                        translations.contentType.library,
                       ]
                     ),
                   });
@@ -208,10 +206,10 @@ export default function TrackPage({
                   addToast({
                     variant: "success",
                     message: templateReplace(
-                      translations[ToastMessage.TypeRemovedFrom],
+                      translations.toastMessages.typeRemovedFrom,
                       [
-                        translations[ContentType.Track],
-                        translations[ContentType.Library],
+                        translations.contentType.track,
+                        translations.contentType.library,
                       ]
                     ),
                   });
@@ -225,7 +223,7 @@ export default function TrackPage({
         {lyrics ? (
           <div className="lyrics-container">
             <Heading number={3} as="h2">
-              {translations.lyrics}
+              {translations.pages.track.lyrics}
             </Heading>
             <Paragraph>{lyrics}</Paragraph>
           </div>
@@ -233,7 +231,7 @@ export default function TrackPage({
         {artistInfo && (
           <BigPill
             img={chooseImage(artistInfo.images, 100).url}
-            title={translations.artist}
+            title={translations.pages.track.artist}
             subTitle={artistInfo.name}
             href={`/artist/${artistInfo.id}`}
           />
@@ -242,7 +240,7 @@ export default function TrackPage({
           <div className="topTracks">
             <div className="topTracks-header">
               <span>
-                {templateReplace(translations.popularTracksBy, [
+                {templateReplace(translations.pages.track.popularTracksBy, [
                   <Heading number={3} as="h2" key={track?.artists[0].name}>
                     {track?.artists[0].name ?? ""}
                   </Heading>,
@@ -290,8 +288,8 @@ export default function TrackPage({
               }}
             >
               {showMoreTopTracks
-                ? translations.showLess
-                : translations.showMore}
+                ? translations.pages.track.showLess
+                : translations.pages.track.showMore}
             </button>
           </div>
         )}
@@ -378,7 +376,7 @@ export default function TrackPage({
 
 export const getServerSideProps = (async (context) => {
   const id = context.params?.id;
-  const translations = getTranslations(Page.Track, context);
+  const translations = getTranslations(context);
   const cookies = context.req?.headers?.cookie;
   if (!cookies || !id) {
     serverRedirect(context.res, "/");

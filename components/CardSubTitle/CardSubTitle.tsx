@@ -27,7 +27,7 @@ export default function CardSubTitle({
   }
 
   if (type === CardType.ARTIST) {
-    return translations.artist;
+    return translations.contentType.artist;
   }
 
   return null;

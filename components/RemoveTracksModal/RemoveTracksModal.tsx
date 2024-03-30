@@ -9,11 +9,9 @@ import { AsType } from "types/heading";
 import { IPageDetails, ITrack } from "types/spotify";
 import {
   analyzePlaylist,
-  ContentType,
   divideArray,
   getIdFromUri,
   templateReplace,
-  ToastMessage,
 } from "utils";
 import { removeTracksFromLibrary } from "utils/spotifyCalls";
 
@@ -55,7 +53,7 @@ export default function RemoveTracksModal({
   const [tracksToRemove, setTracksToRemove] = useState<ITrack[]>([]);
   const { translations } = useTranslations();
   const [title, setTitle] = useState<string | ReactNode[]>(
-    translations.analyzingPlaylist
+    translations.removeTracksModal.analyzingPlaylist
   );
 
   useEffect(() => {
@@ -100,17 +98,17 @@ export default function RemoveTracksModal({
       setTitle("Tracks removed from library");
       addToast({
         variant: "success",
-        message: templateReplace(translations[ToastMessage.TypeRemovedFrom], [
-          translations[ContentType.Items],
-          translations[ContentType.Library],
+        message: templateReplace(translations.toastMessages.typeRemovedFrom, [
+          translations.contentType.items,
+          translations.contentType.library,
         ]),
       });
     } catch (error) {
       addToast({
         variant: "error",
         message: templateReplace(
-          translations[ToastMessage.CouldNotRemoveFrom],
-          [translations[ContentType.Library]]
+          translations.toastMessages.couldNotRemoveFrom,
+          [translations.contentType.library]
         ),
       });
     }
@@ -133,25 +131,21 @@ export default function RemoveTracksModal({
         });
       });
       setTracksToRemove([]);
-      setTitle(
-        templateReplace(translations[ToastMessage.TypeRemovedFrom], [
-          translations[ContentType.Items],
-          translations[ContentType.Playlist],
-        ])
+      const itemsRemovedFromPlaylist = templateReplace(
+        translations.toastMessages.typeRemovedFrom,
+        [translations.contentType.items, translations.contentType.playlist]
       );
+      setTitle(itemsRemovedFromPlaylist);
       addToast({
         variant: "success",
-        message: templateReplace(translations[ToastMessage.TypeRemovedFrom], [
-          translations[ContentType.Items],
-          translations[ContentType.Playlist],
-        ]),
+        message: itemsRemovedFromPlaylist,
       });
     } catch (error) {
       addToast({
         variant: "error",
         message: templateReplace(
-          translations[ToastMessage.CouldNotRemoveFrom],
-          [translations[ContentType.Playlist]]
+          translations.toastMessages.couldNotRemoveFrom,
+          [translations.contentType.playlist]
         ),
       });
     }
@@ -211,7 +205,7 @@ export default function RemoveTracksModal({
                   await handleRemoveTracksFromPlaylist();
                 }}
               >
-                {translations.cleanPlaylist}
+                {translations.removeTracksModal.cleanPlaylist}
               </Button>
             </div>
           </>

@@ -10,7 +10,6 @@ import {
   useToast,
   useTranslations,
 } from "hooks";
-import { ToastMessage } from "utils";
 import { play } from "utils/spotifyCalls";
 
 interface PlaylistTextProps {
@@ -25,7 +24,7 @@ export default function PlaylistText({
   uri,
   name,
   type,
-}: PlaylistTextProps): ReactElement {
+}: Readonly<PlaylistTextProps>): ReactElement {
   const {
     volume,
     setVolume,
@@ -63,7 +62,7 @@ export default function PlaylistText({
           (player as Spotify.Player).disconnect();
           addToast({
             variant: "error",
-            message: translations[ToastMessage.UnableToPlayReconnecting],
+            message: translations.toastMessages.unableToPlayReconnecting,
           });
           setReconnectionError(true);
         }

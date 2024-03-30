@@ -16,13 +16,14 @@ import {
   useSpotify,
   useTranslations,
 } from "hooks";
-import { getAuth, getTranslations, Page, serverRedirect } from "utils";
+import { ITranslations } from "types/translations";
+import { getAuth, getTranslations, serverRedirect } from "utils";
 import { getCategories } from "utils/spotifyCalls";
 
 interface SearchPageProps {
   categories: SpotifyApi.PagingObject<SpotifyApi.CategoryObject> | null;
   user: SpotifyApi.UserObjectPrivate | null;
-  translations: Record<string, string>;
+  translations: ITranslations;
 }
 
 export default function SearchPage({
@@ -51,7 +52,7 @@ export default function SearchPage({
     <ContentContainer>
       {!isPlaying && (
         <Head>
-          <title>Rindu - {translations.search}</title>
+          <title>Rindu - {translations.pages.search.search}</title>
         </Head>
       )}
       {isSmallScreen && (
@@ -72,7 +73,7 @@ export default function SearchPage({
       ) : (
         <>
           <Heading number={3} as="h1">
-            {translations.browseAll}
+            {translations.pages.search.browseAll}
           </Heading>
           {categories ? <BrowseCategories categories={categories} /> : null}
         </>
@@ -82,7 +83,7 @@ export default function SearchPage({
 }
 
 export const getServerSideProps = (async (context) => {
-  const translations = getTranslations(Page.Search, context);
+  const translations = getTranslations(context);
   const cookies = context.req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(context.res, "/");

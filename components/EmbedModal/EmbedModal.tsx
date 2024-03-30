@@ -11,7 +11,6 @@ import {
 import { Emphasis } from "components/Anchor";
 import { WhiteSpace } from "components/Pre";
 import { useToast, useToggle, useTranslations } from "hooks";
-import { ToastMessage } from "utils";
 
 export default function EmbedModal({
   type,
@@ -150,12 +149,12 @@ export default function EmbedModal({
               try {
                 navigator.clipboard.writeText(code);
                 addToast({
-                  message: translations[ToastMessage.CopiedToClipboard],
+                  message: translations.toastMessages.copiedToClipboard,
                   variant: "success",
                 });
               } catch (error) {
                 addToast({
-                  message: translations[ToastMessage.FailedToCopyToClipboard],
+                  message: translations.toastMessages.failedToCopyToClipboard,
                   variant: "error",
                 });
               }

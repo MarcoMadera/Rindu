@@ -1,5 +1,6 @@
 import { createContext } from "react";
 
+import { ITranslations } from "types/translations";
 import { Locale } from "utils";
 
 const TranslationsContext = createContext<
@@ -7,7 +8,7 @@ const TranslationsContext = createContext<
 >(undefined);
 
 export interface TranslationsContextProviderProps {
-  translations: Record<string, string>;
+  translations: ITranslations;
 }
 export interface TranslationsContextProviderValue
   extends TranslationsContextProviderProps {

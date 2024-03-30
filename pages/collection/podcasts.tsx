@@ -12,17 +12,12 @@ import {
 } from "components";
 import { CardType } from "components/CardContent";
 import { useAnalytics, useHeader, useSpotify } from "hooks";
-import {
-  getAllMyShows,
-  getAuth,
-  getTranslations,
-  Page,
-  serverRedirect,
-} from "utils";
+import { ITranslations } from "types/translations";
+import { getAllMyShows, getAuth, getTranslations, serverRedirect } from "utils";
 
 interface CollectionPodcastsProps {
   user: SpotifyApi.UserObjectPrivate | null;
-  translations: Record<string, string>;
+  translations: ITranslations;
 }
 
 export default function CollectionPlaylists(): ReactElement {
@@ -85,7 +80,7 @@ export default function CollectionPlaylists(): ReactElement {
 }
 
 export const getServerSideProps = (async (context) => {
-  const translations = getTranslations(Page.CollectionPodcasts, context);
+  const translations = getTranslations(context);
   const cookies = context.req?.headers?.cookie;
   if (!cookies) {
     serverRedirect(context.res, "/");

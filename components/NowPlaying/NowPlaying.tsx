@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArtistList, PictureInPictureButton, ScrollableText } from "components";
 import { Chevron, Heart } from "components/icons";
 import { useContextMenu, useSpotify, useToast, useTranslations } from "hooks";
-import { chooseImage, ContentType, templateReplace, ToastMessage } from "utils";
+import { chooseImage, templateReplace } from "utils";
 import {
   checkEpisodesInLibrary,
   checkTracksInLibrary,
@@ -125,14 +125,14 @@ export default function NowPlaying(): ReactElement | null {
               addToast({
                 variant: "success",
                 message: templateReplace(
-                  translations[ToastMessage.TypeRemovedFrom],
+                  translations.toastMessages.typeRemovedFrom,
                   [
                     `${
                       currentlyPlaying.type === "episode"
-                        ? translations[ContentType.Episode]
-                        : translations[ContentType.Track]
+                        ? translations.contentType.episode
+                        : translations.contentType.track
                     }`,
-                    translations[ContentType.Library],
+                    translations.contentType.library,
                   ]
                 ),
               });
@@ -150,14 +150,14 @@ export default function NowPlaying(): ReactElement | null {
               addToast({
                 variant: "success",
                 message: templateReplace(
-                  translations[ToastMessage.TypeAddedTo],
+                  translations.toastMessages.typeAddedTo,
                   [
                     `${
                       currentlyPlaying.type === "episode"
-                        ? translations[ContentType.Episode]
-                        : translations[ContentType.Track]
+                        ? translations.contentType.episode
+                        : translations.contentType.track
                     }`,
-                    translations[ContentType.Library],
+                    translations.contentType.library,
                   ]
                 ),
               });

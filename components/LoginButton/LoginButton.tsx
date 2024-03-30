@@ -14,7 +14,9 @@ export default function LoginButton(): ReactElement {
 
   return (
     <>
-      <button onClick={handleClick}>{translations.loginButton}</button>
+      <button onClick={handleClick}>
+        {translations.pages.home.loginButton}
+      </button>
       <style jsx>{`
         button {
           border-radius: 500px;

@@ -4,13 +4,13 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import PlaylistLayout from "layouts/playlist";
 import { IPageDetails, ITrack } from "types/spotify";
+import { ITranslations } from "types/translations";
 import {
   fullFilledValue,
   GeneratedImageAPI,
   getAuth,
   getGeneratedImageUrl,
   getTranslations,
-  Page,
   serverRedirect,
 } from "utils";
 import {
@@ -24,7 +24,7 @@ export interface PlaylistProps {
   tracksInLibrary: boolean[] | null;
   playListTracks: ITrack[] | null;
   user: SpotifyApi.UserObjectPrivate | null;
-  translations: Record<string, string>;
+  translations: ITranslations;
 }
 
 const Playlist = (
@@ -51,7 +51,7 @@ export default Playlist;
 
 export const getServerSideProps = (async (context) => {
   const trackId = context.params?.trackId;
-  const translations = getTranslations(Page.Radio, context);
+  const translations = getTranslations(context);
   const cookies = context.req?.headers?.cookie;
   if (!cookies || !trackId) {
     serverRedirect(context.res, "/");

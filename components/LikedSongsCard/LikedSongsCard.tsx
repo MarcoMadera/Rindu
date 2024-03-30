@@ -37,8 +37,8 @@ export default function LikedSongsCard({
 
   const translationDescription =
     likedSongs?.total === 1
-      ? translations.likedSongsCardDescriptionSingular
-      : translations.likedSongsCardDescriptionPlural;
+      ? translations.pages.collectionPlaylists.likedSongsCardDescriptionSingular
+      : translations.pages.collectionPlaylists.likedSongsCardDescriptionPlural;
 
   return (
     <div className="container">
@@ -62,7 +62,9 @@ export default function LikedSongsCard({
         </div>
         <div className="titleDesc">
           <Link href={"/collection/tracks"}>
-            <Heading number={2}>{translations.likedSongsCardTitle}</Heading>
+            <Heading number={2}>
+              {translations.pages.collectionPlaylists.likedSongsCardTitle}
+            </Heading>
           </Link>
           <div className="desc">
             <div>
@@ -85,7 +87,9 @@ export default function LikedSongsCard({
           data-testid="heroCardClickHandler"
           role={"button"}
           tabIndex={-1}
-          aria-label={translations.likedSongsCardTitle}
+          aria-label={
+            translations.pages.collectionPlaylists.likedSongsCardTitle
+          }
           onKeyDown={(e) => {
             e.preventDefault();
             if (e.key === "Enter") {

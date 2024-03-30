@@ -8,7 +8,7 @@ import {
 
 import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
 import { ITrack } from "types/spotify";
-import { ACCESS_TOKEN_COOKIE, takeCookie, ToastMessage } from "utils";
+import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
 import { refreshAccessToken, transferPlayback } from "utils/spotifyCalls";
 
 export interface AudioPlayer extends HTMLAudioElement {
@@ -199,7 +199,7 @@ export function useSpotifyPlayer({ name }: { name: string }): {
           transferPlayback([device_id], { play: false });
           addToast({
             variant: "info",
-            message: translations[ToastMessage.PlayerReady],
+            message: translations.toastMessages.playerReady,
           });
         }
       );
@@ -210,7 +210,7 @@ export function useSpotifyPlayer({ name }: { name: string }): {
           console.warn("Device ID has gone offline", device_id);
           addToast({
             variant: "error",
-            message: translations[ToastMessage.PlayerNotReady],
+            message: translations.toastMessages.playerNotReady,
           });
         }
       );
@@ -231,32 +231,32 @@ export function useSpotifyPlayer({ name }: { name: string }): {
       spotifyPlayer.current?.on("authentication_error", () => {
         addToast({
           variant: "error",
-          message: translations[ToastMessage.PlayerAuthenticationError],
+          message: translations.toastMessages.playerAuthenticationError,
         });
       });
       spotifyPlayer.current?.on("autoplay_failed", () => {
         addToast({
           variant: "error",
-          message: translations[ToastMessage.PlayerAutoPlayFailed],
+          message: translations.toastMessages.playerAutoPlayFailed,
         });
       });
 
       spotifyPlayer.current.addListener("initialization_error", () => {
         addToast({
           variant: "error",
-          message: translations[ToastMessage.PlayerInitializationError],
+          message: translations.toastMessages.playerInitializationError,
         });
       });
       spotifyPlayer.current.addListener("account_error", () => {
         addToast({
           variant: "error",
-          message: translations[ToastMessage.PlayerAccountError],
+          message: translations.toastMessages.playerAccountError,
         });
       });
       spotifyPlayer.current.addListener("playback_error", () => {
         addToast({
           variant: "error",
-          message: translations[ToastMessage.PlayerPlaybackError],
+          message: translations.toastMessages.playerPlaybackError,
         });
       });
 

@@ -23,12 +23,10 @@ import {
 } from "hooks";
 import { ITrack } from "types/spotify";
 import {
-  ContentType,
   getIdFromUri,
   handlePlayCurrentTrackError,
   playCurrentTrack,
   templateReplace,
-  ToastMessage,
 } from "utils";
 
 export enum CardType {
@@ -210,8 +208,8 @@ function CardTrack({
           addToast({
             variant: "error",
             message: templateReplace(
-              translations[ToastMessage.IsCorruptedAndCannotBePlayed],
-              [translations[ContentType.Track]]
+              translations.toastMessages.isCorruptedAndCannotBePlayed,
+              [translations.contentType.track]
             ),
           });
           return;
@@ -229,7 +227,7 @@ function CardTrack({
         } else {
           addToast({
             variant: "info",
-            message: translations[ToastMessage.ContentIsUnavailable],
+            message: translations.toastMessages.contentIsUnavailable,
           });
         }
       },
@@ -247,8 +245,8 @@ function CardTrack({
             addToast({
               variant: "error",
               message: templateReplace(
-                translations[ToastMessage.IsCorruptedAndCannotBePlayed],
-                [translations[ContentType.Track]]
+                translations.toastMessages.isCorruptedAndCannotBePlayed,
+                [translations.contentType.track]
               ),
             });
             return;
@@ -260,7 +258,7 @@ function CardTrack({
         } else {
           addToast({
             variant: "info",
-            message: translations[ToastMessage.ContentIsUnavailable],
+            message: translations.toastMessages.contentIsUnavailable,
           });
         }
       }}
@@ -270,8 +268,8 @@ function CardTrack({
             addToast({
               variant: "error",
               message: templateReplace(
-                translations[ToastMessage.IsCorruptedAndCannotBePlayed],
-                [translations[ContentType.Track]]
+                translations.toastMessages.isCorruptedAndCannotBePlayed,
+                [translations.contentType.track]
               ),
             });
             return;
@@ -283,7 +281,7 @@ function CardTrack({
         } else {
           addToast({
             variant: "info",
-            message: translations[ToastMessage.ContentIsUnavailable],
+            message: translations.toastMessages.contentIsUnavailable,
           });
         }
       }}

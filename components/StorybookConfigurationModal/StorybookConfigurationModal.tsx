@@ -39,8 +39,14 @@ export default function StorybookConfigurationModal({
         <div className="select-container">
           <SelectControl
             options={[
-              { label: translations.spanish, value: Locale.ES },
-              { label: translations.english, value: Locale.EN },
+              {
+                label: translations.pages.preferences.spanish,
+                value: Locale.ES,
+              },
+              {
+                label: translations.pages.preferences.english,
+                value: Locale.EN,
+              },
             ]}
             id="language"
             defaultValue={language}

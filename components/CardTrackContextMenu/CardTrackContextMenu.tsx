@@ -13,12 +13,10 @@ import {
 import { menuContextStyles } from "styles/menuContextStyles";
 import { ITrack } from "types/spotify";
 import {
-  ContentType,
   getIdFromUri,
   getSiteUrl,
   positionSubMenu,
   templateReplace,
-  ToastMessage,
 } from "utils";
 import {
   addItemsToPlaylist,
@@ -78,16 +76,16 @@ export default function CardTrackContextMenu({
                     addToast({
                       variant: "success",
                       message: templateReplace(
-                        translations[ToastMessage.AddedTo],
-                        [translations[ContentType.Queue]]
+                        translations.toastMessages.addedTo,
+                        [translations.contentType.queue]
                       ),
                     });
                   } else {
                     addToast({
                       variant: "error",
                       message: templateReplace(
-                        translations[ToastMessage.CouldNotAddTo],
-                        [translations[ContentType.Queue]]
+                        translations.toastMessages.couldNotAddTo,
+                        [translations.contentType.queue]
                       ),
                     });
                   }
@@ -140,16 +138,16 @@ export default function CardTrackContextMenu({
                                   addToast({
                                     variant: "success",
                                     message: templateReplace(
-                                      translations[ToastMessage.AddedTo],
-                                      [translations[ContentType.Playlist]]
+                                      translations.toastMessages.addedTo,
+                                      [translations.contentType.playlist]
                                     ),
                                   });
                                 } else {
                                   addToast({
                                     variant: "error",
                                     message: templateReplace(
-                                      translations[ToastMessage.CouldNotAddTo],
-                                      [translations[ContentType.Playlist]]
+                                      translations.toastMessages.couldNotAddTo,
+                                      [translations.contentType.playlist]
                                     ),
                                   });
                                 }
@@ -264,14 +262,14 @@ export default function CardTrackContextMenu({
                   addToast({
                     variant: "success",
                     message: templateReplace(
-                      translations[ToastMessage.TypeAddedTo],
+                      translations.toastMessages.typeAddedTo,
                       [
                         `${
                           track.type === "episode"
-                            ? translations[ContentType.Episode]
-                            : translations[ContentType.Track]
+                            ? translations.contentType.episode
+                            : translations.contentType.track
                         }`,
-                        translations[ContentType.Library],
+                        translations.contentType.library,
                       ]
                     ),
                   });
@@ -279,8 +277,8 @@ export default function CardTrackContextMenu({
                   addToast({
                     variant: "error",
                     message: templateReplace(
-                      translations[ToastMessage.CouldNotAddTo],
-                      [translations[ContentType.Library]]
+                      translations.toastMessages.couldNotAddTo,
+                      [translations.contentType.library]
                     ),
                   });
                 }

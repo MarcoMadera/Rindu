@@ -1,11 +1,11 @@
 import { SetStateAction } from "react";
 
 import { BadRequestError, NotFoundError } from "./errors";
-import { ContentType, ToastMessage } from "./getTranslations";
 import { templateReplace } from "./templateReplace";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { ITrack } from "types/spotify";
 import { NewToast } from "types/toast";
+import { ITranslations } from "types/translations";
 import { play } from "utils/spotifyCalls";
 
 export function handlePlayCurrentTrackError(
@@ -19,14 +19,14 @@ export function handlePlayCurrentTrackError(
     player: Spotify.Player;
     addToast: (toast: NewToast) => void;
     setReconnectionError: (value: SetStateAction<boolean>) => void;
-    translations: Record<string, string>;
+    translations: ITranslations;
   }
 ): void {
   if (NotFoundError.isThisError(error)) {
     player.disconnect();
     addToast({
       variant: "error",
-      message: translations[ToastMessage.UnableToPlayReconnecting],
+      message: translations.toastMessages.unableToPlayReconnecting,
     });
     setReconnectionError(true);
   }
@@ -34,8 +34,8 @@ export function handlePlayCurrentTrackError(
   if (BadRequestError.isThisError(error)) {
     addToast({
       variant: "error",
-      message: templateReplace(translations[ToastMessage.ErrorPlayingThis], [
-        translations[ContentType.Track],
+      message: templateReplace(translations.toastMessages.errorPlayingThis, [
+        translations.contentType.track,
       ]),
     });
   }

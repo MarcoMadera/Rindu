@@ -16,11 +16,11 @@ export default function TrackListHeader({
   isPin,
   setIsPin,
   type: cardType,
-}: {
+}: Readonly<{
   isPin: boolean;
   setIsPin: Dispatch<SetStateAction<boolean>>;
   type: CardType;
-}): ReactElement {
+}>): ReactElement {
   const ref = useRef<HTMLDivElement>();
   const { translations } = useTranslations();
   const [type, setType] = useState<CardType>(cardType);
@@ -61,11 +61,13 @@ export default function TrackListHeader({
       ref={ref as MutableRefObject<HTMLDivElement>}
     >
       <span>#</span>
-      <span>{translations.titleListHeader}</span>
+      <span>{translations.playlistHeader.title}</span>
       {type === "playlist" ? (
         <>
-          <span className="album">{translations.albumListHeader}</span>
-          <span className="dataAdded">{translations.dateAddedListHeader}</span>
+          <span className="album">{translations.playlistHeader.album}</span>
+          <span className="dataAdded">
+            {translations.playlistHeader.dateAdded}
+          </span>
         </>
       ) : null}
       <span className="emptynow"></span>

@@ -87,7 +87,7 @@ export default function SearchInputElement({
           autoCorrect="off"
           autoCapitalize="off"
           spellCheck="false"
-          placeholder={translations.searchPlaceholder}
+          placeholder={translations.pages.playlist.searchPlaceholder}
           defaultValue=""
           onChange={(e) => {
             setQuery(e.target.value);

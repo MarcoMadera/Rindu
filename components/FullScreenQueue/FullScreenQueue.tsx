@@ -17,7 +17,7 @@ export default function FullScreenQueue(): ReactElement {
       <div className="queue">
         <div className="queue__tracks">
           {previousTracks.length > 0 && (
-            <Heading number={3}>{translations.previousTracks}</Heading>
+            <Heading number={3}>{translations.queue.previousTracks}</Heading>
           )}
           {previousTracks.map((track) => (
             <CardTrack
@@ -31,7 +31,7 @@ export default function FullScreenQueue(): ReactElement {
             />
           ))}
           {currentlyPlaying && (
-            <Heading number={3}>{translations.currentlyPlaying}</Heading>
+            <Heading number={3}>{translations.queue.currentlyPlaying}</Heading>
           )}
           {currentlyPlaying && (
             <CardTrack
@@ -45,7 +45,7 @@ export default function FullScreenQueue(): ReactElement {
             />
           )}
           {nextTracks.length > 0 && (
-            <Heading number={3}>{translations.nextUp}</Heading>
+            <Heading number={3}>{translations.queue.nextUp}</Heading>
           )}
           {nextTracks.map((track) => (
             <CardTrack

@@ -23,7 +23,7 @@ const MyApp = ({
       userValue={{ user: pageProps.user }}
     >
       <Seo />
-      <MainLayout>
+      <MainLayout translations={pageProps.translations}>
         <Component {...pageProps} />
         <Analytics />
       </MainLayout>

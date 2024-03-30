@@ -83,18 +83,18 @@ export default function PageHeader({
     type === HeaderType.Compilation;
 
   const headerTypeEyebrowText = {
-    [HeaderType.Artist]: translations.pageHeaderArtist,
-    [HeaderType.Album]: translations.pageHeaderAlbum,
-    [HeaderType.Single]: translations.pageHeaderSingle,
-    [HeaderType.Compilation]: translations.pageHeaderCompilation,
-    [HeaderType.Playlist]: translations.pageHeaderPlaylist,
-    [HeaderType.Profile]: translations.pageHeaderProfile,
-    [HeaderType.Concert]: translations.pageHeaderConcert,
-    [HeaderType.Song]: translations.pageHeaderSong,
-    [HeaderType.Podcast]: translations.pageHeaderPodcast,
-    [HeaderType.Episode]: translations.pageHeaderEpisode,
-    [HeaderType.Radio]: translations.pageHeaderRadio,
-    [HeaderType.Top]: translations.pageHeaderTop,
+    [HeaderType.Artist]: translations.pageHeader.Artist,
+    [HeaderType.Album]: translations.pageHeader.Album,
+    [HeaderType.Single]: translations.pageHeader.Single,
+    [HeaderType.Compilation]: translations.pageHeader.Compilation,
+    [HeaderType.Playlist]: translations.pageHeader.Playlist,
+    [HeaderType.Profile]: translations.pageHeader.Profile,
+    [HeaderType.Concert]: translations.pageHeader.Concert,
+    [HeaderType.Song]: translations.pageHeader.Song,
+    [HeaderType.Podcast]: translations.pageHeader.Podcast,
+    [HeaderType.Episode]: translations.pageHeader.Episode,
+    [HeaderType.Radio]: translations.pageHeader.Radio,
+    [HeaderType.Top]: translations.pageHeader.Top,
   };
   const [headingElement, setHeadingElement] =
     useState<HTMLHeadingElement | null>(null);
@@ -190,14 +190,14 @@ export default function PageHeader({
                 {stats?.listeners && (
                   <span className="stat">
                     {formatNumber(Number(stats?.listeners))}{" "}
-                    {translations.listeners}
+                    {translations.pageHeader.listeners}
                     &nbsp;&middot;&nbsp;
                   </span>
                 )}
                 {stats?.playcount && (
                   <span className="stat">
                     {formatNumber(Number(stats?.playcount))}{" "}
-                    {translations.plays}
+                    {translations.pageHeader.plays}
                     &nbsp;&middot;&nbsp;
                   </span>
                 )}
@@ -212,7 +212,8 @@ export default function PageHeader({
                 ) : (
                   ""
                 )}{" "}
-                {formatNumber(totalFollowers ?? 0)} {translations.followers}
+                {formatNumber(totalFollowers ?? 0)}{" "}
+                {translations.pageHeader.followers}
               </span>
             ) : null}
             {(type === HeaderType.Song || isAlbumVariant) && release_date ? (
@@ -221,7 +222,7 @@ export default function PageHeader({
                 {type === HeaderType.Song && duration_s ? (
                   <span>
                     &nbsp;&middot; {formatTime(duration_s)}{" "}
-                    {translations.minutes}
+                    {translations.pageHeader.minutes}
                   </span>
                 ) : null}
               </>
@@ -230,20 +231,20 @@ export default function PageHeader({
               <span>
                 &nbsp;&middot; {formatNumber(totalTracks)}{" "}
                 {totalTracks === 1
-                  ? translations.song?.toLowerCase()
-                  : translations.songs?.toLowerCase()}
+                  ? translations.pageHeader.song?.toLowerCase()
+                  : translations.pageHeader.songs?.toLowerCase()}
               </span>
             ) : null}
             {popularity ? (
               <span>
                 &nbsp;&middot; {formatNumber(popularity)}{" "}
-                {translations.popularity}
+                {translations.pageHeader.popularity}
               </span>
             ) : null}
             {totalPublicPlaylists ? (
               <span>
                 &nbsp;&middot; {formatNumber(totalPublicPlaylists)}{" "}
-                {translations.publicPlaylist}
+                {translations.pageHeader.publicPlaylist}
               </span>
             ) : null}
           </p>

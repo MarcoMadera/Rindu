@@ -3,7 +3,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { Slider } from "components";
 import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
 import type { AudioPlayer } from "hooks/useSpotifyPlayer";
-import { formatTime, ToastMessage } from "utils";
+import { formatTime } from "utils";
 
 export default function ProgressBar(): ReactElement {
   const {
@@ -112,7 +112,7 @@ export default function ProgressBar(): ReactElement {
           if (!currentlyPlaying) {
             addToast({
               variant: "error",
-              message: translations[ToastMessage.NothingPlaying],
+              message: translations.toastMessages.nothingPlaying,
             });
             return;
           }

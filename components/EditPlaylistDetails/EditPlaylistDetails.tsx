@@ -7,7 +7,7 @@ import {
   useToast,
   useTranslations,
 } from "hooks";
-import { ContentType, templateReplace, ToastMessage } from "utils";
+import { templateReplace } from "utils";
 import { addCustomPlaylistImage } from "utils/spotifyCalls";
 import { editPlaylistDetails } from "utils/spotifyCalls/editPlaylistDetails";
 
@@ -29,7 +29,7 @@ export default function EditPlaylistDetails({
   description: descriptionProp,
   coverImg,
   setNewPlaylistDetaisl,
-}: IEditPlaylistDetailsProps): ReactElement | null {
+}: Readonly<IEditPlaylistDetailsProps>): ReactElement | null {
   const [name, setName] = useState(nameProp);
   const [description, setDescription] = useState(descriptionProp);
   const { user } = useAuth();
@@ -49,8 +49,8 @@ export default function EditPlaylistDetails({
       const res = await editPlaylistDetails(id, name, description);
       if (res) {
         addToast({
-          message: templateReplace(translations[ToastMessage.TypeUpdated], [
-            translations[ContentType.Details],
+          message: templateReplace(translations.toastMessages.typeUpdated, [
+            translations.contentType.details,
           ]),
           variant: "success",
         });
@@ -59,8 +59,8 @@ export default function EditPlaylistDetails({
 
     if (removePhoto) {
       addToast({
-        message: templateReplace(translations[ToastMessage.UnabledToRemove], [
-          translations[ContentType.Image],
+        message: templateReplace(translations.toastMessages.unabledToRemove, [
+          translations.contentType.image,
         ]),
         variant: "error",
       });
@@ -74,15 +74,15 @@ export default function EditPlaylistDetails({
       });
       if (res2) {
         addToast({
-          message: templateReplace(translations[ToastMessage.TypeUpdated], [
-            translations[ContentType.Image],
+          message: templateReplace(translations.toastMessages.typeUpdated, [
+            translations.contentType.image,
           ]),
           variant: "success",
         });
       } else {
         addToast({
-          message: templateReplace(translations[ToastMessage.ErrorUpdating], [
-            translations[ContentType.Image],
+          message: templateReplace(translations.toastMessages.errorUpdating, [
+            translations.contentType.image,
           ]),
           variant: "error",
         });
@@ -93,7 +93,7 @@ export default function EditPlaylistDetails({
       setNewPlaylistDetaisl({
         name,
         description,
-        coverImg: imgUrl || "",
+        coverImg: imgUrl ?? "",
       });
     }
 
@@ -128,7 +128,7 @@ export default function EditPlaylistDetails({
           const file = e.target.files?.[0];
           if (file && !file.type.includes("image")) {
             addToast({
-              message: translations[ToastMessage.FileIsNotAnImage],
+              message: translations.toastMessages.fileIsNotAnImage,
               variant: "error",
             });
             return;
@@ -147,7 +147,7 @@ export default function EditPlaylistDetails({
             aria-hidden="false"
             draggable="false"
             loading="eager"
-            src={imgUrl || "/defaultSongCover.jpeg"}
+            src={imgUrl ?? "/defaultSongCover.jpeg"}
             alt="Playlist cover"
             id="edit-cover-image"
             sizes="(min-width: 1280px) 232px, 192px"
@@ -301,7 +301,7 @@ export default function EditPlaylistDetails({
             (description?.length || 0) < 250 ? "hidden" : ""
           }`}
         >
-          {description?.length || 0}/300
+          {description?.length ?? 0}/300
         </span>
       </div>
       <div className="save-button-container">

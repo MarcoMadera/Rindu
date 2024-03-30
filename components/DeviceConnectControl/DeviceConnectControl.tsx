@@ -3,7 +3,7 @@ import { ReactElement, useState } from "react";
 import { Heading } from "components";
 import { DeviceConnect, Playing } from "components/icons";
 import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
-import { templateReplace, ToastMessage } from "utils";
+import { templateReplace } from "utils";
 import { getAvailableDevices, transferPlayback } from "utils/spotifyCalls";
 
 export default function DeviceConnectControl(): ReactElement {
@@ -62,7 +62,7 @@ export default function DeviceConnectControl(): ReactElement {
                       if (transferPlaybackResponse) {
                         addToast({
                           message: templateReplace(
-                            translations[ToastMessage.DeviceConnectedTo],
+                            translations.toastMessages.deviceConnectedTo,
                             [device.name]
                           ),
                           variant: "success",
@@ -89,7 +89,7 @@ export default function DeviceConnectControl(): ReactElement {
           if (!isPremium) {
             addToast({
               variant: "error",
-              message: translations[ToastMessage.PremiumRequired],
+              message: translations.toastMessages.premiumRequired,
             });
             return;
           }

@@ -22,7 +22,7 @@ interface UserConfigProps {
 export default function UserWidget({
   name,
   img,
-}: UserConfigProps): ReactElement {
+}: Readonly<UserConfigProps>): ReactElement {
   const [openSettings, setOpenSettings] = useState(false);
   const router = useRouter();
   const { user, setUser, setIsLogin, isPremium } = useAuth();
@@ -75,7 +75,7 @@ export default function UserWidget({
             rel="noopener noreferrer"
             target="_blank"
           >
-            {translations.account}
+            {translations.sideBar.account}
             <ExternalLink width={16} height={16} fill="#fff" />
           </a>
         </div>
@@ -87,7 +87,7 @@ export default function UserWidget({
               tabIndex={-1}
               className="option"
             >
-              {translations.profile}
+              {translations.sideBar.profile}
             </Link>
           ) : null}
         </div>
@@ -100,7 +100,7 @@ export default function UserWidget({
             rel="noopener noreferrer"
             target="_blank"
           >
-            {translations.help}
+            {translations.sideBar.help}
             <ExternalLink width={16} height={16} fill="#fff" />
           </a>
         </div>
@@ -113,7 +113,7 @@ export default function UserWidget({
             rel="noopener noreferrer"
             target="_blank"
           >
-            {translations.download}
+            {translations.sideBar.download}
             <ExternalLink width={16} height={16} fill="#fff" />
           </a>
         </div>
@@ -127,7 +127,7 @@ export default function UserWidget({
               rel="noopener noreferrer"
               target="_blank"
             >
-              {translations.upgradeToPremium}
+              {translations.sideBar.upgradeToPremium}
               <ExternalLink width={16} height={16} fill="#fff" />
             </a>
           </div>
@@ -142,13 +142,13 @@ export default function UserWidget({
               e.stopPropagation();
               e.preventDefault();
               setModalData({
-                title: translations.shortCutsTitle,
+                title: translations.shortCuts.shortCutsTitle,
                 modalElement: <ShortCuts />,
               });
               setOpenSettings(false);
             }}
           >
-            {translations.shortCutsTitle}
+            {translations.shortCuts.shortCutsTitle}
           </button>
         </div>
         <div role="presentation">
@@ -158,7 +158,7 @@ export default function UserWidget({
             tabIndex={-1}
             className="option"
           >
-            {translations.preferences}
+            {translations.sideBar.preferences}
           </Link>
         </div>
         <div role="presentation" className="delimiter">
@@ -178,7 +178,7 @@ export default function UserWidget({
               setIsLogin(false);
             }}
           >
-            {translations.logOut}
+            {translations.shortCuts.logOut}
           </button>
         </div>
       </section>

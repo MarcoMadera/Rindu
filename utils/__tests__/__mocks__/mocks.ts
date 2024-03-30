@@ -1,11 +1,13 @@
+import translations from "i18n";
 import { ITrack, PlaylistItem } from "types/spotify";
+import { ITranslations } from "types/translations";
 import {
   ACCESS_TOKEN_COOKIE,
   EXPIRE_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
 } from "utils/constants";
 import { ArtistScrobbleInfo } from "utils/getArtistScrobbleInfo";
-import { Locale, translations } from "utils/getTranslations";
+import { Locale } from "utils/locale";
 
 export const accessToken = "accessToken";
 export const refreshToken = "refreshToken";
@@ -234,16 +236,8 @@ export function resolvePromise<T>(resolvedValue?: T): Promise<unknown> {
   );
 }
 
-export function getAllTranslations(locale: Locale): Record<string, string> {
-  const allTranslations: Record<string, string>[] = Object.values(
-    translations[locale]
-  );
-  const allTranslationsFlat = allTranslations.reduce(
-    (acc, cur) => ({ ...acc, ...cur }),
-    {}
-  );
-
-  return allTranslationsFlat;
+export function getAllTranslations(locale: Locale): ITranslations {
+  return translations[locale];
 }
 
 export const mockPlaylistTrackResponse = {
