@@ -1,6 +1,5 @@
 import React, {
   KeyboardEvent,
-  MouseEvent,
   ReactElement,
   useEffect,
   useRef,
@@ -139,7 +138,7 @@ function CommandLine(): ReactElement {
       setHistory((prev) => {
         return [...prev, { value: command, id: uuid(), type: "input" }];
       });
-      handleCommand(command);
+      handleCommand(command.trim());
       setCommand("");
       setIsTyping(true);
       setCaretPosition(0);
@@ -185,8 +184,7 @@ function CommandLine(): ReactElement {
     }
   };
 
-  const handlePasteFromClipboard = async (e: MouseEvent) => {
-    e.preventDefault();
+  const handlePasteFromClipboard = async () => {
     try {
       const text = await navigator.clipboard.readText();
       setCommand(
@@ -240,6 +238,7 @@ function CommandLine(): ReactElement {
             autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
+            onPaste={handlePasteFromClipboard}
           />
           <span>
             {command.slice(0, caretPosition)}
