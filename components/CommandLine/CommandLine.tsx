@@ -170,7 +170,9 @@ function CommandLine(): ReactElement {
       return;
     }
 
-    if (e.key.length === 1 && !isCommand()) {
+    const isUnidentifiedKey = e.key === "Unidentified";
+
+    if ((e.key.length === 1 || isUnidentifiedKey) && !isCommand()) {
       setCaretPosition((prev) => prev + 1);
     }
 
@@ -297,10 +299,13 @@ function CommandLine(): ReactElement {
           }
           input {
             caret-color: transparent;
-            width: 0px;
+            width: 100%;
             outline: none;
             color: inherit;
             border: none;
+            position: absolute;
+            top: -10000px;
+            left: -10000px;
           }
 
           @keyframes command-line-blink {
