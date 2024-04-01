@@ -393,6 +393,15 @@ export default function ArtistPage({
           .options {
             padding: 32px 32px;
           }
+          .content {
+            padding: 0;
+          }
+          .popular-content,
+          .about,
+          .content > :global(h2),
+          .attribution {
+            padding: 0 16px;
+          }
         }
         @media (max-width: 500px) {
           .popular-content,

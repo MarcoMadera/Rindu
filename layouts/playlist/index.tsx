@@ -524,7 +524,13 @@ const Playlist: NextPage<
         }
         @media (max-width: 768px) {
           .options {
-            margin: 32px 0;
+            padding: 32px 16px;
+          }
+          .tracksContainer {
+            padding: 0;
+          }
+          .trc {
+            padding: 0;
           }
         }
       `}</style>

@@ -240,7 +240,13 @@ const AlbumPage = ({
         }
         @media (max-width: 768px) {
           .options {
-            padding: 32px 32px;
+            padding: 32px 16px;
+          }
+          .trc {
+            padding: 0;
+          }
+          .copy {
+            padding: 0 16px;
           }
         }
       `}</style>

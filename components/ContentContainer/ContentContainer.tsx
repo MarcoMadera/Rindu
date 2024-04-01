@@ -36,6 +36,11 @@ export default function ContentContainer({
             margin: ${hasPageHeader ? "0 0 0 0" : "60px auto"};
           }
         }
+        @media screen and (max-width: 768px) {
+          main {
+          padding: ${hasPageHeader ? "0" : "0px 0px 30px"};
+          }
+        }
       }
       `}</style>
     </main>
