@@ -34,6 +34,11 @@ export default function Grid({
         div > :global(*) {
           width: 100%;
         }
+        @media screen and (max-width: 768px) {
+          div {
+            grid-gap: 8px;
+          }
+        }
         @media (max-width: 420px) {
           div {
             grid-template-columns: repeat(

@@ -13,6 +13,7 @@ import {
 
 import { Heading } from "components";
 import { Chevron } from "components/icons";
+import { useOnSmallScreen } from "hooks";
 
 interface CarouselProps {
   title?: string;
@@ -29,6 +30,7 @@ export default function Carousel({
   const containerRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLElement>(null);
   const [maxMoves, setMaxMoves] = useState(0);
+  const isSmallScreen = useOnSmallScreen();
   const id = useId();
 
   useEffect(() => {
@@ -73,7 +75,7 @@ export default function Carousel({
           {title}
         </Heading>
         <div className="button-container">
-          {maxMoves > 0 ? (
+          {maxMoves > 0 && !isSmallScreen ? (
             <>
               <button
                 type="button"
@@ -118,6 +120,7 @@ export default function Carousel({
               ...child.props,
               tabIndex: shouldFocus ? undefined : -1,
               "aria-hidden": shouldFocus ? "false" : "true",
+              style: { "scroll-snap-align": "start" },
             } as Partial<unknown> & HTMLAttributes<HTMLElement>);
           }
           return child;
@@ -161,6 +164,21 @@ export default function Carousel({
         button:disabled {
           cursor: not-allowed;
           opacity: 0.6;
+        }
+
+        @media (max-width: 768px) {
+          section {
+            overflow-x: scroll;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
+          }
+          section::-webkit-scrollbar {
+            display: none;
+          }
+          .header :global(h2) {
+            padding: 0 16px;
+          }
         }
       `}</style>
     </div>

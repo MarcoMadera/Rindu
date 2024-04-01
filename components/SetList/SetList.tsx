@@ -122,6 +122,13 @@ export default function SetList({
           width: fit-content;
           color: #ffffff;
         }
+
+        @media (max-width: 768px) {
+          .set-list {
+            flex-direction: row;
+            margin: 0;
+          }
+        }
       `}</style>
     </div>
   );

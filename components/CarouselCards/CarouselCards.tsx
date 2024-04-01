@@ -2,6 +2,7 @@ import { ReactElement } from "react";
 
 import { CardSubTitle, Carousel, PresentationCard } from "components";
 import { CardType } from "components/CardContent";
+import { useOnSmallScreen } from "hooks";
 import { IMappedAlbums } from "pages/artist/[artistId]";
 
 interface ICarouselCards {
@@ -15,8 +16,9 @@ export default function CarouselCards({
   title,
   type,
 }: Readonly<ICarouselCards>): ReactElement {
+  const isSmallScreen = useOnSmallScreen();
   return (
-    <Carousel title={title} gap={24}>
+    <Carousel title={title} gap={isSmallScreen ? 8 : 24}>
       {items?.map((item) => {
         if (!item) return null;
 

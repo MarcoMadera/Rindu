@@ -174,6 +174,7 @@ export default function CardContent({
           }
           article {
             min-width: 160px;
+            padding: 0 4px;
           }
         }
         @media screen and (max-width: 420px) {

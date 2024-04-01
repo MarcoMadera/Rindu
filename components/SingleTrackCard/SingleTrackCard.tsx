@@ -14,7 +14,7 @@ interface ISingleTrackCard {
 
 export default function SingleTrackCard({
   track,
-}: ISingleTrackCard): ReactElement {
+}: Readonly<ISingleTrackCard>): ReactElement {
   const { setHeaderColor } = useHeader();
   const [mainTrackColor, setMainTrackColor] = useState<string>("");
   const { addContextMenu } = useContextMenu();
@@ -106,6 +106,7 @@ export default function SingleTrackCard({
             justify-content: space-between;
             padding: 0 16px;
             align-items: center;
+            position: relative;
           }
           p {
             -webkit-line-clamp: 2;
@@ -121,6 +122,28 @@ export default function SingleTrackCard({
             text-transform: none;
             letter-spacing: normal;
             margin: 0;
+            width: calc(100% - 16px);
+          }
+          @media screen and (max-width: 768px) {
+            img {
+              width: 60px;
+              height: 60px;
+            }
+            :global(.SingleTrackCard) {
+              height: 60px;
+            }
+            span {
+              margin-left: 4px;
+              transform: scale(0.8);
+              position: absolute;
+              right: 0;
+            }
+            div {
+              padding: 0 4px;
+            }
+            p {
+              width: 100%;
+            }
           }
         `}
       </style>

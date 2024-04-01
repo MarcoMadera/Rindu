@@ -11,17 +11,23 @@ interface TopTracksProps {
 export default function TopTracks({
   heading,
   topTracks,
-}: TopTracksProps): ReactElement {
+}: Readonly<TopTracksProps>): ReactElement {
   return (
-    <>
+    <div>
       <Heading number={2}>{heading}</Heading>
-      <Grid minWidthItem="max(270px, 25%)" marginBottom="50px">
-        {topTracks &&
-          topTracks?.map((track, i) => {
-            if (i >= 9) return null;
-            return <SingleTrackCard key={track.id} track={track} />;
-          })}
+      <Grid minWidthItem="max(190px, 25%)" marginBottom="50px">
+        {topTracks?.map((track, i) => {
+          if (i >= 9) return null;
+          return <SingleTrackCard key={track.id} track={track} />;
+        })}
       </Grid>
-    </>
+      <style jsx>{`
+        @media screen and (max-width: 768px) {
+          div {
+            padding: 0 16px;
+          }
+        }
+      `}</style>
+    </div>
   );
 }

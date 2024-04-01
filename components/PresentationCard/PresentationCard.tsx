@@ -78,6 +78,7 @@ function PresentationCard({
           background-color: #181818;
           transition: background-color 0.25s ease;
           border-radius: calc(var(--card-container-border-radius) + 2px);
+          scroll-snap-align: start;
         }
         span {
           position: absolute;
@@ -96,6 +97,13 @@ function PresentationCard({
         .container:hover span {
           transform: translateY(-8px);
           opacity: 1;
+        }
+        @media screen and (max-width: 768px) {
+          .container,
+          .container:hover,
+          .container:focus-within {
+            background: transparent;
+          }
         }
       `}</style>
     </div>
