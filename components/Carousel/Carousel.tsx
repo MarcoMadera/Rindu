@@ -172,12 +172,11 @@ export default function Carousel({
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
             width: 100%;
+            grid-gap: 0;
+            margin: 20px 0;
           }
           section::-webkit-scrollbar {
             display: none;
-          }
-          .header :global(h2) {
-            padding: 0 16px;
           }
         }
       `}</style>

@@ -207,6 +207,22 @@ export default function PreferencesPage(): ReactElement {
           transform: scale(1);
           border-color: #727272;
         }
+
+        @media (max-width: 768px) {
+          .preferences-container {
+            padding: 16px 0;
+          }
+          .inputs-container {
+            grid-template-columns: 1.2fr 0.8fr;
+            padding: 0 8px 0 0;
+          }
+          .inputs-container .label-container {
+            padding-left: 8px;
+          }
+          .preferences-container :global(.search-input-container .collapsed) {
+            grid-template-columns: 2001fr;
+          }
+        }
       `}</style>
     </ContentContainer>
   );

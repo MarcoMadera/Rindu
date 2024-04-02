@@ -158,6 +158,14 @@ export default function SearchInputElement({
         input:focus {
           outline: none;
         }
+
+        @media (max-width: 768px) {
+          div {
+            max-width: 430px;
+            width: 100%;
+            margin: 0 8px;
+          }
+        }
       `}</style>
     </div>
   );

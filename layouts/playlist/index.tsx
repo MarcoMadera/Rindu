@@ -437,6 +437,7 @@ const Playlist: NextPage<
           background-color: #000000;
           border: 1px solid #ffffffb3;
           will-change: transform;
+          max-width: calc(100% - 16px);
         }
         .save-to-playlist-button:focus,
         .save-to-playlist-button:hover {
@@ -525,6 +526,7 @@ const Playlist: NextPage<
         @media (max-width: 768px) {
           .options {
             padding: 32px 16px;
+            gap: 8px;
           }
           .tracksContainer {
             padding: 0;

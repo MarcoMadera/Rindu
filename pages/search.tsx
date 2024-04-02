@@ -71,12 +71,19 @@ export default function SearchPage({
       {searchResponse ? (
         <SearchResults searchResponse={searchResponse} />
       ) : (
-        <>
+        <div>
           <Heading number={3} as="h1">
             {translations.pages.search.browseAll}
           </Heading>
           {categories ? <BrowseCategories categories={categories} /> : null}
-        </>
+          <style jsx>{`
+            @media (max-width: 768px) {
+              div :global(h1) {
+                padding: 0 8px;
+              }
+            }
+          `}</style>
+        </div>
       )}
     </ContentContainer>
   );

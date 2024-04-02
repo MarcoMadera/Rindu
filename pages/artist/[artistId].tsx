@@ -262,46 +262,48 @@ export default function ArtistPage({
           );
         })}
         {artistBiography && (
-          <section className="about">
-            <div>
-              <Heading number={3} as="h2">
-                {translations.pages.artist.about}
-              </Heading>
-              {showMoreAbout ? (
-                <Paragraph>
-                  <span
-                    dangerouslySetInnerHTML={{
-                      __html: artistInfo?.bio?.content,
-                    }}
-                  ></span>
-                </Paragraph>
-              ) : (
-                <Paragraph>
-                  <span
-                    dangerouslySetInnerHTML={{
-                      __html: artistInfo?.bio?.summary,
-                    }}
-                  ></span>
-                </Paragraph>
-              )}
-              <TextToggleButton
-                isToggle={showMoreAbout}
-                toggleHandlers={setShowMoreAbout}
-                activeText={translations.pages.artist.readLess}
-                inactiveText={translations.pages.artist.readMore}
-              />
-            </div>
-            <div className="artist-about-img-container">
-              {artistInfo?.thumb && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  className="artist-about-img"
-                  src={artistInfo?.thumb}
-                  alt={currentArtist?.name}
+          <>
+            <Heading number={3} as="h2">
+              {translations.pages.artist.about} {currentArtist.name}
+            </Heading>
+            <section className="about">
+              <div>
+                {showMoreAbout ? (
+                  <Paragraph>
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: artistInfo?.bio?.content,
+                      }}
+                    ></span>
+                  </Paragraph>
+                ) : (
+                  <Paragraph>
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: artistInfo?.bio?.summary,
+                      }}
+                    ></span>
+                  </Paragraph>
+                )}
+                <TextToggleButton
+                  isToggle={showMoreAbout}
+                  toggleHandlers={setShowMoreAbout}
+                  activeText={translations.pages.artist.readLess}
+                  inactiveText={translations.pages.artist.readMore}
                 />
-              )}
-            </div>
-          </section>
+              </div>
+              <div className="artist-about-img-container">
+                {artistInfo?.thumb && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    className="artist-about-img"
+                    src={artistInfo?.thumb}
+                    alt={currentArtist?.name}
+                  />
+                )}
+              </div>
+            </section>
+          </>
         )}
         {setLists ? (
           <div className="attribution">
@@ -391,16 +393,16 @@ export default function ArtistPage({
         }
         @media (max-width: 768px) {
           .options {
-            padding: 32px 32px;
+            padding: 32px 8px;
           }
           .content {
             padding: 0;
           }
-          .popular-content,
           .about,
           .content > :global(h2),
-          .attribution {
-            padding: 0 16px;
+          .attribution,
+          .topTracks > :global(:last-child) {
+            padding: 0 8px;
           }
         }
         @media (max-width: 500px) {

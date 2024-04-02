@@ -90,9 +90,6 @@ export default function SetList({
           align-items: center;
           z-index: 999999;
         }
-        .set-list-content :global(h2) {
-          margin-left: 8px;
-        }
         .month {
           text-align: left;
           text-transform: uppercase;
@@ -127,6 +124,15 @@ export default function SetList({
           .set-list {
             flex-direction: row;
             margin: 0;
+          }
+          .set-info {
+            align-self: center;
+          }
+          .set-info :global(h4) {
+            padding: 0;
+          }
+          .set-list-content :global(a) {
+            margin-left: 4px;
           }
         }
       `}</style>
