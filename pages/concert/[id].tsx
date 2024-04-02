@@ -119,6 +119,7 @@ export const getServerSideProps = (async (context) => {
         },
         owner: {
           display_name: artist?.name ?? setList?.artist?.name ?? "",
+          id: artist?.id ?? "",
         },
         images: [{ url: generatedImageUrl }],
       },

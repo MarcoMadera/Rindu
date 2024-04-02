@@ -545,6 +545,9 @@ export default function FullScreenPlayer(): ReactElement | null {
             text-transform: uppercase;
             letter-spacing: 2px;
           }
+          .player__track__info-text :global(h2) {
+            padding: 0;
+          }
           .player-container :global(.player) {
             transform: scale(1.3);
           }

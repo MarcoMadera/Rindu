@@ -366,7 +366,16 @@ export default function TrackPage({
         }
         @media (max-width: 768px) {
           .options {
-            margin: 32px 0;
+            margin: 0 8px;
+          }
+          .content {
+            margin: 0;
+          }
+          .topTracks-header {
+            margin: 0 8px 10px 8px;
+          }
+          button.show-more {
+            padding: 16px 8px;
           }
         }
       `}</style>

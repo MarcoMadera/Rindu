@@ -24,7 +24,7 @@ export default function Grid({
             auto-fill,
             minmax(${minWidthItem}, ${maxWidthItem})
           );
-          grid-gap: 24px;
+          gap: 24px;
           justify-content: space-between;
           margin-top: ${marginTop};
           margin-bottom: ${marginBottom};
@@ -36,7 +36,8 @@ export default function Grid({
         }
         @media screen and (max-width: 768px) {
           div {
-            grid-gap: 8px;
+            column-gap: 8px;
+            row-gap: 16px;
           }
         }
         @media (max-width: 420px) {

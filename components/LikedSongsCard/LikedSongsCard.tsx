@@ -41,68 +41,75 @@ export default function LikedSongsCard({
       : translations.pages.collectionPlaylists.likedSongsCardDescriptionPlural;
 
   return (
-    <div className="container">
-      <div className="liked-songs-card">
-        <div className="songList">
-          <div className="list">
-            {likedSongs?.items.map((song, i) => {
-              const divider = i === 0 ? "" : " • ";
+    <div className="container-wrapper">
+      <div className="container">
+        <div className="liked-songs-card">
+          <div className="songList">
+            <div className="list">
+              {likedSongs?.items.map((song, i) => {
+                const divider = i === 0 ? "" : " • ";
 
-              return (
-                <span key={song.track?.id}>
-                  <span className="divider">{divider}</span>
-                  <span className="artistName">
-                    {song.track?.artists[0].name}
+                return (
+                  <span key={song.track?.id}>
+                    <span className="divider">{divider}</span>
+                    <span className="artistName">
+                      {song.track?.artists[0].name}
+                    </span>
+                    <span className="songName">{song.track?.name}</span>
                   </span>
-                  <span className="songName">{song.track?.name}</span>
-                </span>
-              );
-            })}
-          </div>
-        </div>
-        <div className="titleDesc">
-          <Link href={"/collection/tracks"}>
-            <Heading number={2}>
-              {translations.pages.collectionPlaylists.likedSongsCardTitle}
-            </Heading>
-          </Link>
-          <div className="desc">
-            <div>
-              {templateReplace(translationDescription, [likedSongs?.total])}
+                );
+              })}
             </div>
           </div>
-        </div>
-        <div className="playButton">
-          <div className="playButton-container">
-            <PlayButton
-              size={56}
-              centerSize={28}
-              allTracks={allTracks}
-              uri={`spotify:user:${user.id}:collection`}
-            />
+          <div className="titleDesc">
+            <Link href={"/collection/tracks"}>
+              <Heading number={2}>
+                {translations.pages.collectionPlaylists.likedSongsCardTitle}
+              </Heading>
+            </Link>
+            <div className="desc">
+              <div>
+                {templateReplace(translationDescription, [likedSongs?.total])}
+              </div>
+            </div>
           </div>
-        </div>
-        <div
-          className="heroCardClickHandler"
-          data-testid="heroCardClickHandler"
-          role={"button"}
-          tabIndex={-1}
-          aria-label={
-            translations.pages.collectionPlaylists.likedSongsCardTitle
-          }
-          onKeyDown={(e) => {
-            e.preventDefault();
-            if (e.key === "Enter") {
-              router.push("/collection/tracks");
+          <div className="playButton">
+            <div className="playButton-container">
+              <PlayButton
+                size={56}
+                centerSize={28}
+                allTracks={allTracks}
+                uri={`spotify:user:${user.id}:collection`}
+              />
+            </div>
+          </div>
+          <div
+            className="heroCardClickHandler"
+            data-testid="heroCardClickHandler"
+            role={"button"}
+            tabIndex={-1}
+            aria-label={
+              translations.pages.collectionPlaylists.likedSongsCardTitle
             }
-          }}
-          onClick={() => {
-            router.push("/collection/tracks");
-          }}
-        ></div>
+            onKeyDown={(e) => {
+              e.preventDefault();
+              if (e.key === "Enter") {
+                router.push("/collection/tracks");
+              }
+            }}
+            onClick={() => {
+              router.push("/collection/tracks");
+            }}
+          ></div>
+        </div>
       </div>
       <style jsx>
         {`
+          .container-wrapper {
+            grid-column: span 2;
+            height: inherit;
+            height: 100%;
+          }
           .container {
             line-height: 1.6;
             --card-container-border-radius: clamp(
@@ -120,7 +127,6 @@ export default function LikedSongsCard({
             width: 100%;
             color: #fff;
             font-size: 1rem;
-            grid-column: span 2;
             height: inherit;
             background: linear-gradient(149.46deg, #450af5, #8e8ee5 99.16%);
           }
@@ -239,6 +245,12 @@ export default function LikedSongsCard({
             top: 0;
             white-space: nowrap;
             z-index: 0;
+          }
+
+          @media (max-width: 768px) {
+            .container-wrapper {
+              padding: 0 8px;
+            }
           }
         `}
       </style>

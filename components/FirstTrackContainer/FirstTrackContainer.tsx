@@ -43,81 +43,83 @@ export default function FirstTrackContainer({
   if (!track) return null;
 
   return (
-    <div
-      className="firstTrack-Container"
-      onContextMenu={(e) => {
-        e.preventDefault();
-        const x = e.pageX;
-        const y = e.pageY;
-        addContextMenu({
-          type: "cardTrack",
-          data: track,
-          position: { x, y },
-        });
-      }}
-    >
-      <div className="bg-12"></div>
-      {track.id ? (
-        <Link
-          href={`/track/${track.id}`}
-          className="firstTrack"
-          ref={cardRef}
-          aria-hidden={isVisible ? "false" : "true"}
-          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-          tabIndex={isVisible ? 0 : -1}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={chooseImage(track.album?.images, 100).url}
-            width={100}
-            height={100}
-            alt=""
-            id={`cover-image-${track.id}`}
-          />
-          <Heading
-            number={2}
-            as="h3"
-            fontSize="32px"
-            margin="1rem 0"
-            multiline={1}
+    <div className="firstTrack-Container-wrapper">
+      <div
+        className="firstTrack-Container"
+        onContextMenu={(e) => {
+          e.preventDefault();
+          const x = e.pageX;
+          const y = e.pageY;
+          addContextMenu({
+            type: "cardTrack",
+            data: track,
+            position: { x, y },
+          });
+        }}
+      >
+        <div className="bg-12"></div>
+        {track.id ? (
+          <Link
+            href={`/track/${track.id}`}
+            className="firstTrack"
+            ref={cardRef}
+            aria-hidden={isVisible ? "false" : "true"}
+            // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+            tabIndex={isVisible ? 0 : -1}
           >
-            {track.name}
-          </Heading>
-        </Link>
-      ) : (
-        <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={chooseImage(track.album?.images, 100).url}
-            width={100}
-            height={100}
-            alt=""
-            id={"cover-image-"}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={chooseImage(track.album?.images, 100).url}
+              width={100}
+              height={100}
+              alt=""
+              id={`cover-image-${track.id}`}
+            />
+            <Heading
+              number={2}
+              as="h3"
+              fontSize="32px"
+              margin="1rem 0"
+              multiline={1}
+            >
+              {track.name}
+            </Heading>
+          </Link>
+        ) : (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={chooseImage(track.album?.images, 100).url}
+              width={100}
+              height={100}
+              alt=""
+              id={"cover-image-"}
+            />
+            <Heading
+              number={2}
+              as="h3"
+              fontSize="32px"
+              margin="1rem 0"
+              multiline={1}
+            >
+              {track.name}
+            </Heading>
+          </>
+        )}
+        {isPlayable ? (
+          <PlayButton
+            size={60}
+            centerSize={28}
+            track={track}
+            position={position}
+            allTracks={allTracks}
           />
-          <Heading
-            number={2}
-            as="h3"
-            fontSize="32px"
-            margin="1rem 0"
-            multiline={1}
-          >
-            {track.name}
-          </Heading>
-        </>
-      )}
-      {isPlayable ? (
-        <PlayButton
-          size={60}
-          centerSize={28}
-          track={track}
-          position={position}
-          allTracks={allTracks}
-        />
-      ) : null}
-      <div className="artists">
-        <span>
-          <ArtistList artists={track.artists} />
-        </span>
+        ) : null}
+        <div className="artists">
+          <span>
+            <ArtistList artists={track.artists} />
+          </span>
+        </div>
       </div>
       <style jsx>{`
         img {
@@ -200,6 +202,12 @@ export default function FirstTrackContainer({
           bottom: 50px;
           right: 50px;
           z-index: 32323232;
+        }
+
+        @media (max-width: 768px) {
+          .firstTrack-Container-wrapper {
+            padding: 0 8px;
+          }
         }
       `}</style>
     </div>

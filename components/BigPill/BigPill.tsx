@@ -65,6 +65,11 @@ export default function BigPill({
           width: 100%;
           height: 100%;
         }
+        @media (max-width: 768px) {
+          :global(.BigPill) {
+            padding: 8px;
+          }
+        }
       `}</style>
     </Link>
   );
