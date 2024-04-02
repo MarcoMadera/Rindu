@@ -2,8 +2,9 @@ import { Fragment, ReactElement, useRef } from "react";
 
 import Link from "next/link";
 
+import { useTranslations } from "hooks";
 import { ITrack, ITrackArtist } from "types/spotify";
-import { getIdFromUri } from "utils";
+import { conjuction, getIdFromUri } from "utils";
 
 export interface IArtistListProps {
   artists: ITrack["artists"];
@@ -21,46 +22,46 @@ export default function ArtistList({
   onClick,
 }: Readonly<IArtistListProps>): ReactElement | null {
   const artistsRef = useRef<HTMLAnchorElement>(null);
+  const { locale } = useTranslations();
   if (!artists) return null;
-  const { length } = artists;
 
-  const lastArtistIndex = maxArtistsToShow ? maxArtistsToShow - 1 : length - 1;
   return (
     <span>
-      {artists.map((artist, i) => {
-        const id = getArtistId(artist);
-        if (maxArtistsToShow && i >= maxArtistsToShow) return null;
+      {conjuction(
+        artists
+          .slice(0, maxArtistsToShow ?? artists.length)
+          .filter((el) => el.name)
+          .map((artist) => {
+            const id = getArtistId(artist);
 
-        if (!id && artist.name) {
-          return (
-            <span key={artist.name} ref={artistsRef} className="ArtistList">
-              {artist.name}
-              {i !== lastArtistIndex ? ", " : ""}
-            </span>
-          );
-        }
+            if (!id) {
+              return (
+                <span key={artist.name} ref={artistsRef} className="ArtistList">
+                  {artist.name}
+                </span>
+              );
+            }
 
-        if (!id) return null;
-
-        return (
-          <Fragment key={id}>
-            <Link
-              href={`/${
-                artist.type ?? getIdFromUri(artist.uri, "type") ?? "artist"
-              }/${id}`}
-              ref={artistsRef}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onClick) onClick(e);
-              }}
-              className="ArtistList"
-            >
-              {artist.name}
-            </Link>
-            {i !== lastArtistIndex ? ", " : null}
-          </Fragment>
-        );
-      })}
+            return (
+              <Fragment key={id}>
+                <Link
+                  href={`/${
+                    artist.type ?? getIdFromUri(artist.uri, "type") ?? "artist"
+                  }/${id}`}
+                  ref={artistsRef}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onClick) onClick(e);
+                  }}
+                  className="ArtistList"
+                >
+                  {artist.name}
+                </Link>
+              </Fragment>
+            );
+          }),
+        locale
+      )}
       <style jsx>{`
         span :global(.ArtistList) {
           color: inherit;

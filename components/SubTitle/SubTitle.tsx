@@ -20,7 +20,6 @@ export default function SubTitle({
       {year && <>{year} · </>}
       {albumType && <>{capitalizeFirstLetter(albumType)} · </>}
       <ArtistList artists={artists} maxArtistsToShow={2} />
-      {artists.length > 2 ? " y más..." : null}
       <style jsx>
         {`
           span :global(a) {
