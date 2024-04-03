@@ -46,11 +46,14 @@ export default function SetList({
                   {set.venue?.name}
                 </Heading>
                 <span>
-                  {conjuction([
-                    set.venue?.city.name,
-                    set.venue?.city.state,
-                    set.venue?.city.country.code,
-                  ])}
+                  {conjuction(
+                    [
+                      set.venue?.city.name,
+                      set.venue?.city.state,
+                      set.venue?.city.country.code,
+                    ],
+                    locale
+                  )}
                 </span>
               </div>
             </Link>

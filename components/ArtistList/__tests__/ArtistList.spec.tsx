@@ -3,12 +3,29 @@ import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 import ArtistList, { IArtistListProps } from "components/ArtistList";
+import { AppContextProvider } from "context/AppContextProvider";
 import { useOnScreen } from "hooks/useOnScreen";
+import { IUtilsMocks } from "types/mocks";
 import { ITrackArtist } from "types/spotify";
+import { Locale } from "utils";
 
+const { getAllTranslations } = jest.requireActual<IUtilsMocks>(
+  "utils/__tests__/__mocks__/mocks.ts"
+);
 jest.mock<typeof import("hooks/useOnScreen")>("hooks/useOnScreen", () => ({
   useOnScreen: jest.fn().mockReturnValue(true),
 }));
+jest.mock("hooks/useLyricsInPictureInPicture");
+
+function setup(props: IArtistListProps) {
+  const translations = getAllTranslations(Locale.EN);
+  const view = render(
+    <AppContextProvider translations={translations}>
+      <ArtistList {...props} />
+    </AppContextProvider>
+  );
+  return { ...props, ...view };
+}
 
 describe("artistList", () => {
   const artists: ITrackArtist[] = [
@@ -18,10 +35,6 @@ describe("artistList", () => {
     { uri: "spotify::4", name: "Artist 4" },
     { type: "artist" },
   ];
-
-  function setup(props: IArtistListProps) {
-    return render(<ArtistList {...props} />);
-  }
 
   it("renders the artist names", () => {
     expect.assertions(1);

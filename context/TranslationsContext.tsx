@@ -7,6 +7,8 @@ const TranslationsContext = createContext<
   TranslationsContextProviderValue | undefined
 >(undefined);
 
+TranslationsContext.displayName = "TranslationsContext";
+
 export interface TranslationsContextProviderProps {
   translations: ITranslations;
 }
