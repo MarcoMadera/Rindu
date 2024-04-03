@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { Heading } from "components";
 import { useTranslations } from "hooks";
-import { conjuction, getMonth, SetLists } from "utils";
+import { conjuction, getMonth, Locale, SetLists } from "utils";
 
 export default function SetList({
   setLists,
@@ -52,7 +52,8 @@ export default function SetList({
                       set.venue?.city.state,
                       set.venue?.city.country.code,
                     ],
-                    locale
+                    Locale.EN,
+                    { type: "unit" }
                   )}
                 </span>
               </div>
