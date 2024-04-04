@@ -106,7 +106,7 @@ export default function FullScreenLyrics(): ReactElement {
         }
         @media (max-width: 768px) {
           .lyrics-container {
-            margin: 0px 64px;
+            margin: 30px 64px;
             font-size: 24px;
           }
           .line {
@@ -115,7 +115,7 @@ export default function FullScreenLyrics(): ReactElement {
         }
         @media (max-width: 658px) {
           .lyrics-container {
-            margin: 0px;
+            margin: 30px 0px 0px 0px;
             font-size: 18px;
           }
           .line {
