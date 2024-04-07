@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 
 import { LyricLine } from "./LyricLine";
 import { LoadingSpinner, LyricsPIPButton } from "components";
-import { useHeader, useLyricsContext } from "hooks";
+import { useAuth, useHeader, useLyricsContext } from "hooks";
 import { getLineType } from "utils";
 
 export default function FullScreenLyrics(): ReactElement {
@@ -13,6 +13,8 @@ export default function FullScreenLyrics(): ReactElement {
     lyricsError,
     lyricsLoading,
   } = useLyricsContext();
+
+  const { isPremium } = useAuth();
 
   useHeader({
     disableOpacityChange: true,
@@ -47,7 +49,7 @@ export default function FullScreenLyrics(): ReactElement {
           })}
         </div>
       )}
-      {!!document?.pictureInPictureEnabled && (
+      {isPremium && !!document?.pictureInPictureEnabled && (
         <LyricsPIPButton background={lyricsBackgroundColor} />
       )}
       <style jsx>{`

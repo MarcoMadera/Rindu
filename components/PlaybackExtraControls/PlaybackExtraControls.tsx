@@ -7,16 +7,19 @@ import {
   VolumeControl,
 } from "components";
 import { FullScreen, Lyrics, Queue } from "components/icons";
-import { useSpotify } from "hooks";
+import { useAuth, useSpotify } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
 
 export default function PlaybackExtraControls(): ReactElement {
   const { currentlyPlaying } = useSpotify();
+  const { isPremium } = useAuth();
   return (
     <div className="extras">
       {currentlyPlaying?.type === "track" && (
         <>
-          {!!document?.pictureInPictureEnabled && <LyricsPIPButton />}
+          {isPremium && !!document?.pictureInPictureEnabled && (
+            <LyricsPIPButton />
+          )}
           <FullScreenControl
             icon={Lyrics}
             displayInFullScreen={DisplayInFullScreen.Lyrics}
