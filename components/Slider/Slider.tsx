@@ -200,8 +200,10 @@ export default function Slider({
         onKeyUp={(e) => {
           if (e.key === "ArrowRight") {
             setProgressPercent((value) => (value >= 100 ? 100 : value + 1));
+            action(progressPercent >= 100 ? 100 : progressPercent + 1);
           } else if (e.key === "ArrowLeft") {
             setProgressPercent((value) => (value <= 0 ? 0 : value - 1));
+            action(progressPercent <= 0 ? 0 : progressPercent - 1);
           }
         }}
       >
