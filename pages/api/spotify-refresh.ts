@@ -4,6 +4,7 @@ import { ApiError } from "next/dist/server/api-utils";
 import { RefreshTokenResponse } from "types/spotify";
 import {
   ACCESS_TOKEN_COOKIE,
+  ENABLE_PKCE_AUTH,
   EXPIRE_TOKEN_COOKIE,
   makeCookie,
   REFRESH_TOKEN_COOKIE,
@@ -18,7 +19,10 @@ export default async function refresh(
   req: NextApiRequest,
   res: NextApiResponse<RefreshTokenResponse | string>
 ): Promise<void> {
-  const { NEXT_PUBLIC_SPOTIFY_CLIENT_ID: client_id = "" } = process.env;
+  const {
+    NEXT_PUBLIC_SPOTIFY_CLIENT_ID: client_id = "",
+    SPOTIFY_CLIENT_SECRET: client_secret = "",
+  } = process.env;
   const context = { req, res };
   const refreshTokenFromCookie = takeCookie(REFRESH_TOKEN_COOKIE, context);
   const body = req.body as IRefreshBody;
@@ -26,20 +30,40 @@ export default async function refresh(
     if (!body.refreshToken && !refreshTokenFromCookie) {
       throw new ApiError(400, "Bad Request");
     }
+
+    const bodyContent: Record<string, string> = {
+      grant_type: "refresh_token",
+      refresh_token: body.refreshToken ?? refreshTokenFromCookie ?? "",
+    };
+
+    const headersContent: HeadersInit = {
+      "Content-Type": "application/x-www-form-urlencoded",
+    };
+
+    if (!ENABLE_PKCE_AUTH) {
+      if (!process.env.SPOTIFY_CLIENT_SECRET) {
+        throw new Error("Client secret is required for non-auth code flow");
+      }
+
+      const authorization = `Basic ${Buffer.from(
+        `${client_id}:${client_secret}`
+      ).toString("base64")}`;
+      headersContent.Authorization = authorization;
+    }
+
+    if (ENABLE_PKCE_AUTH) {
+      bodyContent.client_id = client_id;
+    }
+
     const refreshTokenResponse = await fetch(
       "https://accounts.spotify.com/api/token",
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          grant_type: "refresh_token",
-          refresh_token: body.refreshToken ?? refreshTokenFromCookie ?? "",
-          client_id,
-        }),
+        headers: headersContent,
+        body: new URLSearchParams(bodyContent),
       }
     );
+
     const data = (await refreshTokenResponse.json()) as RefreshTokenResponse;
     const expireCookieDate = new Date();
     expireCookieDate.setTime(
