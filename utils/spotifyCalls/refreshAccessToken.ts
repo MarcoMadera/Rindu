@@ -30,11 +30,6 @@ export async function refreshAccessToken(
 
   if (data) {
     makeCookie({
-      name: REFRESH_TOKEN_COOKIE,
-      value: data.refresh_token,
-      context,
-    });
-    makeCookie({
       name: ACCESS_TOKEN_COOKIE,
       value: data.access_token,
       context,

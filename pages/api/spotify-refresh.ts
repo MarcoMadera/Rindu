@@ -23,11 +23,13 @@ export default async function refresh(
     NEXT_PUBLIC_SPOTIFY_CLIENT_ID: client_id = "",
     SPOTIFY_CLIENT_SECRET: client_secret = "",
   } = process.env;
+  const body = req.body as IRefreshBody;
   const context = { req, res };
   const refreshTokenFromCookie = takeCookie(REFRESH_TOKEN_COOKIE, context);
-  const body = req.body as IRefreshBody;
+  const refreshToken = body.refreshToken ?? refreshTokenFromCookie;
+
   try {
-    if (!body.refreshToken && !refreshTokenFromCookie) {
+    if (!refreshToken) {
       throw new ApiError(400, "Bad Request");
     }
 
@@ -76,12 +78,14 @@ export default async function refresh(
       age: expireCookieDate.getTime(),
       context,
     });
+
     makeCookie({
       name: REFRESH_TOKEN_COOKIE,
-      value: body.refreshToken ?? refreshTokenFromCookie ?? "",
+      value: refreshToken,
       age: expireCookieDate.getTime(),
       context,
     });
+
     makeCookie({
       name: EXPIRE_TOKEN_COOKIE,
       value: data.expires_in.toString(),
