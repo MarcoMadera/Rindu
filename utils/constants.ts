@@ -9,6 +9,8 @@ export const SPOTIFY_CLIENT_ID = process.env
   .NEXT_PUBLIC_SPOTIFY_CLIENT_ID as string;
 export const SPOTIFY_REDIRECT_URL = process.env
   .NEXT_PUBLIC_SPOTIFY_REDIRECT_URL as string;
+export const ENABLE_PKCE_AUTH =
+  process.env.NEXT_PUBLIC_ENABLE_PKCE_AUTH === "true";
 export const API_AUTH_URL = "https://accounts.spotify.com/authorize?";
 export const SCOPES = [
   "ugc-image-upload",
@@ -25,6 +27,10 @@ export const SCOPES = [
   "user-modify-playback-state",
   "playlist-modify-private",
   "playlist-modify-public",
+  "app-remote-control",
+  "playlist-read-collaborative",
+  "user-read-playback-position",
+  "user-read-recently-played",
 ] as const;
 export const SPOTIFY_AUTH_LOGIN_RESPONSE_TYPE = "code";
 export const TOP_TRACKS_LONG_TERM_COLOR = "rgb(211, 62, 79)";

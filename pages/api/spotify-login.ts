@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { AuthorizationResponse } from "types/spotify";
+import { ENABLE_PKCE_AUTH } from "utils";
 import { getMe } from "utils/spotifyCalls";
 
 interface ILoginBody {
@@ -24,17 +25,30 @@ export default async function login(
     }
   }
   if (body.code) {
-    const params: Record<string, string> = {
-      grant_type: "authorization_code",
-      redirect_uri: process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URL as string,
-      code: body.code,
-      client_id: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID as string,
-    };
-    if (body.code_verifier) {
-      params["code_verifier"] = body.code_verifier;
-    }
-
     try {
+      const params: Record<string, string> = {
+        grant_type: "authorization_code",
+        redirect_uri: process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URL as string,
+        code: body.code,
+        client_id: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID as string,
+      };
+
+      if (ENABLE_PKCE_AUTH) {
+        if (!body.code_verifier) {
+          throw new Error("Verification failed");
+        }
+
+        params["code_verifier"] = body.code_verifier;
+      }
+
+      if (!ENABLE_PKCE_AUTH) {
+        if (!process.env.SPOTIFY_CLIENT_SECRET) {
+          throw new Error("Client secret is required for non-auth code flow");
+        }
+
+        params["client_secret"] = process.env.SPOTIFY_CLIENT_SECRET;
+      }
+
       const tokenResponse = await fetch(
         "https://accounts.spotify.com/api/token",
         {
