@@ -17,6 +17,8 @@ https://github.com/MarcoMadera/Rindu/blob/9c9a1d16937fb4e196440524c5f17d48d30e4a
 
 To get the client ID, go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/).
 
+If PKCE_AUTH is false you will need `SPOTIFY_CLIENT_SECRET` from [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/). `SPOTIFY_CLIENT_SECRET` it is only used server side and never exposed client side.
+
 Create a new app and copy the client ID.
 
 Create a `.env.local` file and paste the client ID as the example [`.env.example`](https://github.com/MarcoMadera/spotify-playlists-cleaner/blob/master/.env.example).
