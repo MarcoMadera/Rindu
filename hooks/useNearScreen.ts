@@ -16,7 +16,7 @@ export function useNearScreen({
   isNearScreen: boolean;
   fromRef: MutableRefObject<undefined>;
 } {
-  const [isNearScreen, setShow] = useState(false);
+  const [isNearScreen, setIsNearScreen] = useState(false);
   const fromRef = useRef();
 
   useEffect(() => {
@@ -29,10 +29,12 @@ export function useNearScreen({
       const element = entries[0];
 
       if (element.isIntersecting) {
-        setShow(true);
-        once && observer.disconnect();
-      } else {
-        !once && setShow(false);
+        setIsNearScreen(true);
+        if (once) {
+          observer.disconnect();
+        }
+      } else if (!once) {
+        setIsNearScreen(false);
       }
     }
 

@@ -157,6 +157,7 @@ export default function EmbedModal({
                   message: translations.toastMessages.failedToCopyToClipboard,
                   variant: "error",
                 });
+                console.error(error);
               }
             }}
           >

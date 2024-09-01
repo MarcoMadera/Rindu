@@ -19,7 +19,7 @@ export function getUris(
     const allTracksUris = allTracks ? allTracks.map((t) => t.uri) : [];
     const filteredUris = allTracksUris.filter(
       (t) => t !== null && t !== undefined
-    ) as string[];
+    );
 
     uris = allTracks ? filteredUris : [];
   }
@@ -94,7 +94,11 @@ export async function handlePremiumPlay(
     contextUri && contextUri === pageDetails?.uri && !track && !uri;
   const isSameAsPlayback = isThisTrack || isThisPlaylist || isThisArtist;
   if (isSameAsPlayback) {
-    isPlaying ? player?.pause() : player?.resume();
+    if (isPlaying) {
+      player?.pause();
+    } else {
+      player?.resume();
+    }
     return;
   }
 
@@ -123,8 +127,8 @@ export async function handlePremiumPlay(
     setPlaylistPlayingId(uriId ?? id);
     const source =
       track || isSingle
-        ? track?.uri ?? pageDetails?.uri
-        : uri ?? pageDetails?.uri;
+        ? (track?.uri ?? pageDetails?.uri)
+        : (uri ?? pageDetails?.uri);
     const isCollection = source?.split(":")?.[3];
     setPlayedSource(
       isCollection && pageDetails?.type && id

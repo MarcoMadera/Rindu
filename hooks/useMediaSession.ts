@@ -78,9 +78,14 @@ export function useMediaSession({
             !currentlyPlayingPosition ? 10 : currentlyPlayingPosition + 10
           );
         });
-        navigator.mediaSession.setActionHandler("seekto", function (e) {
-          e.seekTime && player.seek(e.seekTime);
-        });
+        navigator.mediaSession.setActionHandler(
+          "seekto",
+          function (mediaSessionActions) {
+            if (mediaSessionActions.seekTime) {
+              player.seek(mediaSessionActions.seekTime);
+            }
+          }
+        );
         navigator.mediaSession.setActionHandler("previoustrack", function () {
           player.previousTrack();
         });

@@ -50,6 +50,7 @@ module.exports = {
     "react/react-in-jsx-scope": 0,
     "no-implied-eval": "off",
     "require-await": "off",
+    "jest/prefer-importing-jest-globals": ["error", { types: [] }],
   },
   overrides: [
     {

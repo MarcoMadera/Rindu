@@ -10,6 +10,7 @@ import { Locale, LOCALE_COOKIE } from "utils";
 describe("middleware", () => {
   it("should redirect and set locale cookie if is not there", () => {
     expect.assertions(2);
+
     const nextUrl = {
       searchParams: {
         set: () => "",
@@ -40,12 +41,14 @@ describe("middleware", () => {
     } as unknown as NextResponse);
 
     middleware(request);
+
     expect(setCookies).toHaveBeenCalledWith(LOCALE_COOKIE, Locale.EN);
     expect(redirection).toHaveBeenCalledWith(nextUrl);
   });
 
   it("should not return a NextResponse in api if locale cookie is present", () => {
     expect.assertions(1);
+
     const request = {
       nextUrl: {
         searchParams: {
@@ -73,11 +76,13 @@ describe("middleware", () => {
       .mockReturnValueOnce((() => ({})) as unknown as NextResponse);
 
     const result = middleware(request);
+
     expect(result).toBeUndefined();
   });
 
   it("should not return a NextResponse if userAgent is not valid", () => {
     expect.assertions(1);
+
     const request = {
       nextUrl: {
         searchParams: {
@@ -104,6 +109,7 @@ describe("middleware", () => {
       .mockReturnValueOnce((() => ({})) as unknown as NextResponse);
 
     const result = middleware(request);
+
     expect(result).toBeUndefined();
   });
 });

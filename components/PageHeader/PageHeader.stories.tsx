@@ -3,7 +3,7 @@ import { Meta } from "@storybook/react";
 import { PageHeader } from "components";
 import { HeaderType } from "types/pageHeader";
 
-export default {
+const meta: Meta<typeof PageHeader> = {
   title: "Components/PageHeader",
   component: PageHeader,
   parameters: {
@@ -13,16 +13,14 @@ export default {
     },
   },
   argTypes: {
-    id: { control: "text" },
     title: { control: "text" },
-    subTitle: { control: "text", type: "string" },
-    images: { control: "array" },
     type: {
-      options: HeaderType,
+      options: Object.values(HeaderType),
       control: { type: "select" },
     },
   },
-} as Meta<typeof PageHeader>;
+};
+export default meta;
 
 export const Playlist = {
   args: {

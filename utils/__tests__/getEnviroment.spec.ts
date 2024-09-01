@@ -17,6 +17,7 @@ describe("environment", () => {
 
     it("should be truthy if is production", () => {
       expect.assertions(1);
+
       setupEnvironment({
         NODE_ENV: "production",
       });
@@ -34,6 +35,7 @@ describe("environment", () => {
 
     it("should be truthy if is server", () => {
       expect.assertions(1);
+
       Object.defineProperty(window, "document", {
         writable: true,
         value: undefined,
@@ -46,6 +48,7 @@ describe("environment", () => {
   describe("getSiteUrl", () => {
     it("should be equal to the development url", () => {
       expect.assertions(1);
+
       setupEnvironment({
         NODE_ENV: "development",
         NEXT_PUBLIC_SITE_URL: "http://localhost:3000",
@@ -56,6 +59,7 @@ describe("environment", () => {
 
     it("should be equal to the production url", () => {
       expect.assertions(1);
+
       setupEnvironment({
         NODE_ENV: "production",
         NEXT_PUBLIC_SITE_URL: "https://rindu.marcomadera.com",

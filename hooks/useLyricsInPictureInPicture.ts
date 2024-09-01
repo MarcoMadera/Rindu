@@ -82,12 +82,12 @@ export function useLyricsInPictureInPicture({
     setLyricLineColor(
       lyrics?.colors?.highlightText
         ? colorCodedToHex(lyrics.colors.highlightText)
-        : lyricLineColor ?? `hsl(${h}, ${s}%, ${l - 20}%)`
+        : (lyricLineColor ?? `hsl(${h}, ${s}%, ${l - 20}%)`)
     );
     setLyricTextColor(
       lyrics?.colors?.text
         ? rgbToHex(colorCodedToRGB(lyrics.colors.text))
-        : lyricTextColor ?? `hsl(${h}, ${s}%, ${l - 20}%)`
+        : (lyricTextColor ?? `hsl(${h}, ${s}%, ${l - 20}%)`)
     );
 
     if (currentlyPlaying?.type !== "track")

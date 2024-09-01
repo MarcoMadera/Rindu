@@ -28,9 +28,11 @@ describe("browseCategories", () => {
 
   it("renders", () => {
     expect.assertions(2);
+
     render(<BrowseCategories categories={categories} />);
     const titleValue = screen.getByText("category1");
     const titleValue2 = screen.getByText("category2");
+
     expect(titleValue).toHaveTextContent("category1");
     expect(titleValue2).toHaveTextContent("category2");
   });

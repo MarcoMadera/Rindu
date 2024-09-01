@@ -3,7 +3,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { Meta, StoryFn } from "@storybook/react";
 
 import { SearchInputElement } from "components";
-export default {
+const meta: Meta<typeof SearchInputElement> = {
   title: "Components/SearchInputElement",
   component: SearchInputElement,
   parameters: {
@@ -11,11 +11,12 @@ export default {
   },
   argTypes: {
     source: {
-      options: { playlist: "playlist", search: "search" },
+      options: ["search", "playlist"],
       control: { type: "select" },
     },
   },
-} as Meta<typeof SearchInputElement>;
+};
+export default meta;
 
 const Template: StoryFn<typeof SearchInputElement> = (args) => {
   return <SearchInputElement {...args} />;

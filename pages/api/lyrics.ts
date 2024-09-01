@@ -1,4 +1,4 @@
-import { AnyNode, Cheerio, load } from "cheerio";
+import { CheerioAPI, load } from "cheerio";
 import levenshtein from "fast-levenshtein";
 import _ from "lodash";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -11,7 +11,7 @@ async function getLyrics(
 ): Promise<string | null> {
   const promises = [];
 
-  const textln = (html: Cheerio<AnyNode>): string => {
+  const textln = (html: ReturnType<CheerioAPI>): string => {
     html.find("br").replaceWith("\n");
     html.find("script").replaceWith("");
     html.find("#video-musictory").replaceWith("");

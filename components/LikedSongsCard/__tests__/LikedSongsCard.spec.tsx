@@ -17,7 +17,7 @@ jest.mock<typeof import("utils/spotifyCalls")>("utils/spotifyCalls", () => ({
 
 jest.mock<typeof import("hooks/useOnScreen")>("hooks/useOnScreen", () => ({
   ...jest.requireActual("hooks/useOnScreen"),
-  useOnScreen: jest.fn(),
+  useOnScreen: jest.fn().mockReturnValue(false),
 }));
 
 jest.mock<NextRouter>("next/router", () => ({
@@ -34,9 +34,12 @@ interface ISetupProps {
   >;
 }
 function setup({ appContextProviderProps }: ISetupProps = {}) {
-  const routerMock: NextRouter = { ...nextRouterMock, push: jest.fn() };
-  (useRouter as jest.Mock).mockReturnValue(routerMock);
-  (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
+  const routerMock: NextRouter = {
+    ...nextRouterMock,
+    push: jest.fn().mockResolvedValue(false),
+  };
+  jest.mocked(useRouter).mockReturnValue(routerMock);
+  jest.mocked(useOnScreen).mockImplementationOnce(() => true);
 
   const translations = getAllTranslations(Locale.EN);
   const view = render(
@@ -53,9 +56,10 @@ function setup({ appContextProviderProps }: ISetupProps = {}) {
 describe("likedSongsCard", () => {
   it("should render and redirect", async () => {
     expect.assertions(5);
-    (getMyLikedSongs as jest.Mock).mockResolvedValueOnce(
-      mockPlaylistTrackResponse
-    );
+
+    jest
+      .mocked(getMyLikedSongs)
+      .mockResolvedValueOnce(mockPlaylistTrackResponse);
 
     const { translations, routerMock } = setup({
       appContextProviderProps: {
@@ -81,15 +85,18 @@ describe("likedSongsCard", () => {
     expect(pluralDescription).toBeInTheDocument();
 
     fireEvent.click(heroCardClickHandler);
+
     expect(routerMock.push).toHaveBeenCalledWith("/collection/tracks");
 
     fireEvent.keyDown(heroCardClickHandler, { key: "Enter", code: "Enter" });
+
     expect(routerMock.push).toHaveBeenCalledWith("/collection/tracks");
   });
 
   it("should render singular description if there is one liked track", async () => {
     expect.assertions(3);
-    (getMyLikedSongs as jest.Mock).mockResolvedValueOnce({
+
+    jest.mocked(getMyLikedSongs).mockResolvedValueOnce({
       ...mockPlaylistTrackResponse,
       items: [mockPlaylistTrackResponse.items[0]],
       total: 1,

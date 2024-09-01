@@ -103,7 +103,7 @@ export default function EpisodeCard({
       setPlayedSource(
         isCollection && pageDetails?.type && id
           ? `spotify:${pageDetails.type}:${id}`
-          : source ?? track?.uri
+          : (source ?? track?.uri)
       );
     } catch (error) {
       handlePlayCurrentTrackError(error, {

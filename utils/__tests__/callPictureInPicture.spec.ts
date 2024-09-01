@@ -8,6 +8,7 @@ const { setupMediaSession } = jest.requireActual<IUtilsMocks>(
 describe("callPictureInPicture", () => {
   it("should return undefined if not artwork defined", async () => {
     expect.assertions(1);
+
     setupMediaSession({
       metadata: {
         artwork: undefined,
@@ -17,11 +18,13 @@ describe("callPictureInPicture", () => {
     const video = document.createElement("video");
 
     const result = await callPictureInPicture(canvas, video);
+
     expect(result).toBeUndefined();
   });
 
   it("should return undefined if src artwork is undefined", async () => {
     expect.assertions(1);
+
     setupMediaSession({
       metadata: {
         artwork: [
@@ -36,11 +39,13 @@ describe("callPictureInPicture", () => {
     const video = document.createElement("video");
 
     const result = await callPictureInPicture(canvas, video);
+
     expect(result).toBeUndefined();
   });
 
   it("should log error", async () => {
     expect.assertions(1);
+
     setupMediaSession();
 
     const canvas = document.createElement("canvas");
@@ -49,6 +54,7 @@ describe("callPictureInPicture", () => {
     const error = jest.spyOn(console, "error");
 
     await callPictureInPicture(canvas, video);
+
     expect(error).toHaveBeenCalledWith(
       new TypeError("image.decode is not a function")
     );
@@ -56,6 +62,7 @@ describe("callPictureInPicture", () => {
 
   it("should call requestPictureInPicture", async () => {
     expect.assertions(3);
+
     setupMediaSession();
     Object.defineProperty(Image.prototype, "decode", {
       writable: true,
@@ -77,6 +84,7 @@ describe("callPictureInPicture", () => {
     } as unknown as HTMLVideoElement;
 
     await callPictureInPicture(canvas, video);
+
     expect(canvas.getContext).toHaveBeenCalledWith("2d");
     expect(drawImage).toHaveBeenCalledWith(expect.anything(), 0, 0, 512, 512);
     expect(video.requestPictureInPicture).toHaveBeenCalledWith();

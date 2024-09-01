@@ -5,7 +5,7 @@ import { Meta } from "@storybook/react";
 import { PresentationCard, SubTitle } from "components";
 import { CardType } from "components/CardContent";
 
-export default {
+const meta: Meta<typeof PresentationCard> = {
   title: "Components/CardContent",
   component: PresentationCard,
   parameters: {
@@ -29,10 +29,10 @@ export default {
       description: "title of the card",
     },
     subTitle: { control: "text", type: "string", description: "subTitle" },
-    images: { control: "array" },
+    images: { control: "object" },
     type: {
       description: "type of card",
-      options: CardType,
+      options: Object.values(CardType),
       control: {
         type: "select",
         labels: CardType,
@@ -50,7 +50,9 @@ export default {
       description: "isSingle",
     },
   },
-} as Meta<typeof PresentationCard>;
+};
+
+export default meta;
 
 export const Playlist = {
   args: {

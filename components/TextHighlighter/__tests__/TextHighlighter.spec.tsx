@@ -5,6 +5,7 @@ import TextHighlighter from "../TextHighlighter";
 describe("textHighlighter", () => {
   it("should highlight the exact match of the given text in the children string", () => {
     expect.assertions(1);
+
     const text = "highlight";
     const children = "This is a highlight test string";
 
@@ -19,6 +20,7 @@ describe("textHighlighter", () => {
 
   it("should highlight all occurrences of the given text in the children string", () => {
     expect.assertions(2);
+
     const text = "highlight";
     const children = "This is a highlight test string with multiple highlights";
 
@@ -36,6 +38,7 @@ describe("textHighlighter", () => {
 
   it("should handle empty children without errors", () => {
     expect.assertions(1);
+
     const text = "highlight";
     const children = "";
 
@@ -46,6 +49,7 @@ describe("textHighlighter", () => {
 
   it("should handle empty text without errors", () => {
     expect.assertions(1);
+
     const text = "";
     const children = "This is a test string";
 
@@ -63,6 +67,7 @@ describe("textHighlighter", () => {
 
   it("should handle children with only whitespace without errors", () => {
     expect.assertions(1);
+
     const text = "highlight";
     const children = "     ";
 
@@ -73,6 +78,7 @@ describe("textHighlighter", () => {
 
   it("should highligh only the text on nested elements", () => {
     expect.assertions(7);
+
     const text = "highlight";
     const children = (
       <>

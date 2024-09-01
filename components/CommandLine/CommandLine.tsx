@@ -199,6 +199,7 @@ function CommandLine(): ReactElement {
         variant: "error",
         message: translations.toastMessages.failToPasteFromClipboard,
       });
+      console.error(error);
     }
   };
 

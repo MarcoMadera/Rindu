@@ -27,7 +27,7 @@ export function conjuction(
     const result = formattedParts.map((part) =>
       part.type === "literal"
         ? part.value
-        : reactNodes.get(part.value) ?? part.value
+        : (reactNodes.get(part.value) ?? part.value)
     );
 
     if (reactNodes.size > 0) {
@@ -35,7 +35,7 @@ export function conjuction(
     } else {
       return result.join("");
     }
-  } catch (error) {
+  } catch {
     return String(value);
   }
 }

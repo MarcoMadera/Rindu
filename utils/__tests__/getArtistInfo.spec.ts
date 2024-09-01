@@ -10,14 +10,17 @@ describe("getArtistInfo", () => {
     expect.assertions(1);
 
     const result = await getArtistInfo();
+
     expect(result).toBeNull();
   });
 
   it("should call fetch", async () => {
     expect.assertions(1);
+
     mockFetchSuccess({ artist: artistInfo }, true);
 
     const result = await getArtistInfo("artistName");
+
     expect(result).toStrictEqual(artistInfo);
   });
 
@@ -27,6 +30,7 @@ describe("getArtistInfo", () => {
     mockFetchSuccess({ artists: [artistInfo] }, false);
 
     const result = await getArtistInfo("artistName");
+
     expect(result).toStrictEqual({} as ArtistScrobbleInfo);
   });
 });

@@ -171,7 +171,7 @@ function CardTrack({
               pageDetails?.uri,
               "id"
             )}`
-          : source ?? track?.uri
+          : (source ?? track?.uri)
       );
     } catch (error) {
       handlePlayCurrentTrackError(error, {
