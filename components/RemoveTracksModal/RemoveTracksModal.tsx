@@ -111,6 +111,7 @@ export default function RemoveTracksModal({
           [translations.contentType.library]
         ),
       });
+      console.error(error);
     }
   }
 
@@ -148,6 +149,7 @@ export default function RemoveTracksModal({
           [translations.contentType.playlist]
         ),
       });
+      console.error(error);
     }
   }
 

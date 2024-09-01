@@ -4,17 +4,13 @@ import { analyzePlaylist } from "utils/analyzePlaylist";
 import { getAllTracksFromPlaylist } from "utils/getAllTracksFromPlaylist";
 import { getTranslations } from "utils/getTranslations";
 
-jest.mock<typeof import("utils")>("utils/getAllTracksFromPlaylist", () => ({
-  ...jest.requireActual<typeof import("utils")>(
-    "utils/getAllTracksFromPlaylist"
-  ),
-  getAllTracksFromPlaylist: jest.fn(),
-}));
+jest.mock("utils/getAllTracksFromPlaylist");
 
 const { track } = jest.requireActual<IUtilsMocks>("./__mocks__/mocks.ts");
 
 describe("analyzePlaylist", () => {
   const translations = getTranslations();
+
   it("should return null if no id or accessToken or totalTracks", async () => {
     expect.assertions(1);
 
@@ -24,13 +20,16 @@ describe("analyzePlaylist", () => {
       false,
       translations
     );
+
     expect(result).toBeNull();
   });
 
   it("should return empty array values if there are not tracks", async () => {
     expect.assertions(1);
-    (getAllTracksFromPlaylist as jest.Mock).mockResolvedValue([]);
+
+    jest.mocked(getAllTracksFromPlaylist).mockResolvedValue([]);
     const result = await analyzePlaylist("id", 20, true, translations);
+
     expect(result).toStrictEqual({
       corruptedSongsIndexes: [],
       duplicateTracksIndexes: [],
@@ -61,11 +60,10 @@ describe("analyzePlaylist", () => {
       },
     ];
 
-    (
-      getAllTracksFromPlaylist as jest.Mock<Promise<ITrack[]>>
-    ).mockResolvedValue(tracks);
+    jest.mocked(getAllTracksFromPlaylist).mockResolvedValue(tracks);
 
     const result = await analyzePlaylist("id", 20, true, translations);
+
     expect(result).toStrictEqual({
       corruptedSongsIndexes: [],
       duplicateTracksIndexes: [1, 2],
@@ -92,9 +90,7 @@ describe("analyzePlaylist", () => {
       { ...track, corruptedTrack: true, position: 4 },
     ];
 
-    (
-      getAllTracksFromPlaylist as jest.Mock<Promise<ITrack[]>>
-    ).mockResolvedValue(tracks);
+    jest.mocked(getAllTracksFromPlaylist).mockResolvedValue(tracks);
 
     const result = await analyzePlaylist("id", 20, true, translations);
 
@@ -105,6 +101,7 @@ describe("analyzePlaylist", () => {
       tracks[4],
     ]);
   });
+
   it("should return index 0 if corrupted track position does not exists", async () => {
     expect.assertions(1);
 
@@ -125,11 +122,10 @@ describe("analyzePlaylist", () => {
       },
     ];
 
-    (
-      getAllTracksFromPlaylist as jest.Mock<Promise<ITrack[]>>
-    ).mockResolvedValue(tracks);
+    jest.mocked(getAllTracksFromPlaylist).mockResolvedValue(tracks);
 
     const result = await analyzePlaylist("id", 20, true, translations);
+
     expect(result?.tracksToRemove).toStrictEqual([tracks[0]]);
   });
 });

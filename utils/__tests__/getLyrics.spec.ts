@@ -8,6 +8,7 @@ const { mockFetchSuccess, mockFetchError } = jest.requireActual<IUtilsMocks>(
 describe("getLyrics", () => {
   it("should return the lyrics of the song", async () => {
     expect.assertions(1);
+
     mockFetchSuccess({ lyrics: "these lyrics" });
     const response = await getLyrics(
       "artistName",
@@ -15,6 +16,7 @@ describe("getLyrics", () => {
       "trackId",
       LyricsAction.Fullscreen
     );
+
     expect(response).toStrictEqual({
       isFullscreen: true,
       lyrics: "these lyrics",
@@ -23,6 +25,7 @@ describe("getLyrics", () => {
 
   it("should return null", async () => {
     expect.assertions(1);
+
     mockFetchSuccess({ lyrics: "these lyrics" }, false);
     const response = await getLyrics(
       "artistName",
@@ -30,11 +33,13 @@ describe("getLyrics", () => {
       "trackId",
       LyricsAction.Fullscreen
     );
+
     expect(response).toBeNull();
   });
 
   it("should be able to catch error", async () => {
     expect.assertions(1);
+
     mockFetchError();
     let lyricsError = null;
     try {
@@ -47,6 +52,7 @@ describe("getLyrics", () => {
     } catch (error) {
       lyricsError = error;
     }
+
     expect(lyricsError).toStrictEqual({
       json: expect.any(Function) as () => Promise<
         () => {

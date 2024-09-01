@@ -45,9 +45,11 @@ function setup(props: ISetup) {
 
 describe("cardTrack", () => {
   const onClickAdd = jest.fn();
+
   it("renders", () => {
     expect.assertions(1);
-    (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
+
+    jest.mocked(useOnScreen).mockImplementationOnce(() => true);
     const cardTrackName = {
       ...track,
       name: "cardTrackName",
@@ -68,13 +70,15 @@ describe("cardTrack", () => {
     });
 
     const titleValue = screen.getByText(cardTrackName.name);
+
     expect(titleValue).toHaveTextContent(cardTrackName.name);
   });
 
   it("should play on double click", async () => {
     expect.assertions(2);
-    (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
-    (playCurrentTrack as jest.Mock<Promise<string>>).mockResolvedValue("id");
+
+    jest.mocked(useOnScreen).mockImplementationOnce(() => true);
+    jest.mocked(playCurrentTrack).mockResolvedValue("id");
     const setPlayedSource = jest.fn();
     const player = {
       getCurrentState: jest.fn().mockResolvedValue({ position: 0 }),
@@ -111,12 +115,15 @@ describe("cardTrack", () => {
     await waitFor(() => {
       expect(player.activateElement).toHaveBeenCalledTimes(1);
     });
+
     expect(setPlayedSource).toHaveBeenCalledWith(track.uri);
   });
+
   it("should add toast reconnection error", async () => {
     expect.assertions(4);
-    (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
-    (playCurrentTrack as jest.Mock).mockRejectedValue(new NotFoundError());
+
+    jest.mocked(useOnScreen).mockImplementationOnce(() => true);
+    jest.mocked(playCurrentTrack).mockRejectedValue(new NotFoundError());
     const player = {
       disconnect: jest.fn(),
       activateElement: jest.fn().mockResolvedValue(200),
@@ -147,6 +154,7 @@ describe("cardTrack", () => {
       screen.getAllByRole("alertdialog");
     });
     const toast = screen.getAllByRole("alertdialog");
+
     expect(player.disconnect).toHaveBeenCalledWith();
     expect(toast).toHaveLength(1);
     expect(toast[0]).toHaveTextContent(
@@ -154,10 +162,12 @@ describe("cardTrack", () => {
     );
     expect(setReconnectionError).toHaveBeenCalledWith(true);
   });
+
   it("should add toast with error playing this track", async () => {
     expect.assertions(1);
-    (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
-    (playCurrentTrack as jest.Mock).mockRejectedValue(new BadRequestError());
+
+    jest.mocked(useOnScreen).mockImplementationOnce(() => true);
+    jest.mocked(playCurrentTrack).mockRejectedValue(new BadRequestError());
     const setReconnectionError = jest.fn();
     const player = {
       activateElement: jest.fn().mockResolvedValue(200),
@@ -187,12 +197,15 @@ describe("cardTrack", () => {
     fireEvent.doubleClick(mytest);
     await waitFor(() => {
       const toast = screen.getAllByRole("alertdialog");
+
       expect(toast[0]).toHaveTextContent("Error playing this track");
     });
   });
+
   it("should add toast with error if is corrupted track", async () => {
     expect.assertions(1);
-    (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
+
+    jest.mocked(useOnScreen).mockImplementationOnce(() => true);
     const setReconnectionError = jest.fn();
 
     setup({
@@ -218,14 +231,17 @@ describe("cardTrack", () => {
     fireEvent.doubleClick(mytest);
     await waitFor(() => {
       const toast = screen.getAllByRole("alertdialog");
+
       expect(toast[0]).toHaveTextContent(
         "This track is corrupted and cannot be played"
       );
     });
   });
+
   it("should add toast with info no content available", async () => {
     expect.assertions(1);
-    (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
+
+    jest.mocked(useOnScreen).mockImplementationOnce(() => true);
     const setReconnectionError = jest.fn();
 
     setup({
@@ -256,12 +272,15 @@ describe("cardTrack", () => {
     fireEvent.doubleClick(mytest);
     await waitFor(() => {
       const toast = screen.getAllByRole("alertdialog");
+
       expect(toast[0]).toHaveTextContent("Content is unavailable");
     });
   });
+
   it("should change artists styles on mouse enter", () => {
     expect.assertions(1);
-    (useOnScreen as jest.Mock).mockImplementationOnce(() => true);
+
+    jest.mocked(useOnScreen).mockImplementationOnce(() => true);
 
     setup({
       cardTrackProps: {
@@ -282,6 +301,7 @@ describe("cardTrack", () => {
 
     const link = screen.getByText("Artist name");
     fireEvent.mouseEnter(link);
+
     expect(link).toHaveStyle("color: #fff");
   });
 });

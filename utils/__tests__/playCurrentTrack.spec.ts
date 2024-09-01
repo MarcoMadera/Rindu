@@ -12,7 +12,7 @@ jest.mock<typeof import("utils/spotifyCalls")>(
       play: jest.fn().mockResolvedValue({
         status: 200,
         ok: true,
-      }),
+      } as Response),
     }) as unknown as typeof import("utils/spotifyCalls")
 );
 
@@ -82,10 +82,11 @@ describe("playCurrentTrack", () => {
 
   it("should return 400 for a different status", async () => {
     expect.assertions(1);
-    (play as jest.Mock).mockResolvedValue({
+
+    jest.mocked(play).mockResolvedValue({
       status: 500,
       ok: false,
-    });
+    } as Response);
 
     async function handler() {
       await playCurrentTrack(track, { ...config, isSingleTrack: false });
@@ -96,10 +97,11 @@ describe("playCurrentTrack", () => {
 
   it("should throw NotFoundError if status is 404", async () => {
     expect.assertions(1);
-    (play as jest.Mock).mockResolvedValue({
+
+    jest.mocked(play).mockResolvedValue({
       status: 404,
       ok: false,
-    });
+    } as Response);
 
     async function handler() {
       await playCurrentTrack(track, { ...config, isSingleTrack: false });

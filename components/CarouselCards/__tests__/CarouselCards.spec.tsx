@@ -14,7 +14,7 @@ jest.mock<typeof import("hooks/useAuth")>("hooks/useAuth");
 jest.mock<typeof import("hooks/useOnScreen")>("hooks/useOnScreen");
 jest.mock<NextRouter>("next/router");
 
-const { getAllTranslations, user, accessToken, nextRouterMock } =
+const { getAllTranslations, user, nextRouterMock } =
   jest.requireActual<IUtilsMocks>("utils/__tests__/__mocks__/mocks.ts");
 
 interface ISetupProps {
@@ -25,10 +25,19 @@ interface ISetupProps {
 }
 
 function setup({ appContextProviderProps, props }: ISetupProps) {
-  const routerMock: NextRouter = { ...nextRouterMock, push: jest.fn() };
-  (useRouter as jest.Mock).mockReturnValue(routerMock);
-  (useAuth as jest.Mock).mockReturnValue({ user, accessToken });
-  (useOnScreen as jest.Mock).mockReturnValue(true);
+  const routerMock: NextRouter = {
+    ...nextRouterMock,
+    push: jest.fn(),
+  };
+  jest.mocked(useRouter).mockReturnValue(routerMock);
+  jest.mocked(useAuth).mockReturnValue({
+    user,
+    isLogin: false,
+    isPremium: false,
+    setIsLogin: () => {},
+    setUser: () => {},
+  });
+  jest.mocked(useOnScreen).mockReturnValue(true);
 
   const translations = getAllTranslations(Locale.EN);
   const view = render(
@@ -45,6 +54,7 @@ function setup({ appContextProviderProps, props }: ISetupProps) {
 describe("carouselCards", () => {
   it("renders a Carousel component with a title and PresentationCard components for each item in the 'items' array", () => {
     expect.assertions(2);
+
     const items = [
       { id: "1", name: "item 1", images: [] },
       { id: "2", name: "item 2", images: [] },
@@ -53,6 +63,7 @@ describe("carouselCards", () => {
     const title = "Title";
     const type = CardType.ALBUM;
     setup({ props: { items, title, type } });
+
     expect(screen.getByText(title)).toBeInTheDocument();
     expect(screen.getAllByAltText(/item.\d*/i)).toHaveLength(items.length);
   });
@@ -61,26 +72,31 @@ describe("carouselCards", () => {
 describe("carouselCards edge cases", () => {
   it("returns null if items is undefined", () => {
     expect.assertions(1);
+
     const items = undefined as unknown as IMappedAlbumItems[];
     const title = "Title";
     const type = CardType.ALBUM;
     const { view } = setup({ props: { items, title, type } });
+
     // eslint-disable-next-line testing-library/no-node-access
     expect(view.container.firstChild).toBeNull();
   });
 
   it("returns null if items is empty array", () => {
     expect.assertions(1);
+
     const items = [] as unknown as IMappedAlbumItems[];
     const title = "Title";
     const type = CardType.ALBUM;
     const { view } = setup({ props: { items, title, type } });
+
     // eslint-disable-next-line testing-library/no-node-access
     expect(view.container.firstChild).toBeNull();
   });
 
   it("does not render a PresentationCard component for an item in 'items' that is undefined", () => {
     expect.assertions(1);
+
     const items = [
       { id: "1", name: "item 1", images: [] },
       undefined,
@@ -89,11 +105,13 @@ describe("carouselCards edge cases", () => {
     const title = "Title";
     const type = CardType.ALBUM;
     setup({ props: { items, title, type } });
+
     expect(screen.getAllByAltText(/item.\d*/i)).toHaveLength(2);
   });
 
   it("does not render a PresentationCard component for an item in 'items' that is missing a required property", () => {
     expect.assertions(1);
+
     const items = [
       { id: "1", name: "item 1", images: [] },
       { id: "2", images: [] },
@@ -102,6 +120,7 @@ describe("carouselCards edge cases", () => {
     const title = "Title";
     const type = CardType.ALBUM;
     setup({ props: { items, title, type } });
+
     expect(screen.getAllByAltText(/item.\d*/i)).toHaveLength(2);
   });
 });

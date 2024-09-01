@@ -22,6 +22,7 @@ describe("carousel", () => {
     await waitFor(() => {
       expect(screen.getAllByTestId("box")).toHaveLength(2);
     });
+
     expect(screen.getByText("test")).toBeInTheDocument();
   });
 });

@@ -13,24 +13,29 @@ const { setupCookies } = jest.requireActual<IUtilsMocks>(
 describe("cookies", () => {
   it("should set a cookie", () => {
     expect.assertions(1);
+
     const value = "testValue";
     setupCookies("");
     makeCookie({ name: ACCESS_TOKEN_COOKIE, value, age: 1000 });
+
     expect(document.cookie).toContain(`${ACCESS_TOKEN_COOKIE}=${value};`);
   });
 
   it("should remove a cookie", () => {
     expect.assertions(1);
+
     setupCookies("");
     const value = "testValue";
     makeCookie({ name: REFRESH_TOKEN_COOKIE, value, age: 1000 });
     eatCookie(REFRESH_TOKEN_COOKIE);
     const cookie = takeCookie(REFRESH_TOKEN_COOKIE);
+
     expect(cookie).toBeNull();
   });
 
   it("should return null if cookie is not found", () => {
     expect.assertions(1);
+
     Object.defineProperty(window, "document", {
       writable: true,
       value: {
@@ -38,16 +43,19 @@ describe("cookies", () => {
       },
     });
     const cookie = takeCookie(EXPIRE_TOKEN_COOKIE);
+
     expect(cookie).toBeNull();
   });
 
   it("should return null if cookieValue is not found", () => {
     expect.assertions(1);
+
     Object.defineProperty(window, "document", {
       writable: true,
       value: undefined,
     });
     const cookie = takeCookie("testCookie");
+
     expect(cookie).toBeNull();
   });
 });

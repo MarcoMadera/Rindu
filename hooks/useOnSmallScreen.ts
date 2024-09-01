@@ -11,7 +11,9 @@ export function useOnSmallScreen(
       const isSmall = window.innerWidth < width;
       if (isSmall !== isSmallScreen) {
         setIsSmallScreen(isSmall);
-        callback && callback(isSmall);
+        if (callback) {
+          callback(isSmall);
+        }
       }
     };
 

@@ -8,6 +8,7 @@ const { playlistTrackResponse } = jest.requireActual<IUtilsMocks>(
 describe("mapPlaylistItems", () => {
   it("should map playlist items", () => {
     expect.assertions(2);
+
     const { track, added_by, ...res } = playlistTrackResponse;
     const mappedPlaylistItems = mapPlaylistItems([playlistTrackResponse], 0);
 
@@ -33,6 +34,7 @@ describe("mapPlaylistItems", () => {
 
   it("should return empty array if no items", () => {
     expect.assertions(1);
+
     const playlistItems = undefined;
 
     const mappedPlaylistItems = mapPlaylistItems(playlistItems, 0);

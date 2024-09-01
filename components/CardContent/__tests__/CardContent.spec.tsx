@@ -2,7 +2,7 @@ import { ComponentProps } from "react";
 
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 
 import { CardContent } from "components";
 import { CardType, ICardContent } from "components/CardContent";
@@ -36,16 +36,19 @@ describe("cardContent", () => {
   }
   const setup = (props?: ISetup, mocks?: IMocks) => {
     const push = jest.fn();
-    (useRouter as jest.Mock).mockImplementation(() => ({
-      asPath: "/",
-      push: mocks?.push || push,
-      query: {
-        country: "US",
-      },
-    }));
-    (useOnScreen as jest.Mock).mockImplementationOnce(
-      () => mocks?.useOnScreen ?? true
+    jest.mocked(useRouter).mockImplementation(
+      () =>
+        ({
+          asPath: "/",
+          push: mocks?.push || push,
+          query: {
+            country: "US",
+          },
+        }) as unknown as NextRouter
     );
+    jest
+      .mocked(useOnScreen)
+      .mockImplementationOnce(() => mocks?.useOnScreen ?? true);
     const contextMenu = document.createElement("div");
     contextMenu.setAttribute("id", "contextMenu");
     const toastDiv = document.createElement("div");
@@ -66,17 +69,21 @@ describe("cardContent", () => {
 
   it("renders", () => {
     expect.assertions(1);
+
     setup();
     const titleValue = screen.getByText(defaultProps.title);
+
     expect(titleValue).toHaveTextContent(defaultProps.title);
   });
 
   it("should click", () => {
     expect.assertions(2);
+
     const push = jest.fn();
     setup({}, { push });
     const mytest = screen.getByTestId("cardContent-button");
     fireEvent.click(mytest);
+
     expect(push).toHaveBeenCalledTimes(1);
     expect(push).toHaveBeenCalledWith(
       `/${defaultProps.type}/${defaultProps.id}`
@@ -85,6 +92,7 @@ describe("cardContent", () => {
 
   it("should keydown enter", async () => {
     expect.assertions(1);
+
     const push = jest.fn();
 
     setup({}, { push });
@@ -97,18 +105,21 @@ describe("cardContent", () => {
 
   it("should keydown enter is visible", async () => {
     expect.assertions(2);
+
     const push = jest.fn();
     setup({ cardContentProps: { images: [{ url: "url" }] } }, { push });
     const mytest = screen.getByTestId("cardContent-button");
     const img = screen.getByRole("img");
     await userEvent.click(mytest);
     await userEvent.keyboard("[Enter]");
+
     expect(img).toBeInTheDocument();
     expect(push).toHaveBeenCalledWith("/track/id");
   });
 
   it("should keydown enter is visible without url", async () => {
     expect.assertions(2);
+
     const push = jest.fn();
 
     setup(
@@ -119,28 +130,33 @@ describe("cardContent", () => {
     const img = screen.getByRole("img");
     await userEvent.click(mytest);
     await userEvent.keyboard("[Enter]");
+
     expect(img).toBeInTheDocument();
     expect(push).toHaveBeenCalledWith("/track/id");
   });
 
   it("should take a component in subtitle", () => {
     expect.assertions(1);
+
     setup({
       cardContentProps: {
         subTitle: <span data-testid="subcomponent">Heey</span>,
       },
     });
     const mytest = screen.getByTestId("subcomponent");
+
     expect(mytest).toBeInTheDocument();
   });
 
   it("should have border radius 50% if type artist", () => {
     expect.assertions(1);
+
     setup({
       cardContentProps: { type: CardType.ARTIST, images: [{ url: "eer" }] },
     });
 
     const mytest = screen.getByRole("img");
+
     expect(mytest).toHaveStyle({
       borderRadius: "50%",
     });
@@ -148,6 +164,7 @@ describe("cardContent", () => {
 
   it("should have tabIndex -1 when passed from props", () => {
     expect.assertions(1);
+
     setup(
       {
         cardContentProps: {
@@ -160,11 +177,13 @@ describe("cardContent", () => {
     );
 
     const mytest = screen.getByTestId("cardContent-button");
+
     expect(mytest).toHaveAttribute("tabIndex", "-1");
   });
 
   it("should redirect to the passed url onclick if the card is simple and should not open context menu", () => {
     expect.assertions(3);
+
     const push = jest.fn();
     setup(
       {
@@ -179,14 +198,18 @@ describe("cardContent", () => {
 
     const mytest = screen.getByTestId("cardContent-button");
     fireEvent.click(mytest);
+
     expect(push).toHaveBeenCalledTimes(1);
     expect(push).toHaveBeenCalledWith("url");
+
     fireEvent.contextMenu(mytest);
+
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
   });
 
   it("should not react onKeyDown Enter or onclick if not passed type", async () => {
     expect.assertions(2);
+
     const push = jest.fn();
     setup(
       {
@@ -202,13 +225,17 @@ describe("cardContent", () => {
     const mytest = screen.getByTestId("cardContent-button");
     await userEvent.click(mytest);
     await userEvent.keyboard("[Enter]");
+
     expect(push).toHaveBeenCalledTimes(0);
+
     fireEvent.click(mytest);
+
     expect(push).toHaveBeenCalledTimes(0);
   });
 
   it("should open the context menu for artists", async () => {
     expect.assertions(2);
+
     setup({
       cardContentProps: {
         type: CardType.ARTIST,
@@ -222,11 +249,13 @@ describe("cardContent", () => {
     await waitFor(() => {
       expect(screen.getByRole("menu")).toBeInTheDocument();
     });
+
     expect(screen.getByRole("menu")).toHaveAttribute("data-type", "artist");
   });
 
   it("should open the context menu for tracks", async () => {
     expect.assertions(2);
+
     setup({
       cardContentProps: {
         type: CardType.TRACK,
@@ -240,6 +269,7 @@ describe("cardContent", () => {
     await waitFor(() => {
       expect(screen.getByRole("menu")).toBeInTheDocument();
     });
+
     expect(screen.getByRole("menu")).toHaveAttribute("data-type", "track");
   });
 });

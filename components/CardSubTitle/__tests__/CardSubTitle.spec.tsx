@@ -1,7 +1,7 @@
 import React, { ComponentProps } from "react";
 
 import { render, screen } from "@testing-library/react";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 
 import { CardSubTitle } from "components";
 import { CardType } from "components/CardContent";
@@ -29,17 +29,20 @@ interface ISetupProps {
 
 describe("cardSubTitle", () => {
   function setup({ props, mocks }: ISetupProps) {
-    (useOnScreen as jest.Mock).mockImplementationOnce(
-      () => mocks?.useOnScreen ?? true
-    );
+    jest
+      .mocked(useOnScreen)
+      .mockImplementationOnce(() => mocks?.useOnScreen ?? true);
     const push = jest.fn();
-    (useRouter as jest.Mock).mockImplementation(() => ({
-      asPath: "/",
-      push: mocks?.push ?? push,
-      query: {
-        country: "US",
-      },
-    }));
+    jest.mocked(useRouter).mockImplementation(
+      () =>
+        ({
+          asPath: "/",
+          push: mocks?.push ?? push,
+          query: {
+            country: "US",
+          },
+        }) as unknown as NextRouter
+    );
 
     const translations = getAllTranslations(Locale.EN);
     render(
@@ -51,6 +54,7 @@ describe("cardSubTitle", () => {
 
   it("should receive correct props when type is ALBUM and compilation is in item", () => {
     expect.assertions(1);
+
     const item = {
       album_type: "compilation",
       artists: [
@@ -65,6 +69,7 @@ describe("cardSubTitle", () => {
     } as unknown as ISetupProps["props"]["item"];
     const push = jest.fn();
     setup({ props: { type: CardType.ALBUM, item }, mocks: { push } });
+
     expect(
       screen.getAllByText((_, element) => {
         return element?.textContent === "2022 · Compilation · artist1, artist2";

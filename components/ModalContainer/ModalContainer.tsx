@@ -189,7 +189,10 @@ export default function ModalContainer({
 
     const handleClickOutside = (event: MouseEvent) => {
       if (targetNode && !targetNode.contains(event.target as Node)) {
-        handleClose && handleClose();
+        if (handleClose) {
+          handleClose();
+        }
+
         props.setModalData(null);
       }
     };
