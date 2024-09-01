@@ -219,7 +219,7 @@ function CommandLine(): ReactElement {
           {translations.terminal.title}
         </Heading>
       </header>
-      <samp ref={sampRef}>
+      <samp ref={sampRef} id="command-history">
         <Pre whiteSpace={WhiteSpace.PreWrap}>
           {history.map(({ value, id, type }) => (
             <code key={id}>

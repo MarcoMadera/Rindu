@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 
 import { Heading } from "components";
 import { DeviceConnect, Playing } from "components/icons";
@@ -15,11 +15,33 @@ export default function DeviceConnectControl(): ReactElement {
   const currentActiveDevice = devices.find((device) => device.is_active);
   const thisDevice = devices.find((device) => device.id === deviceId);
   const currentDevice = currentActiveDevice ?? thisDevice;
+  const devicesContainerRef = useRef<HTMLDivElement>(null);
+  const devicesButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const clickedInSideDeviceContainer =
+        devicesContainerRef.current?.contains(event.target as Node);
+      const clickedDevicesButton = devicesButtonRef.current?.contains(
+        event.target as Node
+      );
+
+      if (!clickedInSideDeviceContainer && !clickedDevicesButton) {
+        setDevices([]);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="devices">
       {devices.length > 0 && (
-        <div className="devices-container">
+        <div className="devices-container" ref={devicesContainerRef}>
           <header>
             <div className="playing">
               {currentDevice?.is_active ? <Playing /> : null}
@@ -85,6 +107,7 @@ export default function DeviceConnectControl(): ReactElement {
       <button
         type="button"
         aria-label="open device selector"
+        ref={devicesButtonRef}
         onClick={() => {
           if (!isPremium) {
             addToast({

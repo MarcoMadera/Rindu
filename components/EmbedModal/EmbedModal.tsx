@@ -11,6 +11,7 @@ import {
 import { Emphasis } from "components/Anchor";
 import { WhiteSpace } from "components/Pre";
 import { useToast, useToggle, useTranslations } from "hooks";
+import { createSpotifyEmbedUrl } from "utils";
 
 export default function EmbedModal({
   type,
@@ -39,11 +40,14 @@ export default function EmbedModal({
     }
   }, []);
 
-  const code = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/${type}/${id}?utm_source=generator${
-    hasTimeStampChanged ? `&t=${timeStamp}` : ""
-  }${
-    theme ? `&theme=${theme}` : ""
-  }" width="${width}" height="${height}" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+  const spotifyEmbedUrl = createSpotifyEmbedUrl({
+    type,
+    id,
+    hasTimeStampChanged,
+    timeStamp,
+    theme,
+  });
+  const code = `<iframe style="border-radius:12px" src="${spotifyEmbedUrl}" width="${width}" height="${height}" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
 
   return (
     <div>
@@ -89,9 +93,7 @@ export default function EmbedModal({
       <div className="embedPlayer">
         <iframe
           style={{ borderRadius: 12, border: "none", margin: "auto" }}
-          src={`https://open.spotify.com/embed/${type}/${id}?utm_source=generator${
-            hasTimeStampChanged ? `&t=${timeStamp}` : ""
-          }${theme ? `&theme=${theme}` : ""}`}
+          src={spotifyEmbedUrl}
           width={width}
           height={height}
           allowFullScreen={true}
@@ -125,7 +127,9 @@ export default function EmbedModal({
           }`}
         >
           <CheckBoxControl id="timestamp" />
-          <label htmlFor="timestamp">Start at</label>
+          <label htmlFor="timestamp" id="timestamp">
+            Start at
+          </label>
           <TextControl
             variant="empty"
             value={timeStamp}

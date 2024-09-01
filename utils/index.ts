@@ -68,3 +68,5 @@ export * from "./topBar";
 export * from "./wait";
 export * from "./within";
 export * from "./htmlToReact";
+export * from "./createSpotifyEmbedUrl";
+export * from "./timeStringToSeconds";

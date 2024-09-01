@@ -285,7 +285,7 @@ function CardTrack({
           });
         }
       }}
-      role="button"
+      role="row"
       data-testid="cardTrack-container"
       tabIndex={isVisible ? 0 : -1}
       aria-hidden={!isVisible}

@@ -40,9 +40,14 @@ const Box = ({
 );
 
 const getBoxes = (totalBoxes: number, boxWidth: number) =>
-  Array.from({ length: totalBoxes }).map((_, i) => (
-    <Box key={i} boxWidth={boxWidth}>{`Box ${i + 1}`}</Box>
-  ));
+  Array.from({ length: totalBoxes }).map((_, i) => {
+    const boxText = `Box ${i + 1}`;
+    return (
+      <Box key={boxText} boxWidth={boxWidth}>
+        {boxText}
+      </Box>
+    );
+  });
 
 const Template: StoryFn<
   ({
