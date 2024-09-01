@@ -21,7 +21,7 @@ interface InputElementProps {
 export default function SearchInputElement({
   setData,
   source,
-}: InputElementProps): ReactElement {
+}: Readonly<InputElementProps>): ReactElement {
   const inputRef = useRef<HTMLInputElement>();
   const [isTyping, setIsTyping] = useState(false);
   const [query, setQuery] = useState("");
@@ -60,16 +60,14 @@ export default function SearchInputElement({
       const searchData = await search(query);
       setData(searchData);
       if (searchData?.tracks?.items.length && source === "search") {
-        setAllTracks(() => {
-          if (!searchData?.tracks) return [];
-          return searchData.tracks?.items?.map((track) => {
-            return {
-              ...track,
-              audio: track.preview_url,
-              corruptedTrack: isCorruptedTrack(track),
-            };
-          });
+        const tracks = searchData.tracks?.items?.map((track) => {
+          return {
+            ...track,
+            audio: track.preview_url,
+            corruptedTrack: isCorruptedTrack(track),
+          };
         });
+        setAllTracks(tracks);
       }
       setShouldSearch(false);
     }

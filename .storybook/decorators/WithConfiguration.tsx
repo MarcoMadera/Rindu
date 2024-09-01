@@ -60,10 +60,10 @@ export const WithConfiguration = (Story: StoryFn, context: StoryContext) => {
   const [isLogin, setIsLogin] = useState(context.globals.isLogin || true);
 
   useEffect(() => {
-    const button = window.top?.document.querySelector(
+    const button = window.top?.document.querySelector<HTMLButtonElement>(
       '[title="The configuration to display the components in"]'
     );
-    function handleOpenModal(e) {
+    function handleOpenModal(e: globalThis.MouseEvent): void {
       e.preventDefault();
       e.stopPropagation();
       if (openModal) {

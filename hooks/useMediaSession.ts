@@ -129,7 +129,7 @@ export function useMediaSession({
           ({ url, width, height }) => {
             return {
               src: url ?? "",
-              sizes: `${width || 0}x${height || 0}`,
+              sizes: `${width ?? 0}x${height ?? 0}`,
               type: "",
             };
           }
