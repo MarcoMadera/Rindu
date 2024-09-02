@@ -70,3 +70,5 @@ export * from "./within";
 export * from "./htmlToReact";
 export * from "./createSpotifyEmbedUrl";
 export * from "./timeStringToSeconds";
+export * from "./getAudioPlayerPreviousPlayableTrack";
+export * from "./getAudioPlayerNextPlayableTrack";
