@@ -4,12 +4,15 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 import { Button, ContentContainer, Heading } from "components";
-import { useAnalytics, useTranslations } from "hooks";
+import { useAnalytics } from "hooks";
 import {
   ACCESS_TOKEN_COOKIE,
   eatCookie,
+  getLocale,
   Locale,
+  LOCALE_COOKIE,
   REFRESH_TOKEN_COOKIE,
+  takeCookie,
 } from "utils";
 
 export type ErrorTranslations = Record<
@@ -42,7 +45,8 @@ export default function ErrorLayout({
   const [translations, setTranslations] = useState<ErrorTranslations | null>(
     null
   );
-  const { locale } = useTranslations();
+
+  const locale = getLocale(takeCookie(LOCALE_COOKIE));
 
   useEffect(() => {
     trackWithGoogleAnalytics("exception", {
