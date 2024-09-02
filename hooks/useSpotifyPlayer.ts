@@ -8,7 +8,12 @@ import {
 
 import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
 import { ITrack } from "types/spotify";
-import { ACCESS_TOKEN_COOKIE, takeCookie } from "utils";
+import {
+  ACCESS_TOKEN_COOKIE,
+  getAudioPlayerNextPlayableTrack,
+  getAudioPlayerPreviousPlayableTrack,
+  takeCookie,
+} from "utils";
 import { refreshAccessToken, transferPlayback } from "utils/spotifyCalls";
 
 export interface AudioPlayer extends HTMLAudioElement {
@@ -83,70 +88,27 @@ export function useSpotifyPlayer({ name }: { name: string }): {
 
       audioPlayer.current.nextTrack = function () {
         const player = audioPlayer.current;
-        function getNextTrack() {
-          const currentTrackIndex = player?.allTracks?.findIndex(
-            ({ preview_url }) => preview_url === player?.src
-          );
-          const nextTrackIndex = (currentTrackIndex ?? -1) + 1;
-          let nextTrack;
-          for (
-            let index = nextTrackIndex;
-            index < (player?.allTracks ? player?.allTracks.length : 0);
-            index++
-          ) {
-            const audio = player?.allTracks[index]?.preview_url;
-            if (audio) {
-              nextTrack = {
-                track: player?.allTracks[index],
-                audio,
-              };
-              break;
-            }
-          }
-          return nextTrack;
-        }
+        if (!player) return;
+        const nextTrack = getAudioPlayerNextPlayableTrack(player);
 
-        const nextTrack = getNextTrack();
-
-        if (nextTrack?.audio && player) {
-          player.src = nextTrack.audio;
+        if (nextTrack?.preview_url) {
+          player.src = nextTrack.preview_url;
           player.play();
           setIsPlaying(true);
-          setCurrentlyPlaying(nextTrack.track);
+          setCurrentlyPlaying(nextTrack);
         }
       };
 
       audioPlayer.current.previousTrack = function () {
         const player = audioPlayer.current;
-        function getPreviousTrack() {
-          const currentTrackIndex = player?.allTracks.findIndex(
-            ({ preview_url }) => preview_url === player?.src
-          );
-          let previousTrackIndex = (currentTrackIndex ?? -1) - 1;
-          let previousTrack;
+        if (!player) return;
+        const previousTrack = getAudioPlayerPreviousPlayableTrack(player);
 
-          while (previousTrackIndex >= 0) {
-            const audio =
-              audioPlayer.current?.allTracks[previousTrackIndex]?.preview_url;
-            if (audio) {
-              previousTrack = {
-                track: audioPlayer.current?.allTracks[previousTrackIndex],
-                audio,
-              };
-              break;
-            }
-            previousTrackIndex--;
-          }
-
-          return previousTrack;
-        }
-
-        const previousTrack = getPreviousTrack();
-
-        if (previousTrack?.audio && player) {
-          player.src = previousTrack.audio;
+        if (previousTrack?.preview_url) {
+          player.src = previousTrack.preview_url;
           player.play();
-          setCurrentlyPlaying(previousTrack.track);
+          setIsPlaying(true);
+          setCurrentlyPlaying(previousTrack);
         }
       };
 
@@ -181,16 +143,31 @@ export function useSpotifyPlayer({ name }: { name: string }): {
     }
 
     window.onSpotifyWebPlaybackSDKReady = () => {
-      spotifyPlayer.current = new window.Spotify.Player({
-        getOAuthToken: (callback) => {
-          refreshAccessToken().then(() => {
-            const accessToken = takeCookie(ACCESS_TOKEN_COOKIE);
-            callback(accessToken ?? "");
+      const handleRefreshTokenPlayback = async (
+        callback: (token: string) => void
+      ) => {
+        try {
+          await refreshAccessToken();
+          const accessToken = takeCookie(ACCESS_TOKEN_COOKIE);
+          if (accessToken) {
+            callback(accessToken);
+          }
+        } catch (error) {
+          addToast({
+            message: translations.toastMessages.playerInitializationError,
+            variant: "error",
           });
+          console.error(error);
+        }
+      };
+      const spotifyPlayerOptions: Spotify.PlayerInit = {
+        getOAuthToken: (callback) => {
+          handleRefreshTokenPlayback(callback);
         },
         name,
         volume,
-      });
+      };
+      spotifyPlayer.current = new window.Spotify.Player(spotifyPlayerOptions);
 
       spotifyPlayer.current.on(
         "ready",
