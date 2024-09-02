@@ -20,6 +20,7 @@ export { default as DeviceConnectControl } from "./DeviceConnectControl";
 export { default as EditPlaylistDetails } from "./EditPlaylistDetails";
 export { default as EmbedModal } from "./EmbedModal";
 export { default as EpisodeCard } from "./EpisodeCard";
+export { default as ErrorBoundary } from "./ErrorBoundary";
 export { default as ExplicitSign } from "./ExplicitSign";
 export { default as Eyebrow } from "./Eyebrow";
 export { default as FeatureCard } from "./FeatureCard";
