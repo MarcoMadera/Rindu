@@ -1,0 +1,37 @@
+title: "{{ snyk_pull_request_type }}: [{{ package_name }}]"
+commitMessage: |
+  snyk: This is a security pull request.
+  {{ #jira_ids }}
+  Related Jira tickets: {{ jira_ids }}
+  {{ /jira_ids }}
+
+description: |
+  {{ #is_upgrade_pr }}
+  This PR has been opened to upgrade {{ package_name }} from version {{ package_from }} to {{ package_to }}.
+  Review the relevant docs for potential breaking changes.
+  {{ /is_upgrade_pr }}
+
+  {{ #is_fix_pr }}
+  This PR addresses known vulnerabilities in {{ package_name }}.
+  {{ /is_fix_pr }}
+
+  {{ #is_backlog_pr }}
+  This PR fixes known vulnerabilities already in the project.
+  {{ /is_backlog_pr }}
+
+  ### Changelog:
+
+  - Updated {{ package_name }} from version {{ package_from }} to {{ package_to }}.
+  - Files changed: {{ files_changed }}
+  
+  More details can be found in the Snyk project [{{ snyk_project_name }}]({{ snyk_project_url }}).
+
+  ### Testing instructions
+
+  > [!IMPORTANT]
+  >
+  > - Check the changes in this PR to ensure no breaking changes.
+  > - Run automated tests
+
+  {{ snyk_pull_request_type }} applied by {{ snyk_org_name }}
+
