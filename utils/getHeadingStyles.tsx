@@ -1,3 +1,4 @@
+"use client";
 import { ReactElement } from "react";
 
 import css from "styled-jsx/css";
