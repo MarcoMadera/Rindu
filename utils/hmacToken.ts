@@ -1,15 +1,24 @@
-import { createHmac } from "crypto";
-
-export function generateHMACSHA256Token(data: Record<string, string>): string {
+export async function generateHMACSHA256Token(
+  data: Record<string, string>
+): Promise<string> {
   const secret = process.env.HMAC_SECRET;
 
   if (!secret) {
     throw new Error("env variable HMAC_SECRET is not set");
   }
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(secret);
+  const key = await crypto.subtle.importKey(
+    "raw",
+    keyData,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
 
-  const hmac = createHmac("sha256", secret);
-  hmac.update(JSON.stringify(data));
-  return hmac.digest("hex");
+  const dataToSign = encoder.encode(JSON.stringify(data));
+  const signature = await crypto.subtle.sign("HMAC", key, dataToSign);
+  return bufferToHex(signature);
 }
 
 function bufferToHex(arrayBuffer: ArrayBuffer): string {
@@ -34,7 +43,7 @@ export async function verifyHMACSHA256Token(
     throw new Error("env variable HMAC_SECRET is not set");
   }
 
-  const key = crypto.subtle.importKey(
+  const key = await crypto.subtle.importKey(
     "raw",
     new TextEncoder().encode(secret),
     { name: "HMAC", hash: { name: "SHA-256" } },
@@ -45,7 +54,7 @@ export async function verifyHMACSHA256Token(
   const verifyToken = bufferToHex(
     await crypto.subtle.sign(
       "HMAC",
-      await key,
+      key,
       new TextEncoder().encode(JSON.stringify(data))
     )
   );

@@ -116,7 +116,7 @@ export const getServerSideProps = (async (context) => {
     cover3,
     name: currentTrack.name,
   };
-  const generatedImageUrl = getGeneratedImageUrl(
+  const generatedImageUrl = await getGeneratedImageUrl(
     GeneratedImageAPI.RadioCover,
     params
   );

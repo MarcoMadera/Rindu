@@ -36,6 +36,7 @@ import {
   REFRESH_TOKEN_COOKIE,
   serverRedirect,
   takeCookie,
+  TopTracksCard,
 } from "utils";
 import {
   checkTracksInLibrary,
@@ -81,7 +82,7 @@ interface DashboardProps {
   artistOfTheWeek: SpotifyApi.ArtistObjectFull[] | null;
   tracksOfTheWeek: ITrack[] | null;
   thisPlaylists: MappedPlaylist[] | null;
-  topTracksCards: ReturnType<typeof getTopTracksCards>;
+  topTracksCards: TopTracksCard[] | null;
 }
 
 const Dashboard = ({
@@ -421,7 +422,7 @@ export const getServerSideProps = (async (context) => {
     });
   }
   const { user } = (await getAuth(context)) ?? {};
-  const topTracksCards = getTopTracksCards(user, translations);
+  const topTracksCardsProm = getTopTracksCards(user, translations);
   const artistsOfTheWeekProm = getArtistsOfTheWeek(lastFMAPIKey);
   const tracksOfTheWeekProm = getTracksOfTheWeek(lastFMAPIKey);
 
@@ -451,6 +452,7 @@ export const getServerSideProps = (async (context) => {
     artistsOfTheWeek,
     tracksOfTheWeek,
     topTracksMedium,
+    topTracksCards,
   ] = await Promise.allSettled([
     featuredPlaylistsProm,
     newReleasesProm,
@@ -460,6 +462,7 @@ export const getServerSideProps = (async (context) => {
     artistsOfTheWeekProm,
     tracksOfTheWeekProm,
     topTracksMediumProm,
+    topTracksCardsProm,
   ]);
 
   const seed_tracks =
@@ -660,7 +663,7 @@ export const getServerSideProps = (async (context) => {
         deserialize(mappedTracksData(tracksRecommendations)) ?? [],
       tracksInLibrary,
       translations,
-      topTracksCards,
+      topTracksCards: fullFilledValue(topTracksCards) ?? null,
     },
   };
 }) satisfies GetServerSideProps<Partial<DashboardProps>>;

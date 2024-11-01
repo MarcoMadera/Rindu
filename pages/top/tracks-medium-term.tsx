@@ -94,7 +94,7 @@ export const getServerSideProps = (async (context) => {
     color: TOP_TRACKS_MEDIUM_TERM_COLOR,
     imageUrl: user?.images?.[0]?.url ?? DEFAULT_SONG_IMAGE_URL,
   };
-  const generatedImageUrl = getGeneratedImageUrl(
+  const generatedImageUrl = await getGeneratedImageUrl(
     GeneratedImageAPI.TopTracksCover,
     generatedImageParams
   );

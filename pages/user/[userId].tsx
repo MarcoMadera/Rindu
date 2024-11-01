@@ -27,6 +27,7 @@ import {
   getTopTracksCards,
   getTranslations,
   serverRedirect,
+  TopTracksCard,
 } from "utils";
 import { getPlaylistsFromUser, getUserById } from "utils/spotifyCalls";
 
@@ -35,7 +36,7 @@ interface CurrentUserProps {
   user: SpotifyApi.UserObjectPrivate | null;
   currentUserPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse | null;
   translations: ITranslations;
-  topTracksCard: ReturnType<typeof getTopTracksCards>;
+  topTracksCards: TopTracksCard[] | null;
 }
 
 const CurrentUser = ({
@@ -81,7 +82,7 @@ const CurrentUser = ({
               {translations.pages.user.topTracksPlaylistHeading}
             </Heading>
             <Grid>
-              {topTracksCard.map((item) => {
+              {topTracksCard?.map((item) => {
                 if (!item) return null;
                 const { images, name, url } = item;
                 return (
@@ -170,14 +171,16 @@ export const getServerSideProps = (async (context) => {
   }
   const userId = context.params.userId;
   const { user } = (await getAuth(context)) ?? {};
-  const topTracksCard = getTopTracksCards(user, translations);
+  const topTracksCardProm = getTopTracksCards(user, translations);
   const currentUserProm = getUserById(userId, context);
   const currentUserPlaylistsProm = getPlaylistsFromUser(userId, context);
 
-  const [currentUser, currentUserPlaylists] = await Promise.allSettled([
-    currentUserProm,
-    currentUserPlaylistsProm,
-  ]);
+  const [topTracksCard, currentUser, currentUserPlaylists] =
+    await Promise.allSettled([
+      topTracksCardProm,
+      currentUserProm,
+      currentUserPlaylistsProm,
+    ]);
 
   return {
     props: {
@@ -185,7 +188,7 @@ export const getServerSideProps = (async (context) => {
       user: user ?? null,
       currentUserPlaylists: fullFilledValue(currentUserPlaylists),
       translations,
-      topTracksCard,
+      topTracksCard: fullFilledValue(topTracksCard) ?? null,
     },
   };
 }) satisfies GetServerSideProps<Partial<CurrentUserProps>, { userId: string }>;

@@ -8,16 +8,16 @@ import {
   TOP_TRACKS_SHORT_TERM_COLOR,
 } from "utils";
 
-interface TopTracksCard {
+export interface TopTracksCard {
   name: string;
   images: { url: string }[];
   url: string;
 }
 
-export function getTopTracksCards(
+export async function getTopTracksCards(
   user: SpotifyApi.UserObjectPrivate | null | undefined,
   translations: ITranslations
-): TopTracksCard[] {
+): Promise<TopTracksCard[]> {
   if (!user) {
     return [];
   }
@@ -40,23 +40,25 @@ export function getTopTracksCards(
     },
   ];
 
-  const topTracksCards = CARDS.map((card) => {
-    const params = {
-      title: card.name,
-      color: card.color,
-      imageUrl: user?.images?.[0]?.url ?? DEFAULT_SONG_IMAGE_URL,
-    };
-    const generatedImageUrl = getGeneratedImageUrl(
-      GeneratedImageAPI.TopTracksCover,
-      params
-    );
+  const topTracksCards = await Promise.all(
+    CARDS.map(async (card) => {
+      const params = {
+        title: card.name,
+        color: card.color,
+        imageUrl: user?.images?.[0]?.url ?? DEFAULT_SONG_IMAGE_URL,
+      };
+      const generatedImageUrl = await getGeneratedImageUrl(
+        GeneratedImageAPI.TopTracksCover,
+        params
+      );
 
-    return {
-      name: card.name,
-      images: [{ url: generatedImageUrl }],
-      url: card.url,
-    };
-  });
+      return {
+        name: card.name,
+        images: [{ url: generatedImageUrl }],
+        url: card.url,
+      };
+    })
+  );
 
   return topTracksCards;
 }

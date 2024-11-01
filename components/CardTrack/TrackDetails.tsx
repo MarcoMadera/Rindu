@@ -96,11 +96,16 @@ export function TrackDetails({
           width: 48px;
           height: 48px;
         }
-        :global(.trackName),
+        section :global(.trackName),
         .trackArtists :global(a) {
           text-decoration: none;
+          color: inherit;
         }
-        :global(.trackName) {
+        section :global(.trackName:hover) {
+          text-decoration: underline;
+          color: inherit;
+        }
+        section :global(.trackName) {
           margin: 0;
           padding: 0;
         }

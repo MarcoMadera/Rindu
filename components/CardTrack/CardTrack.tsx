@@ -103,11 +103,7 @@ function CardTrack({
   const { isPremium } = useAuth();
 
   const isSmallScreen = useOnSmallScreen((isSmall) => {
-    if (isSmall) {
-      setType(CardType.Presentation);
-    } else {
-      setType(cardType);
-    }
+    setType(isSmall ? CardType.Presentation : cardType);
   });
 
   const isPlayable = checkIfTrackIsPlayable(track, isPremium);
