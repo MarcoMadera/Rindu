@@ -1,0 +1,27 @@
+name: Pull Latest Submodule Update
+
+on:
+  repository_dispatch:
+    types: [submodule-updated]
+
+jobs:
+  pull_update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout target repository with submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Update submodule to latest commit
+        run: |
+          git submodule update --remote --merge
+          git add .github/actions/shared-actions
+          git commit -m "Update to latest shared actions submodule" || echo "No changes to commit"
+
+      - name: Push submodule update
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+        run: |
+          git push origin main || echo "No changes to push"
