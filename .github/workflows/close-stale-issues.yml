@@ -1,0 +1,14 @@
+name: Close Stale Issues and PRs
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Runs daily at midnight
+
+jobs:
+  close_stale:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close Stale Issues
+        uses: ./.github/actions/shared-actions/close-stale-issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
