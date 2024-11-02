@@ -1,0 +1,3 @@
+[submodule ".github/actions/shared-actions"]
+	path = .github/actions/shared-actions
+	url = https://github.com/MarcoMadera/shared-actions.git
