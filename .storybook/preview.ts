@@ -1,7 +1,10 @@
+import { DocsContainer, DocsPage } from "@storybook/addon-docs";
 import type { Preview } from "@storybook/react";
-import { WithConfiguration } from "./decorators/WithConfiguration";
-import { DocsPage, DocsContainer } from "@storybook/addon-docs";
+
 import { themes } from "@storybook/theming";
+
+import { WithConfiguration } from "./decorators/WithConfiguration";
+
 import { Locale } from "../utils/locale";
 
 const preview: Preview = {

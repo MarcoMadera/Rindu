@@ -96,7 +96,6 @@ export function useMediaSession({
         console.error("useMediaSession", error);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentlyPlayingPosition, isPremium, player, user, setIsPlaying]);
 
   useEffect(() => {

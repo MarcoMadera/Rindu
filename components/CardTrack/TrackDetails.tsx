@@ -60,7 +60,7 @@ export function TrackDetails({
           <section>
             <p className="trackArtists">
               <Link
-                href={`/${track.album.type ?? "album"}/${track.album.id}`} // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+                href={`/${track.album.type ?? "album"}/${track.album.id}`}
                 tabIndex={isVisible ? 0 : -1}
                 aria-hidden={!isVisible}
               >

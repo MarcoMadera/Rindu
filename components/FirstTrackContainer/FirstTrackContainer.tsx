@@ -64,7 +64,6 @@ export default function FirstTrackContainer({
             className="firstTrack"
             ref={cardRef}
             aria-hidden={isVisible ? "false" : "true"}
-            // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
             tabIndex={isVisible ? 0 : -1}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -6,7 +6,6 @@ global.Image = class {
   height: number;
 
   constructor() {
-    // eslint-disable-next-line jest/prefer-spy-on
     this.onload = jest.fn();
     this.width = 100;
     this.height = 100;

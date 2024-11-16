@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-/* eslint-disable jsx-a11y/alt-text */
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 
@@ -40,7 +39,6 @@ export default async function topTracksCover(
             justifyItems: "center",
             letterSpacing: "-.02em",
             fontWeight: 700,
-            // eslint-disable-next-line quotes
             fontFamily: '"SourceSansPro"',
           }}
         >
@@ -190,6 +188,7 @@ export default async function topTracksCover(
             }}
           >
             {imageUrl && (
+              // eslint-disable-next-line jsx-a11y/alt-text
               <img
                 src={imageUrl}
                 width={140}

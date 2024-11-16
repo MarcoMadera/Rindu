@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { AppContextProvider } from "../../context/AppContextProvider";
-import { getLocale } from "../../utils/locale";
-import { StoryFn, StoryContext } from "@storybook/react";
+import React, { ReactElement, useEffect, useState } from "react";
+
+import { StoryContext, StoryFn } from "@storybook/react";
+
 import StorybookConfigurationModal, {
   StorybookConfigurationModalProps,
 } from "../../components/StorybookConfigurationModal";
+import { AppContextProvider } from "../../context/AppContextProvider";
 import { useModal } from "../../hooks";
 import { translations as allTranslations } from "../../i18n";
+import { getLocale } from "../../utils/locale";
+import { IHeaderContext } from "context/HeaderContext";
+import { IContextMenuContext } from "types/contextMenu";
+import { ISpotifyContext } from "types/spotify";
 
 interface StorybookModal extends StorybookConfigurationModalProps {
   open: boolean;
@@ -46,18 +51,35 @@ function StorybookModal({
     return () => {
       setModalData(null);
     };
-  }, [open]);
+  }, [
+    handleClose,
+    isLogin,
+    language,
+    open,
+    product,
+    setIsLogin,
+    setLanguage,
+    setModalData,
+    setProduct,
+  ]);
 
   return null;
 }
 
-export const WithConfiguration = (Story: StoryFn, context: StoryContext) => {
-  const initialLanguage = getLocale(context.globals.language);
+export const WithConfiguration = (
+  Story: StoryFn,
+  context: StoryContext
+): ReactElement => {
+  const initialLanguage = getLocale(context.globals.language as string | null);
   const [language, setLanguage] = useState(initialLanguage);
   const translations = allTranslations[initialLanguage];
   const [openModal, setOpenModal] = useState(false);
-  const [product, setProduct] = useState(context.globals.product || "premium");
-  const [isLogin, setIsLogin] = useState(context.globals.isLogin || true);
+  const [product, setProduct] = useState<string>(
+    (context.globals.product as string | null) ?? "premium"
+  );
+  const [isLogin, setIsLogin] = useState<boolean>(
+    (context.globals.isLogin as boolean | null) || true
+  );
 
   useEffect(() => {
     const button = window.top?.document.querySelector<HTMLButtonElement>(
@@ -83,21 +105,31 @@ export const WithConfiguration = (Story: StoryFn, context: StoryContext) => {
     };
   }, [openModal]);
 
-  const backgrounThemeColor =
-    context.parameters.container?.backgroundTheme === "dark"
-      ? "#121212"
-      : "#fff";
+  const parameters = context.parameters as {
+    spotifyValue?: ISpotifyContext;
+    contextMenuValue?: IContextMenuContext;
+    headerValue?: IHeaderContext;
+  };
 
-  const backgroundColor = !context.parameters.container?.backgroundTheme
+  const container = context.parameters.container as {
+    backgroundTheme: string | null;
+    disablePadding: string | null;
+    style: Record<string, string>;
+  };
+
+  const backgrounThemeColor =
+    container?.backgroundTheme === "dark" ? "#121212" : "#fff";
+
+  const backgroundColor = !container?.backgroundTheme
     ? "transparent"
     : backgrounThemeColor;
 
   return (
     <div
       style={{
-        padding: context.parameters.container?.disablePadding ? "" : "3rem",
+        padding: container?.disablePadding ? "" : "3rem",
         backgroundColor: backgroundColor,
-        ...context.parameters.container?.style,
+        ...container?.style,
       }}
       id="__next"
     >
@@ -131,9 +163,9 @@ export const WithConfiguration = (Story: StoryFn, context: StoryContext) => {
             },
           } as SpotifyApi.UserObjectPrivate,
         }}
-        spotifyValue={context.parameters.spotifyValue}
-        contextMenuValue={context.parameters.contextMenuValue}
-        headerValue={context.parameters.headerValue}
+        spotifyValue={parameters.spotifyValue}
+        contextMenuValue={parameters.contextMenuValue}
+        headerValue={parameters.headerValue}
       >
         <StorybookModal
           open={openModal}
