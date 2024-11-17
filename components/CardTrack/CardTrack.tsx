@@ -337,7 +337,7 @@ function CardTrack({
             : "transparent"};
           grid-template-columns: ${trackItemGridTemplateColumns[type]};
         }
-        .trackItem :global(a.trackName) {
+        .trackItem :global(.trackName) {
           color: ${isTheSameAsCurrentlyPlaying ? "#1db954" : "#fff"};
         }
         @media (max-width: 768px) {
@@ -351,7 +351,7 @@ function CardTrack({
         .trackItem :global(.trackArtists a) {
           color: ${mouseEnter || isFocusing ? "#fff" : "inherit"};
         }
-        .trackItem :global(section:nth-of-type(2)) {
+        .trackItem :global(section):nth-of-type(2) {
           justify-content: ${type === "playlist" ? "flex-start" : "flex-end"};
           margin: ${type === "album" ? "16px" : "0"};
         }
@@ -373,7 +373,7 @@ function CardTrack({
           display: -webkit-box;
           -webkit-line-clamp: 1;
         }
-        .trackItem :global(p.trackArtists),
+        .trackItem :global(.trackArtists),
         .trackItem :global(span) {
           margin: 0;
           font-family: "Lato", "sans-serif";
@@ -381,13 +381,16 @@ function CardTrack({
           color: #ffffffb3;
           font-size: 13px;
         }
+        .trackItem :global(.trackArtists a):hover {
+          text-decoration: underline;
+        }
         .trackItem :global(section) {
           display: flex;
           align-items: center;
           justify-content: flex-start;
           max-width: 100%;
         }
-        .trackItem :global(section:nth-of-type(4)) {
+        .trackItem :global(section):nth-of-type(4) {
           justify-content: flex-end;
         }
         .trackItem {

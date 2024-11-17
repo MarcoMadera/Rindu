@@ -73,7 +73,7 @@ export default function SetList({
           width: 100%;
           text-decoration: none;
         }
-        .set-list-content :global(a:hover) {
+        .set-list-content :global(a):hover {
           border-radius: 3px;
           background: #c6ccd317;
         }

@@ -323,7 +323,7 @@ export default function EpisodeCard({
           color: #fff;
           text-decoration: none;
         }
-        .header :global(a:hover) {
+        .header :global(a):hover {
           text-decoration: underline;
         }
         .description {
@@ -394,7 +394,7 @@ export default function EpisodeCard({
           display: flex;
           align-items: center;
         }
-        .actions :global(button:hover) {
+        .actions :global(button):hover {
           color: #fff;
         }
         .episodeCard:hover .actions :global(button) {

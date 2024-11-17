@@ -28,8 +28,8 @@ export default function SubTitle({
             z-index: 3;
             position: relative;
           }
-          span :global(a:hover),
-          span :global(a:focus) {
+          span :global(a):hover,
+          span :global(a):focus {
             text-decoration: 1px solid underline;
             text-underline-offset: 1px;
           }

@@ -275,7 +275,7 @@ export default function SideBar({
           font-size: 13px;
         }
 
-        section:nth-of-type(1) :global(a:hover) {
+        section:nth-of-type(1) :global(a):hover {
           color: #fff;
         }
         section:nth-of-type(1) :global(a:hover svg path) {
@@ -299,7 +299,7 @@ export default function SideBar({
           font-family: "Lato";
         }
         section:nth-of-type(2) button:hover,
-        section:nth-of-type(2) :global(a:hover) {
+        section:nth-of-type(2) :global(a):hover {
           color: #fff;
         }
         hr {
@@ -330,7 +330,7 @@ export default function SideBar({
           background: linear-gradient(135deg, #450af5, #c4efd9);
           opacity: 0.7;
         }
-        section:nth-of-type(2) :global(a:hover) div {
+        section:nth-of-type(2) :global(a):hover :global(div) {
           opacity: 1;
         }
         section.playlists {
@@ -347,7 +347,7 @@ export default function SideBar({
           text-decoration: none;
           color: #ffffffb3;
         }
-        nav :global(a:hover) {
+        nav :global(a):hover {
           color: #fff;
         }
 

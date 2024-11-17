@@ -114,7 +114,7 @@ export function TrackDetails({
           align-items: center;
         }
         :global(.trackName:hover),
-        .trackArtists :global(a:hover) {
+        .trackArtists :global(a):hover {
           text-decoration: underline;
         }
         .pop-meter {
