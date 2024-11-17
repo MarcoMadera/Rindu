@@ -65,7 +65,6 @@ export const HtmlToReactButton = {
             "Include html in the controls and add {0} ... {5} to have different buttons"
           }
         </Paragraph>
-        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access */}
         <Paragraph>{htmlToReact(DOMPurify.sanitize(html), format)}</Paragraph>
       </>
     );

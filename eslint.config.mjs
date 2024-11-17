@@ -1,4 +1,4 @@
-import jsParser from "@typescript-eslint/parser";
+import tsParser from "@typescript-eslint/parser";
 import reactPlugin from "eslint-plugin-react";
 import jsxA11yPlugin from "eslint-plugin-jsx-a11y";
 import prettierPlugin from "eslint-plugin-prettier";
@@ -20,9 +20,9 @@ const gitignorePath = path.resolve(__dirname, ".gitignore");
 export default [
   includeIgnoreFile(gitignorePath),
   {
-    files: ["**/*.{js,jsx,ts,tsx}"],
+    files: ["**/*.{ts,tsx}"],
     languageOptions: {
-      parser: jsParser,
+      parser: tsParser,
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
@@ -44,6 +44,7 @@ export default [
     },
     rules: {
       ...jsxA11yPlugin.flatConfigs.recommended.rules,
+      ...typescriptPlugin.configs["eslint-recommended"].rules,
       "react/prop-types": 0,
       "prettier/prettier": [
         "error",
@@ -69,27 +70,7 @@ export default [
       "react/react-in-jsx-scope": 0,
       "no-implied-eval": "off",
       "require-await": "off",
-    },
-    settings: {
-      react: {
-        version: "detect",
-      },
-    },
-    ignores: [],
-  },
-  {
-    files: ["**/*.ts", "**/*.tsx"],
-    plugins: {
-      react: reactPlugin,
-      "jsx-a11y": jsxA11yPlugin,
-      prettier: prettierPlugin,
-      "@typescript-eslint": typescriptPlugin,
-      storybook: storybookPlugin,
-      import: importPlugin,
-      "react-hooks": reactHooksPlugin,
-      next: nextPlugin,
-    },
-    rules: {
+
       "@typescript-eslint/explicit-module-boundary-types": [1],
       "@typescript-eslint/await-thenable": "error",
       "@typescript-eslint/no-implied-eval": "error",
@@ -154,6 +135,12 @@ export default [
         },
       ],
     },
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
+    ignores: [],
   },
   {
     files: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
@@ -162,6 +149,11 @@ export default [
       ...testingLibraryPlugin.configs["flat/react"].plugins,
       "testing-library": testingLibraryPlugin,
       jest: jestPlugin,
+    },
+    rules: {
+      ...jestPlugin.configs["flat/all"].rules,
+      ...testingLibraryPlugin.configs["flat/react"].rules,
+      "jest/prefer-importing-jest-globals": 0,
     },
   },
   {

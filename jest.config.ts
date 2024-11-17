@@ -1,6 +1,6 @@
-const nextJest = require("next/jest");
-const { defaults } = require("jest-config");
-const { join } = require("path");
+import { defaults } from "jest-config";
+import nextJest from "next/jest";
+import { join } from "path";
 
 const createJestConfig = nextJest({
   dir: "./",
@@ -50,4 +50,4 @@ const customJestConfig = {
   },
 };
 
-module.exports = createJestConfig(customJestConfig);
+export default createJestConfig(customJestConfig);
