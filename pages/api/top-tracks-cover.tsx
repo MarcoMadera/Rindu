@@ -39,6 +39,7 @@ export default async function topTracksCover(
             justifyItems: "center",
             letterSpacing: "-.02em",
             fontWeight: 700,
+            // eslint-disable-next-line @stylistic/ts/quotes
             fontFamily: '"SourceSansPro"',
           }}
         >

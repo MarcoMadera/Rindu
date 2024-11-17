@@ -10,6 +10,8 @@ import importPlugin from "eslint-plugin-import";
 import { includeIgnoreFile } from "@eslint/compat";
 import prettierConfig from "eslint-config-prettier";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
+import stylisticTs from "@stylistic/eslint-plugin-ts";
+import nodePlugin from "eslint-plugin-n";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import nextPlugin from "@next/eslint-plugin-next";
@@ -41,18 +43,24 @@ export default [
       import: importPlugin,
       next: nextPlugin,
       "react-hooks": reactHooksPlugin,
+      "@stylistic/ts": stylisticTs,
+      n: nodePlugin,
     },
     rules: {
       ...jsxA11yPlugin.flatConfigs.recommended.rules,
       ...typescriptPlugin.configs["eslint-recommended"].rules,
       "react/prop-types": 0,
+      "react/react-in-jsx-scope": 0,
+
       "prettier/prettier": [
         "error",
         {
           endOfLine: "auto",
           trailingComma: "es5",
+          singleQuote: false,
         },
       ],
+
       "jsx-a11y/anchor-is-valid": [
         0,
         {
@@ -61,15 +69,16 @@ export default [
           aspects: ["noHref", "invalidHref", "preferButton"],
         },
       ],
-      "linebreak-style": 0,
-      "global-require": 0,
-      "eslint linebreak-style": [0, "error", "windows"],
-      quotes: ["error", "double"],
-      semi: ["error", "always"],
+
+      "n/exports-style": ["error", "module.exports"],
+
+      "@stylistic/ts/linebreak-style": [0, "error", "windows"],
+      "@stylistic/ts/quotes": ["error", "double"],
+      "@stylistic/ts/semi": ["error", "always"],
+
       "no-unneeded-ternary": 1,
-      "react/react-in-jsx-scope": 0,
-      "no-implied-eval": "off",
-      "require-await": "off",
+      "no-implied-eval": 1,
+      "require-await": "error",
 
       "@typescript-eslint/explicit-module-boundary-types": [1],
       "@typescript-eslint/await-thenable": "error",
@@ -91,6 +100,7 @@ export default [
           format: ["PascalCase"],
         },
       ],
+
       "import/order": [
         "error",
         {
@@ -126,6 +136,7 @@ export default [
           pathGroupsExcludedImportTypes: ["react"],
         },
       ],
+
       "sort-imports": [
         "error",
         {

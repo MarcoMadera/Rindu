@@ -83,6 +83,7 @@ export const WithConfiguration = (
 
   useEffect(() => {
     const button = window.top?.document.querySelector<HTMLButtonElement>(
+      // eslint-disable-next-line @stylistic/ts/quotes
       '[title="The configuration to display the components in"]'
     );
     function handleOpenModal(e: globalThis.MouseEvent): void {
