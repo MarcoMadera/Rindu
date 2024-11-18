@@ -34,11 +34,9 @@ export function middleware(request: NextRequest): NextResponse | void {
 
   const localeCookie = request.cookies.get(LOCALE_COOKIE)?.value;
   const localeCookieValue = localeCookie ?? locale;
+  const response = NextResponse.next();
   if (!localeCookie) {
-    // Have to redirect here to ensure cookie is available to root layout
-    // issue https://github.com/vercel/next.js/issues/49442
-    const response = NextResponse.redirect(request.nextUrl);
     response.cookies.set(LOCALE_COOKIE, localeCookieValue);
-    return response;
   }
+  return response;
 }

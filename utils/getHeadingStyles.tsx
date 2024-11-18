@@ -1,5 +1,5 @@
 "use client";
-import { ReactElement } from "react";
+import { cloneElement, PropsWithChildren, ReactElement } from "react";
 
 import css from "styled-jsx/css";
 
@@ -19,7 +19,9 @@ export function getHeadingStyles(
   className: string;
   styles: ReactElement;
 } {
-  return css.resolve`
+  const mediaStyles = `@media(max-width:768px){${element}{font-size:${fontSizesMobile[number - 1]};line-height:${lineHeightsMobile[number - 1]};padding:0 8px}}`;
+
+  const resolved = css.resolve`
     ${element} {
       color: ${color ?? Color.Primary};
       font-weight: ${number === 1 ? "900" : "700"};
@@ -34,12 +36,16 @@ export function getHeadingStyles(
       (number === 3 ? "28px" : lineHeights[number - 1])};
     }
 
-    @media (max-width: 768px) {
-      ${element} {
-        font-size: ${fontSizesMobile[number - 1]};
-        line-height: ${lineHeightsMobile[number - 1]};
-        padding: 0 8px;
-      }
-    }
+    ${mediaStyles}
   `;
+
+  const stylesString = (resolved.styles.props as PropsWithChildren)
+    .children as string;
+
+  return {
+    className: resolved.className,
+    styles: cloneElement(resolved.styles, {
+      children: stylesString?.trim(),
+    }),
+  };
 }

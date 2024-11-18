@@ -94,18 +94,43 @@ export default function Heart({
           button:hover {
             transform: scale(1.06);
           }
-          button :global(svg > g > g):nth-child(5) :global(path),
-          button :global(svg > g > g):nth-child(7) :global(path),
-          button :global(svg > g > g):nth-child(8) :global(path) {
+          button
+            :global(svg)
+            > :global(g)
+            > :global(g):nth-child(5)
+            :global(path),
+          button
+            :global(svg)
+            > :global(g)
+            > :global(g):nth-child(7)
+            :global(path),
+          button
+            :global(svg)
+            > :global(g)
+            > :global(g):nth-child(8)
+            :global(path) {
             fill: #ffffffb3;
             stroke: #ffffffb3;
             stroke-width: 20px;
           }
-          button:hover :global(svg > g > g):nth-child(5) :global(path),
-          button:hover :global(svg > g > g):nth-child(7) :global(path),
-          button:hover :global(svg > g > g):nth-child(8) :global(path) {
+          button:hover
+            :global(svg)
+            > :global(g)
+            > :global(g):nth-child(5)
+            :global(path),
+          button:hover
+            :global(svg)
+            > :global(g)
+            > :global(g):nth-child(7)
+            :global(path),
+          button:hover
+            :global(svg)
+            > :global(g)
+            > :global(g):nth-child(8)
+            :global(path) {
             fill: #fff;
             stroke: #fff;
+            stroke-width: 20px;
           }
           button:active {
             transform: scale(1);

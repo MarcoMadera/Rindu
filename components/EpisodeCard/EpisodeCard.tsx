@@ -116,6 +116,7 @@ export default function EpisodeCard({
   }
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       onContextMenu={(e) => {
         e.preventDefault();

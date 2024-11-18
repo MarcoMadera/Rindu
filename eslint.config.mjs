@@ -47,7 +47,7 @@ export default [
       n: nodePlugin,
     },
     rules: {
-      ...jsxA11yPlugin.flatConfigs.recommended.rules,
+      ...jsxA11yPlugin.flatConfigs.strict.rules,
       ...typescriptPlugin.configs["eslint-recommended"].rules,
       "react/prop-types": 0,
       "react/react-in-jsx-scope": 0,
@@ -67,6 +67,14 @@ export default [
           components: ["Link"],
           specialLink: ["hrefLeft", "hrefRight"],
           aspects: ["noHref", "invalidHref", "preferButton"],
+        },
+      ],
+      "jsx-a11y/no-noninteractive-tabindex": [
+        "error",
+        {
+          tags: [],
+          roles: ["tabpanel"],
+          allowExpressionValues: true,
         },
       ],
 

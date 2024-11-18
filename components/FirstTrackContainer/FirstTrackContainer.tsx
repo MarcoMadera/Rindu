@@ -44,6 +44,7 @@ export default function FirstTrackContainer({
 
   return (
     <div className="firstTrack-Container-wrapper">
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
       <div
         className="firstTrack-Container"
         onContextMenu={(e) => {
