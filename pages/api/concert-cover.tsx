@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 
-import { verifyHMACSHA256Token } from "utils";
+import { loadGoogleFont, verifyHMACSHA256Token } from "utils";
 
 export const config = {
   runtime: "edge",
@@ -23,7 +23,14 @@ export default async function concertCover(
 
     return new ImageResponse(
       (
-        <div style={{ display: "flex", position: "absolute" }}>
+        <div
+          style={{
+            display: "flex",
+            position: "absolute",
+            // eslint-disable-next-line @stylistic/ts/quotes
+            fontFamily: '"Dangrek"',
+          }}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={img}
@@ -88,6 +95,13 @@ export default async function concertCover(
       {
         width: Number(width) || 630,
         height: Number(width) || Number(height) || 630,
+        fonts: [
+          {
+            name: "Dangrek",
+            data: await loadGoogleFont("Dangrek"),
+            style: "normal",
+          },
+        ],
       }
     );
   } catch {

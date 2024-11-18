@@ -2,15 +2,16 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 
-import { getRandomColor, hexToHsl, verifyHMACSHA256Token } from "utils";
+import {
+  getRandomColor,
+  hexToHsl,
+  loadGoogleFont,
+  verifyHMACSHA256Token,
+} from "utils";
 
 export const config = {
   runtime: "edge",
 };
-
-const font = fetch(
-  new URL("../../fonts/SourceSansPro-Black.ttf", import.meta.url)
-).then((res) => res.arrayBuffer());
 
 const colors: Record<string, string> = {};
 
@@ -18,7 +19,6 @@ export default async function radioCover(
   req: NextRequest
 ): Promise<ImageResponse | void> {
   try {
-    const fontData = await font;
     const { searchParams } = new URL(req.url);
     const { token, ...params } = Object.fromEntries(searchParams);
     const { cover1, cover2, cover3, width, height, name } = params;
@@ -53,9 +53,8 @@ export default async function radioCover(
             background: firstColor,
             justifyItems: "center",
             letterSpacing: "-.02em",
-            fontWeight: 700,
             // eslint-disable-next-line @stylistic/ts/quotes
-            fontFamily: '"SourceSansPro"',
+            fontFamily: '"Dangrek"',
           }}
         >
           <div
@@ -207,8 +206,8 @@ export default async function radioCover(
         height: Number(width) || Number(height) || 630,
         fonts: [
           {
-            name: "SourceSansPro",
-            data: fontData,
+            name: "Dangrek",
+            data: await loadGoogleFont("Dangrek"),
             style: "normal",
           },
         ],

@@ -2,21 +2,16 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 
-import { verifyHMACSHA256Token } from "utils";
+import { loadGoogleFont, verifyHMACSHA256Token } from "utils";
 
 export const config = {
   runtime: "edge",
 };
 
-const font = fetch(
-  new URL("../../fonts/SourceSansPro-Black.ttf", import.meta.url)
-).then((res) => res.arrayBuffer());
-
 export default async function topTracksCover(
   req: NextRequest
 ): Promise<ImageResponse | void> {
   try {
-    const fontData = await font;
     const { searchParams } = new URL(req.url);
     const { token, ...params } = Object.fromEntries(searchParams);
     const { width, height, title, color, imageUrl } = params;
@@ -38,9 +33,8 @@ export default async function topTracksCover(
             background: "#1b1f33",
             justifyItems: "center",
             letterSpacing: "-.02em",
-            fontWeight: 700,
             // eslint-disable-next-line @stylistic/ts/quotes
-            fontFamily: '"SourceSansPro"',
+            fontFamily: '"Dangrek"',
           }}
         >
           <div
@@ -209,8 +203,8 @@ export default async function topTracksCover(
         height: Number(width) || Number(height) || 630,
         fonts: [
           {
-            name: "SourceSansPro",
-            data: fontData,
+            name: "Dangrek",
+            data: await loadGoogleFont("Dangrek"),
             style: "normal",
           },
         ],
