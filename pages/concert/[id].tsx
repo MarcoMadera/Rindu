@@ -95,7 +95,7 @@ export const getServerSideProps = (async (context) => {
   );
 
   const artistName = setList?.artist.name ?? artist?.name ?? "";
-  const generatedImageUrl = getGeneratedImageUrl(
+  const generatedImageUrl = await getGeneratedImageUrl(
     GeneratedImageAPI.ConcertCover,
     {
       artist: artistName,

@@ -152,6 +152,7 @@ export default function TextControl({
               </svg>
             </span>
           </button>
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
           <div
             className={`helpText ${isPopupOpen ? "visible" : ""}`}
             onMouseEnter={() => {

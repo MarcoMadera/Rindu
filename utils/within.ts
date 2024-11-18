@@ -6,7 +6,7 @@ export type WithinResult<T> = {
   id?: string;
 };
 
-export async function within<T>(
+export function within<T>(
   promise: Promise<T | null>,
   duration: number,
   id?: string

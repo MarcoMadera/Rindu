@@ -45,6 +45,7 @@ export default function PageDetails({
           <div className="banner-background"></div>
         </div>
       ) : null}
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
       <header
         onContextMenu={(e) => {
           e.preventDefault();

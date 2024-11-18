@@ -8,7 +8,7 @@ import { middleware } from "../../middleware";
 import { Locale, LOCALE_COOKIE } from "utils";
 
 describe("middleware", () => {
-  it("should redirect and set locale cookie if is not there", () => {
+  it("should call nextResponse and set locale cookie if is not there", () => {
     expect.assertions(2);
 
     const nextUrl = {
@@ -36,14 +36,14 @@ describe("middleware", () => {
       },
     } as unknown as NextRequest;
     const setCookies = jest.fn();
-    const redirection = jest.spyOn(NextResponse, "redirect").mockReturnValue({
+    const nextResponse = jest.spyOn(NextResponse, "next").mockReturnValue({
       cookies: { set: setCookies },
     } as unknown as NextResponse);
 
     middleware(request);
 
     expect(setCookies).toHaveBeenCalledWith(LOCALE_COOKIE, Locale.EN);
-    expect(redirection).toHaveBeenCalledWith(nextUrl);
+    expect(nextResponse).toHaveBeenCalledWith();
   });
 
   it("should not return a NextResponse in api if locale cookie is present", () => {

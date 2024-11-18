@@ -24,10 +24,10 @@ export default function Table({
           padding: 8px;
           text-align: left;
         }
-        table :global(tr:nth-child(even)) {
+        table :global(tr):nth-child(even) {
           background-color: #222;
         }
-        table :global(tr:hover) {
+        table :global(tr):hover {
           background-color: #444;
         }
         table :global(caption) {

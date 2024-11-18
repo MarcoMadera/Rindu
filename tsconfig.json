@@ -25,6 +25,13 @@
     "typeRoots": ["./types", "node_modules/@types"],
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.js",
+    "**/*.tsx",
+    ".storybook/**/*.tsx",
+    ".storybook/**/*.ts"
+  ],
   "exclude": ["node_modules"]
 }

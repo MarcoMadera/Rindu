@@ -101,8 +101,8 @@ export function Add(
           left: 0;
           display: inline-block;
         }
-        button:hover :global(svg > g > g:nth-child(1) path),
-        button:hover :global(svg > g > g:nth-child(2) path:nth-child(1)) {
+        button:hover :global(g path),
+        button:hover :global(g path) {
           stroke: #fff;
         }
       `}</style>

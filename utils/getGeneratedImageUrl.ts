@@ -7,12 +7,12 @@ export enum GeneratedImageAPI {
   RadioCover = "/api/radio-cover",
 }
 
-export const getGeneratedImageUrl = (
+export const getGeneratedImageUrl = async (
   api: GeneratedImageAPI,
   params: Record<string, string>
-): string => {
+): Promise<string> => {
   const url = new URL(`${getSiteUrl()}${api}`);
-  const token = generateHMACSHA256Token(params);
+  const token = await generateHMACSHA256Token(params);
 
   url.search = new URLSearchParams({ ...params, token }).toString();
 

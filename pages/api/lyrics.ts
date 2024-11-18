@@ -219,7 +219,7 @@ async function getLyrics(
   promises.push(reqLyricsMania3);
   promises.push(reqSweetLyrics);
 
-  return Promise.any(promises).then((lyrics) => {
+  return await Promise.any(promises).then((lyrics) => {
     return lyrics;
   });
 }

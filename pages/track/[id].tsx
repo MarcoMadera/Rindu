@@ -312,11 +312,11 @@ export default function TrackPage({
           background-color: transparent;
           border: none;
         }
-        .info :global(button:focus),
-        .info :global(button:hover) {
+        .info :global(button):focus,
+        .info :global(button):hover {
           transform: scale(1.06);
         }
-        .info :global(button:active) {
+        .info :global(button):active {
           transform: scale(1);
         }
         .options {

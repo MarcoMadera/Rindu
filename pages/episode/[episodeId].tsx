@@ -180,7 +180,7 @@ export default function EpisodePage({
           text-decoration: none;
           touch-action: manipulation;
         }
-        .container :global(a:hover) {
+        .container :global(a):hover {
           transform: scale(1.06);
         }
         p {

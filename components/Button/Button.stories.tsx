@@ -1,7 +1,8 @@
 import { ReactElement } from "react";
 
 import { Meta } from "@storybook/react";
-import { sanitize } from "dompurify";
+
+import DOMPurify from "isomorphic-dompurify";
 
 import {
   Button,
@@ -64,7 +65,7 @@ export const HtmlToReactButton = {
             "Include html in the controls and add {0} ... {5} to have different buttons"
           }
         </Paragraph>
-        <Paragraph>{htmlToReact(sanitize(html), format)}</Paragraph>
+        <Paragraph>{htmlToReact(DOMPurify.sanitize(html), format)}</Paragraph>
       </>
     );
   },

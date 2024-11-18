@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react";
+import { useEffect } from "react";
 
 import { useOnSmallScreen } from "./useOnSmallScreen";
 
@@ -90,7 +90,7 @@ export function useDynamicFontSize({
   lineNum = 1,
 }: UseDynamicFontSizeProps): void {
   const isSmallScreen = useOnSmallScreen();
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isSmallScreen) {
       if (!element) return;
       element.style.fontSize = `${minFontSize}px`;

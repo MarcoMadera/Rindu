@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-/* eslint-disable jsx-a11y/alt-text */
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 
@@ -55,7 +54,7 @@ export default async function radioCover(
             justifyItems: "center",
             letterSpacing: "-.02em",
             fontWeight: 700,
-            // eslint-disable-next-line quotes
+            // eslint-disable-next-line @stylistic/ts/quotes
             fontFamily: '"SourceSansPro"',
           }}
         >
@@ -165,6 +164,7 @@ export default async function radioCover(
               alignItems: "center",
             }}
           >
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
             <img
               src={cover2}
               width={210}
@@ -175,6 +175,7 @@ export default async function radioCover(
                 zIndex: 1,
               }}
             />
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
             <img
               src={cover3}
               width={210}
@@ -186,6 +187,7 @@ export default async function radioCover(
                 marginLeft: 190,
               }}
             />
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
             <img
               src={cover1}
               width={290}

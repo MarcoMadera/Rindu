@@ -1,6 +1,6 @@
 import { ChangeEvent, ReactElement, useEffect, useState } from "react";
 
-import DOMPurify from "dompurify";
+import { sanitize } from "dompurify";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 
@@ -44,7 +44,7 @@ export default function PreferencesPage(): ReactElement {
   }, [router, trackWithGoogleAnalytics]);
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = DOMPurify.sanitize(event.target.value);
+    const value = sanitize(event.target.value);
     setSearchTerm(value);
   };
 

@@ -60,7 +60,7 @@ export function TrackDetails({
           <section>
             <p className="trackArtists">
               <Link
-                href={`/${track.album.type ?? "album"}/${track.album.id}`} // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+                href={`/${track.album.type ?? "album"}/${track.album.id}`}
                 tabIndex={isVisible ? 0 : -1}
                 aria-hidden={!isVisible}
               >
@@ -96,11 +96,16 @@ export function TrackDetails({
           width: 48px;
           height: 48px;
         }
-        :global(.trackName),
+        section :global(.trackName),
         .trackArtists :global(a) {
           text-decoration: none;
+          color: inherit;
         }
-        :global(.trackName) {
+        section :global(.trackName:hover) {
+          text-decoration: underline;
+          color: inherit;
+        }
+        section :global(.trackName) {
           margin: 0;
           padding: 0;
         }
@@ -109,7 +114,7 @@ export function TrackDetails({
           align-items: center;
         }
         :global(.trackName:hover),
-        .trackArtists :global(a:hover) {
+        .trackArtists :global(a):hover {
           text-decoration: underline;
         }
         .pop-meter {

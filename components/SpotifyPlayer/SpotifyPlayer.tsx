@@ -197,14 +197,14 @@ export default function SpotifyPlayer({
           color: ${router.pathname === "/library" ? "#fff" : "inherit"};
           fill: ${router.pathname === "/library" ? "#fff" : "#ffffffb3"};
         }
-        nav :global(a:hover),
-        nav :global(a:active),
-        nav :global(a:focus) {
+        nav :global(a):hover,
+        nav :global(a):active,
+        nav :global(a):focus {
           color: #fff;
         }
-        nav :global(a:hover path),
-        nav :global(a:active path),
-        nav :global(a:focus path) {
+        nav :global(a):hover :global(path),
+        nav :global(a):active :global(path),
+        nav :global(a):focus :global(path) {
           fill: #fff;
         }
         footer {

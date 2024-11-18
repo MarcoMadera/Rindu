@@ -127,10 +127,10 @@ const Home = ({
             word-spacing: 1.4px;
             line-height: 1.6;
           }
-          main :global(section.info div:nth-child(1)) {
+          main :global(section.info div):nth-child(1) {
             grid-column: 1 / 6;
           }
-          main :global(section.info div:nth-child(2)) {
+          main :global(section.info div):nth-child(2) {
             grid-column: 7 / 13;
           }
           main :global(.conclude) div:nth-child(2) {
@@ -176,11 +176,11 @@ const Home = ({
             -webkit-box-pack: center;
             justify-content: center;
           }
-          main :global(button:hover) {
+          main :global(button):hover {
             transform: scale(1.04);
             border: 1px solid #fff;
           }
-          main :global(button:active) {
+          main :global(button):active {
             opacity: 0.7;
             outline: none;
             transform: scale(1);
