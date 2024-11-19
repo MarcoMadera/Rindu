@@ -120,7 +120,7 @@ export default function Carousel({
               ...child.props,
               tabIndex: shouldFocus ? undefined : -1,
               "aria-hidden": shouldFocus ? "false" : "true",
-              style: { "scroll-snap-align": "start" },
+              style: { scrollSnapAlign: "start" },
             } as Partial<unknown> & HTMLAttributes<HTMLElement>);
           }
           return child;

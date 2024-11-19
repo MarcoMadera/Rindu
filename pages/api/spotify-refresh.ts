@@ -66,6 +66,10 @@ export default async function refresh(
       }
     );
 
+    if (!refreshTokenResponse.ok) {
+      throw new ApiError(400, "Bad Request");
+    }
+
     const data = (await refreshTokenResponse.json()) as RefreshTokenResponse;
     const expireCookieDate = new Date();
     expireCookieDate.setTime(

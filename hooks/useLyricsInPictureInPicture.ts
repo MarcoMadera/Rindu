@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
 import { useAuth, useSpotify } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
@@ -8,6 +8,7 @@ import {
   getAllLinesFittingWidth,
   hexToHsl,
   IFormatLyricsResponse,
+  LoadingAnimation,
   LYRICS_PADDING_LEFT,
   LYRICS_PIP_HEADER_HEIGH,
   rgbToHex,
@@ -25,7 +26,6 @@ interface IUseLyricsInPictureInPicture {
   lyricsProgressMs: number;
   setLyricsBackgroundColor: Dispatch<SetStateAction<string>>;
   lyricsError: string | null;
-  requestLyrics: boolean;
 }
 
 export function useLyricsInPictureInPicture({
@@ -39,19 +39,23 @@ export function useLyricsInPictureInPicture({
   lyricLineColor,
   lyricsProgressMs,
   lyricsError,
-  requestLyrics,
 }: IUseLyricsInPictureInPicture): void {
   const {
     isPictureInPictureLyircsCanvas,
     currentlyPlaying,
+    displayInFullScreen,
     setDisplayInFullScreen,
     currentlyPlayingDuration,
     isPlaying,
     player,
     pictureInPictureCanvas,
   } = useSpotify();
-  const [spinnerFrame, setSpinnerFrame] = useState<number | null>(null);
-  const [canvasLoaded, setCanvasLoaded] = useState<boolean>(false);
+  const requestLyrics = !!(
+    displayInFullScreen === DisplayInFullScreen.Lyrics ||
+    (isPictureInPictureLyircsCanvas && document.pictureInPictureElement)
+  );
+  const animationRef = useRef<LoadingAnimation | null>(null);
+  const frameRef = useRef<number | null>(null);
   const { isPremium } = useAuth();
   const title = currentlyPlaying?.name ?? "";
   const artist = currentlyPlaying?.artists?.[0]?.name ?? "";
@@ -123,101 +127,75 @@ export function useLyricsInPictureInPicture({
   }, [isPlaying, setLyricsProgressMs, currentlyPlayingDuration, requestLyrics]);
 
   useEffect(() => {
-    if (
-      !isPictureInPictureLyircsCanvas ||
-      !pictureInPictureCanvas.current ||
-      !canvasLoaded
-    )
+    if (!isPictureInPictureLyircsCanvas || !pictureInPictureCanvas.current)
       return;
+
     const ctx = pictureInPictureCanvas.current.getContext("2d");
-    const canvasWidth = pictureInPictureCanvas.current.width;
-    const canvasHeight = pictureInPictureCanvas.current.height;
     if (!ctx) return;
     const lines = lyrics?.lines;
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.font = "24px Arial";
 
-    const centerX = canvasWidth / 2;
-    const centerY = canvasHeight / 2;
-    const radius = 50;
-    const lineWidth = 8;
-    const numSegments = 120;
-    const segmentAngle = (2 * Math.PI) / numSegments;
-    const rotationSpeed = 0.05;
-    const minLightness = 30;
-    const maxLightness = 70;
-    let rotation = 0;
-
-    function drawLoadingSpinner(rotation: number, clearSpinner?: boolean) {
-      if (!ctx) return;
-      const [h, s] = hexToHsl(lyricsBackgroundColor, true) ?? [0, 0, 0];
-
-      if (clearSpinner) {
-        ctx.globalCompositeOperation = "destination-out";
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-        ctx.fill();
-      }
-
-      for (let i = numSegments - 1; i >= 0; i--) {
-        const startAngle = i * segmentAngle + rotation;
-        const endAngle = startAngle + segmentAngle + 0.2;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-        ctx.lineWidth = lineWidth;
-
-        const adjustedLightness =
-          minLightness + (i * (maxLightness - minLightness)) / numSegments;
-
-        const segmentColor = `hsl(${h}, ${s}%, ${adjustedLightness}%)`;
-        ctx.strokeStyle = segmentColor;
-        ctx.globalCompositeOperation = "source-over";
-        ctx.fill();
-        ctx.stroke();
-      }
-
-      ctx.globalCompositeOperation = "source-over";
-    }
-
-    function animate() {
-      drawLoadingSpinner(rotation);
-      rotation += rotationSpeed;
-      const frame = requestAnimationFrame(animate);
-      setSpinnerFrame(frame);
-    }
-
-    if (!lyricsError && !lines && !spinnerFrame) {
-      animate();
-      return;
-    }
-
-    if (lines || lyricsError) {
-      drawLoadingSpinner(rotation, true);
-      if (spinnerFrame) {
-        cancelAnimationFrame(spinnerFrame);
-        setSpinnerFrame(null);
-      }
-    }
     ctx.globalCompositeOperation = "destination-over";
     ctx.fillStyle = lyricsBackgroundColor ?? "#000";
-
     ctx.fillRect(
       0,
       0,
       pictureInPictureCanvas.current.width,
       pictureInPictureCanvas.current.height
     );
+    ctx.globalCompositeOperation = "source-over";
+
+    const cleanupAnimation = () => {
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+        frameRef.current = null;
+      }
+      if (animationRef.current) {
+        animationRef.current.cleanup();
+        animationRef.current = null;
+      }
+    };
+
+    if (!lines && !lyricsError) {
+      if (!frameRef.current) {
+        if (!animationRef.current) {
+          animationRef.current = new LoadingAnimation(
+            750,
+            pictureInPictureCanvas.current,
+            lyricsBackgroundColor ?? "#000",
+            lyricTextColor
+          );
+        }
+
+        const animate = (time: number) => {
+          if (!animationRef.current) return;
+
+          const deltaTime = time - (animationRef.current.lastTime || time);
+          animationRef.current.lastTime = time;
+
+          animationRef.current.update(deltaTime);
+          if (animationRef.current.ctx) {
+            animationRef.current.draw(animationRef.current.ctx);
+          }
+
+          frameRef.current = requestAnimationFrame(animate);
+        };
+
+        frameRef.current = requestAnimationFrame(animate);
+      }
+    } else {
+      cleanupAnimation();
+    }
+
+    return () => {
+      cleanupAnimation();
+    };
   }, [
-    spinnerFrame,
     isPictureInPictureLyircsCanvas,
     lyrics?.lines,
     lyricsBackgroundColor,
+    lyricTextColor,
     lyricsError,
     pictureInPictureCanvas,
-    canvasLoaded,
   ]);
 
   useEffect(() => {
@@ -229,7 +207,7 @@ export function useLyricsInPictureInPicture({
     const canvasHeight = pictureInPictureCanvas.current.height;
     if (!ctx) return;
     const lyricsContainerHeight = canvasHeight - LYRICS_PIP_HEADER_HEIGH;
-    if (!spinnerFrame) {
+    if (!frameRef.current) {
       ctx.clearRect(
         0,
         LYRICS_PIP_HEADER_HEIGH,
@@ -245,7 +223,7 @@ export function useLyricsInPictureInPicture({
       ctx.fillText(lyricsError ?? "", LYRICS_PADDING_LEFT, canvasMiddle);
     }
 
-    if (!spinnerFrame) {
+    if (!frameRef.current) {
       const allLines = getAllLinesFittingWidth({
         ctx,
         lines: lines ?? [],
@@ -266,8 +244,6 @@ export function useLyricsInPictureInPicture({
         pictureInPictureCanvas.current.height
       );
     }
-
-    setCanvasLoaded(true);
   }, [
     lyricsError,
     lyricsProgressMs,
@@ -277,15 +253,10 @@ export function useLyricsInPictureInPicture({
     lyricsBackgroundColor,
     pictureInPictureCanvas,
     lyrics?.lines,
-    spinnerFrame,
   ]);
 
   useEffect(() => {
-    if (
-      !isPictureInPictureLyircsCanvas ||
-      !pictureInPictureCanvas.current ||
-      !requestLyrics
-    )
+    if (!isPictureInPictureLyircsCanvas || !pictureInPictureCanvas.current)
       return;
     const ctx = pictureInPictureCanvas.current.getContext("2d");
     if (!ctx) {
