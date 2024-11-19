@@ -141,15 +141,24 @@ export class LoadingAnimation {
     this.ctx = canvas.getContext("2d");
     this.waitTime = waitTime;
     this.lastTime = 0;
-    this.timeSinceLastAction = 0;
+    this.timeSinceLastAction = this.waitTime;
     this.backgroundColor = backgroundColor;
     this.textColor = textColor;
 
     this.circles = [
       new Circle(canvas, textColor, 13, 0, 40, 1800, true),
       new Circle(canvas, textColor, 13, 1, 40, 1800, true),
-      new Circle(canvas, textColor, 13, 2, 40, 1800, true),
+      new Circle(canvas, textColor, 13, 2, 40, 1800, false),
     ];
+
+    const lastCircle = this.circles[2];
+    lastCircle.disappearing = true;
+
+    this.circles.slice(0, 2).forEach((circle, index) => {
+      circle.moveTo(index + 1);
+    });
+
+    this.circles.push(new Circle(canvas, textColor, 13, 0, 40, 1800));
   }
 
   update(deltaTime: number): void {
