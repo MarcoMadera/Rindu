@@ -1,25 +1,15 @@
 import { ReactElement, useEffect } from "react";
 
-import { decode } from "html-entities";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 
 import {
   ContentContainer,
-  Grid,
   Heading,
-  LikedSongsCard,
   NavigationTopBarExtraField,
-  PresentationCard,
 } from "components";
-import { CardType } from "components/CardContent";
-import {
-  useAnalytics,
-  useHeader,
-  useSpotify,
-  useTranslations,
-  useUserPlaylists,
-} from "hooks";
+import { PlaylistGridList } from "components/VirtualizedList/PlaylistGridList";
+import { useAnalytics, useHeader, useSpotify, useTranslations } from "hooks";
 import { ITranslations } from "types/translations";
 import { getAuth, getTranslations, serverRedirect } from "utils";
 
@@ -36,7 +26,6 @@ export default function CollectionPlaylists(): ReactElement {
   const { translations } = useTranslations();
   const { trackWithGoogleAnalytics } = useAnalytics();
   const { isPlaying } = useSpotify();
-  const playlists = useUserPlaylists();
 
   useEffect(() => {
     setElement(() => <NavigationTopBarExtraField selected={1} />);
@@ -62,26 +51,7 @@ export default function CollectionPlaylists(): ReactElement {
       <Heading number={3} as="h2">
         Playlists
       </Heading>
-      <Grid>
-        <LikedSongsCard />
-        {playlists?.length > 0
-          ? playlists.map(({ images, name, description, id, owner }) => {
-              return (
-                <PresentationCard
-                  type={CardType.PLAYLIST}
-                  key={id}
-                  images={images}
-                  title={name}
-                  subTitle={
-                    decode(description) ||
-                    `${translations.pages.collectionPlaylists.by} ${owner.display_name ?? owner.id}`
-                  }
-                  id={id}
-                />
-              );
-            })
-          : null}
-      </Grid>
+      <PlaylistGridList translations={translations} />
     </ContentContainer>
   );
 }

@@ -35,7 +35,7 @@ function PresentationCard({
   const { allTracks } = useSpotify();
 
   return (
-    <div className="container">
+    <div className="container" style={props.style}>
       <CardContent
         id={id}
         type={type}
