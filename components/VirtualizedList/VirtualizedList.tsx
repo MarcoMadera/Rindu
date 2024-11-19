@@ -37,7 +37,7 @@ export default function VirtualizedList<T>({
   isItemLoaded,
   scrollElementSelector = "#right .simplebar-content-wrapper",
   overscanRowCount = 2,
-}: Readonly<VirtualizedListProps<T>>): ReactElement {
+}: Readonly<VirtualizedListProps<T>>): ReactElement | null {
   const scrollElement =
     typeof window !== "undefined"
       ? (document.querySelector(scrollElementSelector) as HTMLElement)
@@ -73,6 +73,8 @@ export default function VirtualizedList<T>({
       item: items?.[index],
     });
   }
+
+  if (!scrollElement) return null;
 
   return (
     <WindowScroller scrollElement={scrollElement}>
