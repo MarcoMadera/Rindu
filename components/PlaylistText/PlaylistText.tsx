@@ -1,4 +1,4 @@
-import { ReactElement, useCallback } from "react";
+import { CSSProperties, ReactElement, useCallback } from "react";
 
 import { useRouter } from "next/router";
 
@@ -17,6 +17,7 @@ interface PlaylistTextProps {
   uri: string;
   name: string;
   type: "playlist";
+  style: CSSProperties;
 }
 
 export default function PlaylistText({
@@ -24,6 +25,7 @@ export default function PlaylistText({
   uri,
   name,
   type,
+  style,
 }: Readonly<PlaylistTextProps>): ReactElement {
   const {
     volume,
@@ -96,15 +98,35 @@ export default function PlaylistText({
     onDoubleClick
   );
 
+  if (!uri) {
+    return (
+      <div className="placeholder" style={style}>
+        <div className="container"></div>
+        <style jsx>{`
+          div {
+            height: 26px;
+            width: 100%;
+          }
+          .container {
+            height: 18px;
+            width: calc(100% - 1rem);
+            border-radius: 5px;
+            background-color: #5e5d5db3;
+          }
+        `}</style>
+      </div>
+    );
+  }
+
   return (
-    <div key={id} className="playlistName">
+    <div key={id} className="playlistName" style={style}>
       <button
         type="button"
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}
         className={playlistPlayingId === id ? "playlist green" : "playlist"}
       >
-        {name || "No name"}
+        {name || "..."}
       </button>
       {playlistPlayingId === id ? (
         <button
