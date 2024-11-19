@@ -12,6 +12,8 @@ export * from "./cookies";
 export * from "./createSpotifyEmbedUrl";
 export * from "./deserialize";
 export * from "./divideArray";
+export * from "./canvasLoadingAnimation";
+export * from "./easeInOutCubic";
 export * from "./environment";
 export * from "./errors";
 export * from "./extractTextFromChildren";

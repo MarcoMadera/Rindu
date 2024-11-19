@@ -8,8 +8,7 @@ import {
   useState,
 } from "react";
 
-import { useLyrics, useLyricsInPictureInPicture, useSpotify } from "hooks";
-import { DisplayInFullScreen } from "types/spotify";
+import { useLyrics, useLyricsInPictureInPicture } from "hooks";
 import { getRandomColor, IFormatLyricsResponse } from "utils";
 
 export interface ILyricsContext {
@@ -31,20 +30,13 @@ const LyricsContext = createContext<ILyricsContext | undefined>(undefined);
 export function LyricsContextContextProvider({
   children,
 }: Readonly<PropsWithChildren>): ReactElement {
-  const { displayInFullScreen, isPictureInPictureLyircsCanvas } = useSpotify();
   const [lyricsProgressMs, setLyricsProgressMs] = useState(0);
   const [lyricLineColor, setLyricLineColor] = useState<string>("#fff");
   const [lyricTextColor, setLyricTextColor] = useState<string>("#fff");
   const [lyricsBackgroundColor, setLyricsBackgroundColor] =
     useState<string>(getRandomColor());
-  const requestLyrics = !!(
-    displayInFullScreen === DisplayInFullScreen.Lyrics ||
-    (isPictureInPictureLyircsCanvas && document.pictureInPictureElement)
-  );
 
-  const { lyrics, lyricsError, lyricsLoading } = useLyrics({
-    requestLyrics,
-  });
+  const { lyrics, lyricsError, lyricsLoading } = useLyrics();
 
   useLyricsInPictureInPicture({
     setLyricsProgressMs,
@@ -57,7 +49,6 @@ export function LyricsContextContextProvider({
     lyricLineColor,
     lyricsProgressMs,
     lyricsError,
-    requestLyrics,
   });
 
   const value = useMemo(

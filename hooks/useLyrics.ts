@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { useSpotify, useToggle } from "hooks";
+import { DisplayInFullScreen } from "types/spotify";
 import {
   formatLyrics,
   getLyrics,
@@ -12,12 +13,17 @@ import {
   WithinResult,
 } from "utils";
 
-export function useLyrics({ requestLyrics }: { requestLyrics: boolean }): {
+export function useLyrics(): {
   lyrics: IFormatLyricsResponse | null;
   lyricsLoading: boolean;
   lyricsError: string | null;
 } {
-  const { currentlyPlaying } = useSpotify();
+  const {
+    currentlyPlaying,
+    isPictureInPictureLyircsCanvas,
+    displayInFullScreen,
+    isPip,
+  } = useSpotify();
   const [lyrics, setLyrics] = useState<IFormatLyricsResponse | null>(null);
   const [lyricsLoading, setLoading] = useToggle();
   const [lyricsError, setLyricsError] = useState<string | null>(null);
@@ -25,6 +31,10 @@ export function useLyrics({ requestLyrics }: { requestLyrics: boolean }): {
     error: null,
     data: null,
   });
+  const requestLyrics = !!(
+    displayInFullScreen === DisplayInFullScreen.Lyrics ||
+    (isPictureInPictureLyircsCanvas && isPip)
+  );
   const artist = currentlyPlaying?.artists?.[0].name;
   const title = currentlyPlaying?.name;
   const trackId = currentlyPlaying?.id;
