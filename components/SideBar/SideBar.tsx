@@ -1,13 +1,13 @@
-import { PropsWithChildren, ReactElement, useEffect } from "react";
+import { PropsWithChildren, ReactElement } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { Logo, PlaylistText, ScrollBar } from "components";
+import { Logo, PlaylistsList, ScrollBar } from "components";
 import { Add, Chevron, Heart, Home, Library, Search } from "components/icons";
 import { useAnalytics, useAuth, useSpotify, useToast } from "hooks";
 import { ITranslations } from "types/translations";
-import { chooseImage, getAllMyPlaylists, templateReplace } from "utils";
+import { chooseImage, templateReplace } from "utils";
 import { createPlaylist } from "utils/spotifyCalls";
 
 export default function SideBar({
@@ -17,7 +17,6 @@ export default function SideBar({
   PropsWithChildren<{ width: number; translations: ITranslations }>
 >): ReactElement {
   const {
-    playlists,
     setPlaylists,
     playlistPlayingId,
     currentlyPlaying,
@@ -29,24 +28,6 @@ export default function SideBar({
   const router = useRouter();
   const { addToast } = useToast();
   const { trackWithGoogleAnalytics } = useAnalytics();
-
-  useEffect(() => {
-    getAllMyPlaylists()
-      .then((res) => {
-        if (res) {
-          setPlaylists(res.items);
-        }
-      })
-      .catch((err) => {
-        const message = "SideBar - getAllMyPlaylists";
-        const exDescription =
-          err instanceof Error ? message + err.message : message;
-        trackWithGoogleAnalytics("exception", {
-          exDescription: exDescription,
-          exFatal: "0",
-        });
-      });
-  }, [setPlaylists, trackWithGoogleAnalytics]);
 
   const type = playedSource?.split(":")?.[1];
   const id = playedSource?.split(":")?.[2];
@@ -128,17 +109,7 @@ export default function SideBar({
         </section>
         <ScrollBar style={{ width: width }}>
           <section className="playlists">
-            {playlists?.map(({ id, uri, name, type }) => {
-              return (
-                <PlaylistText
-                  key={id}
-                  id={id}
-                  uri={uri}
-                  name={name}
-                  type={type}
-                />
-              );
-            })}
+            <PlaylistsList />
           </section>
         </ScrollBar>
         <section

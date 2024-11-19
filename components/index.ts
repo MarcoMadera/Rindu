@@ -87,4 +87,6 @@ export { default as TopTracks } from "./TopTracks";
 export { default as TrackListHeader } from "./TrackListHeader";
 export { default as UserWidget } from "./UserWidget";
 export { default as VirtualizedList } from "./VirtualizedList";
+export { TracksList } from "./VirtualizedList/TracksList";
+export { PlaylistsList } from "./VirtualizedList/PlaylistsList";
 export { default as VolumeControl } from "./VolumeControl";

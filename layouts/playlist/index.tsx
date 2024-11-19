@@ -15,7 +15,7 @@ import {
   RemoveTracksModal,
   SearchInputElement,
   TrackListHeader,
-  VirtualizedList,
+  TracksList,
 } from "components";
 import { CardType } from "components/CardTrack/CardTrack";
 import { Broom, Heart } from "components/icons";
@@ -300,7 +300,7 @@ const Playlist: NextPage<
                 type={CardType.Playlist}
                 setIsPin={setIsPin}
               />
-              <VirtualizedList
+              <TracksList
                 type={CardType.Playlist}
                 isLibrary={isLibrary}
                 isGeneratedPlaylist={isGeneratedPlaylist}

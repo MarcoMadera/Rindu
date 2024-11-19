@@ -9,7 +9,7 @@ import {
   PlayButton,
   PlaylistTopBarExtraField,
   TrackListHeader,
-  VirtualizedList,
+  TracksList,
 } from "components";
 import { CardType } from "components/CardTrack/CardTrack";
 import { Heart } from "components/icons";
@@ -185,7 +185,7 @@ const AlbumPage = ({
             setIsPin={setIsPin}
             isPin={isPin}
           />
-          <VirtualizedList
+          <TracksList
             type={CardType.Album}
             initialTracksInLibrary={tracksInLibrary}
           />
