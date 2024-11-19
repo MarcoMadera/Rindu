@@ -162,7 +162,7 @@ export function useLyricsInPictureInPicture({
             750,
             pictureInPictureCanvas.current,
             lyricsBackgroundColor ?? "#000",
-            lyricTextColor
+            "#fff"
           );
         }
 
@@ -193,7 +193,6 @@ export function useLyricsInPictureInPicture({
     isPictureInPictureLyircsCanvas,
     lyrics?.lines,
     lyricsBackgroundColor,
-    lyricTextColor,
     lyricsError,
     pictureInPictureCanvas,
   ]);
