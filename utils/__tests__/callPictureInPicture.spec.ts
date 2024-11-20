@@ -51,7 +51,7 @@ describe("callPictureInPicture", () => {
     const canvas = document.createElement("canvas");
     const video = document.createElement("video");
 
-    const error = jest.spyOn(console, "error");
+    const error = jest.spyOn(console, "error").mockImplementation(() => {});
 
     await callPictureInPicture(canvas, video);
 

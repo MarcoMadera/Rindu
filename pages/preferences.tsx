@@ -6,15 +6,17 @@ import { useRouter } from "next/router";
 
 import {
   ContentContainer,
+  FormToggle,
   Heading,
   Searchable,
   SearchInput,
   SelectControl,
 } from "components";
-import { useAnalytics, useSpotify, useTranslations } from "hooks";
+import { useAnalytics, useSpotify, useToggle, useTranslations } from "hooks";
 import { AsType } from "types/heading";
 import { ITranslations } from "types/translations";
 import {
+  ConfigurationManager,
   getAuth,
   getLocale,
   getTranslations,
@@ -31,6 +33,7 @@ interface PreferencesProps {
 }
 
 export default function PreferencesPage(): ReactElement {
+  const config = ConfigurationManager.getInstance();
   const { translations, locale: defaultLocale, locales } = useTranslations();
   const [locale, setLocale] = useState(defaultLocale);
   const [isReload, setIsReload] = useState(false);
@@ -38,6 +41,9 @@ export default function PreferencesPage(): ReactElement {
   const router = useRouter();
   const { setIgnoreShortcuts } = useSpotify();
   const [searchTerm, setSearchTerm] = useState("");
+  const [useDocumentPiP, setUseDocumentPip] = useToggle(
+    config.get("isDocPipEnabled")
+  );
 
   useEffect(() => {
     trackWithGoogleAnalytics();
@@ -107,6 +113,28 @@ export default function PreferencesPage(): ReactElement {
                     setLocale(getLocale(e.target.value));
 
                     setIsReload(true);
+                  }}
+                />
+              </div>
+            </div>
+          </>
+          <>
+            <Heading number={4} as={AsType.H2}>
+              {translations.pages.preferences.useDocumentPiP}
+            </Heading>
+            <div className="inputs-container">
+              <div className="label-container">
+                <label htmlFor="useDocumentPiP">
+                  {translations.pages.preferences.useDocumentPiPHint}
+                </label>
+              </div>
+              <div className="select-container">
+                <FormToggle
+                  checked={useDocumentPiP}
+                  id="useDocumentPiP"
+                  onChange={(e) => {
+                    config.set("isDocPipEnabled", e.target.checked);
+                    setUseDocumentPip.toggle();
                   }}
                 />
               </div>

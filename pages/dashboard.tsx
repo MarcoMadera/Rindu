@@ -573,8 +573,8 @@ export const getServerSideProps = (async (context) => {
     ) {
       const playlists = fullFilledItem.filter(
         (playlist) =>
-          playlist.type === "playlist" &&
-          playlist?.owner.display_name === "Spotify"
+          playlist?.type === "playlist" &&
+          playlist?.owner?.display_name === "Spotify"
       );
       if (!playlists[0]) return;
       const isDuplicate = thisPlaylistsResult.some(

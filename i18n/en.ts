@@ -361,6 +361,8 @@ export const en: ITranslations = {
       language: "Language",
       languageLabel:
         "Choose language - Changes will be applied after restarting the app",
+      useDocumentPiP: "Enhanced Floating Window (Beta)",
+      useDocumentPiPHint: "Uses an improved floating window system for lyrics.",
       spanish: "Spanish",
       english: "English",
       reload: "Reload",

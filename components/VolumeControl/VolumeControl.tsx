@@ -3,10 +3,12 @@ import { ReactElement, useCallback, useState } from "react";
 import { Slider } from "components";
 import { Volume } from "components/icons";
 import { useSpotify } from "hooks";
+import { ConfigurationManager } from "utils";
 
 export default function VolumeControl(): ReactElement {
   const { player, volume, setVolume, lastVolume, setLastVolume } = useSpotify();
   const [isHoveringVolume, setIsHoveringVolume] = useState(false);
+  const configuration = ConfigurationManager.getInstance();
 
   const getActualVolume = useCallback(() => {
     if (volume > 0) {
@@ -49,10 +51,7 @@ export default function VolumeControl(): ReactElement {
           player.setVolume(currentVolume);
           setLastVolume(currentVolume);
           setVolume(currentVolume);
-          localStorage.setItem(
-            "playback",
-            encodeURI(JSON.stringify({ volume: currentVolume }))
-          );
+          configuration.set("volume", currentVolume);
         }}
         valueText={`${volume}`}
         title={"Control the volume"}
