@@ -1,17 +1,17 @@
 import { CURRENT_VERSION, migrations } from "./migrations";
-import type { ConfigOptions } from "./schema";
-import { DEFAULT_CONFIG, isValidValue, validateConfig } from "./schema";
+import {
+  CONFIGURATION_STORAGE_KEY,
+  DEFAULT_CONFIG,
+  isValidValue,
+  validateConfig,
+} from "./schema";
+import type { Configuration, VersionedConfig } from "types/configuration";
 import { isServer } from "utils/environment";
-
-export interface VersionedConfig {
-  version: number;
-  data: ConfigOptions;
-}
 
 export class ConfigurationManager {
   private static instance: ConfigurationManager | null = null;
-  private config: ConfigOptions = DEFAULT_CONFIG;
-  private readonly storageKey = "app_config";
+  private config: Configuration = DEFAULT_CONFIG;
+  private readonly storageKey = CONFIGURATION_STORAGE_KEY;
 
   private constructor() {
     if (isServer()) return;
@@ -29,7 +29,7 @@ export class ConfigurationManager {
     ConfigurationManager.instance = null;
   }
 
-  private loadConfig(): ConfigOptions {
+  private loadConfig(): Configuration {
     try {
       const storedData = localStorage.getItem(this.storageKey);
       if (!storedData) {
@@ -38,7 +38,12 @@ export class ConfigurationManager {
 
       const parsedData = JSON.parse(storedData) as
         | VersionedConfig
-        | ConfigOptions;
+        | Configuration
+        | null;
+
+      if (parsedData === null || typeof parsedData !== "object") {
+        return DEFAULT_CONFIG;
+      }
 
       if (!("version" in parsedData)) {
         const migrated = migrations[0](parsedData);
@@ -57,7 +62,7 @@ export class ConfigurationManager {
       this.saveConfig(migrated);
       return migrated;
     } catch (error) {
-      console.error("Error loading config:", error);
+      console.error("Error loading configuration:", error);
       return DEFAULT_CONFIG;
     }
   }
@@ -70,11 +75,11 @@ export class ConfigurationManager {
       };
       localStorage.setItem(this.storageKey, JSON.stringify(versionedConfig));
     } catch (error) {
-      console.error("Error saving config:", error);
+      console.error("Error saving configuration:", error);
     }
   }
 
-  public get<K extends keyof ConfigOptions>(key: K): ConfigOptions[K] {
+  public get<K extends keyof Configuration>(key: K): Configuration[K] {
     if (!isValidValue(key, this.config[key])) {
       console.warn(`Invalid value found for ${key}, returning default value`);
       this.config[key] = DEFAULT_CONFIG[key];
@@ -83,9 +88,9 @@ export class ConfigurationManager {
     return this.config[key];
   }
 
-  public set<K extends keyof ConfigOptions>(
+  public set<K extends keyof Configuration>(
     key: K,
-    value: ConfigOptions[K]
+    value: Configuration[K]
   ): void {
     const newConfig = {
       ...this.config,
@@ -101,11 +106,11 @@ export class ConfigurationManager {
     this.saveConfig();
   }
 
-  public getAll(): Readonly<ConfigOptions> {
+  public getAll(): Readonly<Configuration> {
     return { ...this.config };
   }
 
-  public updateMultiple(updates: Partial<ConfigOptions>): void {
+  public updateMultiple(updates: Partial<Configuration>): void {
     const newConfig = {
       ...this.config,
       ...updates,
@@ -115,9 +120,9 @@ export class ConfigurationManager {
     this.saveConfig();
   }
 
-  public static getDefaultValue<K extends keyof ConfigOptions>(
+  public static getDefaultValue<K extends keyof Configuration>(
     key: K
-  ): ConfigOptions[K] {
+  ): Configuration[K] {
     return DEFAULT_CONFIG[key];
   }
 

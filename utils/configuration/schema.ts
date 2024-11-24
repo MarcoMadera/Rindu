@@ -1,42 +1,41 @@
-export interface ConfigOptions {
-  isDocPipEnabled: boolean;
-  theme: "light" | "dark" | "system";
-  volume: number;
-}
+import type { Configuration, Validators } from "types/configuration";
 
-export const DEFAULT_CONFIG: ConfigOptions = {
+export const DEFAULT_CONFIG: Configuration = {
   isDocPipEnabled: true,
   theme: "system",
   volume: 1,
 };
 
-export const configValidators = {
-  isDocPipEnabled: (value: unknown): value is boolean =>
-    typeof value === "boolean",
+export const CONFIGURATION_STORAGE_KEY = "app_config";
 
-  theme: (value: unknown): value is ConfigOptions["theme"] =>
+export const validators: Validators = {
+  isDocPipEnabled: (
+    value: unknown
+  ): value is Configuration["isDocPipEnabled"] => typeof value === "boolean",
+
+  theme: (value: unknown): value is Configuration["theme"] =>
     typeof value === "string" && ["light", "dark", "system"].includes(value),
 
-  volume: (value: unknown): value is number =>
+  volume: (value: unknown): value is Configuration["volume"] =>
     typeof value === "number" && value >= 0 && value <= 1,
 };
 
-export function isValidValue<K extends keyof ConfigOptions>(
+export function isValidValue<K extends keyof Configuration>(
   key: K,
   value: unknown
-): value is ConfigOptions[K] {
-  return configValidators[key](value);
+): value is Configuration[K] {
+  return validators[key](value);
 }
 
-export function validateConfig(config: Partial<ConfigOptions>): ConfigOptions {
+function isValidConfigEntry([key, value]: [string, unknown]): boolean {
+  return key in validators && isValidValue(key as keyof Configuration, value);
+}
+
+export function validateConfig(config: Partial<Configuration>): Configuration {
+  const validatedEntries = Object.entries(config).filter(isValidConfigEntry);
+
   return {
     ...DEFAULT_CONFIG,
-    ...Object.fromEntries(
-      Object.entries(config).filter(
-        ([key, value]) =>
-          key in configValidators &&
-          isValidValue(key as keyof ConfigOptions, value)
-      )
-    ),
+    ...Object.fromEntries(validatedEntries),
   };
 }

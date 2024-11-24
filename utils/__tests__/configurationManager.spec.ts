@@ -1,7 +1,5 @@
-import {
-  ConfigurationManager,
-  VersionedConfig,
-} from "../configuration/configurationManager";
+import { ConfigurationManager } from "../configuration/configurationManager";
+import type { VersionedConfig } from "types/configuration";
 
 describe("configurationManager", () => {
   const localStorageMock = (() => {
@@ -113,7 +111,7 @@ describe("configurationManager", () => {
       expect(configurationManager.get("isDocPipEnabled")).toBe(false);
     });
 
-    it("should stored invalid values", () => {
+    it("should not stored invalid values", () => {
       expect.assertions(2);
 
       const configurationManager = setupFresh();
@@ -220,7 +218,7 @@ describe("configurationManager", () => {
       const instance = ConfigurationManager.getInstance();
 
       expect(error).toHaveBeenCalledWith(
-        "Error loading config:",
+        "Error loading configuration:",
         expect.anything()
       );
       expect(instance.get("theme")).toBe("system");
@@ -250,8 +248,7 @@ describe("configurationManager", () => {
       });
 
       const mockError = new Error("Storage full");
-      // eslint-disable-next-line jest/unbound-method
-      jest.mocked(localStorage.setItem).mockImplementationOnce(() => {
+      jest.spyOn(localStorage, "setItem").mockImplementationOnce(() => {
         throw mockError;
       });
 
@@ -264,8 +261,6 @@ describe("configurationManager", () => {
   describe("configurationManager migrations", () => {
     it("should handle legacy config without version", () => {
       expect.assertions(4);
-
-      setupFresh();
 
       localStorage.setItem(
         "app_config",
