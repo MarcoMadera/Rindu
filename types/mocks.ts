@@ -27,7 +27,7 @@ export interface IUtilsMocks {
   mockFetchSuccess: <T>(value?: T, ok?: boolean) => T;
   mockFetchError: <T>(value?: T) => T;
   rejectPromise: <T>(rejectedValue?: T) => Promise<unknown>;
-  resolvePromise: <T>(resolvedValue?: T) => Promise<unknown>;
+  resolvePromise: <T>(resolvedValue?: T, duration?: number) => Promise<unknown>;
   mockPlaylistTrackResponse: SpotifyApi.PlaylistTrackResponse;
   getAllTranslations: (language: Locale) => ITranslations;
   nextRouterMock: NextRouter;

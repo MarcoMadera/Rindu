@@ -230,9 +230,12 @@ export function rejectPromise<T>(rejectedValue?: T): Promise<unknown> {
   });
 }
 
-export function resolvePromise<T>(resolvedValue?: T): Promise<unknown> {
+export function resolvePromise<T>(
+  resolvedValue?: T,
+  duration = 100
+): Promise<unknown> {
   return new Promise((resolve) =>
-    setTimeout(() => resolve(resolvedValue), 100)
+    setTimeout(() => resolve(resolvedValue), duration)
   );
 }
 

@@ -117,7 +117,9 @@ export async function playCurrentTrack(
   }
 
   if (!deviceId) {
-    throw new BadRequestError();
+    throw new BadRequestError("Play Track", {
+      details: { isPremium, message: "Missing deviceId" },
+    });
   }
 
   const { allTracksUris, positionOfTracksWithoutUri } =
@@ -148,7 +150,7 @@ export async function playCurrentTrack(
     return;
   }
   if (res.status === 404) {
-    throw new NotFoundError();
+    throw new NotFoundError(res.url);
   }
   throw new BadRequestError();
 }

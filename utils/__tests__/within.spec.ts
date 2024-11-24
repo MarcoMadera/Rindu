@@ -8,9 +8,9 @@ describe("within", () => {
   it("should resolve a promise within time", async () => {
     expect.assertions(3);
 
-    const start = Date.now();
-    const { error, data } = await within(resolvePromise(1), 500);
-    const end = Date.now();
+    const start = performance.now();
+    const { error, data } = await within(resolvePromise(1, 100), 500);
+    const end = performance.now();
 
     expect(error).toBeNull();
     expect(data).toBe(1);
@@ -22,7 +22,7 @@ describe("within", () => {
 
     const { data, error, id } = await within(rejectPromise(), 10, "test");
 
-    expect(error).toStrictEqual(new TimeOutError());
+    expect(error).toStrictEqual(new TimeOutError(10));
     expect(data).toBeNull();
     expect(id).toBe("test");
   });

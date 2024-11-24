@@ -13,7 +13,7 @@ export function within<T>(
 ): Promise<WithinResult<T>> {
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
-      resolve({ error: new TimeOutError(), data: null, id });
+      resolve({ error: new TimeOutError(duration), data: null, id });
     }, duration);
 
     promise
