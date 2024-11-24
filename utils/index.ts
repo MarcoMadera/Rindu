@@ -5,6 +5,7 @@ export * from "./carousels";
 export * from "./chooseImage";
 export * from "./colorCoded";
 export * from "./colors";
+export * from "./configuration/configurationManager";
 export * from "./conjuction";
 export * from "./constants";
 export * from "./contextMenu";

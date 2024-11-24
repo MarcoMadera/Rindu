@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { useAuth } from "hooks";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { ITrack } from "types/spotify";
+import { ConfigurationManager } from "utils";
 
 export function useRecentlyPlayed({
   setRecentlyPlayed,
@@ -61,14 +62,15 @@ export function useRecentlyPlayed({
       `${user.id}:recentlyPlayed`
     );
     if (playback) {
-      const playbackObj = JSON.parse(decodeURI(playback)) as { volume: number };
-      setVolume(playbackObj.volume);
+      const config = ConfigurationManager.getInstance();
+      const volume = config.get("volume");
+      setVolume(volume);
       if (isPremium && player) {
         (player as Spotify.Player).on("ready", () => {
-          player?.setVolume(playbackObj.volume);
+          player?.setVolume(volume);
         });
       } else {
-        player?.setVolume(playbackObj.volume);
+        player?.setVolume(volume);
       }
     }
     if (recentlyPlayedFromLocal) {

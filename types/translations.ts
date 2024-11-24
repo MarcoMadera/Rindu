@@ -207,6 +207,8 @@ export interface Preferences {
   preferences: string;
   language: string;
   languageLabel: string;
+  useDocumentPiP: string;
+  useDocumentPiPHint: string;
   spanish: string;
   english: string;
   reload: string;

@@ -363,6 +363,9 @@ export const es: ITranslations = {
       language: "Idioma",
       languageLabel:
         "Elige un idioma (los cambios se aplicarán cuando se reinicie la aplicación)",
+      useDocumentPiP: "Ventana Flotante Mejorada (Beta)",
+      useDocumentPiPHint:
+        "Usa un sistema mejorado de ventana flotante para letras.",
       spanish: "Español",
       english: "Inglés",
       reload: "Volver a cargar",
