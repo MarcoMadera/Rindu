@@ -72,6 +72,9 @@ export function SpotifyContextProvider({
   const [isPictureInPictureLyircsCanvas, setIsPictureInPictureLyircsCanvas] =
     useToggle();
   const [ignoreShortcuts, setIgnoreShortcuts] = useToggle();
+  const title = `${currentlyPlaying?.name} - ${
+    currentlyPlaying?.artists?.[0].name ?? "Rindu"
+  }`;
 
   useReconnectSpotifyPlayer({
     reconnect: reconnectionError,
@@ -241,9 +244,7 @@ export function SpotifyContextProvider({
     <SpotifyContext.Provider value={value}>
       {currentlyPlaying?.name && (
         <Head>
-          <title>{`${currentlyPlaying?.name} - ${
-            currentlyPlaying?.artists?.[0].name ?? "Rindu"
-          }`}</title>
+          <title>{title}</title>
         </Head>
       )}
       {children}

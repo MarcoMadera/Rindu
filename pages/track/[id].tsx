@@ -72,6 +72,7 @@ export default function TrackPage({
     useState<SpotifyApi.SingleArtistResponse | null>(null);
   const { addToast } = useToast();
   const { translations } = useTranslations();
+  const title = `Rindu - ${track?.name ?? translations.pages.track.songs}`;
 
   useEffect(() => {
     if (track) {
@@ -156,7 +157,7 @@ export default function TrackPage({
     <ContentContainer hasPageHeader>
       {!isPlaying && (
         <Head>
-          <title>Rindu - {track?.name ?? translations.pages.track.songs}</title>
+          <title>{title}</title>
         </Head>
       )}
       <PageHeader

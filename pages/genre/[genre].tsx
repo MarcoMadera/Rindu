@@ -32,6 +32,7 @@ export default function Category({
 }: InferGetServerSidePropsType<typeof getServerSideProps>): ReactElement {
   const { setHeaderColor } = useHeader();
   const { isPlaying } = useSpotify();
+  const title = `Rindu - ${categoryInfo?.name ?? "Generos"}`;
 
   useEffect(() => {
     setHeaderColor("#242424");
@@ -41,7 +42,7 @@ export default function Category({
     <ContentContainer>
       {!isPlaying && (
         <Head>
-          <title>Rindu - {categoryInfo?.name ?? "Generos"}</title>
+          <title>{title}</title>
         </Head>
       )}
       {categoryInfo && <Heading number={1}>{categoryInfo.name}</Heading>}
