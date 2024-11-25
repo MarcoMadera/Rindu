@@ -16,7 +16,7 @@ import { useAnalytics, useSpotify, useToggle, useTranslations } from "hooks";
 import { AsType } from "types/heading";
 import { ITranslations } from "types/translations";
 import {
-  ConfigurationManager,
+  configuration,
   getAuth,
   getLocale,
   getTranslations,
@@ -33,7 +33,6 @@ interface PreferencesProps {
 }
 
 export default function PreferencesPage(): ReactElement {
-  const config = ConfigurationManager.getInstance();
   const { translations, locale: defaultLocale, locales } = useTranslations();
   const [locale, setLocale] = useState(defaultLocale);
   const [isReload, setIsReload] = useState(false);
@@ -42,7 +41,7 @@ export default function PreferencesPage(): ReactElement {
   const { setIgnoreShortcuts } = useSpotify();
   const [searchTerm, setSearchTerm] = useState("");
   const [useDocumentPiP, setUseDocumentPip] = useToggle(
-    config.get("isDocPipEnabled")
+    configuration.get("isDocPipEnabled")
   );
 
   useEffect(() => {
@@ -133,7 +132,7 @@ export default function PreferencesPage(): ReactElement {
                   checked={useDocumentPiP}
                   id="useDocumentPiP"
                   onChange={(e) => {
-                    config.set("isDocPipEnabled", e.target.checked);
+                    configuration.set("isDocPipEnabled", e.target.checked);
                     setUseDocumentPip.toggle();
                   }}
                 />

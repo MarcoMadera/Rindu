@@ -3,12 +3,11 @@ import { ReactElement, useCallback, useState } from "react";
 import { Slider } from "components";
 import { Volume } from "components/icons";
 import { useSpotify } from "hooks";
-import { ConfigurationManager } from "utils";
+import { configuration } from "utils";
 
 export default function VolumeControl(): ReactElement {
   const { player, volume, setVolume, lastVolume, setLastVolume } = useSpotify();
   const [isHoveringVolume, setIsHoveringVolume] = useState(false);
-  const configuration = ConfigurationManager.getInstance();
 
   const getActualVolume = useCallback(() => {
     if (volume > 0) {
