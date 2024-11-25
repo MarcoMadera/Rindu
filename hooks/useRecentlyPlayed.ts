@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { useAuth } from "hooks";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { ITrack } from "types/spotify";
-import { ConfigurationManager } from "utils";
+import { configuration } from "utils";
 
 export function useRecentlyPlayed({
   setRecentlyPlayed,
@@ -62,8 +62,7 @@ export function useRecentlyPlayed({
       `${user.id}:recentlyPlayed`
     );
     if (playback) {
-      const config = ConfigurationManager.getInstance();
-      const volume = config.get("volume");
+      const volume = configuration.get("volume");
       setVolume(volume);
       if (isPremium && player) {
         (player as Spotify.Player).on("ready", () => {

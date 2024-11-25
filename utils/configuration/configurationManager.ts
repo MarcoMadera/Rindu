@@ -131,4 +131,6 @@ export class ConfigurationManager {
   }
 }
 
+export const configuration = ConfigurationManager.getInstance();
+
 export default ConfigurationManager;
