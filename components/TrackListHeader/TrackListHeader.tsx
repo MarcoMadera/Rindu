@@ -26,11 +26,7 @@ export default function TrackListHeader({
   const [type, setType] = useState<CardType>(cardType);
 
   const isSmallScreen = useOnSmallScreen((isSmall) => {
-    if (isSmall) {
-      setType(CardType.Presentation);
-    } else {
-      setType(cardType);
-    }
+    setType(isSmall ? CardType.Presentation : cardType);
   });
 
   useEffect(() => {
@@ -44,7 +40,7 @@ export default function TrackListHeader({
           }
         },
         {
-          rootMargin: `0px 0px -${(window.innerHeight || 0) - 60}px 0px`,
+          rootMargin: `0px 0px -${Math.max(0, (window.innerHeight || 0) - 60)}px 0px`,
         }
       );
 
