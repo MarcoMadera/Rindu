@@ -32,6 +32,7 @@ export default function CollectionAlbums(): ReactElement {
   const [albums, setAlbums] = useState<SpotifyApi.SavedAlbumObject[]>([]);
   const { isPlaying } = useSpotify();
   const { trackWithGoogleAnalytics } = useAnalytics();
+  const title = `Rindu - ${translations.pages.collectionAlbums.title}`;
 
   useEffect(() => {
     setElement(() => <NavigationTopBarExtraField selected={4} />);
@@ -60,7 +61,7 @@ export default function CollectionAlbums(): ReactElement {
     <ContentContainer>
       {!isPlaying && (
         <Head>
-          <title>Rindu - {translations.pages.collectionAlbums.title}</title>
+          <title>{title}</title>
         </Head>
       )}
       <Heading number={3} as="h2">

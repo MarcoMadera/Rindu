@@ -71,6 +71,7 @@ export default function EpisodePage({
     }),
     [episode]
   );
+  const title = `Rindu - ${episode?.name ?? "Canciones"}`;
 
   useEffect(() => {
     setElement(() => (
@@ -105,7 +106,7 @@ export default function EpisodePage({
     <ContentContainer hasPageHeader>
       {!isPlaying && (
         <Head>
-          <title>Rindu - {episode?.name ?? "Canciones"}</title>
+          <title>{title}</title>
         </Head>
       )}
       <PageHeader

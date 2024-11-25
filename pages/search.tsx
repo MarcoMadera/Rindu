@@ -40,6 +40,7 @@ export default function SearchPage({
   const { isPlaying } = useSpotify();
   const { translations } = useTranslations();
   const isSmallScreen = useOnSmallScreen();
+  const title = `Rindu - ${translations.pages.search.search}`;
 
   useEffect(() => {
     setElement(() => (
@@ -57,7 +58,7 @@ export default function SearchPage({
     <ContentContainer>
       {!isPlaying && (
         <Head>
-          <title>Rindu - {translations.pages.search.search}</title>
+          <title>{title}</title>
         </Head>
       )}
       {isSmallScreen && (

@@ -31,6 +31,7 @@ export default function CollectionPlaylists(): ReactElement {
   const { translations } = useTranslations();
   const { trackWithGoogleAnalytics } = useAnalytics();
   const { isPlaying } = useSpotify();
+  const title = `Rindu - ${translations.pages.collectionPlaylists.title}`;
 
   useEffect(() => {
     setElement(() => <NavigationTopBarExtraField selected={1} />);
@@ -50,7 +51,7 @@ export default function CollectionPlaylists(): ReactElement {
     <ContentContainer>
       {!isPlaying && (
         <Head>
-          <title>Rindu - {translations.pages.collectionPlaylists.title}</title>
+          <title>{title}</title>
         </Head>
       )}
       <Heading number={3} as="h2">

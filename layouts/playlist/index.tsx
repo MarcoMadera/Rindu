@@ -70,6 +70,7 @@ const Playlist: NextPage<
     useState<SpotifyApi.SearchResponse | null>(null);
   const { addToast } = useToast();
   const { setModalData } = useModal();
+  const title = `Rindu: ${pageDetails?.name ?? ""}`;
 
   const tracks = useMemo(() => {
     return (
@@ -163,7 +164,7 @@ const Playlist: NextPage<
     <ContentContainer hasPageHeader>
       {!isPlaying && (
         <Head>
-          <title>{`Rindu: ${pageDetails?.name || ""}`}</title>
+          <title>{title}</title>
         </Head>
       )}
       <PageHeader

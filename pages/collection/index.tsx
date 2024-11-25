@@ -23,6 +23,7 @@ export default function Collection(): ReactElement {
   const router = useRouter();
   const { translations } = useTranslations();
   const { setElement, setHeaderColor } = useHeader();
+  const title = `Rindu - ${translations.pages.collection.title}`;
 
   const isSmallScreen = useOnSmallScreen();
 
@@ -44,7 +45,7 @@ export default function Collection(): ReactElement {
   return (
     <ContentContainer>
       <Head>
-        <title>Rindu - {translations.pages.collection.title}</title>
+        <title>{title}</title>
       </Head>
       <div className="navigation-container">
         <NavigationTopBarExtraField selected={0} />
