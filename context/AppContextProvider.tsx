@@ -7,7 +7,7 @@ import { IModalContext, ModalContextProvider } from "context/ModalContext";
 import { SpotifyContextProvider } from "context/SpotifyContext";
 import { IToastContext, ToastContextProvider } from "context/ToastContext";
 import TranslationsContext, {
-  TranslationsContextProviderProps,
+  TranslationsContextProviderValue,
 } from "context/TranslationsContext";
 import { IUserContext, UserContextProvider } from "context/UserContext";
 import { IContextMenuContext } from "types/contextMenu";
@@ -26,6 +26,7 @@ interface AppContextProviderProps {
 export function AppContextProvider({
   children,
   translations,
+  locale,
   toastValue,
   userValue,
   headerValue,
@@ -33,12 +34,12 @@ export function AppContextProvider({
   contextMenuValue,
   modalValue,
 }: PropsWithChildren<
-  AppContextProviderProps & TranslationsContextProviderProps
+  AppContextProviderProps & TranslationsContextProviderValue
 >): ReactElement {
-  const locale = getLocale(takeCookie(LOCALE_COOKIE));
+  const localefinal = locale ?? getLocale(takeCookie(LOCALE_COOKIE));
   const translationsValue = useMemo(
-    () => ({ translations, locale }),
-    [translations, locale]
+    () => ({ translations, locale: localefinal }),
+    [translations, localefinal]
   );
 
   return (

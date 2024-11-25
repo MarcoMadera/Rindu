@@ -10,6 +10,7 @@ import {
   fullFilledValue,
   getAuth,
   getTranslations,
+  getValidCookieLocale,
   mapPlaylistItems,
   serverRedirect,
 } from "utils";
@@ -82,6 +83,7 @@ export const getServerSideProps = (async (context) => {
         playListTracks: deserialize(playListTracks),
         user: user ?? null,
         translations,
+        locale: getValidCookieLocale(context),
       },
     };
   }
@@ -92,6 +94,7 @@ export const getServerSideProps = (async (context) => {
       playListTracks: deserialize(playListTracks),
       user: user ?? null,
       translations,
+      locale: getValidCookieLocale(context),
     },
   };
 }) satisfies GetServerSideProps<Partial<PlaylistProps>, { playlist: string }>;

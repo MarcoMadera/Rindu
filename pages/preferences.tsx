@@ -20,6 +20,7 @@ import {
   getAuth,
   getLocale,
   getTranslations,
+  getValidCookieLocale,
   Locale,
   LOCALE_COOKIE,
   makeCookie,
@@ -29,7 +30,7 @@ import {
 interface PreferencesProps {
   user: SpotifyApi.UserObjectPrivate | null;
   translations: ITranslations;
-  locale: string;
+  locale: Locale | null;
 }
 
 export default function PreferencesPage(): ReactElement {
@@ -100,7 +101,6 @@ export default function PreferencesPage(): ReactElement {
               <div className="select-container">
                 <SelectControl
                   value={locale}
-                  defaultValue={locale}
                   options={locales.map((value) => {
                     return {
                       label: translations.pages.preferences.localLabel[value],
@@ -269,6 +269,7 @@ export const getServerSideProps = (async (context) => {
     props: {
       user: user ?? null,
       translations,
+      locale: getValidCookieLocale(context),
     },
   };
 }) satisfies GetServerSideProps<Partial<PreferencesProps>>;

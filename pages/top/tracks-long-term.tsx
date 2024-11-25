@@ -12,6 +12,7 @@ import {
   getAuth,
   getGeneratedImageUrl,
   getTranslations,
+  getValidCookieLocale,
   serverRedirect,
   TOP_TRACKS_LONG_TERM_COLOR,
 } from "utils";
@@ -114,6 +115,7 @@ export const getServerSideProps = (async (context) => {
       playListTracks,
       user: user ?? null,
       translations,
+      locale: getValidCookieLocale(context),
     },
   };
 }) satisfies GetServerSideProps<Partial<PlaylistProps>>;

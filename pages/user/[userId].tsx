@@ -26,6 +26,7 @@ import {
   getAuth,
   getTopTracksCards,
   getTranslations,
+  getValidCookieLocale,
   serverRedirect,
   TopTracksCard,
 } from "utils";
@@ -188,6 +189,7 @@ export const getServerSideProps = (async (context) => {
       user: user ?? null,
       currentUserPlaylists: fullFilledValue(currentUserPlaylists),
       translations,
+      locale: getValidCookieLocale(context),
       topTracksCard: fullFilledValue(topTracksCard) ?? null,
     },
   };

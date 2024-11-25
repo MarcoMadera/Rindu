@@ -12,6 +12,7 @@ import {
   getGeneratedImageUrl,
   getSetList,
   getTranslations,
+  getValidCookieLocale,
   serverRedirect,
   SetList,
 } from "utils";
@@ -125,6 +126,7 @@ export const getServerSideProps = (async (context) => {
       },
       tracksInLibrary: [],
       translations,
+      locale: getValidCookieLocale(context),
       setList,
       artist,
       id,

@@ -21,6 +21,7 @@ import {
   chooseImage,
   getAuth,
   getTranslations,
+  getValidCookieLocale,
   isCorruptedTrack,
   serverRedirect,
   templateReplace,
@@ -292,6 +293,7 @@ export const getServerSideProps = (async (context) => {
       tracks: tracks ?? null,
       tracksInLibrary,
       translations,
+      locale: getValidCookieLocale(context),
     },
   };
 }) satisfies GetServerSideProps<Partial<AlbumPageProps>, { albumId: string }>;

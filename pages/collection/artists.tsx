@@ -13,7 +13,12 @@ import {
 import { CardType } from "components/CardContent";
 import { useAnalytics, useHeader, useSpotify, useTranslations } from "hooks";
 import { ITranslations } from "types/translations";
-import { getAuth, getTranslations, serverRedirect } from "utils";
+import {
+  getAuth,
+  getTranslations,
+  getValidCookieLocale,
+  serverRedirect,
+} from "utils";
 import { getMyArtists } from "utils/spotifyCalls";
 
 interface CollectionArtistProps {
@@ -96,6 +101,7 @@ export const getServerSideProps = (async (context) => {
     props: {
       user: user ?? null,
       translations,
+      locale: getValidCookieLocale(context),
     },
   };
 }) satisfies GetServerSideProps<Partial<CollectionArtistProps>>;

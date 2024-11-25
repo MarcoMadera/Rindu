@@ -9,6 +9,7 @@ import { ITranslations } from "types/translations";
 import {
   ACCESS_TOKEN_COOKIE,
   getSpotifyLoginURL,
+  getValidCookieLocale,
   isServer,
   REFRESH_TOKEN_COOKIE,
   removeTokensFromCookieServer,
@@ -237,5 +238,7 @@ export const getServerSideProps = (async (context) => {
   }
   removeTokensFromCookieServer(context.res);
 
-  return { props: { translations } };
+  return {
+    props: { translations, locale: getValidCookieLocale(context) },
+  };
 }) satisfies GetServerSideProps<HomeProps>;
