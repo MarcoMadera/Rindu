@@ -1,4 +1,8 @@
 export function formatTime(seconds: number): string {
+  if (typeof seconds !== "number" || isNaN(seconds)) {
+    return "0:00";
+  }
+
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const s = Math.floor((seconds % 3600) % 60);
