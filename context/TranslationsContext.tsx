@@ -14,7 +14,7 @@ export interface TranslationsContextProviderProps {
 }
 export interface TranslationsContextProviderValue
   extends TranslationsContextProviderProps {
-  locale: Locale | null;
+  locale?: Locale | null;
 }
 
 export default TranslationsContext;

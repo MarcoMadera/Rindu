@@ -20,6 +20,7 @@ import {
   chooseImage,
   getAuth,
   getTranslations,
+  getValidCookieLocale,
   serverRedirect,
   templateReplace,
 } from "utils";
@@ -286,6 +287,7 @@ export const getServerSideProps = (async (context) => {
       show: showData,
       user: user ?? null,
       translations,
+      locale: getValidCookieLocale(context),
     },
   };
 }) satisfies GetServerSideProps<Partial<PlaylistProps>, { show: string }>;

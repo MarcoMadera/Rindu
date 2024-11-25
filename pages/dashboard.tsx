@@ -32,6 +32,7 @@ import {
   getTopTracksCards,
   getTracksOfTheWeek,
   getTranslations,
+  getValidCookieLocale,
   makeCookie,
   REFRESH_TOKEN_COOKIE,
   serverRedirect,
@@ -401,6 +402,7 @@ export const getServerSideProps = (async (context) => {
       return {
         props: {
           translations,
+          locale: getValidCookieLocale(context),
         },
       };
     }
@@ -663,6 +665,7 @@ export const getServerSideProps = (async (context) => {
         deserialize(mappedTracksData(tracksRecommendations)) ?? [],
       tracksInLibrary,
       translations,
+      locale: getValidCookieLocale(context),
       topTracksCards: fullFilledValue(topTracksCards) ?? null,
     },
   };

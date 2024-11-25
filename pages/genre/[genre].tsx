@@ -11,6 +11,7 @@ import {
   fullFilledValue,
   getAuth,
   getTranslations,
+  getValidCookieLocale,
   serverRedirect,
 } from "utils";
 import {
@@ -92,6 +93,7 @@ export const getServerSideProps = (async (context) => {
       playlists: fullFilledValue(categories)?.playlists ?? null,
       user: user ?? null,
       translations,
+      locale: getValidCookieLocale(context),
     },
   };
 }) satisfies GetServerSideProps<Partial<CategoryProps>, { genre: string }>;

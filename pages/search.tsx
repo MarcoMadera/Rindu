@@ -17,7 +17,12 @@ import {
   useTranslations,
 } from "hooks";
 import { ITranslations } from "types/translations";
-import { getAuth, getTranslations, serverRedirect } from "utils";
+import {
+  getAuth,
+  getTranslations,
+  getValidCookieLocale,
+  serverRedirect,
+} from "utils";
 import { getCategories } from "utils/spotifyCalls";
 
 interface SearchPageProps {
@@ -104,6 +109,7 @@ export const getServerSideProps = (async (context) => {
       categories: categories ?? null,
       user: user ?? null,
       translations,
+      locale: getValidCookieLocale(context),
     },
   };
 }) satisfies GetServerSideProps<Partial<SearchPageProps>>;

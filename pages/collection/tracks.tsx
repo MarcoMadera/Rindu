@@ -8,6 +8,7 @@ import { ITranslations } from "types/translations";
 import {
   getAuth,
   getTranslations,
+  getValidCookieLocale,
   isCorruptedTrack,
   serverRedirect,
 } from "utils";
@@ -97,6 +98,7 @@ export const getServerSideProps = (async (context) => {
       ),
       user: user ?? null,
       translations,
+      locale: getValidCookieLocale(context),
     },
   };
 }) satisfies GetServerSideProps<Partial<PlaylistProps>>;

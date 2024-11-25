@@ -15,7 +15,13 @@ import { useHeader, useSpotify } from "hooks";
 import { HeaderType } from "types/pageHeader";
 import { ITrack } from "types/spotify";
 import { ITranslations } from "types/translations";
-import { chooseImage, getAuth, getTranslations, serverRedirect } from "utils";
+import {
+  chooseImage,
+  getAuth,
+  getTranslations,
+  getValidCookieLocale,
+  serverRedirect,
+} from "utils";
 import {
   checkEpisodesInLibrary,
   getEpisodeById,
@@ -257,6 +263,7 @@ export const getServerSideProps = (async (context) => {
       episode,
       user: user ?? null,
       translations,
+      locale: getValidCookieLocale(context),
     },
   };
 }) satisfies GetServerSideProps<

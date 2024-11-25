@@ -37,6 +37,7 @@ import {
   getCarouselItems,
   getSetLists,
   getTranslations,
+  getValidCookieLocale,
   serverRedirect,
   SetLists,
 } from "utils";
@@ -512,6 +513,7 @@ export const getServerSideProps = (async (context) => {
       albums: mapAlbumData(fullFilledValue(albums)),
       compilations: mapAlbumData(fullFilledValue(compilations)),
       translations,
+      locale: getValidCookieLocale(context),
     },
   };
 }) satisfies GetServerSideProps<Partial<ArtistPageProps>, { artistId: string }>;

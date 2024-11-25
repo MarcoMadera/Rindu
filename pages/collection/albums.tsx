@@ -17,6 +17,7 @@ import {
   getAllAlbums,
   getAuth,
   getTranslations,
+  getValidCookieLocale,
   getYear,
   serverRedirect,
 } from "utils";
@@ -103,6 +104,7 @@ export const getServerSideProps = (async (context) => {
     props: {
       user: user ?? null,
       translations,
+      locale: getValidCookieLocale(context),
     },
   };
 }) satisfies GetServerSideProps<Partial<CollectionAlbumProps>>;

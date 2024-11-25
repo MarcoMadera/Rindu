@@ -6,10 +6,10 @@ import type { AppProps } from "next/app";
 
 import { ErrorBoundary, Seo } from "components";
 import { AppContextProvider } from "context/AppContextProvider";
-import { TranslationsContextProviderProps } from "context/TranslationsContext";
+import { TranslationsContextProviderValue } from "context/TranslationsContext";
 import MainLayout from "layouts/MainLayout";
 
-interface AppContextProviderProps extends TranslationsContextProviderProps {
+interface AppContextProviderProps extends TranslationsContextProviderValue {
   user: SpotifyApi.UserObjectPrivate | null;
 }
 
@@ -21,6 +21,7 @@ const MyApp = ({
     <ErrorBoundary>
       <AppContextProvider
         translations={pageProps.translations}
+        locale={pageProps.locale}
         userValue={{ user: pageProps.user }}
       >
         <Seo />

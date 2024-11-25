@@ -30,6 +30,7 @@ import {
   getAuth,
   getLyrics,
   getTranslations,
+  getValidCookieLocale,
   LyricsAction,
   serverRedirect,
   templateReplace,
@@ -416,6 +417,7 @@ export const getServerSideProps = (async (context) => {
       lyrics,
       user: user ?? null,
       translations,
+      locale: getValidCookieLocale(context),
     },
   };
 }) satisfies GetServerSideProps<Partial<TrackPageProps>, { id: string }>;

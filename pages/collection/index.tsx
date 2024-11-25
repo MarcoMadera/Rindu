@@ -7,7 +7,12 @@ import { useRouter } from "next/router";
 import { ContentContainer, NavigationTopBarExtraField } from "components";
 import { useHeader, useOnSmallScreen, useTranslations } from "hooks";
 import { ITranslations } from "types/translations";
-import { getAuth, getTranslations, serverRedirect } from "utils";
+import {
+  getAuth,
+  getTranslations,
+  getValidCookieLocale,
+  serverRedirect,
+} from "utils";
 
 interface ICollectionProps {
   translations: ITranslations;
@@ -86,6 +91,7 @@ export const getServerSideProps = (async (context) => {
   return {
     props: {
       translations,
+      locale: getValidCookieLocale(context),
       user: user ?? null,
     },
   };
