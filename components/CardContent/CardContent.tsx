@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 import { useContextMenu } from "hooks";
 import { Booleanish } from "types/customTypes";
-import { chooseImage, handleAsyncError } from "utils";
+import { chooseImage, DEFAULT_SONG_IMAGE_URL, handleAsyncError } from "utils";
 
 export enum CardType {
   SIMPLE = "simple",
@@ -87,9 +87,12 @@ export default function CardContent({
         tabIndex={tabIndex}
         aria-hidden={ariaHidden}
       ></button>
-      {images && (
+      {images?.length ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img loading="lazy" src={chooseImage(images, 300).url} alt={title} />
+      ) : (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img loading="lazy" src={DEFAULT_SONG_IMAGE_URL} alt={title} />
       )}
       <div>
         <strong id={cardContentId}>{title}</strong>
