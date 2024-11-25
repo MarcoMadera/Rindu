@@ -192,7 +192,6 @@ export function useSpotifyPlayer({ name }: { name: string }): {
         }
       );
       spotifyPlayer.current?.on("player_state_changed", (playbackState) => {
-        console.log("playbackState", playbackState);
         setCurrentlyPlayingDuration(playbackState?.duration);
         setCurrentlyPlayingPosition(playbackState?.position);
         setCurrentlyPlaying(playbackState?.track_window?.current_track);
