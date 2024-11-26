@@ -1,6 +1,7 @@
 import { PropsWithChildren, ReactElement, useMemo } from "react";
 
 import { LyricsContextContextProvider } from "./LyricsContextProvider";
+import { PermissionsContextProvider } from "./PermissionsContextProvider";
 import { ContextMenuContextProvider } from "context/ContextMenuContext";
 import { HeaderContextProvider, IHeaderContext } from "context/HeaderContext";
 import { IModalContext, ModalContextProvider } from "context/ModalContext";
@@ -11,8 +12,10 @@ import TranslationsContext, {
 } from "context/TranslationsContext";
 import { IUserContext, UserContextProvider } from "context/UserContext";
 import { IContextMenuContext } from "types/contextMenu";
+import { UserRole } from "types/permissions";
 import { ISpotifyContext } from "types/spotify";
 import { getLocale, LOCALE_COOKIE, takeCookie } from "utils";
+import { isInEnum } from "utils/isInEnum";
 
 interface AppContextProviderProps {
   toastValue?: IToastContext;
@@ -46,17 +49,26 @@ export function AppContextProvider({
     <TranslationsContext.Provider value={translationsValue}>
       <ToastContextProvider value={toastValue}>
         <UserContextProvider value={userValue}>
-          <HeaderContextProvider value={headerValue}>
-            <SpotifyContextProvider value={spotifyValue}>
-              <LyricsContextContextProvider>
-                <ContextMenuContextProvider value={contextMenuValue}>
-                  <ModalContextProvider value={modalValue}>
-                    {children}
-                  </ModalContextProvider>
-                </ContextMenuContextProvider>
-              </LyricsContextContextProvider>
-            </SpotifyContextProvider>
-          </HeaderContextProvider>
+          <PermissionsContextProvider
+            translations={translationsValue.translations}
+            role={
+              isInEnum(userValue?.user?.product, UserRole)
+                ? userValue?.user?.product
+                : UserRole.Visitor
+            }
+          >
+            <HeaderContextProvider value={headerValue}>
+              <SpotifyContextProvider value={spotifyValue}>
+                <LyricsContextContextProvider>
+                  <ContextMenuContextProvider value={contextMenuValue}>
+                    <ModalContextProvider value={modalValue}>
+                      {children}
+                    </ModalContextProvider>
+                  </ContextMenuContextProvider>
+                </LyricsContextContextProvider>
+              </SpotifyContextProvider>
+            </HeaderContextProvider>
+          </PermissionsContextProvider>
         </UserContextProvider>
       </ToastContextProvider>
     </TranslationsContext.Provider>

@@ -2,12 +2,14 @@ import { ReactElement, useEffect, useRef, useState } from "react";
 
 import { Heading } from "components";
 import { DeviceConnect, Playing } from "components/icons";
-import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
+import { useSpotify, useToast, useTranslations } from "hooks";
+import { usePermissions } from "hooks/usePermissions";
+import { Permission } from "types/permissions";
 import { templateReplace } from "utils";
 import { getAvailableDevices, transferPlayback } from "utils/spotifyCalls";
 
 export default function DeviceConnectControl(): ReactElement {
-  const { isPremium } = useAuth();
+  const { checkPermission } = usePermissions();
   const { deviceId } = useSpotify();
   const { addToast } = useToast();
   const { translations } = useTranslations();
@@ -109,10 +111,13 @@ export default function DeviceConnectControl(): ReactElement {
         aria-label="open device selector"
         ref={devicesButtonRef}
         onClick={() => {
-          if (!isPremium) {
+          const connectDevicePermission = checkPermission(
+            Permission.ConnectDevices
+          );
+          if (!connectDevicePermission.granted) {
             addToast({
               variant: "error",
-              message: translations.toastMessages.premiumRequired,
+              message: connectDevicePermission.restrictedReason,
             });
             return;
           }

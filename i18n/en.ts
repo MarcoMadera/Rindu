@@ -1,3 +1,4 @@
+import { Permission } from "types/permissions";
 import { ITranslations } from "types/translations";
 
 export const en: ITranslations = {
@@ -383,6 +384,74 @@ export const en: ITranslations = {
   },
   common: {
     guest: "Guest",
+  },
+  permissions: {
+    [Permission.ConnectDevices]: {
+      restrictedReason:
+        "Connect to devices feature requires a Premium subscription",
+    },
+    [Permission.PictureInPictureLyrics]: {
+      restrictedReason:
+        "Lyrics in Picture-in-Picture mode requires a Premium subscription",
+    },
+    [Permission.PlayAsNextInQueue]: {
+      restrictedReason: "You can't add songs to play next right now",
+    },
+    [Permission.RemovingFromContextTracks]: {
+      restrictedReason: "You can't remove songs from this playlist right now",
+    },
+    [Permission.RemovingFromNextTracks]: {
+      restrictedReason: "You can't remove upcoming songs right now",
+    },
+    [Permission.Resuming]: {
+      restrictedReason: "You can't resume playback right now",
+    },
+    [Permission.Pausing]: {
+      restrictedReason: "You can't pause playback right now",
+    },
+    [Permission.Seeking]: {
+      restrictedReason: "You can't jump to different parts of this track",
+    },
+    [Permission.PeekingPrev]: {
+      restrictedReason: "You can't preview previous songs right now",
+    },
+    [Permission.PeekingNext]: {
+      restrictedReason: "You can't preview upcoming songs right now",
+    },
+    [Permission.SettingPlaybackSpeed]: {
+      restrictedReason:
+        "Playback speed control isn't available for this content",
+    },
+    [Permission.SkippingPrev]: {
+      restrictedReason: "You can't go back to previous songs right now",
+    },
+    [Permission.SkippingNext]: {
+      restrictedReason: "You can't skip to the next song right now",
+    },
+    [Permission.UpdatingContext]: {
+      restrictedReason: "You can't modify what's currently playing",
+    },
+    [Permission.TogglingRepeatContext]: {
+      restrictedReason: "You can't turn on repeat playlist right now",
+    },
+    [Permission.TogglingRepeatTrack]: {
+      restrictedReason: "You can't turn on repeat song right now",
+    },
+    [Permission.TogglingSuffle]: {
+      restrictedReason: "You can't turn on shuffle right now",
+    },
+  },
+  "404": {
+    title: "😫 404 - Not found",
+    description: "Oops! Looks like we've hit a wrong note.",
+    description2: "how did you get here?",
+    button: "Back to home",
+  },
+  "500": {
+    title: "😱 500 - Server Error",
+    description: "Oh no! It seems something went wrong on our server.",
+    description2: "Please try again later.",
+    button: "Back to home",
   },
 };
 

@@ -10,7 +10,7 @@ import {
   takeCookie,
 } from "utils";
 
-function loadLocalization(locale: Locale): ITranslations {
+export function loadLocalization(locale: Locale): ITranslations {
   const data = translations[locale];
   return data;
 }

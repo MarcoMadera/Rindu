@@ -1,3 +1,5 @@
+import { Permission } from "./permissions";
+
 export interface ITranslations {
   toastMessages: ToastMessages;
   shortCuts: ShortCuts;
@@ -11,6 +13,19 @@ export interface ITranslations {
   pages: Pages;
   common: Common;
   terminal: Terminal;
+  permissions: Permissions;
+  "404": {
+    title: string;
+    description: string;
+    description2: string;
+    button: string;
+  };
+  "500": {
+    title: string;
+    description: string;
+    description2: string;
+    button: string;
+  };
 }
 
 export interface Common {
@@ -380,3 +395,5 @@ export interface ToastMessages {
   playerAccountError: string;
   failToPasteFromClipboard: string;
 }
+
+type Permissions = Record<Permission, { restrictedReason: string }>;
