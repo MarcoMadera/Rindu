@@ -12,6 +12,7 @@ export default function ProgressBar(): ReactElement {
     isPlaying,
     player,
     currentlyPlaying,
+    setUpdateLyricLine,
   } = useSpotify();
   const [progressSeconds, setProgressSeconds] = useState(0);
   const [progressFromSpotify, setProgressFromSpotify] = useState(0);
@@ -119,6 +120,7 @@ export default function ProgressBar(): ReactElement {
           player?.seek(
             (progressPercent * (currentlyPlayingDuration ?? 0)) / 100
           );
+          setUpdateLyricLine.on();
         }}
       />
       <div className="timeTag">{formatTime(durationInSeconds)}</div>

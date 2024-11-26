@@ -137,4 +137,6 @@ export interface ISpotifyContext {
   repeatState: 0 | 1 | 2;
   setRepeatState: Dispatch<SetStateAction<0 | 1 | 2>>;
   setIgnoreShortcuts: IUseToggleHandlers;
+  updateLyricLine: boolean;
+  setUpdateLyricLine: IUseToggleHandlers;
 }
