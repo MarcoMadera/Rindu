@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 
 import { useAuth, useLyricsContext, useSpotify } from "hooks";
 import { LineType } from "types/lyrics";
@@ -10,7 +10,7 @@ interface ILyricLineProps {
 }
 
 export function LyricLine({ line, type }: ILyricLineProps): ReactElement {
-  const { player } = useSpotify();
+  const { player, updateLyricLine, setUpdateLyricLine } = useSpotify();
   const { isPremium } = useAuth();
   const lineRef = useRef<HTMLButtonElement>(null);
   const { lyricsProgressMs, lyricTextColor, lyricLineColor, lyrics } =
@@ -22,18 +22,62 @@ export function LyricLine({ line, type }: ILyricLineProps): ReactElement {
     next: lyricTextColor,
   };
 
+  const [isManuallyScrolling, setIsManuallyScrolling] = useState(false);
+
   useEffect(() => {
     const line = lineRef.current;
     if (!line) return;
+
     const currentLine = line.classList.contains("current");
-    if (currentLine) {
-      line.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "nearest",
-      });
-    }
-  }, [lyricsProgressMs]);
+    if (!currentLine) return;
+
+    const lineHeight = line.offsetHeight;
+    let scrollTimeout: NodeJS.Timeout;
+    const handleUserScroll = () => {
+      setIsManuallyScrolling(true);
+      clearTimeout(scrollTimeout);
+
+      scrollTimeout = setTimeout(() => {
+        setIsManuallyScrolling(false);
+      }, 150);
+    };
+
+    window.addEventListener("wheel", handleUserScroll);
+    window.addEventListener("touchmove", handleUserScroll);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if ((entry.isIntersecting && !isManuallyScrolling) || updateLyricLine) {
+          setUpdateLyricLine.off();
+          line.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+            inline: "nearest",
+          });
+        }
+      },
+      {
+        root: null,
+        rootMargin: `-${lineHeight}px 0px 0px 0px`,
+        threshold: 1.0,
+      }
+    );
+
+    observer.observe(line);
+
+    return () => {
+      observer.disconnect();
+      setUpdateLyricLine.off();
+      window.removeEventListener("wheel", handleUserScroll);
+      window.removeEventListener("touchmove", handleUserScroll);
+      clearTimeout(scrollTimeout);
+    };
+  }, [
+    lyricsProgressMs,
+    isManuallyScrolling,
+    updateLyricLine,
+    setUpdateLyricLine,
+  ]);
 
   return (
     <button
