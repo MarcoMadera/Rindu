@@ -14,7 +14,7 @@ export enum Permission {
   SkippingNext = "skipping_next",
   UpdatingContext = "updating_context",
   TogglingRepeatContext = "toggling_repeat_context",
-  TogglingRepeatTrack = "toggling_repe  at_track",
+  TogglingRepeatTrack = "toggling_repeat_track",
   TogglingSuffle = "toggling_shuffle",
 }
 
