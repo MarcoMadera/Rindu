@@ -1,12 +1,13 @@
 import { cloneElement, isValidElement, ReactNode } from "react";
 
+type Replacements = ReactNode[] | string[] | Record<string, ReactNode | string>;
+
 export function templateReplace(
   template: string,
-  replacements: ReactNode[] | string[]
+  replacements: Replacements
 ): string | ReactNode[] {
   const pattern = /\{(\w+)\}/g;
   const result: ReactNode[] = [];
-
   let lastSubstrIndex = 0;
   let match: RegExpExecArray | null = null;
   let isReact = false;
@@ -16,7 +17,13 @@ export function templateReplace(
     const index = match.index;
     const substring = template.substring(lastSubstrIndex, index);
 
-    let el = replacements[key as unknown as number];
+    let el: ReactNode | string;
+
+    if (Array.isArray(replacements)) {
+      el = replacements[Number(key)];
+    } else {
+      el = replacements[key];
+    }
 
     if (!el && el !== "" && el !== 0) {
       el = matchStr;
