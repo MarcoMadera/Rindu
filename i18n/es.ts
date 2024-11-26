@@ -14,7 +14,7 @@ export const es: ITranslations = {
     isCorruptedAndCannotBePlayed:
       "El {0} está corrupta y no se puede reproducir",
     contentIsUnavailable: "El contenido no está disponible",
-    deviceConnectedTo: "Dispositivo conectado a {0}",
+    deviceConnectedTo: "Dispositivo conectado a {deviceName}",
     premiumRequired: "Necesitas una cuenta premium para usar esta función",
     typeUpdated: "{0} actualizados",
     errorCreating: "Error al crear {0}",

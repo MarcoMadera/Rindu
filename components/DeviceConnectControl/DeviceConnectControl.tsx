@@ -85,7 +85,7 @@ export default function DeviceConnectControl(): ReactElement {
                         addToast({
                           message: templateReplace(
                             translations.toastMessages.deviceConnectedTo,
-                            [device.name]
+                            { deviceName: device.name }
                           ),
                           variant: "success",
                         });

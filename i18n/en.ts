@@ -13,7 +13,7 @@ export const en: ITranslations = {
     errorPlayingThis: "Error playing this {0}",
     isCorruptedAndCannotBePlayed: "This {0} is corrupted and cannot be played",
     contentIsUnavailable: "Content is unavailable",
-    deviceConnectedTo: "Device connected to {0}",
+    deviceConnectedTo: "Device connected to {deviceName}",
     premiumRequired: "You need a premium account to use this feature",
     typeUpdated: "{0} updated",
     errorCreating: "Error creating {0}",
