@@ -1,3 +1,4 @@
+import { Permission } from "types/permissions";
 import { ITranslations } from "types/translations";
 
 export const es: ITranslations = {
@@ -386,6 +387,80 @@ export const es: ITranslations = {
       unrecognizedCommand:
         "Comando no reconocido. Escribe 'help' para ver la lista de comandos disponibles.",
     },
+  },
+  permissions: {
+    [Permission.ConnectDevices]: {
+      restrictedReason:
+        "La función de conexión a dispositivos requiere una suscripción Premium",
+    },
+    [Permission.PictureInPictureLyrics]: {
+      restrictedReason:
+        "Las letras en modo Picture-in-Picture requieren una suscripción Premium",
+    },
+    [Permission.PlayAsNextInQueue]: {
+      restrictedReason:
+        "No puedes añadir canciones para reproducir a continuación",
+    },
+    [Permission.RemovingFromContextTracks]: {
+      restrictedReason:
+        "No puedes eliminar canciones de esta lista en este momento",
+    },
+    [Permission.RemovingFromNextTracks]: {
+      restrictedReason:
+        "No puedes eliminar las próximas canciones en este momento",
+    },
+    [Permission.Resuming]: {
+      restrictedReason: "No puedes reanudar la música en este momento",
+    },
+    [Permission.Pausing]: {
+      restrictedReason: "No puedes pausar la música en este momento",
+    },
+    [Permission.Seeking]: {
+      restrictedReason: "No puedes saltar a diferentes partes de esta canción",
+    },
+    [Permission.PeekingPrev]: {
+      restrictedReason: "No puedes previsualizar las canciones anteriores",
+    },
+    [Permission.PeekingNext]: {
+      restrictedReason: "No puedes previsualizar las próximas canciones",
+    },
+    [Permission.SettingPlaybackSpeed]: {
+      restrictedReason:
+        "El control de velocidad no está disponible para este contenido",
+    },
+    [Permission.SkippingPrev]: {
+      restrictedReason: "No puedes volver a las canciones anteriores",
+    },
+    [Permission.SkippingNext]: {
+      restrictedReason: "No puedes saltar a la siguiente canción",
+    },
+    [Permission.UpdatingContext]: {
+      restrictedReason: "No puedes modificar lo que está sonando ahora",
+    },
+    [Permission.TogglingRepeatContext]: {
+      restrictedReason:
+        "No puedes activar la repetición de lista en este momento",
+    },
+    [Permission.TogglingRepeatTrack]: {
+      restrictedReason:
+        "No puedes activar la repetición de canción en este momento",
+    },
+    [Permission.TogglingSuffle]: {
+      restrictedReason:
+        "No puedes activar la reproducción aleatoria en este momento",
+    },
+  },
+  "404": {
+    title: "😫 404 - No encontrado",
+    description: "Oops! Parece que no hemos atinado a la nota correcta.",
+    description2: "¿Cómo has llegado aquí?",
+    button: "Volver al inicio",
+  },
+  "500": {
+    title: "😱 500 - Error del servidor",
+    description: "¡Ay no! Parece que algo salió mal en nuestro servidor.",
+    description2: "Por favor, intenta nuevamente más tarde.",
+    button: "Volver al inicio",
   },
 };
 
