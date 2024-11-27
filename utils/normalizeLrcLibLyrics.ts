@@ -84,6 +84,22 @@ function parseSyncedLyrics(syncedLyrics: string): Array<{
     .filter((line): line is NonNullable<typeof line> => line !== null);
 }
 
+function parseUnsyncedLyrics(plainLyrics: string): {
+  startTimeMs: string;
+  words: string;
+  syllables: readonly [];
+  endTimeMs: string;
+}[] {
+  const lines = plainLyrics.split("\n").filter((line) => line.trim());
+
+  return lines.map((line) => ({
+    startTimeMs: "0",
+    endTimeMs: "0",
+    words: line.trim(),
+    syllables: [] as const,
+  }));
+}
+
 export function normalizeLrcLibLyrics(
   lrclibResponse: IlrclibResponse
 ): ILyrics {
@@ -94,14 +110,7 @@ export function normalizeLrcLibLyrics(
       syncType: hasSync ? "LINE_SYNCED" : "UNSYNCED",
       lines: hasSync
         ? parseSyncedLyrics(lrclibResponse.syncedLyrics)
-        : [
-            {
-              startTimeMs: "0",
-              endTimeMs: (lrclibResponse.duration * 1000).toString(),
-              words: lrclibResponse.plainLyrics,
-              syllables: [] as const,
-            },
-          ],
+        : parseUnsyncedLyrics(lrclibResponse.plainLyrics),
       provider: "lrclib",
       providerLyricsId: lrclibResponse.id.toString(),
       providerDisplayName: "LRCLib",
