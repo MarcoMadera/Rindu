@@ -5,7 +5,7 @@ export interface IFormatLyricsResponse {
   lines: {
     startTimeMs?: string;
     words: string;
-    syllables?: [];
+    syllables?: string[];
     endTimeMs?: string;
   }[];
   provider: ISyncedLyricsResponse["lyrics"]["provider"];

@@ -1,4 +1,9 @@
-import { getSiteUrl } from "utils";
+import {
+  getSiteUrl,
+  IlrclibResponse,
+  ILyrics,
+  normalizeLrcLibLyrics,
+} from "utils";
 
 export enum LyricsAction {
   Fullscreen = "FULLSCREEN_LYRICS",
@@ -39,7 +44,7 @@ interface ILegacyLyrics {
 
 export type GetLyrics =
   | ILegacyLyrics
-  | (ISyncedLyricsResponse & { isFullscreen: true })
+  | (ILyrics & { isFullscreen: true })
   | null;
 
 export async function getLyrics(
@@ -61,12 +66,31 @@ export async function getLyrics(
       }
     );
     if (resSyncedLyrics.ok) {
-      const data = (await resSyncedLyrics.json()) as ISyncedLyricsResponse;
+      const data = (await resSyncedLyrics.json()) as ILyrics;
       if (data) {
         return { ...data, isFullscreen: true };
       }
     }
+
+    const lrclibRes = await fetch(
+      `https://lrclib.net/api/get?artist_name=${artistName}&track_name=${title}`,
+      {
+        headers: {
+          "User-Agent": "Rindu v0.0.0 (https://github.com/marcomadera/rindu)",
+        },
+      }
+    );
+
+    if (lrclibRes.ok) {
+      const data = (await lrclibRes.json()) as IlrclibResponse;
+      const nomarlizedData = normalizeLrcLibLyrics(data);
+      return {
+        ...nomarlizedData,
+        isFullscreen: true,
+      };
+    }
   }
+
   const res = await fetch(`${getSiteUrl()}/api/lyrics`, {
     method: "POST",
     headers: {
