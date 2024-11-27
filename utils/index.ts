@@ -67,6 +67,7 @@ export * from "./isCorruptedTrack";
 export * from "./loadGoogleFont";
 export * from "./locale";
 export * from "./mapPlaylistItems";
+export * from "./normalizeLrcLibLyrics";
 export * from "./parseAcceptLanguage";
 export * from "./permissions";
 export * from "./playButton";

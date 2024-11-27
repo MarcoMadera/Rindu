@@ -1,5 +1,9 @@
-import { ILyrics, normalizeLrcLibLyrics } from "./normalizeLrcLibLyrics";
-import { getSiteUrl } from "utils";
+import {
+  getSiteUrl,
+  IlrclibResponse,
+  ILyrics,
+  normalizeLrcLibLyrics,
+} from "utils";
 
 export enum LyricsAction {
   Fullscreen = "FULLSCREEN_LYRICS",
@@ -66,17 +70,6 @@ export async function getLyrics(
       if (data) {
         return { ...data, isFullscreen: true };
       }
-    }
-
-    interface IlrclibResponse {
-      id: number;
-      trackName: string;
-      artistName: string;
-      albumName: string;
-      duration: number;
-      instrumental: boolean;
-      plainLyrics: string;
-      syncedLyrics: string;
     }
 
     const lrclibRes = await fetch(

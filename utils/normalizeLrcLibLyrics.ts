@@ -1,4 +1,4 @@
-interface IlrclibResponse {
+export interface IlrclibResponse {
   id: number;
   trackName: string;
   artistName: string;
@@ -15,7 +15,7 @@ export interface ILyrics {
     lines: {
       startTimeMs: string;
       words: string;
-      syllables: readonly [];
+      syllables: string[];
       endTimeMs: string;
     }[];
     provider: string;
@@ -23,7 +23,7 @@ export interface ILyrics {
     providerDisplayName: string;
     syncLyricsUri: string;
     isDenseTypeface: boolean;
-    alternatives: readonly [];
+    alternatives: string[];
     language: string;
     isRtlLanguage: boolean;
     fullscreenAction: string;
@@ -36,12 +36,12 @@ export interface ILyrics {
   hasVocalRemoval: boolean;
 }
 
-function parseSyncedLyrics(syncedLyrics: string): Array<{
+function parseSyncedLyrics(syncedLyrics: string): {
   startTimeMs: string;
   words: string;
-  syllables: readonly [];
+  syllables: string[];
   endTimeMs: string;
-}> {
+}[] {
   const lines = syncedLyrics.split("\n").filter((line) => line.trim());
   return lines
     .map((line, index, array) => {
@@ -78,7 +78,7 @@ function parseSyncedLyrics(syncedLyrics: string): Array<{
         startTimeMs,
         endTimeMs,
         words,
-        syllables: [] as const,
+        syllables: [],
       };
     })
     .filter((line): line is NonNullable<typeof line> => line !== null);
@@ -87,7 +87,7 @@ function parseSyncedLyrics(syncedLyrics: string): Array<{
 function parseUnsyncedLyrics(plainLyrics: string): {
   startTimeMs: string;
   words: string;
-  syllables: readonly [];
+  syllables: [];
   endTimeMs: string;
 }[] {
   const lines = plainLyrics.split("\n").filter((line) => line.trim());
