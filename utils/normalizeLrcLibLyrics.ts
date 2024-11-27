@@ -42,7 +42,7 @@ function parseSyncedLyrics(syncedLyrics: string): {
   syllables: string[];
   endTimeMs: string;
 }[] {
-  const lines = syncedLyrics.split("\n").filter((line) => line.trim());
+  const lines = syncedLyrics?.split("\n").filter((line) => line.trim());
   return lines
     .map((line, index, array) => {
       const timeMatch = RegExp(/\[(\d{2}):(\d{2})\.(\d{2})\]/).exec(line);
@@ -90,9 +90,9 @@ function parseUnsyncedLyrics(plainLyrics: string): {
   syllables: [];
   endTimeMs: string;
 }[] {
-  const lines = plainLyrics.split("\n").filter((line) => line.trim());
+  const lines = plainLyrics?.split("\n").filter((line) => line.trim());
 
-  return lines.map((line) => ({
+  return lines?.map((line) => ({
     startTimeMs: "0",
     endTimeMs: "0",
     words: line.trim(),
@@ -103,7 +103,7 @@ function parseUnsyncedLyrics(plainLyrics: string): {
 export function normalizeLrcLibLyrics(
   lrclibResponse: IlrclibResponse
 ): ILyrics {
-  const hasSync = lrclibResponse.syncedLyrics.includes("[");
+  const hasSync = lrclibResponse.syncedLyrics?.includes("[");
 
   return {
     lyrics: {
@@ -114,7 +114,7 @@ export function normalizeLrcLibLyrics(
       provider: "lrclib",
       providerLyricsId: lrclibResponse.id.toString(),
       providerDisplayName: "LRCLib",
-      syncLyricsUri: `https://lrclib.net/api/lyrics/${lrclibResponse.id}`,
+      syncLyricsUri: `https://lrclib.net/api/get/${lrclibResponse.id}`,
       isDenseTypeface: false,
       alternatives: [] as const,
       language: "en",
