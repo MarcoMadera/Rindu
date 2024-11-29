@@ -9,7 +9,8 @@ import {
 } from "react";
 
 import { useLyrics, useLyricsInPictureInPicture } from "hooks";
-import { getRandomColor, IFormatLyricsResponse } from "utils";
+import { IFormatLyricsResponse } from "types/lyrics";
+import { getRandomColor } from "utils";
 
 export interface ILyricsContext {
   lyricsProgressMs: number;

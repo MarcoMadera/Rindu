@@ -1,13 +1,13 @@
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
 import { useAuth, useSpotify } from "hooks";
+import { IFormatLyricsResponse } from "types/lyrics";
 import { DisplayInFullScreen } from "types/spotify";
 import {
   colorCodedToHex,
   colorCodedToRGB,
   getAllLinesFittingWidth,
   hexToHsl,
-  IFormatLyricsResponse,
   LoadingAnimation,
   LYRICS_PADDING_LEFT,
   LYRICS_PIP_HEADER_HEIGH,

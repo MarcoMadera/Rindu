@@ -1,8 +1,7 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 
 import { useAuth, useLyricsContext, useSpotify } from "hooks";
-import { LineType } from "types/lyrics";
-import { IFormatLyricsResponse } from "utils";
+import { IFormatLyricsResponse, LineType } from "types/lyrics";
 
 interface ILyricLineProps {
   line: IFormatLyricsResponse["lines"][0];

@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
+import { ILyrics } from "types/lyrics";
+
 import { getSiteUrl } from "utils";
-import { ISyncedLyricsResponse } from "utils/getLyrics";
 
 async function getToken(): Promise<string | null> {
   try {
@@ -56,7 +57,7 @@ async function getLyrics(trackId: string) {
       }
     );
     if (res.ok) {
-      const data = (await res.json()) as ISyncedLyricsResponse;
+      const data = (await res.json()) as ILyrics;
       return data;
     }
     return null;

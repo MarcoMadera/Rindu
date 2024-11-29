@@ -44,3 +44,8 @@ export const LINE_HEIGHT = 40;
 export const LYRICS_PIP_HEADER_HEIGH = 100;
 export const LYRICS_PADDING_LEFT = 10;
 export const DEFAULT_LOCALE = Locale.EN;
+export const MILLISECONDS = {
+  MINUTE: 60000,
+  SECOND: 1000,
+  CENTISECOND: 10,
+} as const;
