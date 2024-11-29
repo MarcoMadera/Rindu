@@ -1,5 +1,6 @@
+import { LyricsAction } from "types/lyrics";
 import { IUtilsMocks } from "types/mocks";
-import { getLyrics, LyricsAction } from "utils/getLyrics";
+import { getLyrics } from "utils/getLyrics";
 
 const { mockFetchSuccess, mockFetchError } = jest.requireActual<IUtilsMocks>(
   "./__mocks__/mocks.ts"
