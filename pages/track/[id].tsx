@@ -23,6 +23,7 @@ import {
   useToggle,
   useTranslations,
 } from "hooks";
+import { LyricsAction } from "types/lyrics";
 import { HeaderType } from "types/pageHeader";
 import { ITranslations } from "types/translations";
 import {
@@ -31,7 +32,6 @@ import {
   getLyrics,
   getTranslations,
   getValidCookieLocale,
-  LyricsAction,
   serverRedirect,
   templateReplace,
   within,

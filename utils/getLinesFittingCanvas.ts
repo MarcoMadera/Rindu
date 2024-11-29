@@ -1,5 +1,4 @@
-import { IFormatLyricsResponse } from "./formatLyrics";
-import { IAllLines, LineType } from "types/lyrics";
+import { IAllLines, IFormatLyricsResponse, LineType } from "types/lyrics";
 
 export function getLinesFittingCanvas(
   ctx: CanvasRenderingContext2D,

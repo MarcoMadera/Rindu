@@ -1,16 +1,4 @@
-import { GetLyrics, ISyncedLyricsResponse } from "./getLyrics";
-
-export interface IFormatLyricsResponse {
-  colors?: ISyncedLyricsResponse["colors"];
-  lines: {
-    startTimeMs?: string;
-    words: string;
-    syllables?: string[];
-    endTimeMs?: string;
-  }[];
-  provider: ISyncedLyricsResponse["lyrics"]["provider"];
-  syncType: ISyncedLyricsResponse["lyrics"]["syncType"];
-}
+import { GetLyrics, IFormatLyricsResponse } from "types/lyrics";
 
 export function formatLyrics(
   lyricsData: GetLyrics

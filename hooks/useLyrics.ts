@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 
 import { useSpotify, useToggle } from "hooks";
+import { GetLyrics, IFormatLyricsResponse, LyricsAction } from "types/lyrics";
 import { DisplayInFullScreen } from "types/spotify";
 import {
   formatLyrics,
   getLyrics,
-  GetLyrics,
-  IFormatLyricsResponse,
-  LyricsAction,
   TimeOutError,
   within,
   WithinResult,

@@ -1,51 +1,10 @@
 import {
-  getSiteUrl,
+  GetLyrics,
   IlrclibResponse,
   ILyrics,
-  normalizeLrcLibLyrics,
-} from "utils";
-
-export enum LyricsAction {
-  Fullscreen = "FULLSCREEN_LYRICS",
-  LoadTrackPage = "LOAD_TRACK_PAGE",
-}
-
-export interface ISyncedLyricsResponse {
-  lyrics: {
-    syncType: "LINE_SYNCED" | "UNSYNCED";
-    lines: {
-      startTimeMs: string;
-      words: string;
-      syllables: [];
-      endTimeMs: string;
-    }[];
-    provider: string;
-    providerLyricsId: string;
-    providerDisplayName: string;
-    syncLyricsUri: string;
-    isDenseTypeface: boolean;
-    alternatives: [];
-    language: string;
-    isRtlLanguage: boolean;
-    fullscreenAction: string;
-  };
-  colors: {
-    background: number;
-    text: number;
-    highlightText: number;
-  };
-  hasVocalRemoval: boolean;
-}
-
-interface ILegacyLyrics {
-  lyrics: string | null;
-  isFullscreen: false;
-}
-
-export type GetLyrics =
-  | ILegacyLyrics
-  | (ILyrics & { isFullscreen: true })
-  | null;
+  LyricsAction,
+} from "types/lyrics";
+import { getSiteUrl, normalizeLrcLibLyrics } from "utils";
 
 export async function getLyrics(
   artistName: string,

@@ -1,122 +1,118 @@
-export interface IlrclibResponse {
-  id: number;
-  trackName: string;
-  artistName: string;
-  albumName: string;
-  duration: number;
-  instrumental: boolean;
-  plainLyrics: string;
-  syncedLyrics: string;
+import { MILLISECONDS } from "./constants";
+import { IlrclibResponse, ILyrics } from "types/lyrics";
+
+function convertTimestampToMs(
+  minutes: string,
+  seconds: string,
+  centiseconds: string
+): number {
+  return (
+    parseInt(minutes) * MILLISECONDS.MINUTE +
+    parseInt(seconds) * MILLISECONDS.SECOND +
+    parseInt(centiseconds) * MILLISECONDS.CENTISECOND
+  );
 }
 
-export interface ILyrics {
-  lyrics: {
-    syncType: "LINE_SYNCED" | "UNSYNCED";
-    lines: {
-      startTimeMs: string;
-      words: string;
-      syllables: string[];
-      endTimeMs: string;
-    }[];
-    provider: string;
-    providerLyricsId: string;
-    providerDisplayName: string;
-    syncLyricsUri: string;
-    isDenseTypeface: boolean;
-    alternatives: string[];
-    language: string;
-    isRtlLanguage: boolean;
-    fullscreenAction: string;
-  };
-  colors: {
-    background: number;
-    text: number;
-    highlightText: number;
-  };
-  hasVocalRemoval: boolean;
-}
-
-function parseSyncedLyrics(syncedLyrics: string): {
-  startTimeMs: string;
-  words: string;
-  syllables: string[];
-  endTimeMs: string;
-}[] {
+function parseSyncedLyrics(
+  syncedLyrics: IlrclibResponse["syncedLyrics"]
+): ILyrics["lyrics"]["lines"] {
   const lines = syncedLyrics?.split("\n").filter((line) => line.trim());
-  return lines
-    .map((line, index, array) => {
-      const timeMatch = RegExp(/\[(\d{2}):(\d{2})\.(\d{2})\]/).exec(line);
-      if (!timeMatch) return null;
+  const mappedLines = lines?.map((line, index, array) => {
+    const timeMatch = RegExp(/\[(\d{2}):(\d{2})\.(\d{2})\]/).exec(line);
+    if (!timeMatch) return null;
 
-      const [, minutes, seconds, centiseconds] = timeMatch;
-      const startTimeMs = (
-        parseInt(minutes) * 60000 +
-        parseInt(seconds) * 1000 +
-        parseInt(centiseconds) * 10
-      ).toString();
+    const [, minutes, seconds, centiseconds] = timeMatch;
+    const startTimeMs = convertTimestampToMs(
+      minutes,
+      seconds,
+      centiseconds
+    ).toString();
 
-      let endTimeMs = startTimeMs;
-      if (index < array.length - 1) {
-        const nextTimeMatch = RegExp(/\[(\d{2}):(\d{2})\.(\d{2})\]/).exec(
-          array[index + 1]
-        );
-        if (nextTimeMatch) {
-          const [, nextMin, nextSec, nextCent] = nextTimeMatch;
-          endTimeMs = (
-            parseInt(nextMin) * 60000 +
-            parseInt(nextSec) * 1000 +
-            parseInt(nextCent) * 10
-          ).toString();
-        }
-      } else {
-        endTimeMs = (parseInt(startTimeMs) + 5000).toString();
+    let endTimeMs = startTimeMs;
+    if (index < array.length - 1) {
+      const nextTimeMatch = RegExp(/\[(\d{2}):(\d{2})\.(\d{2})\]/).exec(
+        array[index + 1]
+      );
+      if (nextTimeMatch) {
+        const [, nextMin, nextSec, nextCent] = nextTimeMatch;
+        endTimeMs = convertTimestampToMs(nextMin, nextSec, nextCent).toString();
       }
+    } else {
+      endTimeMs = (parseInt(startTimeMs) + 5000).toString();
+    }
 
-      const words = line.replace(/\[\d{2}:\d{2}\.\d{2}\]/, "").trim();
+    const words = line.replace(/\[\d{2}:\d{2}\.\d{2}\]/, "").trim();
 
-      return {
-        startTimeMs,
-        endTimeMs,
-        words,
-        syllables: [],
-      };
-    })
-    .filter((line): line is NonNullable<typeof line> => line !== null);
+    return {
+      startTimeMs,
+      endTimeMs,
+      words,
+      syllables: [],
+    };
+  });
+
+  return (
+    mappedLines?.filter(
+      (line): line is NonNullable<typeof line> => line !== null
+    ) || []
+  );
 }
 
-function parseUnsyncedLyrics(plainLyrics: string): {
-  startTimeMs: string;
-  words: string;
-  syllables: [];
-  endTimeMs: string;
-}[] {
+function parseUnsyncedLyrics(
+  plainLyrics: IlrclibResponse["plainLyrics"]
+): ILyrics["lyrics"]["lines"] {
   const lines = plainLyrics?.split("\n").filter((line) => line.trim());
 
-  return lines?.map((line) => ({
-    startTimeMs: "0",
-    endTimeMs: "0",
-    words: line.trim(),
-    syllables: [] as const,
-  }));
+  return (
+    lines?.map((line) => ({
+      startTimeMs: "0",
+      endTimeMs: "0",
+      words: line.trim(),
+      syllables: [],
+    })) || []
+  );
+}
+
+function getInstrumentalLine(): ILyrics["lyrics"]["lines"] {
+  return [
+    {
+      startTimeMs: "0",
+      endTimeMs: "0",
+      words: "♪ Instrumental ♪",
+      syllables: [],
+    },
+  ];
+}
+
+function getLines(lrclibResponse: IlrclibResponse, hasSync: boolean) {
+  if (lrclibResponse.instrumental) {
+    return getInstrumentalLine();
+  }
+
+  if (hasSync) {
+    return parseSyncedLyrics(lrclibResponse.syncedLyrics);
+  }
+
+  return parseUnsyncedLyrics(lrclibResponse.plainLyrics);
 }
 
 export function normalizeLrcLibLyrics(
   lrclibResponse: IlrclibResponse
 ): ILyrics {
-  const hasSync = lrclibResponse.syncedLyrics?.includes("[");
+  const hasSync = !!lrclibResponse.syncedLyrics?.includes("[");
+  const syncType = hasSync ? "LINE_SYNCED" : "UNSYNCED";
+  const lines = getLines(lrclibResponse, hasSync);
 
   return {
     lyrics: {
-      syncType: hasSync ? "LINE_SYNCED" : "UNSYNCED",
-      lines: hasSync
-        ? parseSyncedLyrics(lrclibResponse.syncedLyrics)
-        : parseUnsyncedLyrics(lrclibResponse.plainLyrics),
+      syncType: syncType,
+      lines: lines,
       provider: "lrclib",
       providerLyricsId: lrclibResponse.id.toString(),
       providerDisplayName: "LRCLib",
       syncLyricsUri: `https://lrclib.net/api/get/${lrclibResponse.id}`,
       isDenseTypeface: false,
-      alternatives: [] as const,
+      alternatives: [],
       language: "en",
       isRtlLanguage: false,
       fullscreenAction: "FULLSCREEN_LYRICS",
