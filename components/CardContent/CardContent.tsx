@@ -109,6 +109,15 @@ export default function CardContent({
         div {
           min-height: 62px;
         }
+        div :global(a):hover {
+          text-decoration: underline;
+        }
+        div :global(a) {
+          color: #fff;
+          text-decoration: none;
+          z-index: 3232323232;
+          position: relative;
+        }
         .handler {
           position: absolute;
           width: 100%;
