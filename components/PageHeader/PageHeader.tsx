@@ -10,6 +10,7 @@ import {
   Eyebrow,
   Heading,
   PageDetails,
+  SafeHTML,
   ScrollableText,
 } from "components";
 import {
@@ -157,7 +158,9 @@ export default function PageHeader({
           </ScrollableText>
         </div>
         {pageHeaderDescription ? (
-          <p className="description">{decode(pageHeaderDescription)}</p>
+          <p className="description">
+            <SafeHTML>{decode(pageHeaderDescription)}</SafeHTML>
+          </p>
         ) : null}
         <div>
           <p>
@@ -262,6 +265,13 @@ export default function PageHeader({
             text-shadow: ${banner ? "3px 1px 10px #00000078" : "none"};
             margin-right: 50px;
             width: 100%;
+          }
+          div :global(a):hover {
+            text-decoration: underline;
+          }
+          div :global(a) {
+            color: #fff;
+            text-decoration: none;
           }
           .title-container :global(.text) {
             white-space: pre-wrap;

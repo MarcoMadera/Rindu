@@ -3,6 +3,7 @@ import { ReactElement, useCallback, useId, useRef } from "react";
 import { decode } from "html-entities";
 import { useRouter } from "next/router";
 
+import { SafeHTML } from "components";
 import { useContextMenu } from "hooks";
 import { Booleanish } from "types/customTypes";
 import { chooseImage, DEFAULT_SONG_IMAGE_URL, handleAsyncError } from "utils";
@@ -97,9 +98,11 @@ export default function CardContent({
       <div>
         <strong id={cardContentId}>{title}</strong>
         <p>
-          {typeof subTitle === "string"
-            ? decode(subTitle).slice(0, 200)
-            : subTitle}
+          {typeof subTitle === "string" ? (
+            <SafeHTML>{decode(subTitle).slice(0, 200)}</SafeHTML>
+          ) : (
+            subTitle
+          )}
         </p>
       </div>
       <style jsx>{`
