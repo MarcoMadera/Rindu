@@ -272,6 +272,8 @@ export default function PageHeader({
           div :global(a) {
             color: #fff;
             text-decoration: none;
+            z-index: 3232323232;
+            position: relative;
           }
           .title-container :global(.text) {
             white-space: pre-wrap;
