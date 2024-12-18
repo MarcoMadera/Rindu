@@ -33,18 +33,18 @@ export default function CardContainer({
           background-color: rgb(112, 83, 120);
           color: #fff;
         }
-        section:nth-child(odd) :global(div:nth-child(1)) {
+        section:nth-child(odd) :global(div):nth-child(1) {
           grid-column: 1 / 6;
         }
-        section:nth-child(even) :global(div:nth-child(1)) {
+        section:nth-child(even) :global(div):nth-child(1) {
           grid-column: 7 / 13;
           padding: 0 32px;
         }
-        section:nth-child(odd) :global(div:nth-child(2)) {
+        section:nth-child(odd) :global(div):nth-child(2) {
           grid-column: 7 / 13;
           padding: 0 32px;
         }
-        section:nth-child(even) :global(div:nth-child(2)) {
+        section:nth-child(even) :global(div):nth-child(2) {
           grid-column: 1 / 6;
           grid-row: 1 / 1;
         }
@@ -78,10 +78,10 @@ export default function CardContainer({
             display: block;
             padding: 20px;
           }
-          section:nth-child(odd) :global(div:nth-child(1)) {
+          section:nth-child(odd) :global(div):nth-child(1) {
             padding: 0 32px;
           }
-          section:nth-child(odd) :global(div:nth-child(2)) {
+          section:nth-child(odd) :global(div):nth-child(2) {
             padding: 0;
           }
         }
