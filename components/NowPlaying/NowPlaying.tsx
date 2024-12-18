@@ -99,12 +99,16 @@ export default function NowPlaying(): ReactElement | null {
               });
             }}
           >
-            <ScrollableText>{currentlyPlaying.name}</ScrollableText>
+            <ScrollableText key={currentlyPlaying.uri}>
+              {currentlyPlaying.name}
+            </ScrollableText>
           </Link>
         ) : (
-          <ScrollableText>{currentlyPlaying.name}</ScrollableText>
+          <ScrollableText key={currentlyPlaying.uri}>
+            {currentlyPlaying.name}
+          </ScrollableText>
         )}
-        <ScrollableText>
+        <ScrollableText key={currentlyPlaying.uri}>
           <span className="trackArtists">
             <ArtistList artists={currentlyPlaying.artists} />
           </span>
