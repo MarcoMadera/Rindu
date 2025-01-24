@@ -27,7 +27,6 @@ export default async function concertCover(
           style={{
             display: "flex",
             position: "absolute",
-            // eslint-disable-next-line @stylistic/ts/quotes
             fontFamily: '"Dangrek"',
           }}
         >
