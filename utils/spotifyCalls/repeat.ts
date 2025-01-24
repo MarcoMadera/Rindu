@@ -7,7 +7,7 @@ export async function repeat(
   context?: ServerApiContext
 ): Promise<boolean> {
   const res = await callSpotifyApi({
-    endpoint: `/player/repeat?state=${state}&deviceId=${deviceId}`,
+    endpoint: `/me/player/repeat?state=${state}&deviceId=${deviceId}`,
     method: "PUT",
     context,
   });
