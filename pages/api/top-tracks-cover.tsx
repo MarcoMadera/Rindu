@@ -33,7 +33,6 @@ export default async function topTracksCover(
             background: "#1b1f33",
             justifyItems: "center",
             letterSpacing: "-.02em",
-            // eslint-disable-next-line @stylistic/ts/quotes
             fontFamily: '"Dangrek"',
           }}
         >

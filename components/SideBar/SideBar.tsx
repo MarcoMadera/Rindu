@@ -219,7 +219,9 @@ export default function SideBar({
           overflow: hidden;
           height: 100%;
           display: grid;
-          grid-template-rows: 86px 130px minmax(0, 120px) minmax(0, 1fr) min-content;
+          grid-template-rows:
+            86px 130px minmax(0, 120px) minmax(0, 1fr)
+            min-content;
         }
         .section-2 :global(.green) {
           color: #1db954;

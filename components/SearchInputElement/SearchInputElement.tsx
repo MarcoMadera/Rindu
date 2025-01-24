@@ -1,6 +1,5 @@
 import {
   Dispatch,
-  MutableRefObject,
   ReactElement,
   SetStateAction,
   useEffect,
@@ -22,7 +21,7 @@ export default function SearchInputElement({
   setData,
   source,
 }: Readonly<InputElementProps>): ReactElement {
-  const inputRef = useRef<HTMLInputElement>();
+  const inputRef = useRef<HTMLInputElement>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [query, setQuery] = useState("");
   const [shouldSearch, setShouldSearch] = useState(false);
@@ -80,7 +79,7 @@ export default function SearchInputElement({
     <div>
       <form role="search" onSubmit={(e) => e.preventDefault()}>
         <input
-          ref={inputRef as MutableRefObject<HTMLInputElement>}
+          ref={inputRef}
           maxLength={80}
           autoCorrect="off"
           autoCapitalize="off"

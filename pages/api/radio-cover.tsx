@@ -53,7 +53,6 @@ export default async function radioCover(
             background: firstColor,
             justifyItems: "center",
             letterSpacing: "-.02em",
-            // eslint-disable-next-line @stylistic/ts/quotes
             fontFamily: '"Dangrek"',
           }}
         >

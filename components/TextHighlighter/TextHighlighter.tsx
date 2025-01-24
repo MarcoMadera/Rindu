@@ -9,6 +9,8 @@ import {
 
 import { escapeRegExp } from "lodash";
 
+import { getElementProps } from "utils";
+
 interface TextHighlighterProps {
   text: string;
 }
@@ -46,19 +48,12 @@ export default function TextHighlighter({
           );
         }
 
-        if (
-          isValidElement(child) &&
-          "props" in child &&
-          "children" in child.props
-        ) {
+        if (isValidElement(child)) {
+          const props = getElementProps(child);
           return cloneElement(
             child,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-            child.props,
-            <TextHighlighter text={text}>
-              {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-              {child?.props.children}
-            </TextHighlighter>
+            props,
+            <TextHighlighter text={text}>{props.children}</TextHighlighter>
           );
         }
 

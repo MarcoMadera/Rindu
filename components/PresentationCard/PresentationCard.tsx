@@ -10,7 +10,7 @@ export interface PresentationCardProps {
   id: string;
   images?: SpotifyApi.ImageObject[];
   title: string;
-  subTitle: string | JSX.Element;
+  subTitle: string | ReactElement;
   track?: ITrack;
   isSingle?: boolean;
   url?: string;

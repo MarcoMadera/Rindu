@@ -37,6 +37,7 @@ export * from "./getArtistsOfTheWeek";
 export * from "./getAudioPlayerNextPlayableTrack";
 export * from "./getAudioPlayerPreviousPlayableTrack";
 export * from "./getAuth";
+export * from "./getElementProps";
 export * from "./getGeneratedImageUrl";
 export * from "./getHeadingStyles";
 export * from "./getIdFromUri";

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 export const useFocusTrap = (
-  containerRef: React.RefObject<HTMLElement>
+  containerRef: React.RefObject<HTMLElement | null>
 ): void => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

@@ -1,8 +1,8 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 
 interface UserNearScreen {
   distance: string;
-  externalRef?: MutableRefObject<unknown>;
+  externalRef?: RefObject<unknown>;
   once?: boolean;
   observe: boolean;
 }
@@ -14,10 +14,10 @@ export function useNearScreen({
   observe,
 }: UserNearScreen): {
   isNearScreen: boolean;
-  fromRef: MutableRefObject<undefined>;
+  fromRef: RefObject<null>;
 } {
   const [isNearScreen, setIsNearScreen] = useState(false);
-  const fromRef = useRef();
+  const fromRef = useRef(null);
 
   useEffect(() => {
     const element = externalRef ? externalRef.current : fromRef.current;

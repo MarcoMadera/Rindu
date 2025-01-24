@@ -1,4 +1,4 @@
-import { Dispatch, MutableRefObject, SetStateAction, useEffect } from "react";
+import { Dispatch, RefObject, SetStateAction, useEffect } from "react";
 
 import { useAuth } from "hooks";
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
@@ -20,8 +20,8 @@ export function useMediaSession({
   player: Spotify.Player | AudioPlayer | undefined;
   isPlaying: boolean;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
-  videoRef: MutableRefObject<HTMLVideoElement | undefined>;
-  pictureInPictureCanvas: MutableRefObject<HTMLCanvasElement | undefined>;
+  videoRef: RefObject<HTMLVideoElement | null>;
+  pictureInPictureCanvas: RefObject<HTMLCanvasElement | null>;
   isPictureInPictureLyircsCanvas: boolean;
 }): void {
   const { user, isPremium } = useAuth();
