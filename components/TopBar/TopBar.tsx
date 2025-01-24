@@ -1,4 +1,4 @@
-import { MutableRefObject, ReactElement, useState } from "react";
+import { ReactElement, RefObject, useState } from "react";
 
 import { useRouter } from "next/router";
 
@@ -16,7 +16,7 @@ import {
 } from "utils";
 
 interface TopBarProps {
-  appRef?: MutableRefObject<HTMLDivElement | null>;
+  appRef?: RefObject<HTMLDivElement | null>;
 }
 
 export default function TopBar({

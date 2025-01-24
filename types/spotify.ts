@@ -1,4 +1,4 @@
-import { Dispatch, MutableRefObject, SetStateAction } from "react";
+import { Dispatch, RefObject, SetStateAction } from "react";
 
 import { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { IUseToggleHandlers } from "hooks/useToggle";
@@ -117,8 +117,8 @@ export interface ISpotifyContext {
   setVolume: Dispatch<SetStateAction<number>>;
   lastVolume: number;
   setLastVolume: Dispatch<SetStateAction<number>>;
-  pictureInPictureCanvas: MutableRefObject<HTMLCanvasElement | undefined>;
-  videoRef: MutableRefObject<HTMLVideoElement | undefined>;
+  pictureInPictureCanvas: RefObject<HTMLCanvasElement | null>;
+  videoRef: RefObject<HTMLVideoElement | null>;
   hideSideBar: boolean;
   setHideSideBar: Dispatch<SetStateAction<boolean>>;
   setReconnectionError: Dispatch<SetStateAction<boolean>>;

@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect } from "react";
+import { RefObject, useEffect } from "react";
 
 import { useRouter } from "next/router";
 
@@ -7,7 +7,7 @@ import { DisplayInFullScreen } from "types/spotify";
 
 export function useRouterEvents(
   onAppScroll: () => void,
-  appRef?: MutableRefObject<HTMLDivElement | undefined>
+  appRef?: RefObject<HTMLDivElement | null>
 ): void {
   const router = useRouter();
   const { setDisplayInFullScreen } = useSpotify();

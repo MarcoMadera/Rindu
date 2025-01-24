@@ -1,4 +1,4 @@
-import { Dispatch, MutableRefObject, SetStateAction, useEffect } from "react";
+import { Dispatch, RefObject, SetStateAction, useEffect } from "react";
 
 import { ITrack } from "types/spotify";
 
@@ -10,8 +10,8 @@ export function usePictureInPicture({
   isPictureInPictureLyircsCanvas,
 }: {
   setIsPip: Dispatch<SetStateAction<boolean>>;
-  videoRef: MutableRefObject<HTMLVideoElement | undefined>;
-  pictureInPictureCanvas: MutableRefObject<HTMLCanvasElement | undefined>;
+  videoRef: RefObject<HTMLVideoElement | null>;
+  pictureInPictureCanvas: RefObject<HTMLCanvasElement | null>;
   isPictureInPictureLyircsCanvas: boolean;
   currentlyPlaying: ITrack | undefined;
 }): void {

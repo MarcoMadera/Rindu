@@ -1,6 +1,5 @@
 import {
   Dispatch,
-  MutableRefObject,
   ReactElement,
   SetStateAction,
   useEffect,
@@ -21,7 +20,7 @@ export default function TrackListHeader({
   setIsPin: Dispatch<SetStateAction<boolean>>;
   type: CardType;
 }>): ReactElement {
-  const ref = useRef<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement>(null);
   const { translations } = useTranslations();
   const [type, setType] = useState<CardType>(cardType);
 
@@ -52,10 +51,7 @@ export default function TrackListHeader({
   });
 
   return (
-    <div
-      className="trackListHeader"
-      ref={ref as MutableRefObject<HTMLDivElement>}
-    >
+    <div className="trackListHeader" ref={ref}>
       <span>#</span>
       <span>{translations.playlistHeader.title}</span>
       {type === "playlist" ? (

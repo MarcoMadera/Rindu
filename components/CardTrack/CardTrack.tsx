@@ -2,7 +2,6 @@ import {
   CSSProperties,
   KeyboardEvent,
   memo,
-  MutableRefObject,
   ReactElement,
   useId,
   useRef,
@@ -299,7 +298,7 @@ function CardTrack({
       onFocus={() => setIsFocusing(true)}
       onBlur={() => setIsFocusing(false)}
       onMouseLeave={() => setMouseEnter(false)}
-      ref={trackRef as MutableRefObject<HTMLDivElement>}
+      ref={trackRef}
       onKeyDown={(e) => {
         const action = keyActions[e.key];
         if (action) action(e);

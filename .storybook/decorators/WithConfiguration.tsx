@@ -1,6 +1,6 @@
 import React, { ReactElement, useEffect, useState } from "react";
 
-import { StoryContext, StoryFn } from "@storybook/react";
+import { StoryContext } from "@storybook/react";
 
 import StorybookConfigurationModal, {
   StorybookConfigurationModalProps,
@@ -67,7 +67,7 @@ function StorybookModal({
 }
 
 export const WithConfiguration = (
-  Story: StoryFn,
+  Story: React.FC,
   context: StoryContext
 ): ReactElement => {
   const initialLanguage = getLocale(context.globals.language as string | null);

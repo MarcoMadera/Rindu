@@ -207,8 +207,8 @@ export default function PreferencesPage(): ReactElement {
           text-transform: none;
           touch-action: manipulation;
           transition-duration: 33ms;
-          transition-property: background-color, border-color, color, box-shadow,
-            filter, transform;
+          transition-property: background-color, border-color, color,
+            box-shadow, filter, transform;
           user-select: none;
           vertical-align: middle;
           transform: translate3d(0px, 0px, 0px);

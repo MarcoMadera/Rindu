@@ -1,7 +1,6 @@
 import {
   Dispatch,
   MouseEvent,
-  MutableRefObject,
   ReactElement,
   SetStateAction,
   useCallback,
@@ -39,11 +38,11 @@ export default function Slider({
   initialValuePercent,
   showDot,
   className,
-}: SliderProps): ReactElement {
+}: Readonly<SliderProps>): ReactElement {
   const [progressPercent, setProgressPercent] = useState(initialValuePercent);
   const [isPressingMouse, setIsPressingMouse] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const sliderRef = useRef<HTMLDivElement>();
+  const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (typeof updateProgress === "number") {
@@ -166,7 +165,7 @@ export default function Slider({
         aria-valuemax={100}
         aria-label={title}
         tabIndex={0}
-        ref={sliderRef as MutableRefObject<HTMLDivElement>}
+        ref={sliderRef}
         onMouseMove={(e) => {
           e.stopPropagation();
           if (isPressingMouse) {

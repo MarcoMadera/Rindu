@@ -1,4 +1,6 @@
-import { isValidElement, ReactNode, ReactPortal } from "react";
+import { isValidElement, ReactNode } from "react";
+
+import { getElementProps } from "./getElementProps";
 
 export const extractTextFromChildren = (child: ReactNode): string => {
   if (typeof child === "string") {
@@ -9,8 +11,9 @@ export const extractTextFromChildren = (child: ReactNode): string => {
     return child.map(extractTextFromChildren).join("");
   }
 
-  if (isValidElement(child) && "props" in child && "children" in child.props) {
-    return extractTextFromChildren((child?.props as ReactPortal)?.children);
+  if (isValidElement(child)) {
+    const props = getElementProps(child);
+    return extractTextFromChildren(props?.children);
   }
 
   return "";

@@ -1,10 +1,4 @@
-import {
-  Dispatch,
-  MutableRefObject,
-  SetStateAction,
-  useEffect,
-  useRef,
-} from "react";
+import { Dispatch, RefObject, SetStateAction, useEffect, useRef } from "react";
 
 import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
 import { ITrack } from "types/spotify";
@@ -28,7 +22,7 @@ export interface AudioPlayer extends HTMLAudioElement {
 
 export function useSpotifyPlayer({ name }: { name: string }): {
   deviceId: string | undefined;
-  player: MutableRefObject<Spotify.Player | undefined>;
+  player: RefObject<Spotify.Player | null>;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
 } {
   const {
@@ -46,8 +40,8 @@ export function useSpotifyPlayer({ name }: { name: string }): {
     setRepeatState,
     volume,
   } = useSpotify();
-  const spotifyPlayer = useRef<Spotify.Player>();
-  const audioPlayer = useRef<AudioPlayer>();
+  const spotifyPlayer = useRef<Spotify.Player>(null);
+  const audioPlayer = useRef<AudioPlayer>(null);
   const { user } = useAuth();
   const { addToast } = useToast();
   const { translations } = useTranslations();
@@ -238,7 +232,7 @@ export function useSpotifyPlayer({ name }: { name: string }): {
       });
 
       spotifyPlayer.current.connect().then((success) => {
-        if (success) {
+        if (success && spotifyPlayer.current) {
           setPlayer(spotifyPlayer.current);
           console.info(
             "The Web Playback SDK successfully connected to Spotify!"

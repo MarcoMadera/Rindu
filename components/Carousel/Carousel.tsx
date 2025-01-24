@@ -14,6 +14,7 @@ import {
 import { Heading } from "components";
 import { Chevron } from "components/icons";
 import { useOnSmallScreen } from "hooks";
+import { getElementProps } from "utils";
 
 interface CarouselProps {
   title?: string;
@@ -116,8 +117,10 @@ export default function Carousel({
             const minRange = itemsInMainContainer * timesMoveCarousel;
             const maxRange = itemsInMainContainer * (timesMoveCarousel + 1);
             const shouldFocus = number < maxRange && number >= minRange;
+
+            const props = getElementProps(child);
             return cloneElement(child, {
-              ...child.props,
+              ...props,
               tabIndex: shouldFocus ? undefined : -1,
               "aria-hidden": shouldFocus ? "false" : "true",
               style: { scrollSnapAlign: "start" },
