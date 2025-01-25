@@ -32,7 +32,7 @@ export async function getLyrics(
     }
 
     const lrclibRes = await fetch(
-      `https://lrclib.net/api/get?artist_name=${artistName}&track_name=${title}`,
+      `https://lrclib.net/api/get?artist_name=${encodeURIComponent(artistName)}&track_name=${encodeURIComponent(title)}`,
       {
         headers: {
           "User-Agent": "Rindu v0.0.0 (https://github.com/marcomadera/rindu)",
