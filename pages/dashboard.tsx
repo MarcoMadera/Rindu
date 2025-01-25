@@ -495,7 +495,7 @@ export const getServerSideProps = (async (context) => {
   const artistNamesSearched = new Set<string>();
 
   if (artistsOfTheWeekSettled) {
-    artistsOfTheWeekSettled.artists.artist.forEach((artist) => {
+    artistsOfTheWeekSettled.artists.artist.slice(0, 10).forEach((artist) => {
       if (artistNamesSearched.has(artist.name)) return;
       searchedArtistsPromises.push(searchArtist(artist.name, context));
       artistNamesSearched.add(artist.name);
@@ -517,7 +517,7 @@ export const getServerSideProps = (async (context) => {
   }
 
   if (topTracksMediumSettled) {
-    topTracksMediumSettled.items.forEach((track) => {
+    topTracksMediumSettled.items.slice(0, 10).forEach((track) => {
       searchedPlaylistsPromises.push(
         searchPlaylist(`This is ${track.artists[0].name}`, context)
       );
