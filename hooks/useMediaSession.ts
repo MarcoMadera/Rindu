@@ -26,13 +26,13 @@ export function useMediaSession({
 }): void {
   const { user, isPremium } = useAuth();
   useEffect(() => {
-    const duration = currentlyPlaying?.duration_ms;
+    const duration = (currentlyPlaying?.duration_ms ?? 0) / 1000;
     if (
       navigator.mediaSession &&
       "setPositionState" in navigator.mediaSession
     ) {
       navigator.mediaSession.setPositionState({
-        duration: duration ?? 0,
+        duration: duration,
         playbackRate: 1,
         position:
           currentlyPlayingPosition &&
