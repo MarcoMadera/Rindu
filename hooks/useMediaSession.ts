@@ -82,7 +82,7 @@ export function useMediaSession({
           "seekto",
           function (mediaSessionActions) {
             if (mediaSessionActions.seekTime) {
-              player.seek(mediaSessionActions.seekTime);
+              player.seek(mediaSessionActions.seekTime * 1000);
             }
           }
         );
