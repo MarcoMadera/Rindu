@@ -24,7 +24,7 @@ export default function TextHighlighter({
   }
 
   return (
-    <>
+    <span>
       {Children.map(children, (child: ReactNode) => {
         if (typeof child === "string") {
           const escapedText = escapeRegExp(text);
@@ -50,15 +50,19 @@ export default function TextHighlighter({
 
         if (isValidElement(child)) {
           const props = getElementProps(child);
-          return cloneElement(
-            child,
-            props,
-            <TextHighlighter text={text}>{props.children}</TextHighlighter>
-          );
+          if (props.children) {
+            return cloneElement(
+              child,
+              props,
+              <TextHighlighter text={text}>{props.children}</TextHighlighter>
+            );
+          }
+
+          return child;
         }
 
         return child;
       })}
-    </>
+    </span>
   );
 }

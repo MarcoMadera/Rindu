@@ -15,8 +15,7 @@ export default function Searchable({
 
         if (
           searchTerm &&
-          text &&
-          text.toLowerCase().includes(searchTerm.toLowerCase())
+          text?.toLowerCase().includes(searchTerm.toLowerCase())
         ) {
           return <TextHighlighter text={searchTerm}>{child}</TextHighlighter>;
         }
