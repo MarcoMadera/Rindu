@@ -24,7 +24,7 @@ export default function TextHighlighter({
   }
 
   return (
-    <span>
+    <>
       {Children.map(children, (child: ReactNode) => {
         if (typeof child === "string") {
           const escapedText = escapeRegExp(text);
@@ -63,6 +63,6 @@ export default function TextHighlighter({
 
         return child;
       })}
-    </span>
+    </>
   );
 }
