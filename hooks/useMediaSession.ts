@@ -31,14 +31,18 @@ export function useMediaSession({
       navigator.mediaSession &&
       "setPositionState" in navigator.mediaSession
     ) {
+      const currentPlayingPositionSeconds =
+        (currentlyPlayingPosition ?? 0) / 1000;
+      const position =
+        currentPlayingPositionSeconds &&
+        currentPlayingPositionSeconds <= (duration ?? 0)
+          ? currentPlayingPositionSeconds
+          : 0;
+
       navigator.mediaSession.setPositionState({
         duration: duration,
         playbackRate: 1,
-        position:
-          currentlyPlayingPosition &&
-          currentlyPlayingPosition <= (duration ?? 0)
-            ? currentlyPlayingPosition
-            : 0,
+        position: position,
       });
     }
   }, [

@@ -1,20 +1,15 @@
 import { ReactElement } from "react";
 
-import { useLottie } from "lottie-react";
+import dynamic from "next/dynamic";
 
-import playingAnimation from "animations/playing.json";
+import { isServer } from "utils";
 
-export default function Playing(): ReactElement {
-  const { View } = useLottie(
-    {
-      animationData: playingAnimation,
-      loop: true,
-      autoplay: true,
-    },
-    {
-      width: 36,
-      height: 36,
-    }
-  );
-  return View;
+const PlayingAnimated = dynamic(() => import("./animated/Playing"), {
+  ssr: false,
+});
+
+export default function Playing(): ReactElement | null {
+  if (isServer()) return null;
+
+  return <PlayingAnimated />;
 }
