@@ -18,6 +18,7 @@ interface ItemRendererProps<T> {
 
 interface VirtualizedListProps<T> {
   items: T[] | null;
+  defaultItem?: T;
   totalItems: number;
   itemHeight: number;
   loadMoreItems?: (range: IndexRange) => Promise<void>;
@@ -30,6 +31,7 @@ interface VirtualizedListProps<T> {
 
 export default function VirtualizedList<T>({
   items,
+  defaultItem,
   totalItems,
   itemHeight,
   loadMoreItems,
@@ -70,7 +72,7 @@ export default function VirtualizedList<T>({
       key,
       style: style,
       index,
-      item: items?.[index],
+      item: items?.[index] ?? defaultItem,
     });
   }
 

@@ -302,6 +302,7 @@ const Playlist: NextPage<
                 setIsPin={setIsPin}
               />
               <TracksList
+                key={pageDetails?.uri}
                 type={CardType.Playlist}
                 isLibrary={isLibrary}
                 isGeneratedPlaylist={isGeneratedPlaylist}
