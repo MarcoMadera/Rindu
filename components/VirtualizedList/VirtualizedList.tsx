@@ -88,7 +88,7 @@ export default function VirtualizedList<T>({
               loadMoreRows={handleLoadMoreRows}
               rowCount={totalItems}
               minimumBatchSize={50}
-              threshold={100}
+              threshold={0}
             >
               {({ onRowsRendered, registerChild }) => (
                 <List

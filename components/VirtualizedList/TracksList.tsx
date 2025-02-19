@@ -31,6 +31,7 @@ export function TracksList({
   const [tracksInLibrary, setTracksInLibrary] = useState<boolean[] | null>(
     initialTracksInLibrary
   );
+  const BATCH_SIZE = 50;
 
   const spliceTracks = useCallback(
     <T,>(allTracks: T[] | null, newTracks: T[], position: number): T[] => {
@@ -38,7 +39,7 @@ export function TracksList({
         return [...newTracks];
       }
       const tracks = [...allTracks];
-      tracks.splice(position, 50, ...newTracks);
+      tracks.splice(position, BATCH_SIZE, ...newTracks);
       return tracks;
     },
     []
@@ -68,23 +69,55 @@ export function TracksList({
     [allTracks]
   );
 
+  const [loadedRanges, setLoadedRanges] = useState(new Set());
+
+  const getRangeStart = (index: number) =>
+    Math.floor(index / BATCH_SIZE) * BATCH_SIZE;
+
+  const isIndexLoaded = useCallback(
+    (startIndex: number) => {
+      const rangeStart = getRangeStart(startIndex);
+      const rangeKey = `${rangeStart}`;
+      return loadedRanges.has(rangeKey);
+    },
+    [loadedRanges]
+  );
+
   const loadMoreRows = useCallback(
     async ({ startIndex }: IndexRange) => {
+      if (isIndexLoaded(startIndex)) {
+        return;
+      }
+      const rangeStart = getRangeStart(startIndex);
+
       if (isGeneratedPlaylist) return;
+      setLoadedRanges((prev) => {
+        const newRanges = new Set(prev);
+        newRanges.add(`${rangeStart}`);
+        return newRanges;
+      });
       const data = isLibrary
-        ? await getMyLikedSongs(50, startIndex)
+        ? await getMyLikedSongs(BATCH_SIZE, startIndex)
         : await getTracksFromPlaylist(
             getIdFromUri(pageDetails?.uri, "id") ?? "",
-            startIndex
+            rangeStart
           );
       const items = data?.items;
       const tracks = mapPlaylistItems(items, startIndex);
       if (!tracks) return;
       const trackIds = tracks.map((track) => track.id ?? "");
+
       const tracksInLibrary = await checkTracksInLibrary(trackIds);
-      addTracksToPlaylists(tracks, tracksInLibrary, startIndex);
+
+      addTracksToPlaylists(tracks, tracksInLibrary, rangeStart);
     },
-    [addTracksToPlaylists, isGeneratedPlaylist, isLibrary, pageDetails?.uri]
+    [
+      addTracksToPlaylists,
+      isGeneratedPlaylist,
+      isLibrary,
+      pageDetails?.uri,
+      isIndexLoaded,
+    ]
   );
 
   return (
