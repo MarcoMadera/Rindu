@@ -25,20 +25,17 @@ export function TrackDetails({
   return (
     <>
       <section>
-        {type !== "presentation" &&
-          (track.album?.images?.length ? (
-            //  eslint-disable-next-line @next/next/no-img-element
-            <img
-              loading="lazy"
-              src={chooseImage(track.album?.images, 48).url}
-              alt=""
-              className="img"
-              width="48"
-              height="48"
-            />
-          ) : (
-            <div className="img"></div>
-          ))}
+        {type !== "presentation" && (
+          //  eslint-disable-next-line @next/next/no-img-element
+          <img
+            loading="lazy"
+            src={chooseImage(track.album?.images, 48).url}
+            alt=""
+            className="img"
+            width="48"
+            height="48"
+          />
+        )}
         <div className="trackArtistsContainer">
           {track.id && track.name ? (
             <Link

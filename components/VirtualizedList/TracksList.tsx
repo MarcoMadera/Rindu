@@ -32,6 +32,9 @@ export function TracksList({
     initialTracksInLibrary
   );
   const BATCH_SIZE = 50;
+  const [localTracks, setLocalTracks] = useState<ITrack[]>(
+    allTracks.slice(0, BATCH_SIZE)
+  );
 
   const spliceTracks = useCallback(
     <T,>(allTracks: T[] | null, newTracks: T[], position: number): T[] => {
@@ -52,6 +55,7 @@ export function TracksList({
       position: number
     ): void => {
       setAllTracks((allTracks) => spliceTracks(allTracks, tracks, position));
+      setLocalTracks((allTracks) => spliceTracks(allTracks, tracks, position));
 
       if (!tracksInLibrary) return;
 
@@ -119,11 +123,18 @@ export function TracksList({
       isIndexLoaded,
     ]
   );
+  const emptyTrackItem: ITrack = {
+    name: "",
+    id: "",
+    album: { images: [{ url: "" }], name: "", uri: "", type: "track" },
+    type: "track",
+  };
 
   return (
     <VirtualizedList
-      items={allTracks}
-      totalItems={pageDetails?.tracks?.total ?? allTracks?.length ?? 0}
+      items={localTracks}
+      defaultItem={emptyTrackItem}
+      totalItems={pageDetails?.tracks?.total ?? localTracks?.length ?? 0}
       itemHeight={65}
       loadMoreItems={loadMoreRows}
       isItemLoaded={isItemLoaded}
