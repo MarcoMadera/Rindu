@@ -1,4 +1,4 @@
-import { ReactElement, useCallback, useState } from "react";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 
 import { IndexRange } from "react-virtualized";
 
@@ -35,6 +35,11 @@ export function TracksList({
   const [localTracks, setLocalTracks] = useState<ITrack[]>(
     allTracks.slice(0, BATCH_SIZE)
   );
+
+  useEffect(() => {
+    setLocalTracks(allTracks.slice(0, BATCH_SIZE));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageDetails?.uri]);
 
   const spliceTracks = useCallback(
     <T,>(allTracks: T[] | null, newTracks: T[], position: number): T[] => {
