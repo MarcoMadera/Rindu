@@ -26,10 +26,10 @@
   "dependencies": {
     "@vercel/analytics": "1.4.1",
     "cheerio": "1.0.0",
-    "dompurify": "3.2.3",
+    "dompurify": "3.2.4",
     "fast-levenshtein": "3.0.0",
     "html-entities": "2.5.2",
-    "isomorphic-dompurify": "2.20.0",
+    "isomorphic-dompurify": "2.22.0",
     "lottie-react": "2.4.1",
     "next": "15.1.6",
     "react": "19.0.0",
