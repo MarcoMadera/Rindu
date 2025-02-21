@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 
 import {
   ContentContainer,
-  PageDetails,
   PageHeader,
   PlayButton,
   PlaylistTopBarExtraField,
