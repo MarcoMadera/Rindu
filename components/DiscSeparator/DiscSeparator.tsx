@@ -18,6 +18,7 @@ export const DiscSeparator = ({
         font-weight: 600;
         display: flex;
         gap: 8px;
+        align-items: center;
       }
     `}</style>
   </div>

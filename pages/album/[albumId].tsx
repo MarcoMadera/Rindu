@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 import {
   ContentContainer,
+  PageDetails,
   PageHeader,
   PlayButton,
   PlaylistTopBarExtraField,
@@ -187,6 +188,7 @@ const AlbumPage = ({
             isPin={isPin}
           />
           <TracksList
+            key={album.uri}
             type={CardType.Album}
             initialTracksInLibrary={tracksInLibrary}
             album={album}

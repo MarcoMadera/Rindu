@@ -4,6 +4,7 @@ import { IndexRange } from "react-virtualized";
 
 import VirtualizedList from "./VirtualizedList";
 import CardTrack, { CardType } from "components/CardTrack";
+import DiscSeparator from "components/DiscSeparator";
 import { useSpotify } from "hooks";
 
 import { ITrack } from "types/spotify";
@@ -14,7 +15,6 @@ import {
   getMyLikedSongs,
   getTracksFromPlaylist,
 } from "utils/spotifyCalls";
-import DiscSeparator from "components/DiscSeparator";
 
 interface Props {
   type: CardType;
@@ -28,6 +28,14 @@ function getTrackPosition(track?: ITrack): number | undefined {
   if (!track?.id) return undefined;
   return track.track_number !== undefined ? track.track_number - 1 : 0;
 }
+
+const getRealIndex = (index: number, separatorIndices: Set<number>) => {
+  const separatorsBeforeIndex = Array.from(separatorIndices).filter(
+    (sepIndex) => sepIndex < index
+  ).length;
+
+  return index - separatorsBeforeIndex;
+};
 
 export function TracksList({
   isGeneratedPlaylist,
@@ -146,7 +154,9 @@ export function TracksList({
       }
     });
 
-    return separatorIndices;
+    if (separatorIndices.size >= 2) return separatorIndices;
+
+    return new Set<number>();
   };
   const items = isAlbum ? addDiscSeparators(localTracks) : localTracks;
   const separatorIndices = useMemo(
@@ -226,11 +236,13 @@ export function TracksList({
         (pageDetails?.tracks?.total ?? localTracks?.length ?? 0) +
         (separatorIndices.size >= 2 ? separatorIndices.size : 0)
       }
-      itemHeight={({ index }) => (separatorIndices.has(index) ? 40 : 65)}
+      itemHeight={({ index }) =>
+        separatorIndices.has(index) && separatorIndices.size >= 2 ? 65 : 65
+      }
       loadMoreItems={loadMoreRows}
       isItemLoaded={isItemLoaded}
       renderItem={({ key, style, item: track, index }) => {
-        if (separatorIndices.has(index)) {
+        if (separatorIndices.has(index) && separatorIndices.size >= 2) {
           return (
             <DiscSeparator
               key={`disc-${track?.disc_number}`}
@@ -252,6 +264,8 @@ export function TracksList({
           },
         };
 
+        const realIndex = getRealIndex(index, separatorIndices);
+
         return (
           <CardTrack
             key={key}
@@ -262,6 +276,7 @@ export function TracksList({
             isSingleTrack={isGeneratedPlaylist}
             type={type}
             position={position}
+            index={realIndex}
           />
         );
       }}
