@@ -135,6 +135,7 @@ export const en: ITranslations = {
     title: "TITLE",
     album: "ALBUM",
     dateAdded: "DATE ADDED",
+    disc: "Disc {number}",
   },
   removeTracksModal: {
     cleanPlaylist: "CLEAN PLAYLIST",
@@ -229,7 +230,6 @@ export const en: ITranslations = {
     },
     album: {
       title: "Album",
-      disc: "Disc {number}",
     },
     playlist: {
       title: "Playlist",

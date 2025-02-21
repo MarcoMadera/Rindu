@@ -118,7 +118,6 @@ export interface Pages {
 
 export interface Album {
   title: string;
-  disc: string;
 }
 
 export interface Artist {
@@ -286,6 +285,7 @@ export interface PlaylistHeader {
   title: string;
   album: string;
   dateAdded: string;
+  disc: string;
 }
 
 export interface Queue {

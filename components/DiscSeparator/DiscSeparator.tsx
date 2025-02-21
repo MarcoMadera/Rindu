@@ -15,7 +15,7 @@ export const DiscSeparator = ({
   return (
     <div style={style}>
       <Disc width={16} />{" "}
-      {templateReplace(translations.pages.album.disc, {
+      {templateReplace(translations.playlistHeader.disc, {
         number: discNumber ?? "0",
       })}
       <style jsx>{`
