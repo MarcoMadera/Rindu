@@ -305,9 +305,12 @@ export default function FullScreenPlayer(): ReactElement | null {
         .fullScreenPlayer :global(main) {
           margin: 0;
         }
+        .player__track__info-text .trackName {
+          width: fit-content;
+          display: inline-block;
+        }
         .player__track__info-text {
           position: relative;
-          width: 100%;
         }
         .player__track__info {
           display: flex;
