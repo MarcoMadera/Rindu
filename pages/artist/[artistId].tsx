@@ -237,7 +237,7 @@ export default function ArtistPage({
                   key={track.id}
                   isSingleTrack
                   position={i}
-                  type={TrackCardType.Playlist}
+                  type={TrackCardType.Presentation}
                 />
               );
             })}

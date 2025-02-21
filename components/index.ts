@@ -48,6 +48,7 @@ export { default as NowPlaying } from "./NowPlaying";
 export { default as PageDetails } from "./PageDetails";
 export { default as PageHeader } from "./PageHeader";
 export { default as Paragraph } from "./Paragraph";
+export { default as Placeholder } from "./Placeholder";
 export { default as PictureInPictureButton } from "./PictureInPictureButton";
 export { default as PlaybackExtraControls } from "./PlaybackExtraControls";
 export { default as PlayButton } from "./PlayButton";
