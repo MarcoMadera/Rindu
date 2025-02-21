@@ -71,6 +71,8 @@ export interface ITrack {
   added_at?: string | number;
   popularity?: number;
   description?: string;
+  disc_number?: number;
+  track_number?: number;
 }
 
 export enum DisplayInFullScreen {

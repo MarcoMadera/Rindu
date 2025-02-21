@@ -187,8 +187,10 @@ const AlbumPage = ({
             isPin={isPin}
           />
           <TracksList
+            key={album.uri}
             type={CardType.Album}
             initialTracksInLibrary={tracksInLibrary}
+            album={album}
           />
           <div className="copy">
             {album?.copyrights?.map(({ text }) => {

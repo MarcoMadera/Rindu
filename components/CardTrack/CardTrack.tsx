@@ -45,6 +45,7 @@ interface ICardTrackProps {
   uri?: string;
   visualPosition?: number;
   uris?: string[];
+  index?: number;
 }
 
 function checkIfTrackIsPlayable(track?: ITrack, isPremium?: boolean) {
@@ -76,6 +77,7 @@ function CardTrack({
   uri,
   visualPosition,
   uris,
+  index,
 }: Readonly<ICardTrackProps>): ReactElement | null {
   const {
     allTracks,
@@ -132,7 +134,7 @@ function CardTrack({
     try {
       await playCurrentTrack(
         {
-          position: track?.position,
+          position: index ?? track?.track_number,
           preview_url: track?.preview_url,
           uri: track?.uri,
         },
