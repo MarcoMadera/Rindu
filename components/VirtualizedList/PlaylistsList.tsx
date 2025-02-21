@@ -13,6 +13,8 @@ export function PlaylistsList(): ReactElement {
   >(null);
   const [totalPlaylists, setTotalPlaylists] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
+  const BATCH_SIZE = 50;
+  const [loadedRanges, setLoadedRanges] = useState(new Set());
 
   useEffect(() => {
     const fetchInitialPlaylists = async () => {
@@ -51,14 +53,33 @@ export function PlaylistsList(): ReactElement {
     []
   );
 
+  const getRangeStart = (index: number) =>
+    Math.floor(index / BATCH_SIZE) * BATCH_SIZE;
+
+  const isIndexLoaded = useCallback(
+    (startIndex: number) => {
+      const rangeStart = getRangeStart(startIndex);
+      const rangeKey = `${rangeStart}`;
+      return loadedRanges.has(rangeKey);
+    },
+    [loadedRanges]
+  );
+
   const loadMorePlaylists = useCallback(
     async ({ startIndex }: IndexRange) => {
       if (startIndex === 0) return;
+      if (isIndexLoaded(startIndex)) {
+        return;
+      }
+      const rangeStart = getRangeStart(startIndex);
 
+      setLoadedRanges((prev) => {
+        const newRanges = new Set(prev);
+        newRanges.add(`${rangeStart}`);
+        return newRanges;
+      });
       try {
-        const offset = Math.floor(startIndex / 50) * 50;
-
-        const response = await getUserPlaylists(offset);
+        const response = await getUserPlaylists(rangeStart);
 
         if (response?.items) {
           const newPlaylists = response.items;
@@ -75,7 +96,7 @@ export function PlaylistsList(): ReactElement {
         console.error("Error loading playlists:", error);
       }
     },
-    [splicePlaylists]
+    [splicePlaylists, isIndexLoaded]
   );
 
   const isItemLoaded = useCallback(
