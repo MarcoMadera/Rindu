@@ -20,7 +20,7 @@ interface VirtualizedListProps<T> {
   items: T[] | null;
   defaultItem?: T;
   totalItems: number;
-  itemHeight: number;
+  itemHeight: number | (({ index }: { index: number }) => number);
   loadMoreItems?: (range: IndexRange) => Promise<void>;
   renderItem: (props: ItemRendererProps<T>) => ReactElement;
   isItemLoaded?: (index: number) => boolean;
@@ -90,7 +90,7 @@ export default function VirtualizedList<T>({
               loadMoreRows={handleLoadMoreRows}
               rowCount={totalItems}
               minimumBatchSize={50}
-              threshold={0}
+              threshold={50}
             >
               {({ onRowsRendered, registerChild }) => (
                 <List

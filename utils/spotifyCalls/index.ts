@@ -13,6 +13,7 @@ export * from "./follow";
 export * from "./followAlbums";
 export * from "./followPlaylist";
 export * from "./getAlbumById";
+export * from "./getAlbumTracks";
 export * from "./getArtistAlbums";
 export * from "./getArtistById";
 export * from "./getArtistTopTracks";

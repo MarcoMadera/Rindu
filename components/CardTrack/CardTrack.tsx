@@ -132,7 +132,7 @@ function CardTrack({
     try {
       await playCurrentTrack(
         {
-          position: track?.position,
+          position: track?.position ?? track?.track_number - 1,
           preview_url: track?.preview_url,
           uri: track?.uri,
         },

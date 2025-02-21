@@ -189,6 +189,7 @@ const AlbumPage = ({
           <TracksList
             type={CardType.Album}
             initialTracksInLibrary={tracksInLibrary}
+            album={album}
           />
           <div className="copy">
             {album?.copyrights?.map(({ text }) => {
