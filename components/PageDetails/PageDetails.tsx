@@ -155,7 +155,7 @@ export default function PageDetails({
           display: flex;
           align-items: center;
           padding: 0 32px;
-          height: 30vh;
+          height: 223px;
           max-height: 500px;
           width: 100%;
           position: relative;
