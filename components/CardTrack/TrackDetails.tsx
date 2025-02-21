@@ -3,7 +3,7 @@ import { ReactElement, useRef } from "react";
 import Link from "next/link";
 
 import { CardType } from "./CardTrack";
-import { ArtistList, ExplicitSign } from "components";
+import { ArtistList, ExplicitSign, Placeholder } from "components";
 import { useOnScreen, useTranslations } from "hooks";
 import { ITrack } from "types/spotify";
 import { chooseImage, getTrackAddedDate } from "utils";
@@ -45,30 +45,40 @@ export function TrackDetails({
             >
               {track.name}
             </Link>
-          ) : null}
+          ) : (
+            <Placeholder />
+          )}
           <span className="trackArtists">
             {track.explicit && <ExplicitSign />}
             <ArtistList artists={track.artists} />
           </span>
         </div>
       </section>
-      {type === "playlist" && track.album?.id ? (
+      {type === "playlist" ? (
         <>
           <section>
-            <p className="trackArtists">
-              <Link
-                href={`/${track.album.type ?? "album"}/${track.album.id}`}
-                tabIndex={isVisible ? 0 : -1}
-                aria-hidden={!isVisible}
-              >
-                {track.album.name}
-              </Link>
-            </p>
+            {track.album?.name ? (
+              <p className="trackArtists">
+                <Link
+                  href={`/${track.album.type ?? "album"}/${track.album.id}`}
+                  tabIndex={isVisible ? 0 : -1}
+                  aria-hidden={!isVisible}
+                >
+                  {track.album.name}
+                </Link>
+              </p>
+            ) : (
+              <Placeholder />
+            )}
           </section>
           <section>
-            <p className="trackArtists">
-              {getTrackAddedDate(track.added_at, locale)}
-            </p>
+            {track.added_at ? (
+              <p className="trackArtists">
+                {getTrackAddedDate(track.added_at, locale)}
+              </p>
+            ) : (
+              <Placeholder />
+            )}
           </section>
         </>
       ) : null}
@@ -93,6 +103,9 @@ export function TrackDetails({
           width: 48px;
           height: 48px;
         }
+        section {
+          width: 100%;
+        }
         section :global(.trackName),
         .trackArtists :global(a) {
           text-decoration: none;
@@ -109,6 +122,7 @@ export function TrackDetails({
         .trackArtistsContainer {
           display: block;
           align-items: center;
+          width: 100%;
         }
         :global(.trackName:hover),
         .trackArtists :global(a):hover {

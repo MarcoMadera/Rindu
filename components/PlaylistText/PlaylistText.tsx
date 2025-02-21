@@ -2,6 +2,7 @@ import { CSSProperties, ReactElement, useCallback } from "react";
 
 import { useRouter } from "next/router";
 
+import { Placeholder } from "components";
 import { Volume } from "components/icons";
 import {
   useAuth,
@@ -100,18 +101,12 @@ export default function PlaylistText({
 
   if (!uri) {
     return (
-      <div className="placeholder" style={style}>
-        <div className="container"></div>
+      <div style={style}>
+        <Placeholder />
         <style jsx>{`
           div {
             height: 26px;
             width: 100%;
-          }
-          .container {
-            height: 18px;
-            width: calc(100% - 1rem);
-            border-radius: 5px;
-            background-color: #5e5d5db3;
           }
         `}</style>
       </div>

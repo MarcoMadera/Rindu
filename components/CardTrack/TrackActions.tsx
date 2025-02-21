@@ -10,6 +10,7 @@ import {
   saveEpisodesToLibrary,
   saveTracksToLibrary,
 } from "utils/spotifyCalls";
+import Placeholder from "components/Placeholder";
 
 interface ITrackActions {
   mouseEnter: boolean;
@@ -91,7 +92,11 @@ export function TrackActions({
         }}
       />
       <p className="trackArtists time">
-        {track.duration_ms ? formatTime(track.duration_ms / 1000) : ""}
+        {track.duration_ms ? (
+          formatTime(track.duration_ms / 1000)
+        ) : (
+          <Placeholder />
+        )}
       </p>
       {onClickAdd && (
         <button
