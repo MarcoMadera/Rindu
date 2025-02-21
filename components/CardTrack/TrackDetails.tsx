@@ -118,10 +118,13 @@ export function TrackDetails({
         section :global(.trackName) {
           margin: 0;
           padding: 0;
+          width: fit-content;
         }
         .trackArtistsContainer {
           display: block;
           align-items: center;
+        }
+        .trackArtistsContainer:has(.placeholder) {
           width: 100%;
         }
         :global(.trackName:hover),

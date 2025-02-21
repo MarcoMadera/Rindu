@@ -219,6 +219,8 @@ export default function NowPlaying(): ReactElement | null {
         .navBar-Button:hover,
         section :global(.trackName) {
           color: #fff;
+          width: fit-content;
+          display: inline-block;
         }
         p,
         span {

@@ -4,7 +4,7 @@ export default function Placeholder(
   props: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 ): ReactElement {
   return (
-    <div {...props}>
+    <div {...props} className="placeholder">
       {props.children}
       <style jsx>{`
         div {

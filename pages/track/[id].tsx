@@ -275,7 +275,7 @@ export default function TrackPage({
                   playlistUri=""
                   track={artistTrack}
                   key={artistTrack.id}
-                  type={CardType.Playlist}
+                  type={CardType.Presentation}
                   position={position}
                   visualPosition={i + 1}
                   isSingleTrack
