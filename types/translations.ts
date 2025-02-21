@@ -118,6 +118,7 @@ export interface Pages {
 
 export interface Album {
   title: string;
+  disc: string;
 }
 
 export interface Artist {

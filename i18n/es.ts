@@ -231,6 +231,7 @@ export const es: ITranslations = {
     },
     album: {
       title: "Álbum",
+      disc: "Disco {number}",
     },
     playlist: {
       title: "Playlist",

@@ -229,6 +229,7 @@ export const en: ITranslations = {
     },
     album: {
       title: "Album",
+      disc: "Disc {number}",
     },
     playlist: {
       title: "Playlist",
