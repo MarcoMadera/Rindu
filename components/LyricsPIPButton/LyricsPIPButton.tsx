@@ -41,7 +41,7 @@ export default function LyricsPIPButton({
     }
     setIsPictureInPictureLyircsCanvas.on();
     setIsPip(true);
-    await videoRef.current?.play();
+    videoRef.current?.play();
     await videoRef.current?.requestPictureInPicture();
   };
 
