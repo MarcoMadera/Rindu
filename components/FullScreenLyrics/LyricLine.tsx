@@ -120,7 +120,7 @@ export function LyricLine({
     document,
   ]);
   const lineColorsType: Record<LineType, string> = {
-    first: lineColors.current,
+    first: lineColors.first,
     current: lineColors.current,
     previous: lineColors.previous,
     next: lineColors.next,
