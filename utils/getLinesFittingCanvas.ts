@@ -89,7 +89,7 @@ export function getLineInfo({
     current: "#fff",
     previous: lyricLineColor + "80",
     next: lyricTextColor,
-    first: lyricTextColor,
+    first: lyricLineColor + "80",
   };
 
   return {
