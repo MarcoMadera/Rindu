@@ -72,14 +72,16 @@ export function useMediaSession({
         });
         navigator.mediaSession.setActionHandler("seekbackward", function () {
           player.seek(
-            !currentlyPlayingPosition || currentlyPlayingPosition <= 10
+            !currentlyPlayingPosition || currentlyPlayingPosition <= 10 * 1000
               ? 0
-              : currentlyPlayingPosition - 10
+              : currentlyPlayingPosition - 10 * 1000
           );
         });
         navigator.mediaSession.setActionHandler("seekforward", function () {
           player.seek(
-            !currentlyPlayingPosition ? 10 : currentlyPlayingPosition + 10
+            !currentlyPlayingPosition
+              ? 10 * 1000
+              : currentlyPlayingPosition + 10 * 1000
           );
         });
         navigator.mediaSession.setActionHandler(
