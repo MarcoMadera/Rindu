@@ -42,7 +42,7 @@ describe("configurationManager", () => {
 
       const configurationManager = setupFresh();
 
-      expect(configurationManager.get("isDocPipEnabled")).toBe(true);
+      expect(configurationManager.get("isDocPipEnabled")).toBe(false);
       expect(configurationManager.get("theme")).toBe("system");
       expect(configurationManager.get("volume")).toBe(1);
     });
@@ -77,7 +77,7 @@ describe("configurationManager", () => {
         "app_config",
         JSON.stringify({
           version: 1,
-          data: { isDocPipEnabled: true, theme: "dark", volume: 1 },
+          data: { isDocPipEnabled: false, theme: "dark", volume: 1 },
         })
       );
     });
@@ -146,7 +146,7 @@ describe("configurationManager", () => {
 
       expect(configurationManager.get("theme")).toBe("system");
       expect(configurationManager.get("volume")).toBe(1);
-      expect(configurationManager.get("isDocPipEnabled")).toBe(true);
+      expect(configurationManager.get("isDocPipEnabled")).toBe(false);
     });
   });
 
@@ -159,7 +159,7 @@ describe("configurationManager", () => {
       const allConfig = configurationManager.getAll();
 
       expect(allConfig).toStrictEqual({
-        isDocPipEnabled: true,
+        isDocPipEnabled: false,
         theme: "system",
         volume: 1,
       });
@@ -178,7 +178,7 @@ describe("configurationManager", () => {
       const allConfig = configurationManager.getAll();
 
       expect(allConfig).toStrictEqual({
-        isDocPipEnabled: true,
+        isDocPipEnabled: false,
         theme: "dark",
         volume: 0.5,
       });
@@ -223,7 +223,7 @@ describe("configurationManager", () => {
       );
       expect(instance.get("theme")).toBe("system");
       expect(instance.get("volume")).toBe(1);
-      expect(instance.get("isDocPipEnabled")).toBe(true);
+      expect(instance.get("isDocPipEnabled")).toBe(false);
     });
 
     it("should persist values between instances", () => {
@@ -342,7 +342,7 @@ describe("configurationManager", () => {
       ConfigurationManager.resetInstance();
       const configManager = ConfigurationManager.getInstance();
 
-      expect(configManager.get("isDocPipEnabled")).toBe(true); // default value
+      expect(configManager.get("isDocPipEnabled")).toBe(false); // default value
       expect(configManager.get("volume")).toBe(1); // default value
       expect(configManager.get("theme")).toBe("light"); // preserved value
     });
@@ -368,7 +368,7 @@ describe("configurationManager", () => {
       ConfigurationManager.resetInstance();
       const configManager = ConfigurationManager.getInstance();
 
-      expect(configManager.get("isDocPipEnabled")).toBe(true);
+      expect(configManager.get("isDocPipEnabled")).toBe(false);
       expect(configManager.get("theme")).toBe("system");
       expect(configManager.get("volume")).toBe(1);
     });
@@ -396,7 +396,7 @@ describe("configurationManager", () => {
 
       expect(savedData.version).toBe(1);
       expect(savedData.data).toStrictEqual({
-        isDocPipEnabled: true, // default value for missing property
+        isDocPipEnabled: false, // default value for missing property
         theme: "dark",
         volume: 0.5,
       });
