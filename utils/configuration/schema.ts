@@ -1,7 +1,7 @@
 import type { Configuration, Validators } from "types/configuration";
 
 export const DEFAULT_CONFIG: Configuration = {
-  isDocPipEnabled: true,
+  isDocPipEnabled: false,
   theme: "system",
   volume: 1,
 };
