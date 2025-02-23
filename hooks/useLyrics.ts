@@ -21,6 +21,7 @@ export function useLyrics(): {
     isPictureInPictureLyircsCanvas,
     displayInFullScreen,
     isPip,
+    pipWindow,
   } = useSpotify();
   const [lyrics, setLyrics] = useState<IFormatLyricsResponse | null>(null);
   const [lyricsLoading, setLoading] = useToggle();
@@ -31,6 +32,7 @@ export function useLyrics(): {
   });
   const requestLyrics = !!(
     displayInFullScreen === DisplayInFullScreen.Lyrics ||
+    pipWindow.current ||
     (isPictureInPictureLyircsCanvas && isPip)
   );
   const artist = currentlyPlaying?.artists?.[0].name;

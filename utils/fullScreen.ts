@@ -16,6 +16,15 @@ declare global {
     mozRequestFullScreen?: () => Promise<void>;
     webkitRequestFullscreen?: () => Promise<void>;
   }
+
+  interface Window {
+    documentPictureInPicture?: {
+      requestWindow: (options: {
+        width: number;
+        height: number;
+      }) => Promise<Window & typeof globalThis>;
+    };
+  }
 }
 
 export function isFullScreen(): boolean {
