@@ -93,7 +93,7 @@ export function makeCookie({
     const setCookies = context.res.getHeader("Set-Cookie");
     const cookies =
       setCookies && Array.isArray(setCookies) ? getArrCookies(setCookies) : {};
-    const val = `${name}=${value}; Path=/; expires=${expires}; SameSite=Lax;`;
+    const val = `${name}=${value}; Path=/; expires=${expires}; SameSite=Lax; Secure;`;
     context.res.setHeader("Set-Cookie", [...Object.values(cookies), val]);
   } else {
     document.cookie = `${name}=${value}; Expires=${expires}; Path=/; SameSite=lax; Secure;`;
