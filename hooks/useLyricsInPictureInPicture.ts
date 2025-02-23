@@ -200,8 +200,7 @@ export function useLyricsInPictureInPicture({
   ]);
 
   useEffect(() => {
-    if (!isPictureInPictureLyircsCanvas || !pictureInPictureCanvas.current)
-      return;
+    if (!pictureInPictureCanvas.current) return;
     const lines = lyrics?.lines;
     const ctx = pictureInPictureCanvas.current.getContext("2d");
     const canvasWidth = pictureInPictureCanvas.current.width;

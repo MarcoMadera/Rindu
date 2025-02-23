@@ -1,25 +1,25 @@
 import { Dispatch, RefObject, SetStateAction, useEffect } from "react";
 
-import { ITrack } from "types/spotify";
+import { AudioPlayer } from "hooks";
 
 export function usePictureInPicture({
   setIsPip,
   videoRef,
   pictureInPictureCanvas,
-  currentlyPlaying,
   isPictureInPictureLyircsCanvas,
+  player,
 }: {
   setIsPip: Dispatch<SetStateAction<boolean>>;
   videoRef: RefObject<HTMLVideoElement | null>;
   pictureInPictureCanvas: RefObject<HTMLCanvasElement | null>;
   isPictureInPictureLyircsCanvas: boolean;
-  currentlyPlaying: ITrack | undefined;
+  player?: AudioPlayer | Spotify.Player;
 }): void {
   useEffect(() => {
     if (
       videoRef.current ||
       pictureInPictureCanvas.current ||
-      !currentlyPlaying ||
+      !player ||
       isPictureInPictureLyircsCanvas
     ) {
       return;
@@ -45,9 +45,26 @@ export function usePictureInPicture({
     canvas.getContext("2d");
     video.srcObject = canvas.captureStream();
     pictureInPictureCanvas.current = canvas;
+    document.body.appendChild(video);
+    video.style.width = "1px";
+    video.style.height = "1px";
+    video.style.position = "absolute";
+    video.style.top = "0px";
+    video.play();
     videoRef.current = video;
+
+    return () => {
+      video.removeEventListener(
+        "leavepictureinpicture",
+        handleLeavePictureInPicture
+      );
+      video.removeEventListener(
+        "enterpictureinpicture",
+        handlEnterPictureInPicture
+      );
+    };
   }, [
-    currentlyPlaying,
+    player,
     isPictureInPictureLyircsCanvas,
     pictureInPictureCanvas,
     setIsPip,
