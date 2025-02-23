@@ -1,14 +1,54 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 
+import css from "styled-jsx/css";
+
 import { useAuth, useLyricsContext, useSpotify } from "hooks";
 import { IFormatLyricsResponse, LineType } from "types/lyrics";
 
 interface ILyricLineProps {
   line: IFormatLyricsResponse["lines"][0];
   type: LineType;
+  document?: Document;
 }
 
-export function LyricLine({ line, type }: ILyricLineProps): ReactElement {
+export const lineCss = css.global`
+  .line {
+    display: block;
+    background-color: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    padding-left: 144px;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 54px;
+    cursor: pointer;
+    transition: all 0.1s ease-out 0s;
+  }
+  .line:hover {
+    color: var(--line-hover-color) !important;
+    opacity: 1;
+  }
+  @media (max-width: 768px) {
+    .line {
+      padding-left: 0;
+      font-size: 18px;
+      line-height: 32px;
+    }
+  }
+  @media (max-width: 658px) {
+    .line {
+      padding-left: 0;
+    }
+  }
+`;
+
+export function LyricLine({
+  line,
+  type,
+  document = window.document,
+}: ILyricLineProps): ReactElement {
   const { player, updateLyricLine, setUpdateLyricLine } = useSpotify();
   const { isPremium } = useAuth();
   const lineRef = useRef<HTMLButtonElement>(null);
@@ -16,7 +56,8 @@ export function LyricLine({ line, type }: ILyricLineProps): ReactElement {
     useLyricsContext();
 
   const lineColors = {
-    current: "#fff",
+    first: "#ffffff",
+    current: "#ffffff",
     previous: lyricLineColor + "80",
     next: lyricTextColor,
   };
@@ -41,8 +82,8 @@ export function LyricLine({ line, type }: ILyricLineProps): ReactElement {
       }, 150);
     };
 
-    window.addEventListener("wheel", handleUserScroll);
-    window.addEventListener("touchmove", handleUserScroll);
+    document?.addEventListener("wheel", handleUserScroll);
+    document?.addEventListener("touchmove", handleUserScroll);
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -67,8 +108,8 @@ export function LyricLine({ line, type }: ILyricLineProps): ReactElement {
     return () => {
       observer.disconnect();
       setUpdateLyricLine.off();
-      window.removeEventListener("wheel", handleUserScroll);
-      window.removeEventListener("touchmove", handleUserScroll);
+      document.removeEventListener("wheel", handleUserScroll);
+      document.removeEventListener("touchmove", handleUserScroll);
       clearTimeout(scrollTimeout);
     };
   }, [
@@ -76,7 +117,24 @@ export function LyricLine({ line, type }: ILyricLineProps): ReactElement {
     isManuallyScrolling,
     updateLyricLine,
     setUpdateLyricLine,
+    document,
   ]);
+  const lineColorsType: Record<LineType, string> = {
+    first: lineColors.current,
+    current: lineColors.current,
+    previous: lineColors.previous,
+    next: lineColors.next,
+  };
+
+  const getColorLine = (type: LineType) =>
+    lineColorsType[type] || lyricTextColor;
+
+  useEffect(() => {
+    document.body.style.setProperty(
+      "--line-hover-color",
+      `${lyrics?.colors ? lyricLineColor : "#fff"}`
+    );
+  }, [lyricLineColor, lyrics?.colors, document]);
 
   return (
     <button
@@ -94,50 +152,10 @@ export function LyricLine({ line, type }: ILyricLineProps): ReactElement {
       className={`line ${type}`}
       dir="auto"
       ref={lineRef}
+      style={{ color: getColorLine(type) }}
     >
       {line.words}
-      <style jsx>{`
-        .line {
-          display: block;
-          color: ${lyricTextColor};
-          background-color: transparent;
-          border: none;
-          width: 100%;
-          text-align: left;
-          padding-left: 144px;
-          font-size: 32px;
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 54px;
-          cursor: pointer;
-          transition: all 0.1s ease-out 0s;
-        }
-        .line.current {
-          color: ${lineColors.current};
-        }
-        .line.previous {
-          color: ${lineColors.previous};
-        }
-        .line.next {
-          color: ${lineColors.next};
-        }
-        .line:hover {
-          color: ${lyrics?.colors ? lyricLineColor : "#fff"};
-          opacity: 1;
-        }
-        @media (max-width: 768px) {
-          .line {
-            padding-left: 0;
-            font-size: 18px;
-            line-height: 32px;
-          }
-        }
-        @media (max-width: 658px) {
-          .line {
-            padding-left: 0;
-          }
-        }
-      `}</style>
+      <style jsx>{lineCss}</style>
     </button>
   );
 }

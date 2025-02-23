@@ -7,11 +7,16 @@ import { TargetElementError } from "utils";
 export default function PortalTarget({
   children,
   targetId,
-}: PropsWithChildren<{ targetId: string }>): ReactPortal | null {
-  const [target, setTarget] = useState<Element | null>();
+}: PropsWithChildren<{
+  targetId?: string | HTMLElement;
+}>): ReactPortal | null {
+  const [target, setTarget] = useState<Element | HTMLElement | null>();
 
   useEffect(() => {
-    const targetElement = document.querySelector(`#${targetId}`);
+    const targetElement =
+      typeof targetId === "string"
+        ? document.querySelector(`#${targetId}`)
+        : targetId;
     setTarget(targetElement);
   }, [targetId]);
 

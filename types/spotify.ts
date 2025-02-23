@@ -121,6 +121,7 @@ export interface ISpotifyContext {
   setLastVolume: Dispatch<SetStateAction<number>>;
   pictureInPictureCanvas: RefObject<HTMLCanvasElement | null>;
   videoRef: RefObject<HTMLVideoElement | null>;
+  pipWindow: RefObject<(Window & typeof globalThis) | null>;
   hideSideBar: boolean;
   setHideSideBar: Dispatch<SetStateAction<boolean>>;
   setReconnectionError: Dispatch<SetStateAction<boolean>>;

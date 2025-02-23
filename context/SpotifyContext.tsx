@@ -64,6 +64,7 @@ export function SpotifyContextProvider({
   const [recentlyPlayed, setRecentlyPlayed] = useState<ITrack[]>([]);
   const pictureInPictureCanvas = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const pipWindow = useRef<Window & typeof globalThis>(null);
   const [reconnectionError, setReconnectionError] = useState(false);
   const [suffleState, setSuffleState] = useState(false);
   const [repeatState, setRepeatState] = useState<0 | 1 | 2>(0);
@@ -162,6 +163,7 @@ export function SpotifyContextProvider({
       setLastVolume,
       pictureInPictureCanvas,
       videoRef,
+      pipWindow,
       isPip,
       setIsPip,
       hideSideBar,
@@ -214,6 +216,7 @@ export function SpotifyContextProvider({
       isShowingSideBarImg,
       setIsShowingSideBarImg,
       volume,
+      pipWindow,
       setVolume,
       lastVolume,
       setLastVolume,

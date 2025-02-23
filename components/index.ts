@@ -18,6 +18,7 @@ export { default as ContentContainer } from "./ContentContainer";
 export { default as ContextMenu } from "./ContextMenu";
 export { default as DeviceConnectControl } from "./DeviceConnectControl";
 export { default as DiscSeparator } from "./DiscSeparator";
+export { default as DPIPLyrics } from "./DPIPLyrics";
 export { default as EditPlaylistDetails } from "./EditPlaylistDetails";
 export { default as EmbedModal } from "./EmbedModal";
 export { default as EpisodeCard } from "./EpisodeCard";

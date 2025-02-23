@@ -8,7 +8,8 @@ import {
   useState,
 } from "react";
 
-import { useLyrics, useLyricsInPictureInPicture } from "hooks";
+import { DPIPLyrics, PortalTarget } from "components";
+import { useLyrics, useLyricsInPictureInPicture, useSpotify } from "hooks";
 import { IFormatLyricsResponse } from "types/lyrics";
 import { getRandomColor } from "utils";
 
@@ -32,12 +33,13 @@ export function LyricsContextContextProvider({
   children,
 }: Readonly<PropsWithChildren>): ReactElement {
   const [lyricsProgressMs, setLyricsProgressMs] = useState(0);
-  const [lyricLineColor, setLyricLineColor] = useState<string>("#fff");
-  const [lyricTextColor, setLyricTextColor] = useState<string>("#fff");
+  const [lyricLineColor, setLyricLineColor] = useState<string>("#ffffff");
+  const [lyricTextColor, setLyricTextColor] = useState<string>("#000000");
   const [lyricsBackgroundColor, setLyricsBackgroundColor] =
     useState<string>(getRandomColor());
 
   const { lyrics, lyricsError, lyricsLoading } = useLyrics();
+  const { pipWindow } = useSpotify();
 
   useLyricsInPictureInPicture({
     setLyricsProgressMs,
@@ -78,7 +80,14 @@ export function LyricsContextContextProvider({
   );
 
   return (
-    <LyricsContext.Provider value={value}>{children}</LyricsContext.Provider>
+    <LyricsContext.Provider value={value}>
+      {children}
+      {pipWindow ? (
+        <PortalTarget targetId={pipWindow.current?.document.body}>
+          <DPIPLyrics />
+        </PortalTarget>
+      ) : null}
+    </LyricsContext.Provider>
   );
 }
 

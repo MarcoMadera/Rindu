@@ -49,9 +49,11 @@ export function useLyricsInPictureInPicture({
     isPlaying,
     player,
     pictureInPictureCanvas,
+    pipWindow,
   } = useSpotify();
   const requestLyrics = !!(
     displayInFullScreen === DisplayInFullScreen.Lyrics ||
+    pipWindow ||
     (isPictureInPictureLyircsCanvas && document.pictureInPictureElement)
   );
   const animationRef = useRef<LoadingAnimation | null>(null);
