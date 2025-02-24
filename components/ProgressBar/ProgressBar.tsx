@@ -15,7 +15,7 @@ export default function ProgressBar(): ReactElement {
     setUpdateLyricLine,
   } = useSpotify();
   const [progressSeconds, setProgressSeconds] = useState(0);
-  const [progressFromSpotify, setProgressFromSpotify] = useState(0);
+  const [progressFromSpotify, setProgressFromSpotify] = useState<number>();
   const [labelSeconds, setLabelSeconds] = useState(0);
   const { isPremium } = useAuth();
   const { addToast } = useToast();
@@ -23,10 +23,7 @@ export default function ProgressBar(): ReactElement {
   const durationInSecondsPremium = currentlyPlayingDuration
     ? currentlyPlayingDuration / 1000
     : 0;
-  const durationInSecondsNoPremium = currentlyPlayingDuration ?? 0;
-  const durationInSeconds = isPremium
-    ? durationInSecondsPremium
-    : durationInSecondsNoPremium;
+  const durationInSeconds = durationInSecondsPremium;
 
   useEffect(() => {
     if (!isPremium || !player) return;
@@ -35,7 +32,10 @@ export default function ProgressBar(): ReactElement {
         setProgressFromSpotify(
           (playbackState?.position / playbackState?.duration) * 100
         );
-        setProgressSeconds(playbackState?.position / 1000);
+        const progressSeconds = playbackState?.position / 1000;
+
+        setProgressSeconds(progressSeconds);
+        setLabelSeconds(progressSeconds);
       }
     });
   }, [isPremium, player]);
@@ -46,7 +46,9 @@ export default function ProgressBar(): ReactElement {
       setProgressFromSpotify(
         (playbackState?.position / playbackState?.duration) * 100
       );
-      setProgressSeconds(playbackState?.position / 1000);
+      const progressSeconds = playbackState?.position / 1000;
+      setProgressSeconds(progressSeconds);
+      setLabelSeconds(progressSeconds);
     });
   }, [isPremium, player]);
 
@@ -65,19 +67,25 @@ export default function ProgressBar(): ReactElement {
       (player as AudioPlayer).sliderBusy
     )
       return;
-    setProgressFromSpotify(
-      (currentlyPlayingPosition / currentlyPlayingDuration) * 100
-    );
-    setProgressSeconds(
+    const progressSeconds =
       currentlyPlayingPosition > currentlyPlayingDuration
         ? currentlyPlayingDuration
-        : currentlyPlayingPosition
-    );
+        : currentlyPlayingPosition / 1000;
+
+    setProgressSeconds(progressSeconds);
+    setLabelSeconds(progressSeconds);
   }, [currentlyPlayingDuration, currentlyPlayingPosition, isPremium, player]);
 
   useEffect(() => {
-    setLabelSeconds(progressSeconds);
-  }, [progressSeconds]);
+    if (!currentlyPlayingPosition || !currentlyPlayingDuration) return;
+
+    if (
+      currentlyPlayingPosition >= currentlyPlayingDuration ||
+      currentlyPlayingPosition === 0
+    ) {
+      setProgressFromSpotify(0);
+    }
+  }, [currentlyPlayingDuration, currentlyPlayingPosition, currentlyPlaying]);
 
   return (
     <div className="progressBar">
@@ -87,6 +95,7 @@ export default function ProgressBar(): ReactElement {
         )}
       </div>
       <Slider
+        key={currentlyPlaying?.uri}
         title="Control the progress of the playback"
         updateProgress={progressFromSpotify}
         intervalUpdateAction={{
@@ -94,6 +103,7 @@ export default function ProgressBar(): ReactElement {
           labelUpdateValue: 1,
           ms: 1000,
           shouldUpdate: isPlaying,
+          maxLabelValue: durationInSeconds,
         }}
         onDragging={(isDragging, progressPercent) => {
           if (!isPremium && player) {
@@ -104,7 +114,7 @@ export default function ProgressBar(): ReactElement {
             setLabelSeconds(progressSeconds);
           }
         }}
-        setLabelValue={setProgressSeconds}
+        setLabelValue={setLabelSeconds}
         valueText={`${formatTime(progressSeconds)}/${formatTime(
           durationInSeconds
         )}`}
@@ -117,9 +127,11 @@ export default function ProgressBar(): ReactElement {
             });
             return;
           }
-          player?.seek(
-            (progressPercent * (currentlyPlayingDuration ?? 0)) / 100
-          );
+          const position_ms =
+            (progressPercent * (currentlyPlayingDuration ?? 0)) / 100;
+
+          setLabelSeconds(position_ms / 1000);
+          player?.seek(position_ms);
           setUpdateLyricLine.on();
         }}
       />

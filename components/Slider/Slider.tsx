@@ -21,6 +21,7 @@ interface SliderProps {
     labelUpdateValue: number;
     steps: number;
     shouldUpdate: boolean;
+    maxLabelValue: number;
   };
   onDragging?: (isDragging: boolean, progressPercent: number) => void;
   showDot?: boolean;
@@ -51,31 +52,40 @@ export default function Slider({
   }, [updateProgress]);
 
   useEffect(() => {
-    if (onDragging) {
+    if (isDragging && onDragging) {
       onDragging(isDragging || isPressingMouse, progressPercent);
     }
-    const update = intervalUpdateAction;
+  }, [onDragging, isDragging, isPressingMouse, progressPercent]);
+
+  useEffect(() => {
     if (
-      !update ||
-      (!isDragging && !isPressingMouse && !update.shouldUpdate) ||
-      !update.shouldUpdate
+      !intervalUpdateAction?.ms ||
+      (!isDragging && !isPressingMouse && !intervalUpdateAction.shouldUpdate) ||
+      !intervalUpdateAction.shouldUpdate
     ) {
       return;
     }
     let newValue: number | undefined;
     const playerInterval = setInterval(() => {
-      if (isDragging || !setLabelValue || !update.shouldUpdate) {
+      if (isDragging || !setLabelValue || !intervalUpdateAction.shouldUpdate) {
         clearInterval(playerInterval);
         return;
       }
-      newValue = progressPercent + update.steps;
+      newValue = progressPercent + intervalUpdateAction.steps;
       if (newValue >= 100) {
         clearInterval(playerInterval);
-        newValue = 100;
+        setProgressPercent(0);
+        setLabelValue(0);
+        newValue = 0;
+        return;
       }
 
-      setLabelValue((value) => value + update.labelUpdateValue);
-    }, update.ms);
+      setLabelValue((value) => {
+        const newLabelValue = value + intervalUpdateAction.labelUpdateValue;
+        return newLabelValue;
+      });
+      setProgressPercent(newValue);
+    }, intervalUpdateAction.ms);
 
     if (newValue) {
       setProgressPercent(newValue);
@@ -88,13 +98,15 @@ export default function Slider({
       }
     };
   }, [
-    intervalUpdateAction,
+    setLabelValue,
+    progressPercent,
     intervalUpdateAction?.shouldUpdate,
+    intervalUpdateAction?.ms,
+    intervalUpdateAction?.steps,
+    intervalUpdateAction?.maxLabelValue,
+    intervalUpdateAction?.labelUpdateValue,
     isDragging,
     isPressingMouse,
-    setLabelValue,
-    onDragging,
-    progressPercent,
   ]);
 
   const getMyCurrentPositionPercent = useCallback(
