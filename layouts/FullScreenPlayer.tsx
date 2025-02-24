@@ -202,7 +202,7 @@ export default function FullScreenPlayer(): ReactElement | null {
             )}
           </div>
           <div className="player-container">
-            <ProgressBar />
+            <ProgressBar key={currentlyPlaying?.uri} />
             <div className="player-container__controls">
               <div className="player-container__controls__left">
                 {currentlyPlaying && !currentlyPlaying?.is_local && (

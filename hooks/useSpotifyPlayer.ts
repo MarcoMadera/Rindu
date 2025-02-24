@@ -55,7 +55,7 @@ export function useSpotifyPlayer({ name }: { name: string }): {
 
       audioPlayer.current.seek = function (seek: number) {
         if (audioPlayer.current) {
-          audioPlayer.current.currentTime = seek;
+          audioPlayer.current.currentTime = seek / 1000;
         }
       };
 
@@ -118,14 +118,14 @@ export function useSpotifyPlayer({ name }: { name: string }): {
       audioPlayer.current.ontimeupdate = () => {
         if (!audioPlayer.current?.sliderBusy) {
           setCurrentlyPlayingPosition(
-            Math.round(audioPlayer.current?.currentTime ?? 0)
+            Math.round((audioPlayer.current?.currentTime ?? 0) * 1000)
           );
         }
       };
 
       audioPlayer.current.ondurationchange = () => {
         setCurrentlyPlayingDuration(
-          Math.round(audioPlayer.current?.duration ?? 0)
+          Math.round((audioPlayer.current?.duration ?? 0) * 1000)
         );
       };
 
