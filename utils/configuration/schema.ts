@@ -1,4 +1,5 @@
 import type { Configuration, Validators } from "types/configuration";
+import { isServer } from "utils/environment";
 
 export const DEFAULT_CONFIG: Configuration = {
   isDocPipEnabled: false,
@@ -11,8 +12,14 @@ export const CONFIGURATION_STORAGE_KEY = "app_config";
 export const validators: Validators = {
   isDocPipEnabled: (
     value: unknown
-  ): value is Configuration["isDocPipEnabled"] => typeof value === "boolean",
+  ): value is Configuration["isDocPipEnabled"] => {
+    const isBool = typeof value === "boolean";
+    const isSupported = !isServer()
+      ? !!window?.documentPictureInPicture
+      : false;
 
+    return isBool && isSupported;
+  },
   theme: (value: unknown): value is Configuration["theme"] =>
     typeof value === "string" && ["light", "dark", "system"].includes(value),
 

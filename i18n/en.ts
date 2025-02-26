@@ -365,6 +365,8 @@ export const en: ITranslations = {
         "Choose language - Changes will be applied after restarting the app",
       useDocumentPiP: "Enhanced Floating Window (Beta)",
       useDocumentPiPHint: "Uses an improved floating window system for lyrics.",
+      disableDocumentPiPToggleReason:
+        "This feature is not supported yet by this browser",
       spanish: "Spanish",
       english: "English",
       reload: "Reload",

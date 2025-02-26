@@ -16,6 +16,8 @@ describe("configurationManager", () => {
   })();
 
   const setupFresh = () => {
+    window.documentPictureInPicture =
+      {} as unknown as typeof window.documentPictureInPicture;
     ConfigurationManager.resetInstance();
     localStorage.clear();
     jest.clearAllMocks();

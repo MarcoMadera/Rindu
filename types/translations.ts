@@ -224,6 +224,7 @@ export interface Preferences {
   languageLabel: string;
   useDocumentPiP: string;
   useDocumentPiPHint: string;
+  disableDocumentPiPToggleReason: string;
   spanish: string;
   english: string;
   reload: string;
