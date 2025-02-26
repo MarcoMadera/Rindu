@@ -89,14 +89,24 @@ export function makeCookie({
   context?: ServerApiContext;
 }): void {
   const expires = getExpires(age);
+  const isLocalhost =
+    typeof window !== "undefined"
+      ? window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+      : context?.req.headers.host?.includes("localhost") ||
+        context?.req.headers.host?.includes("127.0.0.1");
+
+  const secureFlag = isLocalhost ? "" : "Secure;";
+
   if (context) {
     const setCookies = context.res.getHeader("Set-Cookie");
     const cookies =
       setCookies && Array.isArray(setCookies) ? getArrCookies(setCookies) : {};
-    const val = `${name}=${value}; Path=/; expires=${expires}; SameSite=Lax; Secure;`;
+    const val = `${name}=${value}; Path=/; expires=${expires}; SameSite=Lax; ${secureFlag}`;
+
     context.res.setHeader("Set-Cookie", [...Object.values(cookies), val]);
   } else {
-    document.cookie = `${name}=${value}; Expires=${expires}; Path=/; SameSite=lax; Secure;`;
+    document.cookie = `${name}=${value}; Expires=${expires}; Path=/; SameSite=lax; ${secureFlag}`;
   }
 }
 
