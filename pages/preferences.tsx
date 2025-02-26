@@ -135,6 +135,11 @@ export default function PreferencesPage(): ReactElement {
                     configuration.set("isDocPipEnabled", e.target.checked);
                     setUseDocumentPip.toggle();
                   }}
+                  disabled={!window.documentPictureInPicture}
+                  popupText={
+                    translations.pages.preferences
+                      .disableDocumentPiPToggleReason
+                  }
                 />
               </div>
             </div>
