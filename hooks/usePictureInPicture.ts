@@ -30,11 +30,18 @@ export function usePictureInPicture({
     }
 
     video.muted = true;
-    canvas.getContext("2d");
+    const ctx = canvas.getContext("2d");
     video.srcObject = canvas.captureStream();
     pictureInPictureCanvas.current = canvas;
     document.body.appendChild(video);
     videoRef.current = video;
+
+    ctx?.fillRect(
+      0,
+      0,
+      pictureInPictureCanvas.current.width,
+      pictureInPictureCanvas.current.height
+    );
 
     video.style.width = "1px";
     video.style.height = "1px";

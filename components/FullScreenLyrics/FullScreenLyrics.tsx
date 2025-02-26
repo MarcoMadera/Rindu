@@ -17,9 +17,10 @@ const styles1 = css.global`
     font-weight: 700;
     letter-spacing: -0.04em;
     line-height: 42px;
-    max-width: max-content;
     position: sticky;
     top: 0;
+    min-height: 100vh;
+    background: var(--lyrics-background-color);
   }
   @media (max-width: 768px) {
     .lyrics-container {
@@ -111,8 +112,10 @@ const styles2 = css.global`
 
 export default function FullScreenLyrics({
   document = window.document,
+  source,
 }: {
   document?: Document;
+  source?: string;
 }): ReactElement {
   const {
     lyricsProgressMs,
@@ -129,22 +132,40 @@ export default function FullScreenLyrics({
     alwaysDisplayColor: false,
     showOnFixed: false,
     disableBackground: true,
+    ignoreAll: !source,
   });
 
   useEffect(() => {
-    document.documentElement.style.setProperty(
-      "--lyrics-background-color",
-      `${lyricsBackgroundColor}`
+    const root = document.documentElement;
+    const body = document.body;
+
+    const originalRootBgColor = root.style.getPropertyValue(
+      "--lyrics-background-color"
     );
-    document.documentElement.style.setProperty(
-      "--background-container",
-      `${lyricsBackgroundColor}`
-    );
-  }, [lyricsBackgroundColor, document.documentElement.style]);
+    const originalBodyHeaderColor =
+      body.style.getPropertyValue("--header-color");
+    const originalBodyHeaderOpacity =
+      body.style.getPropertyValue("--header-opacity");
+
+    root.style.setProperty("--lyrics-background-color", lyricsBackgroundColor);
+    body.style.setProperty("--header-color", lyricsBackgroundColor);
+    body.style.setProperty("--header-opacity", "0");
+
+    return () => {
+      root.style.setProperty("--lyrics-background-color", originalRootBgColor);
+      body.style.setProperty("--header-color", originalBodyHeaderColor);
+      body.style.setProperty("--header-opacity", originalBodyHeaderOpacity);
+    };
+  }, [lyricsBackgroundColor, document.body, document.documentElement]);
 
   useEffect(() => {
     const pipApp = document.querySelector<HTMLElement>(".pipApp");
-    const appContainer = pipApp ?? document.querySelector<HTMLElement>(".app");
+    const shouldModifyBackground = source !== "main-footer";
+    const appContainer =
+      pipApp ??
+      (shouldModifyBackground
+        ? document.querySelector<HTMLElement>(".app")
+        : null);
     const originalBackground = appContainer?.style?.backgroundColor;
     const originalPosition = appContainer?.style?.position;
 
@@ -159,7 +180,7 @@ export default function FullScreenLyrics({
         appContainer.style.position = originalPosition ?? "";
       }
     };
-  }, [document, lyricsBackgroundColor]);
+  }, [document, lyricsBackgroundColor, source]);
 
   useEffect(() => {
     const pipApp = document.querySelector<HTMLElement>(".pipApp");
