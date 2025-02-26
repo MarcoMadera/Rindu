@@ -21,6 +21,7 @@ import {
   getLocale,
   getTranslations,
   getValidCookieLocale,
+  isServer,
   Locale,
   LOCALE_COOKIE,
   makeCookie,
@@ -135,7 +136,9 @@ export default function PreferencesPage(): ReactElement {
                     configuration.set("isDocPipEnabled", e.target.checked);
                     setUseDocumentPip.toggle();
                   }}
-                  disabled={!window.documentPictureInPicture}
+                  disabled={
+                    isServer() ? false : !window.documentPictureInPicture
+                  }
                   popupText={
                     translations.pages.preferences
                       .disableDocumentPiPToggleReason
