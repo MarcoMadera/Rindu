@@ -1,11 +1,4 @@
-import {
-  PropsWithChildren,
-  ReactElement,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { PropsWithChildren, ReactElement, ReactNode, useState } from "react";
 
 import {
   FullScreenLyrics,
@@ -15,7 +8,7 @@ import {
   SideBar,
   TopBar,
 } from "components";
-import { useLyricsContext, useOnSmallScreen, useSpotify } from "hooks";
+import { useOnSmallScreen, useSpotify } from "hooks";
 import { DisplayInFullScreen } from "types/spotify";
 import { ITranslations } from "types/translations";
 import { isFullScreen, isServer } from "utils";
@@ -23,11 +16,12 @@ import { isFullScreen, isServer } from "utils";
 export function AppContainer({
   children,
   translations,
-}: Readonly<PropsWithChildren<{ translations: ITranslations }>>): ReactElement {
-  const appRef = useRef<HTMLDivElement | null>(null);
+  source,
+}: Readonly<
+  PropsWithChildren<{ translations: ITranslations; source?: string }>
+>): ReactElement {
   const { displayInFullScreen, currentlyPlaying, hideSideBar, setHideSideBar } =
     useSpotify();
-  const { lyricsBackgroundColor } = useLyricsContext();
   const shouldDisplayLyrics =
     displayInFullScreen === DisplayInFullScreen.Lyrics &&
     currentlyPlaying?.type === "track";
@@ -62,21 +56,9 @@ export function AppContainer({
 
   const playerHeight = getPlayerHeight();
 
-  useEffect(() => {
-    const app = appRef?.current;
-    if (!app) return;
-    if (displayInFullScreen === DisplayInFullScreen.Lyrics) {
-      app.style.backgroundColor = lyricsBackgroundColor ?? "";
-      return;
-    }
-    app.style.backgroundColor = "inherit";
-    return () => {
-      app.style.backgroundColor = "inherit";
-    };
-  }, [appRef, lyricsBackgroundColor, displayInFullScreen]);
-
   function renderChildren(): ReactElement | ReactNode {
-    if (shouldDisplayLyrics) return <FullScreenLyrics />;
+    if (shouldDisplayLyrics)
+      return <FullScreenLyrics source={`main-${source}`} />;
 
     if (shouldDisplayQueue) return <FullScreenQueue />;
 
@@ -123,7 +105,9 @@ export function AppContainer({
           }
         }
         div.container {
-          background: var(--background-container);
+          background: ${source === "footer" || shouldDisplayLyrics
+            ? "var(--lyrics-background-color)"
+            : "unset"};
         }
       `}</style>
 

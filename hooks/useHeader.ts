@@ -9,6 +9,7 @@ export function useHeader(
     alwaysDisplayColor: boolean;
     disableOpacityChange: boolean;
     disableBackground: boolean;
+    ignoreAll?: boolean;
   }>
 ): Omit<
   IHeaderContext,
@@ -27,6 +28,7 @@ export function useHeader(
   } = useCustomContext(HeaderContext);
 
   useEffect(() => {
+    if (options?.ignoreAll) return;
     if (options?.showOnFixed) {
       setDisplayOnFixed(options.showOnFixed);
     }
@@ -51,6 +53,7 @@ export function useHeader(
     options?.disableOpacityChange,
     options?.showOnFixed,
     options?.disableBackground,
+    options?.ignoreAll,
     setAlwaysDisplayColor,
     setDisableOpacityChange,
     setDisplayOnFixed,

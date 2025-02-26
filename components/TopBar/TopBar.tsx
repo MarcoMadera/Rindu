@@ -34,6 +34,7 @@ export default function TopBar({
     const app =
       appRef?.current ??
       document.querySelector("#right .simplebar-content-wrapper");
+    if (!app) return;
     const scrollTop = app?.scrollTop || 0;
     const headerOpacity = calculateHeaderOpacity({
       scrollTop,

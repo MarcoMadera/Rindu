@@ -133,7 +133,9 @@ export default function SpotifyPlayer({
     <footer>
       <div ref={ref}>
         {isFullScreenPlayer ? <FullScreenPlayer /> : null}
-        {shouldDisplayApp ? <AppContainer translations={translations} /> : null}
+        {shouldDisplayApp ? (
+          <AppContainer translations={translations} source={"footer"} />
+        ) : null}
       </div>
       <div className="container">
         {isPremium ? (
