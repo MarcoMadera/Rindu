@@ -136,6 +136,10 @@ export default function FullScreenLyrics({
       "--lyrics-background-color",
       `${lyricsBackgroundColor}`
     );
+    document.documentElement.style.setProperty(
+      "--background-container",
+      `${lyricsBackgroundColor}`
+    );
   }, [lyricsBackgroundColor, document.documentElement.style]);
 
   useEffect(() => {

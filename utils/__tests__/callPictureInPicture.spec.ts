@@ -56,6 +56,7 @@ describe("callPictureInPicture", () => {
     await callPictureInPicture(canvas, video);
 
     expect(error).toHaveBeenCalledWith(
+      "Error processing PiP:",
       new TypeError("image.decode is not a function")
     );
   });
@@ -63,11 +64,17 @@ describe("callPictureInPicture", () => {
   it("should call requestPictureInPicture", async () => {
     expect.assertions(3);
 
-    setupMediaSession();
+    setupMediaSession({
+      metadata: {
+        artwork: [{ src: "art" }],
+      },
+    } as unknown as MediaSession);
+
     Object.defineProperty(Image.prototype, "decode", {
       writable: true,
       value: jest.fn(() => Promise.resolve()),
     });
+
     const drawImage = jest.fn();
     const clearRect = jest.fn();
     const canvas = {
@@ -79,6 +86,7 @@ describe("callPictureInPicture", () => {
 
     const video = {
       play: jest.fn().mockResolvedValue({}),
+      pause: jest.fn().mockResolvedValue({}),
       requestPictureInPicture: jest.fn().mockResolvedValue({}),
       readyState: 2,
     } as unknown as HTMLVideoElement;

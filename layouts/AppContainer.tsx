@@ -122,6 +122,9 @@ export function AppContainer({
             width: 100%;
           }
         }
+        div.container {
+          background: var(--background-container);
+        }
       `}</style>
 
       <style jsx>{`

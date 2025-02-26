@@ -39,7 +39,7 @@ export function LyricsContextContextProvider({
     useState<string>(getRandomColor());
 
   const { lyrics, lyricsError, lyricsLoading } = useLyrics();
-  const { pipWindow } = useSpotify();
+  const { pipWindow, isPictureInPictureLyircsCanvas } = useSpotify();
 
   useLyricsInPictureInPicture({
     setLyricsProgressMs,
@@ -82,7 +82,7 @@ export function LyricsContextContextProvider({
   return (
     <LyricsContext.Provider value={value}>
       {children}
-      {pipWindow ? (
+      {pipWindow.current && isPictureInPictureLyircsCanvas ? (
         <PortalTarget targetId={pipWindow.current?.document.body}>
           <DPIPLyrics />
         </PortalTarget>

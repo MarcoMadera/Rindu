@@ -23,6 +23,7 @@ declare global {
         width: number;
         height: number;
       }) => Promise<Window & typeof globalThis>;
+      window: (Window & typeof globalThis) | null;
     };
   }
 }
