@@ -49,8 +49,8 @@ export default function LyricsPIPButton({
     e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
   ) => {
     e.stopPropagation();
-    if (isPictureInPictureLyircsCanvas && pipWindow) {
-      pipWindow.current?.close();
+    if (window.documentPictureInPicture?.window && pipWindow.current) {
+      pipWindow.current.close();
       setIsPictureInPictureLyircsCanvas.off();
       setIsPip(false);
       return;
@@ -78,8 +78,16 @@ export default function LyricsPIPButton({
       <button
         className="lyrics-pip-button"
         onClick={(e) => {
+          const isDocPipEnabled = configuration.get("isDocPipEnabled");
+          const docPipWindow = window.documentPictureInPicture?.window;
+
+          if (isPictureInPictureLyircsCanvas && !docPipWindow) {
+            handlePIPClick(e);
+            return;
+          }
+
           if (
-            configuration.get("isDocPipEnabled") &&
+            (isDocPipEnabled || docPipWindow) &&
             "documentPictureInPicture" in window
           ) {
             handleDocumentPIPClick(e);
@@ -111,6 +119,11 @@ export default function LyricsPIPButton({
           }
           .lyrics-pip-button:hover {
             color: #fff;
+          }
+          @media all and (display-mode: fullscreen) {
+            .lyrics-pip-button {
+              display: none;
+            }
           }
         `}</style>
       </button>
