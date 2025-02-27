@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useRef } from "react";
 
 import css from "styled-jsx/css";
 
@@ -110,6 +110,48 @@ const styles2 = css.global`
   }
 `;
 
+function Lines({ document = window.document }: { document?: Document }) {
+  const { lyricsProgressMs, lyrics, registerContainer } = useLyricsContext();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const unregister = registerContainer(containerRef);
+    return unregister;
+  }, [registerContainer]);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const firstLine = containerRef.current.querySelector(".line.first");
+      const currentLine = containerRef.current.querySelector(".line.current");
+
+      const currentElement = firstLine ?? currentLine;
+      currentElement?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+    }
+  }, [lyrics]);
+
+  if (!lyrics || !lyrics.lines.length) return null;
+  return (
+    <div className="lyrics" ref={containerRef}>
+      {lyrics.lines.map((line, i) => {
+        const type = getLineType({
+          currentLine: line,
+          lyricsProgressMs,
+          nextLine: lyrics.lines[i + 1],
+          index: i,
+        });
+
+        return (
+          <LyricLine line={line} type={type} key={i} document={document} />
+        );
+      })}
+    </div>
+  );
+}
+
 export default function FullScreenLyrics({
   document = window.document,
   source,
@@ -117,13 +159,8 @@ export default function FullScreenLyrics({
   document?: Document;
   source?: string;
 }): ReactElement {
-  const {
-    lyricsProgressMs,
-    lyricsBackgroundColor,
-    lyrics,
-    lyricsError,
-    lyricsLoading,
-  } = useLyricsContext();
+  const { lyricsBackgroundColor, lyrics, lyricsError, lyricsLoading } =
+    useLyricsContext();
 
   const { isPremium } = useAuth();
 
@@ -217,22 +254,7 @@ export default function FullScreenLyrics({
           )}
         </div>
       ) : null}
-      {lyrics && lyrics.lines.length > 0 && (
-        <div className="lyrics">
-          {lyrics.lines.map((line, i) => {
-            const type = getLineType({
-              currentLine: line,
-              lyricsProgressMs,
-              nextLine: lyrics.lines[i + 1],
-              index: i,
-            });
-
-            return (
-              <LyricLine line={line} type={type} key={i} document={document} />
-            );
-          })}
-        </div>
-      )}
+      <Lines document={document} />
       {isPremium &&
         !!document?.pictureInPictureEnabled &&
         !document.querySelector(".pipApp") && (

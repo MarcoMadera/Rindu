@@ -3,8 +3,11 @@ import {
   Dispatch,
   PropsWithChildren,
   ReactElement,
+  RefObject,
   SetStateAction,
+  useCallback,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -25,6 +28,8 @@ export interface ILyricsContext {
   setLyricLineColor: Dispatch<SetStateAction<string>>;
   setLyricTextColor: Dispatch<SetStateAction<string>>;
   setLyricsBackgroundColor: Dispatch<SetStateAction<string>>;
+  registerContainer: (ref: RefObject<HTMLDivElement | null>) => void;
+  syncLyricsLine: () => void;
 }
 
 const LyricsContext = createContext<ILyricsContext | undefined>(undefined);
@@ -40,6 +45,54 @@ export function LyricsContextContextProvider({
 
   const { lyrics, lyricsError, lyricsLoading } = useLyrics();
   const { pipWindow, isPictureInPictureLyircsCanvas } = useSpotify();
+
+  const containersRef = useRef<Set<React.RefObject<HTMLDivElement | null>>>(
+    new Set()
+  );
+
+  const registerContainer = useCallback(
+    (ref: RefObject<HTMLDivElement | null>) => {
+      containersRef.current.add(ref);
+
+      return () => {
+        containersRef.current.delete(ref);
+      };
+    },
+    []
+  );
+
+  const syncLyricsLine = useCallback(() => {
+    const observer = new MutationObserver((_, observer) => {
+      for (const container of containersRef.current) {
+        const currentContainer = container.current;
+
+        if (!currentContainer) return;
+        const currentLine = currentContainer.querySelector(".line.current");
+        const firstLine = currentContainer.querySelector(".line.first");
+        const noLine = currentContainer.querySelector(
+          ".line.previous:last-of-type"
+        );
+        const currentElement = currentLine ?? firstLine ?? noLine;
+
+        if (currentElement) {
+          observer.disconnect();
+          currentElement.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        }
+      }
+    });
+
+    containersRef.current.forEach((container) => {
+      if (!container.current) return;
+      observer.observe(container.current, {
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+    });
+  }, []);
 
   useLyricsInPictureInPicture({
     setLyricsProgressMs,
@@ -67,6 +120,8 @@ export function LyricsContextContextProvider({
       setLyricLineColor,
       setLyricTextColor,
       setLyricsBackgroundColor,
+      syncLyricsLine,
+      registerContainer,
     }),
     [
       lyricsProgressMs,
@@ -76,6 +131,8 @@ export function LyricsContextContextProvider({
       lyrics,
       lyricsError,
       lyricsLoading,
+      syncLyricsLine,
+      registerContainer,
     ]
   );
 

@@ -49,7 +49,7 @@ export function LyricLine({
   type,
   document = window.document,
 }: ILyricLineProps): ReactElement {
-  const { player, updateLyricLine, setUpdateLyricLine } = useSpotify();
+  const { player } = useSpotify();
   const { isPremium } = useAuth();
   const lineRef = useRef<HTMLButtonElement>(null);
   const { lyricsProgressMs, lyricTextColor, lyricLineColor, lyrics } =
@@ -87,8 +87,7 @@ export function LyricLine({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if ((entry.isIntersecting && !isManuallyScrolling) || updateLyricLine) {
-          setUpdateLyricLine.off();
+        if (entry.isIntersecting && !isManuallyScrolling) {
           line.scrollIntoView({
             behavior: "smooth",
             block: "center",
@@ -107,18 +106,12 @@ export function LyricLine({
 
     return () => {
       observer.disconnect();
-      setUpdateLyricLine.off();
       document.removeEventListener("wheel", handleUserScroll);
       document.removeEventListener("touchmove", handleUserScroll);
       clearTimeout(scrollTimeout);
     };
-  }, [
-    lyricsProgressMs,
-    isManuallyScrolling,
-    updateLyricLine,
-    setUpdateLyricLine,
-    document,
-  ]);
+  }, [lyricsProgressMs, isManuallyScrolling, document]);
+
   const lineColorsType: Record<LineType, string> = {
     first: lineColors.first,
     current: lineColors.current,

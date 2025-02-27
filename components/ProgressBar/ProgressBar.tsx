@@ -1,7 +1,13 @@
 import { ReactElement, useEffect, useState } from "react";
 
 import { Slider } from "components";
-import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
+import {
+  useAuth,
+  useLyricsContext,
+  useSpotify,
+  useToast,
+  useTranslations,
+} from "hooks";
 import type { AudioPlayer } from "hooks/useSpotifyPlayer";
 import { formatTime } from "utils";
 
@@ -12,8 +18,8 @@ export default function ProgressBar(): ReactElement {
     isPlaying,
     player,
     currentlyPlaying,
-    setUpdateLyricLine,
   } = useSpotify();
+  const { syncLyricsLine } = useLyricsContext();
   const [progressSeconds, setProgressSeconds] = useState(0);
   const [progressFromSpotify, setProgressFromSpotify] = useState<number>();
   const [labelSeconds, setLabelSeconds] = useState(0);
@@ -132,7 +138,7 @@ export default function ProgressBar(): ReactElement {
 
           setLabelSeconds(position_ms / 1000);
           player?.seek(position_ms);
-          setUpdateLyricLine.on();
+          syncLyricsLine();
         }}
       />
       <div className="timeTag">{formatTime(durationInSeconds)}</div>
