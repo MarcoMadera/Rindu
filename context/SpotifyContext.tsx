@@ -73,7 +73,6 @@ export function SpotifyContextProvider({
   const [isPictureInPictureLyircsCanvas, setIsPictureInPictureLyircsCanvas] =
     useToggle();
   const [ignoreShortcuts, setIgnoreShortcuts] = useToggle();
-  const [updateLyricLine, setUpdateLyricLine] = useToggle();
   const title = `${currentlyPlaying?.name} - ${
     currentlyPlaying?.artists?.[0].name ?? "Rindu"
   }`;
@@ -184,8 +183,6 @@ export function SpotifyContextProvider({
       nextTracks,
       setNextTracks,
       setIgnoreShortcuts,
-      updateLyricLine,
-      setUpdateLyricLine,
       ...propsValue,
     }),
     [
@@ -242,8 +239,6 @@ export function SpotifyContextProvider({
       nextTracks,
       setNextTracks,
       setIgnoreShortcuts,
-      updateLyricLine,
-      setUpdateLyricLine,
       propsValue,
     ]
   );
