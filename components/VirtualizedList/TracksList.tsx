@@ -2,7 +2,7 @@ import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 
 import { IndexRange } from "react-virtualized";
 
-import VirtualizedList from "./VirtualizedList";
+import VirtualizedList from "./VirtualList";
 import CardTrack, { CardType } from "components/CardTrack";
 import DiscSeparator from "components/DiscSeparator";
 import { useSpotify } from "hooks";
@@ -49,23 +49,26 @@ export function TracksList({
     initialTracksInLibrary
   );
   const BATCH_SIZE = 50;
-  const [localTracks, setLocalTracks] = useState<ITrack[]>(
-    allTracks.slice(0, BATCH_SIZE)
-  );
+  const [localTracks, setLocalTracks] = useState<ITrack[]>(allTracks);
   const isAlbum = type === CardType.Album;
 
   useEffect(() => {
-    setLocalTracks(allTracks.slice(0, BATCH_SIZE));
+    setLocalTracks(allTracks);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageDetails?.uri]);
 
   const spliceTracks = useCallback(
-    <T,>(allTracks: T[] | null, newTracks: T[], position: number): T[] => {
+    <T,>(
+      allTracks: T[] | null,
+      newTracks: T[],
+      position: number,
+      size = BATCH_SIZE
+    ): T[] => {
       if (!allTracks) {
         return [...newTracks];
       }
       const tracks = [...allTracks];
-      tracks.splice(position, BATCH_SIZE, ...newTracks);
+      tracks.splice(position, size, ...newTracks);
       return tracks;
     },
     []
@@ -82,15 +85,23 @@ export function TracksList({
     (
       tracks: ITrack[],
       tracksInLibrary: boolean[] | null,
-      position: number
+      position: number,
+      size = BATCH_SIZE
     ): void => {
-      setAllTracks((allTracks) => spliceTracks(allTracks, tracks, position));
-      setLocalTracks((allTracks) => spliceTracks(allTracks, tracks, position));
+      setAllTracks((allTracks) => {
+        const splicedTracks = spliceTracks(allTracks, tracks, position, size);
+        return splicedTracks;
+      });
+
+      setLocalTracks((allTracks) => {
+        const splicedTracks = spliceTracks(allTracks, tracks, position, size);
+        return splicedTracks;
+      });
 
       if (!tracksInLibrary) return;
 
       setTracksInLibrary((allTracks) =>
-        spliceTracks(allTracks, tracksInLibrary, position)
+        spliceTracks(allTracks, tracksInLibrary, position, size)
       );
     },
     [setAllTracks, spliceTracks]
@@ -105,6 +116,7 @@ export function TracksList({
 
   const getRangeStart = (index: number) =>
     Math.floor(index / BATCH_SIZE) * BATCH_SIZE;
+
   const [loadedRanges, setLoadedRanges] = useState(() => {
     const initialRanges = new Set<string>();
     const rangeStart = getRangeStart(0);
@@ -178,45 +190,68 @@ export function TracksList({
     },
     [loadedRanges, separatorIndices]
   );
-
   const loadMoreRows = useCallback(
-    async ({ startIndex }: IndexRange) => {
-      const isLoaded = isIndexLoaded(startIndex + 1);
-      if (isLoaded) {
-        return;
-      }
-      const rangeStart = getRangeStart(startIndex);
-
+    async ({ startIndex, stopIndex }: IndexRange) => {
       if (isGeneratedPlaylist) return;
+
+      const rangeStart = getRangeStart(startIndex);
+      const rangeEnd = getRangeStart(stopIndex);
+
+      const rangesToLoad: number[] = [];
+      for (let range = rangeStart; range <= rangeEnd; range += BATCH_SIZE) {
+        if (!isIndexLoaded(range)) {
+          rangesToLoad.push(range);
+        }
+      }
+
+      if (rangesToLoad.length === 0) return;
+
       setLoadedRanges((prev) => {
         const newRanges = new Set(prev);
-        newRanges.add(`${rangeStart}`);
+        rangesToLoad.forEach((range) => newRanges.add(`${range}`));
         return newRanges;
       });
-      const data = isLibrary
-        ? await getMyLikedSongs(BATCH_SIZE, startIndex)
-        : isAlbum
-          ? await getAlbumTracks(
-              getIdFromUri(pageDetails?.uri, "id") ?? "",
-              rangeStart
-            )
-          : await getTracksFromPlaylist(
-              getIdFromUri(pageDetails?.uri, "id") ?? "",
-              rangeStart
+
+      const fetchDataForRange = async (range: number) => {
+        const data = isLibrary
+          ? await getMyLikedSongs(BATCH_SIZE, range)
+          : isAlbum
+            ? await getAlbumTracks(
+                getIdFromUri(pageDetails?.uri, "id") ?? "",
+                range
+              )
+            : await getTracksFromPlaylist(
+                getIdFromUri(pageDetails?.uri, "id") ?? "",
+                range
+              );
+
+        if (!data?.items) return null;
+
+        const tracks: ITrack[] | undefined = isAlbum
+          ? data.items
+          : mapPlaylistItems(
+              data.items as SpotifyApi.PlaylistTrackObject[],
+              range
             );
-      const items = data?.items;
-      const tracks: ITrack[] | undefined = isAlbum
-        ? items
-        : mapPlaylistItems(
-            items as SpotifyApi.PlaylistTrackObject[],
-            startIndex
-          );
-      if (!tracks) return;
-      const trackIds = tracks.map((track) => track.id ?? "");
 
-      const tracksInLibrary = await checkTracksInLibrary(trackIds);
+        if (!tracks) return null;
 
-      addTracksToPlaylists(tracks, tracksInLibrary, rangeStart);
+        const trackIds = tracks.map((track) => track.id ?? "");
+        const tracksInLibrary = await checkTracksInLibrary(trackIds);
+
+        return { tracks, tracksInLibrary, range };
+      };
+
+      const results = await Promise.allSettled(
+        rangesToLoad.map(fetchDataForRange)
+      );
+
+      results.forEach((result) => {
+        if (result.status === "fulfilled" && result.value) {
+          const { tracks, tracksInLibrary, range } = result.value;
+          addTracksToPlaylists(tracks, tracksInLibrary, range);
+        }
+      });
     },
     [
       isAlbum,
@@ -240,6 +275,7 @@ export function TracksList({
         separatorIndices.has(index) && separatorIndices.size >= 2 ? 65 : 65
       }
       loadMoreItems={loadMoreRows}
+      overscanRowCount={BATCH_SIZE / 2}
       isItemLoaded={isItemLoaded}
       renderItem={({ key, style, item: track, index }) => {
         if (separatorIndices.has(index) && separatorIndices.size >= 2) {

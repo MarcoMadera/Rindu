@@ -4,10 +4,10 @@ export default function Placeholder(
   props: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 ): ReactElement {
   return (
-    <div {...props} className="placeholder">
+    <span {...props} className="placeholder">
       {props.children}
       <style jsx>{`
-        div {
+        span {
           display: inline-block;
           height: 18px;
           width: calc(100% - 1rem);
@@ -27,6 +27,6 @@ export default function Placeholder(
           }
         }
       `}</style>
-    </div>
+    </span>
   );
 }
