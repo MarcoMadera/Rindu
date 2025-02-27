@@ -1,6 +1,12 @@
 import { Dispatch, RefObject, SetStateAction, useEffect, useRef } from "react";
 
-import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
+import {
+  useAuth,
+  useLyricsContext,
+  useSpotify,
+  useToast,
+  useTranslations,
+} from "hooks";
 import { ITrack } from "types/spotify";
 import {
   ACCESS_TOKEN_COOKIE,
@@ -45,6 +51,7 @@ export function useSpotifyPlayer({ name }: { name: string }): {
   const { user } = useAuth();
   const { addToast } = useToast();
   const { translations } = useTranslations();
+  const { syncLyricsLine } = useLyricsContext();
 
   useEffect(() => {
     if (!user) return;
@@ -188,6 +195,9 @@ export function useSpotifyPlayer({ name }: { name: string }): {
       spotifyPlayer.current?.on("player_state_changed", (playbackState) => {
         setCurrentlyPlayingDuration(playbackState?.duration);
         setCurrentlyPlayingPosition(playbackState?.position);
+        if (playbackState?.position === 0) {
+          syncLyricsLine();
+        }
         setCurrentlyPlaying(playbackState?.track_window?.current_track);
         setSuffleState(playbackState?.shuffle);
         setRepeatState(playbackState?.repeat_mode);
