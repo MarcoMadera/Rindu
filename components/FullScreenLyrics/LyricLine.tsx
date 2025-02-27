@@ -49,11 +49,16 @@ export function LyricLine({
   type,
   document = window.document,
 }: ILyricLineProps): ReactElement {
-  const { player } = useSpotify();
+  const { player, isPlaying } = useSpotify();
   const { isPremium } = useAuth();
   const lineRef = useRef<HTMLButtonElement>(null);
-  const { lyricsProgressMs, lyricTextColor, lyricLineColor, lyrics } =
-    useLyricsContext();
+  const {
+    lyricsProgressMs,
+    lyricTextColor,
+    lyricLineColor,
+    lyrics,
+    syncLyricsLine,
+  } = useLyricsContext();
 
   const lineColors = {
     first: lyricLineColor + "80",
@@ -87,7 +92,7 @@ export function LyricLine({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !isManuallyScrolling) {
+        if (entry.isIntersecting && !isManuallyScrolling && isPlaying) {
           line.scrollIntoView({
             behavior: "smooth",
             block: "center",
@@ -110,7 +115,7 @@ export function LyricLine({
       document.removeEventListener("touchmove", handleUserScroll);
       clearTimeout(scrollTimeout);
     };
-  }, [lyricsProgressMs, isManuallyScrolling, document]);
+  }, [lyricsProgressMs, isManuallyScrolling, document, isPlaying]);
 
   const lineColorsType: Record<LineType, string> = {
     first: lineColors.first,
@@ -140,6 +145,7 @@ export function LyricLine({
           lyrics?.syncType === "LINE_SYNCED"
         ) {
           player.seek(Number(line.startTimeMs));
+          syncLyricsLine();
         }
       }}
       className={`line ${type}`}

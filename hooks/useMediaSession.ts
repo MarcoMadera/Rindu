@@ -14,6 +14,7 @@ export function useMediaSession({
   videoRef,
   pictureInPictureCanvas,
   isPictureInPictureLyircsCanvas,
+  syncLyricsLine,
 }: {
   currentlyPlaying: ITrack | undefined;
   currentlyPlayingPosition: number | undefined;
@@ -23,6 +24,7 @@ export function useMediaSession({
   videoRef: RefObject<HTMLVideoElement | null>;
   pictureInPictureCanvas: RefObject<HTMLCanvasElement | null>;
   isPictureInPictureLyircsCanvas: boolean;
+  syncLyricsLine: () => void;
 }): void {
   const { user, isPremium } = useAuth();
   useEffect(() => {
@@ -76,6 +78,7 @@ export function useMediaSession({
               ? 0
               : currentlyPlayingPosition - 10 * 1000
           );
+          syncLyricsLine();
         });
         navigator.mediaSession.setActionHandler("seekforward", function () {
           player.seek(
@@ -83,12 +86,14 @@ export function useMediaSession({
               ? 10 * 1000
               : currentlyPlayingPosition + 10 * 1000
           );
+          syncLyricsLine();
         });
         navigator.mediaSession.setActionHandler(
           "seekto",
           function (mediaSessionActions) {
             if (mediaSessionActions.seekTime) {
               player.seek(mediaSessionActions.seekTime * 1000);
+              syncLyricsLine();
             }
           }
         );
@@ -102,7 +107,14 @@ export function useMediaSession({
         console.error("useMediaSession", error);
       }
     }
-  }, [currentlyPlayingPosition, isPremium, player, user, setIsPlaying]);
+  }, [
+    currentlyPlayingPosition,
+    isPremium,
+    player,
+    user,
+    setIsPlaying,
+    syncLyricsLine,
+  ]);
 
   useEffect(() => {
     if ("mediaSession" in navigator) {
