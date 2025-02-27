@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 
 import css from "styled-jsx/css";
 
@@ -110,7 +110,13 @@ const styles2 = css.global`
   }
 `;
 
-function Lines({ document = window.document }: { document?: Document }) {
+function Lines({
+  document = window.document,
+  ready,
+}: {
+  document?: Document;
+  ready: boolean;
+}) {
   const { lyricsProgressMs, lyrics, registerContainer } = useLyricsContext();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -120,7 +126,7 @@ function Lines({ document = window.document }: { document?: Document }) {
   }, [registerContainer]);
 
   useEffect(() => {
-    if (containerRef.current) {
+    if (containerRef.current && ready) {
       const firstLine = containerRef.current.querySelector(".line.first");
       const currentLine = containerRef.current.querySelector(".line.current");
 
@@ -131,7 +137,7 @@ function Lines({ document = window.document }: { document?: Document }) {
         inline: "nearest",
       });
     }
-  }, [lyrics]);
+  }, [lyrics, ready]);
 
   if (!lyrics || !lyrics.lines.length) return null;
   return (
@@ -163,6 +169,7 @@ export default function FullScreenLyrics({
     useLyricsContext();
 
   const { isPremium } = useAuth();
+  const [ready, setReady] = useState(false);
 
   useHeader({
     disableOpacityChange: true,
@@ -235,10 +242,13 @@ export default function FullScreenLyrics({
       document.head.appendChild(lineStyles);
     }
 
+    setReady(true);
+
     return () => {
       pipStyleTag?.remove();
       pipStyleTag2?.remove();
       lineStyles?.remove();
+      setReady(false);
     };
   }, [document, lyricsBackgroundColor]);
 
@@ -254,7 +264,7 @@ export default function FullScreenLyrics({
           )}
         </div>
       ) : null}
-      <Lines document={document} />
+      <Lines document={document} ready={ready} />
       {isPremium &&
         !!document?.pictureInPictureEnabled &&
         !document.querySelector(".pipApp") && (

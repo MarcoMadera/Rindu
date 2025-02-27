@@ -11,7 +11,6 @@ import {
 import Head from "next/head";
 
 import {
-  useMediaSession,
   usePictureInPicture,
   useRecentlyPlayed,
   useReconnectSpotifyPlayer,
@@ -95,16 +94,6 @@ export function SpotifyContextProvider({
     pictureInPictureCanvas,
     player,
     setIsPictureInPictureLyircsCanvas,
-  });
-  useMediaSession({
-    currentlyPlaying,
-    currentlyPlayingPosition,
-    player,
-    isPlaying,
-    setIsPlaying,
-    videoRef,
-    pictureInPictureCanvas,
-    isPictureInPictureLyircsCanvas,
   });
   useShortCuts({
     ignoreShortcuts,

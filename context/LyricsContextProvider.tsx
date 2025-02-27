@@ -12,7 +12,12 @@ import {
 } from "react";
 
 import { DPIPLyrics, PortalTarget } from "components";
-import { useLyrics, useLyricsInPictureInPicture, useSpotify } from "hooks";
+import {
+  useLyrics,
+  useLyricsInPictureInPicture,
+  useMediaSession,
+  useSpotify,
+} from "hooks";
 import { IFormatLyricsResponse } from "types/lyrics";
 import { getRandomColor } from "utils";
 
@@ -44,7 +49,17 @@ export function LyricsContextContextProvider({
     useState<string>(getRandomColor());
 
   const { lyrics, lyricsError, lyricsLoading } = useLyrics();
-  const { pipWindow, isPictureInPictureLyircsCanvas } = useSpotify();
+  const {
+    pipWindow,
+    isPictureInPictureLyircsCanvas,
+    currentlyPlaying,
+    currentlyPlayingPosition,
+    player,
+    isPlaying,
+    setIsPlaying,
+    videoRef,
+    pictureInPictureCanvas,
+  } = useSpotify();
 
   const containersRef = useRef<Set<React.RefObject<HTMLDivElement | null>>>(
     new Set()
@@ -105,6 +120,17 @@ export function LyricsContextContextProvider({
     lyricLineColor,
     lyricsProgressMs,
     lyricsError,
+  });
+  useMediaSession({
+    currentlyPlaying,
+    currentlyPlayingPosition,
+    player,
+    isPlaying,
+    setIsPlaying,
+    videoRef,
+    pictureInPictureCanvas,
+    isPictureInPictureLyircsCanvas,
+    syncLyricsLine,
   });
 
   const value = useMemo(
