@@ -1,5 +1,7 @@
 import { ReactElement } from "react";
 
+import { Style } from "components";
+
 export default function LoadingSpinner(): ReactElement {
   return (
     <div className="loading-spinner">

@@ -79,6 +79,7 @@ export { default as ShortCuts } from "./ShortCuts";
 export { default as SideBar } from "./SideBar";
 export { default as SingleTrackCard } from "./SingleTrackCard";
 export { default as Slider } from "./Slider";
+export { default as Style } from "./Style";
 export { default as SpotifyPlayer } from "./SpotifyPlayer";
 export { default as SubTitle } from "./SubTitle";
 export { default as Table } from "./Table";

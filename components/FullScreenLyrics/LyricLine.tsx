@@ -1,7 +1,6 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 
-import css from "styled-jsx/css";
-
+import { Style } from "components";
 import { useAuth, useLyricsContext, useSpotify } from "hooks";
 import { IFormatLyricsResponse, LineType } from "types/lyrics";
 
@@ -10,39 +9,6 @@ interface ILyricLineProps {
   type: LineType;
   document?: Document;
 }
-
-export const lineCss = css.global`
-  .line {
-    display: block;
-    background-color: transparent;
-    border: none;
-    width: 100%;
-    text-align: left;
-    padding-left: 144px;
-    font-size: 32px;
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 54px;
-    cursor: pointer;
-    transition: all 0.1s ease-out 0s;
-  }
-  .line:hover {
-    color: var(--line-hover-color) !important;
-    opacity: 1;
-  }
-  @media (max-width: 768px) {
-    .line {
-      padding-left: 0;
-      font-size: 18px;
-      line-height: 32px;
-    }
-  }
-  @media (max-width: 658px) {
-    .line {
-      padding-left: 0;
-    }
-  }
-`;
 
 export function LyricLine({
   line,
@@ -154,7 +120,38 @@ export function LyricLine({
       style={{ color: getColorLine(type) }}
     >
       {line.words}
-      <style jsx>{lineCss}</style>
+      <style jsx>{`
+        .line {
+          display: block;
+          background-color: transparent;
+          border: none;
+          width: 100%;
+          text-align: left;
+          padding-left: 144px;
+          font-size: 32px;
+          font-weight: 700;
+          letter-spacing: -0.04em;
+          line-height: 54px;
+          cursor: pointer;
+          transition: all 0.1s ease-out 0s;
+        }
+        .line:hover {
+          color: var(--line-hover-color) !important;
+          opacity: 1;
+        }
+        @media (max-width: 768px) {
+          .line {
+            padding-left: 0;
+            font-size: 18px;
+            line-height: 32px;
+          }
+        }
+        @media (max-width: 658px) {
+          .line {
+            padding-left: 0;
+          }
+        }
+      `}</style>
     </button>
   );
 }

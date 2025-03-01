@@ -61,6 +61,7 @@ export * from "./getValidCookieLocale";
 export * from "./getYear";
 export * from "./handleAsyncError";
 export * from "./handleJsonResponse";
+export * from "./hashString";
 export * from "./hexToHsl";
 export * from "./hmacToken";
 export * from "./htmlToReact";

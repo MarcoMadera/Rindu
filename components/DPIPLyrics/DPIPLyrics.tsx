@@ -1,51 +1,93 @@
-import { ReactElement, useEffect } from "react";
+import {
+  Children,
+  isValidElement,
+  ReactElement,
+  ReactNode,
+  useEffect,
+} from "react";
 
 import FullScreenLyrics from "components/FullScreenLyrics";
 import { useSpotify } from "hooks";
 
-export const DPIPLyrics = (): ReactElement => {
-  const { pipWindow } = useSpotify();
+interface PiPStyleWrapperProps {
+  pipWindow: Window | null;
+  children: ReactNode;
+}
+
+const PiPStyleWrapper = ({ pipWindow, children }: PiPStyleWrapperProps) => {
   useEffect(() => {
-    if (!pipWindow.current) return;
-    const { document: pipDoc } = pipWindow.current;
+    if (!pipWindow || !children) return;
 
-    pipDoc.documentElement.style.cssText = "";
-    pipDoc.body.style.cssText = "";
+    const pipDoc = pipWindow.document;
+    const addedStyles = new Set<string>();
 
-    pipDoc.body.style.margin = "0";
-    pipDoc.body.style.padding = "0";
-    pipDoc.body.style.minHeight = "100vh";
-    pipDoc.body.style.display = "flex";
+    Children.forEach(children, (child) => {
+      if (isValidElement(child) && child.type === "style" && child.props.jsx) {
+        const styleContent = child.props.children.trim();
+        if (!styleContent || addedStyles.has(styleContent)) return;
 
-    const style = document.createElement("style");
-    style.textContent = `
-      .beta-label {
-        font-size: 14px;
-        font-weight: bold;
-        padding: 4px 8px;
-        border-radius: 4px;
-        text-transform: uppercase;
-        display: inline-block;
-        color: #fff;
-        border: 1px solid #fff;
-        display: flex;
-        justify-self: center;
-        width: fit-content;
+        const styleElement = pipDoc.createElement("style");
+        styleElement.setAttribute("jsx", "true");
+        styleElement.innerHTML = styleContent;
+
+        const styleHash = btoa(styleContent);
+        if (
+          !pipDoc.head.querySelector(`style[jsx][data-hash="${styleHash}"]`)
+        ) {
+          styleElement.setAttribute("data-hash", styleHash);
+          pipDoc.head.appendChild(styleElement);
+          addedStyles.add(styleContent);
+        }
       }
-    `;
-    pipDoc.head.appendChild(style);
+    });
 
     return () => {
-      pipDoc.documentElement.style.cssText = "";
-      pipDoc.body.style.cssText = "";
-      pipDoc.head.removeChild(style);
+      addedStyles.forEach((styleContent) => {
+        const styleHash = btoa(styleContent);
+        const existingStyle = pipDoc.head.querySelector(
+          `style[jsx][data-hash="${styleHash}"]`
+        );
+        if (existingStyle) {
+          pipDoc.head.removeChild(existingStyle);
+        }
+      });
     };
-  }, [pipWindow]);
+  }, [pipWindow, children]);
 
+  return <>{children}</>;
+};
+
+export const DPIPLyrics = (): ReactElement => {
+  const { pipWindow } = useSpotify();
   return (
-    <div className="pipApp" style={{ width: "100%" }}>
-      <p className="beta-label">Beta</p>
-      <FullScreenLyrics document={pipWindow.current?.document} />
+    <div id={"__next"} className="pipApp" style={{ width: "100%" }}>
+      <PiPStyleWrapper>
+        <p className="beta-label">Beta</p>
+        <FullScreenLyrics document={pipWindow.current?.document} />
+        <style global>{`
+          body {
+            margin: 0;
+            padding: 0;
+            min-height; 100vh;
+            display: flex;
+          }
+        `}</style>
+        <style jsx>{`
+          .beta-label {
+            font-size: 14px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            display: inline-block;
+            color: #fff;
+            border: 1px solid #fff;
+            display: flex;
+            justify-self: center;
+            width: fit-content;
+          }
+        `}</style>
+      </PiPStyleWrapper>
     </div>
   );
 };

@@ -24,6 +24,7 @@ declare global {
         height: number;
       }) => Promise<Window & typeof globalThis>;
       window: (Window & typeof globalThis) | null;
+      _pipStylesAdded?: Set<string>;
     };
   }
 }
