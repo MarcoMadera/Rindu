@@ -184,7 +184,7 @@ export function TracksList({
       const rangeKey = `${rangeStart}`;
       return loadedRanges.has(rangeKey);
     },
-    [loadedRanges, separatorIndices]
+    [loadedRanges]
   );
   const loadMoreRows = useCallback(
     async ({ startIndex, stopIndex }: IndexRange) => {
