@@ -178,17 +178,13 @@ export function TracksList({
 
   const isIndexLoaded = useCallback(
     (startIndex: number) => {
-      const separatorsBeforeIndex = Array.from(separatorIndices).filter(
-        (sepIndex) => sepIndex < startIndex
-      ).length;
-
-      const adjustedIndex = startIndex - separatorsBeforeIndex;
+      const adjustedIndex = startIndex;
 
       const rangeStart = getRangeStart(adjustedIndex);
       const rangeKey = `${rangeStart}`;
       return loadedRanges.has(rangeKey);
     },
-    [loadedRanges, separatorIndices]
+    [loadedRanges]
   );
   const loadMoreRows = useCallback(
     async ({ startIndex, stopIndex }: IndexRange) => {
@@ -199,11 +195,11 @@ export function TracksList({
 
       const rangesToLoad: number[] = [];
       for (let range = rangeStart; range <= rangeEnd; range += BATCH_SIZE) {
-        if (!isIndexLoaded(range)) {
+        const isRangeLoaded = isIndexLoaded(range);
+        if (!isRangeLoaded) {
           rangesToLoad.push(range);
         }
       }
-
       if (rangesToLoad.length === 0) return;
 
       setLoadedRanges((prev) => {
