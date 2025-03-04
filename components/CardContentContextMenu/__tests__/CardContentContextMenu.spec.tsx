@@ -21,6 +21,10 @@ jest.mock<typeof import("utils/spotifyCalls/follow")>(
     follow: jest.fn(),
   })
 );
+jest.mock<typeof import("utils")>("utils", () => ({
+  ...jest.requireActual("utils"),
+  baseUrl: "https://rindu.marcomadera.com",
+}));
 
 const { getAllTranslations, setupEnvironment } =
   jest.requireActual<IUtilsMocks>("utils/__tests__/__mocks__/mocks.ts");

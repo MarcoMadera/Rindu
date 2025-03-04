@@ -12,6 +12,5 @@ export const spotifyAccessCookie = process.env.SPOTIFY_ACCESS_COOKIE;
 export const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 export const fanArtTvApiKey = process.env.FAN_ART_TV_API_KEY;
 export const hmacSecret = process.env.HMAC_SECRET ?? "change-this-secret";
-export const isProduction = (): boolean => env === "production";
 export const isServer = (): boolean =>
   !(typeof window != "undefined" && window.document);
