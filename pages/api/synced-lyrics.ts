@@ -2,9 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { ILyrics } from "types/lyrics";
 
-import { getSiteUrl } from "utils";
+import { baseUrl, spotifyAccessCookie } from "utils";
 
 async function getToken(): Promise<string | null> {
+  if (!spotifyAccessCookie) return null;
   try {
     const res = await fetch(
       "https://open.spotify.com/get_access_token?reason=transport&productType=web_player",
@@ -20,7 +21,7 @@ async function getToken(): Promise<string | null> {
           "sec-fetch-mode": "cors",
           "sec-fetch-site": "same-origin",
           "spotify-app-version": "1.1.54.35.ge9dace1d",
-          cookie: process.env.SPOTIFY_ACCESS_COOKIE ?? "",
+          cookie: spotifyAccessCookie,
         },
       }
     );
@@ -31,7 +32,7 @@ async function getToken(): Promise<string | null> {
     console.warn(
       `Warning: https://open.spotify.com/get_access_token null token with status: ${
         res.status
-      } and cookie: ${process.env.SPOTIFY_ACCESS_COOKIE ?? "no cookie"}`
+      } and cookie: ${spotifyAccessCookie}`
     );
     return null;
   } catch (err) {
@@ -78,13 +79,12 @@ export default async function syncedLyrics(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
-  const thisUrl = getSiteUrl();
   const body = req.body as ISyncedLyricsBody;
 
   if (
-    thisUrl &&
+    baseUrl &&
     req.headers.referer &&
-    !req.headers.referer.startsWith(thisUrl)
+    !req.headers.referer.startsWith(baseUrl)
   ) {
     res.status(401).end();
     return;

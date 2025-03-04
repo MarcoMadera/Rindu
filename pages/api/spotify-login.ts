@@ -1,7 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { ApiError } from "next/dist/server/api-utils";
 
 import { AuthorizationResponse } from "types/spotify";
-import { ENABLE_PKCE_AUTH } from "utils";
+import {
+  clientId,
+  enablePkceAuth,
+  redirectUrl,
+  spotifyClientSecret,
+} from "utils";
 import { getMe } from "utils/spotifyCalls";
 
 interface ILoginBody {
@@ -16,6 +22,7 @@ export default async function login(
 ): Promise<void> {
   const body = req.body as ILoginBody;
   const context = { req, res };
+
   if (body.accessToken) {
     try {
       const data = await getMe(context);
@@ -24,29 +31,33 @@ export default async function login(
       return res.status(400).json(err);
     }
   }
+
   if (body.code) {
     try {
+      if (!clientId) {
+        throw new ApiError(400, "Missing client Id");
+      }
       const params: Record<string, string> = {
         grant_type: "authorization_code",
-        redirect_uri: process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URL as string,
+        redirect_uri: redirectUrl,
         code: body.code,
-        client_id: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID as string,
+        client_id: clientId,
       };
 
-      if (ENABLE_PKCE_AUTH) {
+      if (enablePkceAuth) {
         if (!body.code_verifier) {
-          throw new Error("Verification failed");
+          throw new ApiError(400, "Missing code verifier");
         }
 
         params["code_verifier"] = body.code_verifier;
       }
 
-      if (!ENABLE_PKCE_AUTH) {
-        if (!process.env.SPOTIFY_CLIENT_SECRET) {
-          throw new Error("Client secret is required for non-auth code flow");
+      if (!enablePkceAuth) {
+        if (!spotifyClientSecret) {
+          throw new ApiError(400, "Missing client secret");
         }
 
-        params["client_secret"] = process.env.SPOTIFY_CLIENT_SECRET;
+        params["client_secret"] = spotifyClientSecret;
       }
 
       const tokenResponse = await fetch(
@@ -60,10 +71,15 @@ export default async function login(
         }
       );
       const data = (await tokenResponse.json()) as AuthorizationResponse;
+      console.log("data", data);
 
       return res.json(data);
     } catch (err) {
-      return res.status(400).json(err);
+      console.error(err);
+      if (err instanceof ApiError) {
+        return res.status(err.statusCode).json({ message: err.message });
+      }
+      return res.status(400).json({ message: "bad request" });
     }
   }
   return res.status(400).json({ message: "bad request" });

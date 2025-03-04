@@ -4,7 +4,7 @@ import {
   ILyrics,
   LyricsAction,
 } from "types/lyrics";
-import { getSiteUrl, normalizeLrcLibLyrics } from "utils";
+import { baseUrl, lyricsApiUrl, normalizeLrcLibLyrics } from "utils";
 
 export async function getLyrics(
   artistName: string,
@@ -14,8 +14,7 @@ export async function getLyrics(
 ): Promise<GetLyrics> {
   if (action === LyricsAction.Fullscreen) {
     const resSyncedLyrics = await fetch(
-      process.env.NEXT_PUBLIC_LYRICS_API_URL ??
-        `${getSiteUrl()}/api/synced-lyrics`,
+      lyricsApiUrl ?? `${baseUrl}/api/synced-lyrics`,
       {
         method: "POST",
         headers: {
@@ -45,7 +44,7 @@ export async function getLyrics(
     }
   }
 
-  const res = await fetch(`${getSiteUrl()}/api/lyrics`, {
+  const res = await fetch(`${baseUrl}/api/lyrics`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -5,12 +5,6 @@ export const REFRESH_TOKEN_COOKIE = "rs";
 export const EXPIRE_TOKEN_COOKIE = "ex";
 export const CODE_VERIFIER_COOKIE = "cv";
 export const LOCALE_COOKIE = "NEXT_LOCALE";
-export const SPOTIFY_CLIENT_ID = process.env
-  .NEXT_PUBLIC_SPOTIFY_CLIENT_ID as string;
-export const SPOTIFY_REDIRECT_URL = process.env
-  .NEXT_PUBLIC_SPOTIFY_REDIRECT_URL as string;
-export const ENABLE_PKCE_AUTH =
-  process.env.NEXT_PUBLIC_ENABLE_PKCE_AUTH === "true";
 export const API_AUTH_URL = "https://accounts.spotify.com/authorize?";
 export const SCOPES = [
   "ugc-image-upload",

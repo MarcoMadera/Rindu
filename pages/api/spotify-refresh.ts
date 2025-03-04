@@ -4,10 +4,12 @@ import { ApiError } from "next/dist/server/api-utils";
 import { RefreshTokenResponse } from "types/spotify";
 import {
   ACCESS_TOKEN_COOKIE,
-  ENABLE_PKCE_AUTH,
+  clientId,
+  enablePkceAuth,
   EXPIRE_TOKEN_COOKIE,
   makeCookie,
   REFRESH_TOKEN_COOKIE,
+  spotifyClientSecret,
   takeCookie,
 } from "utils";
 
@@ -19,10 +21,6 @@ export default async function refresh(
   req: NextApiRequest,
   res: NextApiResponse<RefreshTokenResponse | string>
 ): Promise<void> {
-  const {
-    NEXT_PUBLIC_SPOTIFY_CLIENT_ID: client_id = "",
-    SPOTIFY_CLIENT_SECRET: client_secret = "",
-  } = process.env;
   const body = req.body as IRefreshBody;
   const context = { req, res };
   const refreshTokenFromCookie = takeCookie(REFRESH_TOKEN_COOKIE, context);
@@ -30,31 +28,38 @@ export default async function refresh(
 
   try {
     if (!refreshToken) {
-      throw new ApiError(400, "Bad Request");
+      throw new ApiError(400, "Missing refresh token");
     }
 
     const bodyContent: Record<string, string> = {
       grant_type: "refresh_token",
-      refresh_token: body.refreshToken ?? refreshTokenFromCookie ?? "",
+      refresh_token: refreshToken,
     };
 
     const headersContent: HeadersInit = {
       "Content-Type": "application/x-www-form-urlencoded",
     };
 
-    if (!ENABLE_PKCE_AUTH) {
-      if (!process.env.SPOTIFY_CLIENT_SECRET) {
-        throw new Error("Client secret is required for non-auth code flow");
+    if (!clientId) {
+      throw new ApiError(400, "Missing client id");
+    }
+
+    if (!enablePkceAuth) {
+      if (!spotifyClientSecret) {
+        throw new ApiError(
+          400,
+          "Missing client secret. Please set SPOTIFY_CLIENT_SECRET in your environment variables."
+        );
       }
 
       const authorization = `Basic ${Buffer.from(
-        `${client_id}:${client_secret}`
+        `${clientId}:${spotifyClientSecret}`
       ).toString("base64")}`;
       headersContent.Authorization = authorization;
     }
 
-    if (ENABLE_PKCE_AUTH) {
-      bodyContent.client_id = client_id;
+    if (enablePkceAuth) {
+      bodyContent.client_id = clientId;
     }
 
     const refreshTokenResponse = await fetch(
@@ -99,7 +104,10 @@ export default async function refresh(
 
     return res.json(data);
   } catch (error) {
-    const response = error as ApiError;
-    return res.status(500).json(response.message);
+    console.error(error);
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json(error.message);
+    }
+    return res.status(500).json("Internal Server Error");
   }
 }

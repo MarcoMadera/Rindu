@@ -39,6 +39,7 @@ import {
   getTranslations,
   getValidCookieLocale,
   serverRedirect,
+  setlistFmApiKey,
   SetLists,
 } from "utils";
 import {
@@ -428,7 +429,7 @@ export const getServerSideProps = (async (context) => {
   const { user } = (await getAuth(context)) ?? {};
 
   const currentArtist = await getArtistById(artistId, context);
-  const setListAPIKey = process.env.SETLIST_FM_API_KEY;
+  const setListAPIKey = setlistFmApiKey;
   const setListsProm = getSetLists(currentArtist?.name, setListAPIKey);
   const artistInfoProm = getArtistInfo(currentArtist?.name);
   const topTracksProm = getArtistTopTracks(

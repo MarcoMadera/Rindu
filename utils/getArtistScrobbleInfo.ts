@@ -1,3 +1,5 @@
+import { lastFmApiKey } from "./environment";
+
 export interface ArtistScrobbleInfo {
   name: string;
   mbid?: string;
@@ -40,9 +42,11 @@ export interface ArtistScrobbleInfo {
 export async function getArtistScrobbleInfo(
   artistName: string
 ): Promise<ArtistScrobbleInfo | null> {
-  const api = process.env.LAST_FM_API_KEY as string;
+  if (!lastFmApiKey) {
+    throw new Error("No lastFmApiKey found");
+  }
   const res = await fetch(
-    `http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${artistName}&api_key=${api}&format=json`,
+    `http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${artistName}&api_key=${lastFmApiKey}&format=json`,
     {
       method: "GET",
       headers: {

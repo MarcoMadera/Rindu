@@ -1,4 +1,4 @@
-import { getSiteUrl } from "./environment";
+import { baseUrl } from "./environment";
 import { generateHMACSHA256Token } from "./hmacToken";
 
 export enum GeneratedImageAPI {
@@ -11,7 +11,7 @@ export const getGeneratedImageUrl = async (
   api: GeneratedImageAPI,
   params: Record<string, string>
 ): Promise<string> => {
-  const url = new URL(`${getSiteUrl()}${api}`);
+  const url = new URL(`${baseUrl}${api}`);
   const token = await generateHMACSHA256Token(params);
 
   url.search = new URLSearchParams({ ...params, token }).toString();

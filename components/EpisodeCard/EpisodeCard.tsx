@@ -14,10 +14,10 @@ import {
 import { AsType } from "types/heading";
 import { ITrack } from "types/spotify";
 import {
+  baseUrl,
   chooseImage,
   formatTime,
   getIdFromUri,
-  getSiteUrl,
   getTimeAgo,
   handlePlayCurrentTrackError,
   playCurrentTrack,
@@ -218,9 +218,7 @@ export default function EpisodeCard({
             aria-label="Share"
             onClick={() => {
               try {
-                navigator.clipboard.writeText(
-                  `${getSiteUrl()}/episode/${track.id}`
-                );
+                navigator.clipboard.writeText(`${baseUrl}/episode/${track.id}`);
                 addToast({
                   message: translations.toastMessages.copiedToClipboard,
                   variant: "success",

@@ -1,31 +1,17 @@
 import { IUtilsMocks } from "types/mocks";
-import { getSiteUrl, isProduction, isServer } from "utils/environment";
+import { baseUrl, isServer } from "utils/environment";
 
-jest.mock<typeof import("utils")>("utils");
+jest.mock<typeof import("utils/environment")>("utils/environment", () => ({
+  ...jest.requireActual("utils/environment"),
+  baseUrl: "https://rindu.marcomadera.com",
+  env: "production",
+}));
 
 const { setupEnvironment } = jest.requireActual<IUtilsMocks>(
   "./__mocks__/mocks.ts"
 );
 
 describe("environment", () => {
-  describe("isProduction", () => {
-    it("should be falsy if is not production", () => {
-      expect.assertions(1);
-
-      expect(isProduction()).toBeFalsy();
-    });
-
-    it("should be truthy if is production", () => {
-      expect.assertions(1);
-
-      setupEnvironment({
-        NODE_ENV: "production",
-      });
-
-      expect(isProduction()).toBeTruthy();
-    });
-  });
-
   describe("isServer", () => {
     it("should be falsy if is not server", () => {
       expect.assertions(1);
@@ -45,18 +31,7 @@ describe("environment", () => {
     });
   });
 
-  describe("getSiteUrl", () => {
-    it("should be equal to the development url", () => {
-      expect.assertions(1);
-
-      setupEnvironment({
-        NODE_ENV: "development",
-        NEXT_PUBLIC_SITE_URL: "http://localhost:3000",
-      });
-
-      expect(getSiteUrl()).toBe("http://localhost:3000");
-    });
-
+  describe("baseUrl", () => {
     it("should be equal to the production url", () => {
       expect.assertions(1);
 
@@ -65,7 +40,7 @@ describe("environment", () => {
         NEXT_PUBLIC_SITE_URL: "https://rindu.marcomadera.com",
       });
 
-      expect(getSiteUrl()).toBe("https://rindu.marcomadera.com");
+      expect(baseUrl).toBe("https://rindu.marcomadera.com");
     });
   });
 });

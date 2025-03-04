@@ -1,15 +1,33 @@
 import { ReactElement } from "react";
 
-import { useTranslations } from "hooks";
+import { useToast, useTranslations } from "hooks";
+import { UseToast } from "types/toast";
+import { ITranslations } from "types/translations";
 import { getSpotifyLoginURL, isServer } from "utils";
+
+export const handleLogin = async (
+  translations: ITranslations,
+  addToast: UseToast["addToast"]
+): Promise<void> => {
+  if (isServer()) return;
+  try {
+    const url = await getSpotifyLoginURL();
+    window.location.href = url;
+  } catch (error) {
+    console.error("Error: handleLogin", error);
+    addToast({
+      variant: "error",
+      message: translations.pages.home.loginButtonError,
+    });
+  }
+};
 
 export default function LoginButton(): ReactElement {
   const { translations } = useTranslations();
+  const { addToast } = useToast();
 
-  const handleClick = async () => {
-    if (isServer()) return;
-    const url = await getSpotifyLoginURL();
-    window.location.href = url;
+  const handleClick = () => {
+    handleLogin(translations, addToast);
   };
 
   return (

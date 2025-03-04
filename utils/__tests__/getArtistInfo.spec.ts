@@ -4,6 +4,10 @@ import { ArtistScrobbleInfo, getArtistInfo } from "utils";
 const { artistInfo, mockFetchSuccess } = jest.requireActual<IUtilsMocks>(
   "./__mocks__/mocks.ts"
 );
+jest.mock<typeof import("utils/environment")>("utils/environment", () => ({
+  ...jest.requireActual("utils/environment"),
+  lastFmApiKey: "lastFmApiKey",
+}));
 
 describe("getArtistInfo", () => {
   it("should return null if no artistName provided", async () => {

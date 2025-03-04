@@ -4,13 +4,12 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Router from "next/router";
 
 import { CardContainer, FeatureCard, Hero } from "components";
-import { useAnalytics, useAuth } from "hooks";
+import { handleLogin } from "components/LoginButton";
+import { useAnalytics, useAuth, useToast } from "hooks";
 import { ITranslations } from "types/translations";
 import {
   ACCESS_TOKEN_COOKIE,
-  getSpotifyLoginURL,
   getValidCookieLocale,
-  isServer,
   REFRESH_TOKEN_COOKIE,
   removeTokensFromCookieServer,
   serverRedirect,
@@ -37,6 +36,7 @@ const Home = ({
   translations,
 }: InferGetServerSidePropsType<typeof getServerSideProps>): ReactElement => {
   const { setIsLogin } = useAuth();
+  const { addToast } = useToast();
 
   const { trackWithGoogleAnalytics } = useAnalytics();
   useEffect(() => {
@@ -47,10 +47,8 @@ const Home = ({
     setIsLogin(false);
   }, [setIsLogin]);
 
-  const onCTAClick = async () => {
-    if (isServer()) return;
-    const url = await getSpotifyLoginURL();
-    window.location.href = url;
+  const onCTAClick = () => {
+    handleLogin(translations, addToast);
   };
 
   return (

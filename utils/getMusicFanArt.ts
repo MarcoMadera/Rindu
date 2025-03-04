@@ -1,3 +1,7 @@
+import { ApiError } from "next/dist/server/api-utils";
+
+import { fanArtTvApiKey } from "./environment";
+
 interface FanArtData {
   name: string;
   mbid_id: string;
@@ -25,9 +29,11 @@ interface FanArtData {
 }
 
 export async function getMusicFanArt(mbid: string): Promise<FanArtData | null> {
-  const api = process.env.FAN_ART_TV_API_KEY as string;
+  if (!fanArtTvApiKey) {
+    throw new ApiError(400, "env variable FANART_TV_API_KEY is not set");
+  }
   const fanArtRes = await fetch(
-    `http://webservice.fanart.tv/v3/music/${mbid}?api_key=${api}`
+    `http://webservice.fanart.tv/v3/music/${mbid}?api_key=${fanArtTvApiKey}`
   );
 
   if (!fanArtRes.ok) return null;

@@ -1,3 +1,5 @@
+import { setlistFmApiKey } from "./environment";
+
 export interface SetList {
   artist: {
     mbid: string;
@@ -50,16 +52,16 @@ export interface SetList {
   lastUpdated: string;
 }
 
-export async function getSetList(
-  id?: string,
-  apiKey?: string
-): Promise<SetList | null> {
-  if (!id || !apiKey) return null;
+export async function getSetList(id?: string): Promise<SetList | null> {
+  if (!id || !setlistFmApiKey) {
+    console.error("No setlit id or setlistFmApiKey");
+    return null;
+  }
   const res = await fetch(`https://api.setlist.fm/rest/1.0/setlist/${id}`, {
     method: "GET",
     headers: {
       accept: "application/json",
-      "x-api-key": apiKey,
+      "x-api-key": setlistFmApiKey,
     },
   });
 

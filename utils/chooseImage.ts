@@ -1,5 +1,5 @@
-import { getSiteUrl } from "./environment";
-export const DEFAULT_SONG_IMAGE_URL = `${getSiteUrl()}/defaultSongCover.jpeg`;
+import { baseUrl } from "./environment";
+export const DEFAULT_SONG_IMAGE_URL = `${baseUrl}/defaultSongCover.jpeg`;
 
 const isValidImage = (
   image: Spotify.Image | undefined

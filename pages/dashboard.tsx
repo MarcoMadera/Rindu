@@ -377,7 +377,6 @@ export default Dashboard;
 
 export const getServerSideProps = (async (context) => {
   const translations = getTranslations(context);
-  const lastFMAPIKey = process.env.LAST_FM_API_KEY as string;
   let tokens: Record<string, string | null> | AuthorizationResponse = {
     accessToken: takeCookie(ACCESS_TOKEN_COOKIE, context),
     refreshToken: takeCookie(REFRESH_TOKEN_COOKIE, context),
@@ -425,8 +424,8 @@ export const getServerSideProps = (async (context) => {
   }
   const { user } = (await getAuth(context)) ?? {};
   const topTracksCardsProm = getTopTracksCards(user, translations);
-  const artistsOfTheWeekProm = getArtistsOfTheWeek(lastFMAPIKey);
-  const tracksOfTheWeekProm = getTracksOfTheWeek(lastFMAPIKey);
+  const artistsOfTheWeekProm = getArtistsOfTheWeek();
+  const tracksOfTheWeekProm = getTracksOfTheWeek();
 
   const featuredPlaylistsProm = getFeaturedPlaylists(
     user?.country ?? "US",

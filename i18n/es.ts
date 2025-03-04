@@ -209,6 +209,7 @@ export const es: ITranslations = {
         "Disfruta de la música a tu ritmo, tu pones las reglas y Rindu te lo hace realidad.",
       concludeSectionCta: "Empieza ahora",
       loginButton: "ENTRA CON SPOTIFY",
+      loginButtonError: "Hubo un error al iniciar sesión",
       madeBy: "Hecho por",
     },
     dashboard: {
