@@ -4,8 +4,15 @@ import css from "styled-jsx/css";
 
 import { lineCss, LyricLine } from "./LyricLine";
 import { LoadingSpinner, LyricsPIPButton } from "components";
-import { useAuth, useHeader, useLyricsContext } from "hooks";
+import {
+  useAuth,
+  useHeader,
+  useLyricsContext,
+  useSpotify,
+  useTranslations,
+} from "hooks";
 import { getLineType } from "utils";
+import { translate } from "utils/translate";
 
 const styles1 = css.global`
   .lyrics-container {
@@ -117,8 +124,11 @@ function Lines({
   document?: Document;
   ready: boolean;
 }) {
-  const { lyricsProgressMs, lyrics, registerContainer } = useLyricsContext();
+  const { lyricsProgressMs, lyrics, registerContainer, syncLyricsLine } =
+    useLyricsContext();
+  const { currentlyPlaying } = useSpotify();
   const containerRef = useRef<HTMLDivElement>(null);
+  const { locale } = useTranslations();
 
   useEffect(() => {
     const unregister = registerContainer(containerRef);
@@ -139,6 +149,62 @@ function Lines({
     }
   }, [lyrics, ready]);
 
+  const lyricsWords = lyrics?.lines.map((line) => line.words);
+  const [isTranslating, setIsTranslating] = useState<boolean>(false);
+  const [translatedLyrics, setTranslatedLyrics] = useState<string[]>([]);
+  const [translatedSongUri, setTranslatedSongUri] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (
+      !currentlyPlaying?.uri ||
+      isTranslating ||
+      currentlyPlaying.uri === translatedSongUri ||
+      !lyricsWords?.length
+    ) {
+      return;
+    }
+
+    // TODO: Move this to the useLyrics hook, I like this
+    const handleTranslate = async () => {
+      if (!currentlyPlaying?.uri || currentlyPlaying.uri === translatedSongUri)
+        return;
+
+      setIsTranslating(true);
+      try {
+        const data = await translate(lyricsWords, locale);
+
+        if (data) {
+          setTranslatedLyrics(data);
+          setTranslatedSongUri(currentlyPlaying.uri);
+          setIsTranslating(false);
+          syncLyricsLine();
+        } else {
+          console.error("Translation failed");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    handleTranslate();
+  }, [
+    locale,
+    currentlyPlaying?.uri,
+    lyricsWords,
+    isTranslating,
+    translatedSongUri,
+    syncLyricsLine,
+  ]);
+
+  useEffect(() => {
+    if (translatedSongUri && currentlyPlaying?.uri !== translatedSongUri) {
+      setTranslatedLyrics([]);
+      setIsTranslating(false);
+    }
+  }, [currentlyPlaying?.uri, translatedSongUri]);
+
   if (!lyrics || !lyrics.lines.length) return null;
   return (
     <div className="lyrics" ref={containerRef}>
@@ -151,7 +217,13 @@ function Lines({
         });
 
         return (
-          <LyricLine line={line} type={type} key={i} document={document} />
+          <LyricLine
+            line={line}
+            type={type}
+            key={i}
+            document={document}
+            translated={translatedLyrics[i]}
+          />
         );
       })}
     </div>

@@ -74,4 +74,5 @@ export interface IFormatLyricsResponse {
   }[];
   provider: ILyrics["lyrics"]["provider"];
   syncType: ILyrics["lyrics"]["syncType"];
+  translated?: string[];
 }

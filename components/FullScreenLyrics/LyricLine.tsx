@@ -9,6 +9,7 @@ interface ILyricLineProps {
   line: IFormatLyricsResponse["lines"][0];
   type: LineType;
   document?: Document;
+  translated?: string;
 }
 
 export const lineCss = css.global`
@@ -30,6 +31,14 @@ export const lineCss = css.global`
     color: var(--line-hover-color) !important;
     opacity: 1;
   }
+  .line.translated {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 0.25rem;
+    padding-left: 0;
+    opacity: 0.6;
+    line-height: 1.5;
+  }
   @media (max-width: 768px) {
     .line {
       padding-left: 0;
@@ -48,6 +57,7 @@ export function LyricLine({
   line,
   type,
   document = window.document,
+  translated,
 }: ILyricLineProps): ReactElement {
   const { player, isPlaying } = useSpotify();
   const { isPremium } = useAuth();
@@ -154,6 +164,7 @@ export function LyricLine({
       style={{ color: getColorLine(type) }}
     >
       {line.words}
+      {translated && <span className="line translated">{translated}</span>}
       <style jsx>{lineCss}</style>
     </button>
   );

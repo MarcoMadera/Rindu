@@ -11,6 +11,7 @@ export const lastFmApiKey = process.env.LAST_FM_API_KEY;
 export const spotifyAccessCookie = process.env.SPOTIFY_ACCESS_COOKIE;
 export const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 export const fanArtTvApiKey = process.env.FAN_ART_TV_API_KEY;
+export const translationApi = process.env.TRANSLATION_API;
 export const hmacSecret = process.env.HMAC_SECRET ?? "change-this-secret";
 export const isServer = (): boolean =>
   !(typeof window != "undefined" && window.document);
