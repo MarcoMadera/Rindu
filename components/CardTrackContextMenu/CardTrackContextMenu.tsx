@@ -12,12 +12,7 @@ import {
 } from "hooks";
 import { menuContextStyles } from "styles/menuContextStyles";
 import { ITrack } from "types/spotify";
-import {
-  getIdFromUri,
-  getSiteUrl,
-  positionSubMenu,
-  templateReplace,
-} from "utils";
+import { baseUrl, getIdFromUri, positionSubMenu, templateReplace } from "utils";
 import {
   addItemsToPlaylist,
   addToQueue,
@@ -171,7 +166,7 @@ export default function CardTrackContextMenu({
       {isStationAvailable && (
         <li>
           <Link
-            href={`${getSiteUrl()}/station/${track.type ?? "track"}/${
+            href={`${baseUrl}/station/${track.type ?? "track"}/${
               track?.id ?? ""
             }`}
             tabIndex={0}

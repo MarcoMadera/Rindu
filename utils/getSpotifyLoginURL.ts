@@ -1,12 +1,12 @@
 import {
   API_AUTH_URL,
+  clientId,
   CODE_VERIFIER_COOKIE,
-  ENABLE_PKCE_AUTH,
+  enablePkceAuth,
   makeCookie,
+  redirectUrl,
   SCOPES,
   SPOTIFY_AUTH_LOGIN_RESPONSE_TYPE,
-  SPOTIFY_CLIENT_ID,
-  SPOTIFY_REDIRECT_URL,
 } from "utils";
 
 async function getPKCEParams() {
@@ -42,14 +42,17 @@ async function getPKCEParams() {
 }
 
 export async function getSpotifyLoginURL(): Promise<string> {
+  if (!clientId) {
+    throw new Error("Missing client Id");
+  }
   const params = {
     response_type: SPOTIFY_AUTH_LOGIN_RESPONSE_TYPE,
-    client_id: SPOTIFY_CLIENT_ID,
+    client_id: clientId,
     scope: SCOPES.join(","),
-    redirect_uri: SPOTIFY_REDIRECT_URL,
+    redirect_uri: redirectUrl,
   };
 
-  if (ENABLE_PKCE_AUTH) {
+  if (enablePkceAuth) {
     const PKCEParams = await getPKCEParams();
 
     Object.assign(params, PKCEParams);

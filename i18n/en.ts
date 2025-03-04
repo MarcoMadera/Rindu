@@ -207,6 +207,7 @@ export const en: ITranslations = {
         "Enjoy music at your own pace, you set the rules and Rindu makes it happen for you.",
       concludeSectionCta: "Start now",
       loginButton: "LOGIN WITH SPOTIFY",
+      loginButtonError: "There was an error logging in with Spotify",
       madeBy: "Made by",
     },
     dashboard: {

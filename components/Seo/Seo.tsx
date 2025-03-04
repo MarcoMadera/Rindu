@@ -3,7 +3,7 @@ import { ReactElement } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-import { getSiteUrl } from "utils";
+import { baseUrl } from "utils";
 
 export default function Seo(): ReactElement {
   const router = useRouter();
@@ -12,7 +12,7 @@ export default function Seo(): ReactElement {
   const des = `Ya sea si tienes un bot que añade tracks y te ha estado añadiendo
  repetidos, Rindu elimina esos tracks que están de más y deja solo uno.`;
   const description = des.replace(/\n/g, "");
-  const cover = `${getSiteUrl()}/logo.png`;
+  const cover = `${baseUrl}/logo.png`;
 
   return (
     <Head key={1}>
@@ -23,22 +23,14 @@ export default function Seo(): ReactElement {
         href="https://www.google-analytics.com"
       />
       <link rel="preconnect dns-prefetch" href="https://res.cloudinary.com" />
-      <link
-        rel="icon"
-        type="image/png"
-        href={`${getSiteUrl()}/favicon-32x32.png`}
-      />
-      <link rel="apple-touch-icon" href={`${getSiteUrl()}/favicon-32x32.png`} />
+      <link rel="icon" type="image/png" href={`${baseUrl}/favicon-32x32.png`} />
+      <link rel="apple-touch-icon" href={`${baseUrl}/favicon-32x32.png`} />
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta property="og:title" content={title} />
       <link
         rel="canonical"
-        href={
-          router.pathname === "/"
-            ? getSiteUrl()
-            : `${getSiteUrl()}/${router.asPath}`
-        }
+        href={router.pathname === "/" ? baseUrl : `${baseUrl}/${router.asPath}`}
       />
       <meta property="og:locale" content="es-MX" />
       <meta name="robots" content="index,follow" />

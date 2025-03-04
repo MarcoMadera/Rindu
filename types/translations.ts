@@ -210,6 +210,7 @@ export interface Home {
   concludeSectionDescription: string;
   concludeSectionCta: string;
   loginButton: string;
+  loginButtonError: string;
   madeBy: string;
 }
 

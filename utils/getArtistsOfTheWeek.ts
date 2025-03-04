@@ -1,3 +1,5 @@
+import { lastFmApiKey } from "./environment";
+
 interface IArtistOfTheWeek {
   artists: {
     artist: {
@@ -7,11 +9,13 @@ interface IArtistOfTheWeek {
   error?: number;
   message?: string;
 }
-export async function getArtistsOfTheWeek(
-  apiKey: string
-): Promise<IArtistOfTheWeek | null> {
+export async function getArtistsOfTheWeek(): Promise<IArtistOfTheWeek | null> {
+  if (!lastFmApiKey) {
+    console.error("No lastFmApiKey found");
+    return null;
+  }
   const artistsOfTheWeekRes = await fetch(
-    `https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=${apiKey}&format=json`
+    `https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=${lastFmApiKey}&format=json`
   );
   const artistsOfTheWeek =
     (await artistsOfTheWeekRes.json()) as IArtistOfTheWeek;

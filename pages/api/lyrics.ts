@@ -3,7 +3,7 @@ import levenshtein from "fast-levenshtein";
 import _ from "lodash";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { getSiteUrl } from "utils";
+import { baseUrl } from "utils";
 
 async function getLyrics(
   artistName: string,
@@ -228,12 +228,11 @@ export default async function lyrics(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
-  const thisUrl = getSiteUrl();
   const body = req.body as { title: string; artistName: string };
   if (
-    thisUrl &&
+    baseUrl &&
     req.headers.referer &&
-    !req.headers.referer.startsWith(thisUrl)
+    !req.headers.referer.startsWith(baseUrl)
   ) {
     res.status(401).end();
     return;

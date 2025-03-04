@@ -1,5 +1,5 @@
 import { IUtilsMocks } from "types/mocks";
-import { getSiteUrl, isProduction, isServer } from "utils/environment";
+import { baseUrl, isProduction, isServer } from "utils/environment";
 
 jest.mock<typeof import("utils")>("utils");
 
@@ -45,7 +45,7 @@ describe("environment", () => {
     });
   });
 
-  describe("getSiteUrl", () => {
+  describe("baseUrl", () => {
     it("should be equal to the development url", () => {
       expect.assertions(1);
 
@@ -54,7 +54,7 @@ describe("environment", () => {
         NEXT_PUBLIC_SITE_URL: "http://localhost:3000",
       });
 
-      expect(getSiteUrl()).toBe("http://localhost:3000");
+      expect(baseUrl).toBe("http://localhost:3000");
     });
 
     it("should be equal to the production url", () => {
@@ -65,7 +65,7 @@ describe("environment", () => {
         NEXT_PUBLIC_SITE_URL: "https://rindu.marcomadera.com",
       });
 
-      expect(getSiteUrl()).toBe("https://rindu.marcomadera.com");
+      expect(baseUrl).toBe("https://rindu.marcomadera.com");
     });
   });
 });

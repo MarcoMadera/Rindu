@@ -56,8 +56,7 @@ export const getServerSideProps = (async (context) => {
   const artistId = id.split(".")[0];
   const setListId = id.split(".")[1];
 
-  const setListAPIKey = process.env.SETLIST_FM_API_KEY;
-  const setListProm = getSetList(setListId, setListAPIKey);
+  const setListProm = getSetList(setListId);
   const artistProm = getArtistById(artistId, context);
   const [setListSettled, artistSettled] = await Promise.allSettled([
     setListProm,

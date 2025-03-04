@@ -8,7 +8,7 @@ import { useContextMenu, useToast, useTranslations } from "hooks";
 import { menuContextStyles } from "styles/menuContextStyles";
 import { ICardContentContextMenuData } from "types/contextMenu";
 import { Modify } from "types/customTypes";
-import { getSiteUrl, handleAsyncError, templateReplace } from "utils";
+import { baseUrl, handleAsyncError, templateReplace } from "utils";
 import {
   follow,
   followAlbums,
@@ -50,7 +50,7 @@ export default function CardContentContextMenu({
 
   const handleGoToClick = useCallback(async () => {
     removeContextMenu();
-    await router.push(`${getSiteUrl()}/${data.type || "track"}/${data.id}`);
+    await router.push(`${baseUrl}/${data.type || "track"}/${data.id}`);
   }, [data.id, data.type, removeContextMenu, router]);
 
   return (
