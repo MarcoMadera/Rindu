@@ -1,4 +1,5 @@
 import { ApiError } from "next/dist/server/api-utils";
+
 import { fanArtTvApiKey } from "./environment";
 
 interface FanArtData {
