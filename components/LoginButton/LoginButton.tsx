@@ -3,7 +3,7 @@ import { ReactElement } from "react";
 import { useToast, useTranslations } from "hooks";
 import { UseToast } from "types/toast";
 import { ITranslations } from "types/translations";
-import { env, getSpotifyLoginURL, isServer } from "utils";
+import { getSpotifyLoginURL, isServer } from "utils";
 
 export const handleLogin = async (
   translations: ITranslations,
