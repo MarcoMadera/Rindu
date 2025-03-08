@@ -7,6 +7,7 @@ import { LoadingSpinner } from "components";
 import { useSpotify } from "hooks";
 
 interface VirtualizedDataProps<T> {
+  id?: string;
   type: string;
   itemHeight: number | ((params: { index: number }) => number);
   totalItems?: number;
@@ -34,6 +35,7 @@ interface VirtualizedDataProps<T> {
 }
 
 export function VirtualizedData<T>({
+  id,
   type,
   itemHeight,
   fetchItems,
@@ -71,7 +73,7 @@ export function VirtualizedData<T>({
   });
 
   useEffect(() => {
-    if (pageDetails?.uri && initialItems) {
+    if (id && initialItems) {
       setItems(initialItems);
       setItemsInLibrary(initialItemsInLibrary);
 
@@ -83,7 +85,7 @@ export function VirtualizedData<T>({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageDetails?.uri, initialItems, initialItemsInLibrary]);
+  }, [id, initialItems, initialItemsInLibrary]);
 
   useEffect(() => {
     if (!initialItems) {
