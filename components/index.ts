@@ -16,6 +16,7 @@ export { default as Code } from "./Code";
 export { default as CommandLine } from "./CommandLine";
 export { default as ContentContainer } from "./ContentContainer";
 export { default as ContextMenu } from "./ContextMenu";
+export { default as CountDown } from "./CountDown";
 export { default as DeviceConnectControl } from "./DeviceConnectControl";
 export { default as DiscSeparator } from "./DiscSeparator";
 export { default as DPIPLyrics } from "./DPIPLyrics";

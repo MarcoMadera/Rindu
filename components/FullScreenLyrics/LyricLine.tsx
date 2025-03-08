@@ -61,7 +61,7 @@ export function LyricLine({
   } = useLyricsContext();
 
   const lineColors = {
-    first: lyricLineColor + "80",
+    first: lyricTextColor,
     current: "#ffffff",
     previous: lyricLineColor + "80",
     next: lyricTextColor,

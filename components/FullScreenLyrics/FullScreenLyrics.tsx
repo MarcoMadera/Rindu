@@ -3,8 +3,8 @@ import { ReactElement, useEffect, useRef, useState } from "react";
 import css from "styled-jsx/css";
 
 import { lineCss, LyricLine } from "./LyricLine";
-import { LoadingSpinner, LyricsPIPButton } from "components";
-import { useAuth, useHeader, useLyricsContext } from "hooks";
+import { CountDown, LoadingSpinner, LyricsPIPButton } from "components";
+import { useAuth, useHeader, useLyricsContext, useSpotify } from "hooks";
 import { getLineType } from "utils";
 
 const styles1 = css.global`
@@ -56,6 +56,7 @@ const styles1 = css.global`
     font-size: 2rem;
     color: #fff;
     padding: 1rem;
+    position: relative;
   }
   .lyrics-error {
     font-size: 2rem;
@@ -118,6 +119,7 @@ function Lines({
   ready: boolean;
 }) {
   const { lyricsProgressMs, lyrics, registerContainer } = useLyricsContext();
+  const { isPlaying } = useSpotify();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -142,6 +144,19 @@ function Lines({
   if (!lyrics || !lyrics.lines.length) return null;
   return (
     <div className="lyrics" ref={containerRef}>
+      {lyrics.lines[0].startTimeMs &&
+      lyricsProgressMs &&
+      +lyrics.lines[0].startTimeMs >= 2000 &&
+      lyricsProgressMs <= +lyrics.lines[0].startTimeMs ? (
+        <div style={{ position: "absolute", top: "-1rem", right: "1rem" }}>
+          <CountDown
+            startTime={+lyrics.lines[0].startTimeMs}
+            currentProgress={lyricsProgressMs}
+            isPlaying={isPlaying}
+          />
+        </div>
+      ) : null}
+
       {lyrics.lines.map((line, i) => {
         const type = getLineType({
           currentLine: line,
