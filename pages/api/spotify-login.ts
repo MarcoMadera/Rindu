@@ -71,7 +71,6 @@ export default async function login(
         }
       );
       const data = (await tokenResponse.json()) as AuthorizationResponse;
-      console.log("data", data);
 
       return res.json(data);
     } catch (err) {
