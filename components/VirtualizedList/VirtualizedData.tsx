@@ -50,6 +50,7 @@ export function VirtualizedData<T>({
   getRealIndex: getExternalRealIndex,
 }: VirtualizedDataProps<T>): ReactElement {
   const { pageDetails } = useSpotify();
+  const pageId = pageDetails?.uri ?? pageDetails?.name;
   const [items, setItems] = useState<T[] | null>(initialItems);
   const [itemsInLibrary, setItemsInLibrary] = useState<boolean[] | null>(
     initialItemsInLibrary
@@ -71,7 +72,7 @@ export function VirtualizedData<T>({
   });
 
   useEffect(() => {
-    if (pageDetails?.uri && initialItems) {
+    if (pageId && initialItems) {
       setItems(initialItems);
       setItemsInLibrary(initialItemsInLibrary);
 
@@ -83,7 +84,7 @@ export function VirtualizedData<T>({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageDetails?.uri, initialItems, initialItemsInLibrary]);
+  }, [pageId, initialItems, initialItemsInLibrary]);
 
   useEffect(() => {
     if (!initialItems) {
