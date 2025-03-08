@@ -91,8 +91,16 @@ export function VirtualizedData<T>({
         try {
           const response = await fetchItems(0);
           if (response.items) {
-            setItems(response.items);
-            setTotalItems(response.total);
+            const total = response.total;
+            setTotalItems(total);
+
+            const allItems = Array(total).fill(emptyItem);
+
+            for (let i = 0; i < response.items.length; i++) {
+              allItems[i] = response.items[i];
+            }
+
+            setItems(allItems);
 
             if (checkItemsInLibrary) {
               const ids = response.items
@@ -117,20 +125,17 @@ export function VirtualizedData<T>({
   }, []);
 
   const spliceItems = useCallback(
-    <U,>(
-      allItems: U[] | null,
-      newItems: U[],
-      position: number,
-      size = batchSize
-    ): U[] => {
+    <U,>(allItems: U[] | null, newItems: U[], position: number): U[] => {
       if (!allItems) {
         return [...newItems];
       }
       const updatedItems = [...allItems];
-      updatedItems.splice(position, size, ...newItems);
+      for (let i = 0; i < newItems.length; i++) {
+        updatedItems[position + i] = newItems[i];
+      }
       return updatedItems;
     },
-    [batchSize]
+    []
   );
 
   const isIndexLoaded = useCallback(
