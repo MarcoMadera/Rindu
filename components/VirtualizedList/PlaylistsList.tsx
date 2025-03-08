@@ -3,8 +3,10 @@ import { CSSProperties, ReactElement } from "react";
 import { VirtualizedData } from "./VirtualizedData";
 import PlaylistText from "components/PlaylistText";
 import { getUserPlaylists } from "utils/spotifyCalls";
+import { useAuth } from "hooks";
 
 export function PlaylistsList(): ReactElement {
+  const { user } = useAuth();
   const fetchPlaylists = async (offset: number) => {
     try {
       const response = await getUserPlaylists(offset);
@@ -51,6 +53,7 @@ export function PlaylistsList(): ReactElement {
       itemHeight={26}
       fetchItems={fetchPlaylists}
       getItemId={getPlaylistId}
+      id={user?.uri}
       renderItem={renderPlaylistItem}
       isItemLoaded={isItemLoaded}
       emptyItem={

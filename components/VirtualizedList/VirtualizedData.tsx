@@ -7,6 +7,7 @@ import { LoadingSpinner } from "components";
 import { useSpotify } from "hooks";
 
 interface VirtualizedDataProps<T> {
+  id?: string;
   type: string;
   itemHeight: number | ((params: { index: number }) => number);
   totalItems?: number;
@@ -34,6 +35,7 @@ interface VirtualizedDataProps<T> {
 }
 
 export function VirtualizedData<T>({
+  id,
   type,
   itemHeight,
   fetchItems,
@@ -50,7 +52,6 @@ export function VirtualizedData<T>({
   getRealIndex: getExternalRealIndex,
 }: VirtualizedDataProps<T>): ReactElement {
   const { pageDetails } = useSpotify();
-  const pageId = pageDetails?.uri ?? pageDetails?.name;
   const [items, setItems] = useState<T[] | null>(initialItems);
   const [itemsInLibrary, setItemsInLibrary] = useState<boolean[] | null>(
     initialItemsInLibrary
@@ -72,7 +73,7 @@ export function VirtualizedData<T>({
   });
 
   useEffect(() => {
-    if (pageId && initialItems) {
+    if (id && initialItems) {
       setItems(initialItems);
       setItemsInLibrary(initialItemsInLibrary);
 
@@ -84,7 +85,7 @@ export function VirtualizedData<T>({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageId, initialItems, initialItemsInLibrary]);
+  }, [id, initialItems, initialItemsInLibrary]);
 
   useEffect(() => {
     if (!initialItems) {

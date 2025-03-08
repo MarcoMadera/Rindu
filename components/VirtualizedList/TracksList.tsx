@@ -227,6 +227,7 @@ export function TracksList({
   return (
     <VirtualizedData
       type="track"
+      id={pageDetails?.uri ?? pageDetails?.id ?? pageDetails?.name}
       itemHeight={getItemHeight}
       fetchItems={fetchTracks}
       getItemId={getTrackId}
