@@ -22,24 +22,6 @@ const styles1 = css.global`
     min-height: 100vh;
     background: var(--lyrics-background-color);
   }
-  @media (max-width: 768px) {
-    .lyrics-container {
-      margin: 30px 64px;
-      font-size: 24px;
-    }
-    .line {
-      padding-left: 0;
-    }
-  }
-  @media (max-width: 658px) {
-    .lyrics-container {
-      margin: 30px 0px 0px 0px;
-      font-size: 18px;
-    }
-    .line {
-      padding-left: 0;
-    }
-  }
   .message-container {
     width: 100%;
     height: calc((var(--vh, 1vh) * 100) - 90px - 60px);
@@ -58,6 +40,11 @@ const styles1 = css.global`
     padding: 1rem;
     position: relative;
   }
+  .lyrics .countdown-container {
+    position: absolute;
+    top: -3rem;
+    left: 10rem;
+  }
   .lyrics-error {
     font-size: 2rem;
     color: #fff;
@@ -71,6 +58,58 @@ const styles1 = css.global`
   @media screen and (max-width: 1000px) {
     div.lyrics-container :global(.lyrics-pip-button) {
       top: calc(100% - 200px);
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .lyrics-container {
+      margin: 30px 64px;
+      font-size: 24px;
+    }
+    .line {
+      padding-left: 0;
+    }
+    .lyrics .countdown-container {
+      left: calc(50% - 4rem);
+      top: -1rem;
+      transform: translateX(-50%);
+    }
+  }
+  @media screen and (max-width: 658px) {
+    .lyrics-container {
+      margin: 30px 0px 0px 0px;
+      font-size: 18px;
+    }
+    .line {
+      padding-left: 0;
+    }
+    .lyrics .countdown-container {
+      top: -1rem;
+      left: 50%;
+    }
+  }
+
+  @media all and (display-mode: picture-in-picture) {
+    .lyrics .countdown-container {
+      left: 10rem;
+      top: -1.5rem;
+    }
+  }
+  @media screen and (max-width: 768px) and (display-mode: picture-in-picture) {
+    .lyrics .countdown-container {
+      left: 2rem;
+    }
+  }
+
+  @media screen and (max-width: 658px) and (display-mode: picture-in-picture) {
+    .lyrics .countdown-container {
+      left: 2rem;
+    }
+  }
+
+  @media all and (display-mode: fullscreen) {
+    .lyrics .countdown-container {
+      left: 12rem;
     }
   }
 `;
@@ -148,13 +187,11 @@ function Lines({
       lyricsProgressMs &&
       +lyrics.lines[0].startTimeMs >= 2000 &&
       lyricsProgressMs <= +lyrics.lines[0].startTimeMs ? (
-        <div style={{ position: "absolute", top: "-1rem", right: "1rem" }}>
-          <CountDown
-            startTime={+lyrics.lines[0].startTimeMs}
-            currentProgress={lyricsProgressMs}
-            isPlaying={isPlaying}
-          />
-        </div>
+        <CountDown
+          startTime={+lyrics.lines[0].startTimeMs}
+          currentProgress={lyricsProgressMs}
+          isPlaying={isPlaying}
+        />
       ) : null}
 
       {lyrics.lines.map((line, i) => {
