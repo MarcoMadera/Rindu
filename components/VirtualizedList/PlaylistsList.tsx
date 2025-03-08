@@ -2,8 +2,8 @@ import { CSSProperties, ReactElement } from "react";
 
 import { VirtualizedData } from "./VirtualizedData";
 import PlaylistText from "components/PlaylistText";
-import { getUserPlaylists } from "utils/spotifyCalls";
 import { useAuth } from "hooks";
+import { getUserPlaylists } from "utils/spotifyCalls";
 
 export function PlaylistsList(): ReactElement {
   const { user } = useAuth();
