@@ -77,10 +77,8 @@ export default function PageDetails({
         .banner-background:after {
           min-height: ${banner ? "40vh" : "0"};
           opacity: calc(var(--banner-opacity, 0) * 2);
-          background-image: linear-gradient(
-              rgba(0, 0, 0, 0.6),
-              rgba(0, 0, 0, 0.6)
-            ),
+          background-image:
+            linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
             linear-gradient(
               var(--header-color, transparent),
               var(--header-color, transparent)
@@ -136,7 +134,8 @@ export default function PageDetails({
           width: 100%;
           top: 0;
           max-height: 500px;
-          background: linear-gradient(transparent 0, rgba(0, 0, 0, 0.5) 100%),
+          background:
+            linear-gradient(transparent 0, rgba(0, 0, 0, 0.5) 100%),
             url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
         }
         .banner-background:after {
@@ -144,7 +143,8 @@ export default function PageDetails({
           content: "";
         }
         .bg-12 {
-          background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0, #121212 100%),
+          background-image:
+            linear-gradient(rgba(0, 0, 0, 0.6) 0, #121212 100%),
             url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
           height: 232px;
           position: absolute;
