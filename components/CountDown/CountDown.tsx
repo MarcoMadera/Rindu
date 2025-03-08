@@ -82,10 +82,7 @@ export const CountDown = ({
   }, [isPlaying]);
 
   return (
-    <div
-      className="countdown-container"
-      style={{ width: size, height: size, position: "relative" }}
-    >
+    <div className="countdown-container" style={{ width: size, height: size }}>
       <svg
         style={{ width: "100%", height: "100%" }}
         viewBox={`0 0 ${size} ${size}`}
