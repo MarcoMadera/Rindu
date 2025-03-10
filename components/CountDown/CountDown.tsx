@@ -23,8 +23,6 @@ export const CountDown = ({
   const lastTimeRef = useRef<number>(null);
   const [countdownNumber, setCountdownNumber] = useState<number | null>(null);
 
-  console.log({ startTime, currentProgress, isPlaying });
-
   const updateCircle = () => {
     if (!circleRef.current) return;
 
