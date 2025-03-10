@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useRef } from "react";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
 
 export const CountDown = ({
   startTime,
@@ -21,6 +21,9 @@ export const CountDown = ({
   const animationRef = useRef<number>(null);
   const progressRef = useRef(currentProgress);
   const lastTimeRef = useRef<number>(null);
+  const [countdownNumber, setCountdownNumber] = useState<number | null>(null);
+
+  console.log({ startTime, currentProgress, isPlaying });
 
   const updateCircle = () => {
     if (!circleRef.current) return;
@@ -37,6 +40,13 @@ export const CountDown = ({
       circleRef.current.style.opacity = (progress * 10).toString(); // Fade out in last 10%
     } else {
       circleRef.current.style.opacity = "1";
+    }
+
+    const remainingSeconds = Math.ceil(remainingTime / 1000);
+    if (remainingSeconds <= 3 && remainingSeconds > 0) {
+      setCountdownNumber(remainingSeconds);
+    } else {
+      setCountdownNumber(null);
     }
 
     if (progress <= 0) {
@@ -81,6 +91,8 @@ export const CountDown = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying]);
 
+  const fontSize = Math.max(size * 0.3, 12);
+
   return (
     <div className="countdown-container" style={{ width: size, height: size }}>
       <svg
@@ -100,6 +112,20 @@ export const CountDown = ({
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
           strokeLinecap="round"
         />
+
+        {countdownNumber !== null && (
+          <text
+            x={size / 2}
+            y={size / 2 + fontSize / 6}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill={color}
+            fontSize={fontSize}
+            fontWeight="bold"
+          >
+            {countdownNumber}
+          </text>
+        )}
       </svg>
     </div>
   );

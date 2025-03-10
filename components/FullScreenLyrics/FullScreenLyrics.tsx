@@ -184,7 +184,7 @@ function Lines({
   return (
     <div className="lyrics" ref={containerRef}>
       {lyrics.lines[0].startTimeMs &&
-      lyricsProgressMs &&
+      typeof lyricsProgressMs === "number" &&
       +lyrics.lines[0].startTimeMs >= 2000 &&
       lyricsProgressMs <= +lyrics.lines[0].startTimeMs ? (
         <CountDown
