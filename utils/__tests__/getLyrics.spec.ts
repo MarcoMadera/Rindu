@@ -2,15 +2,14 @@ import { LyricsAction } from "types/lyrics";
 import { IUtilsMocks } from "types/mocks";
 import { getLyrics } from "utils/getLyrics";
 
-const { mockFetchSuccess, mockFetchError } = jest.requireActual<IUtilsMocks>(
-  "./__mocks__/mocks.ts"
-);
+const { mockFetchSuccess, mockFetchError, lrcResponse, lyricsDataMock } =
+  jest.requireActual<IUtilsMocks>("./__mocks__/mocks.ts");
 
 describe("getLyrics", () => {
   it("should return the lyrics of the song", async () => {
     expect.assertions(1);
 
-    mockFetchSuccess({ lyrics: "these lyrics" });
+    mockFetchSuccess(lrcResponse);
     const response = await getLyrics(
       "artistName",
       "songTitle",
@@ -18,10 +17,7 @@ describe("getLyrics", () => {
       LyricsAction.Fullscreen
     );
 
-    expect(response).toStrictEqual({
-      isFullscreen: true,
-      lyrics: "these lyrics",
-    });
+    expect(response).toStrictEqual(lyricsDataMock);
   });
 
   it("should return null", async () => {

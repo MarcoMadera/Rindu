@@ -1,5 +1,6 @@
 import { NextRouter } from "next/router";
 
+import { GetLyrics, IlrclibResponse } from "./lyrics";
 import { ITranslations } from "./translations";
 import { ITrack } from "types/spotify";
 import { ArtistScrobbleInfo, Locale } from "utils";
@@ -31,4 +32,6 @@ export interface IUtilsMocks {
   mockPlaylistTrackResponse: SpotifyApi.PlaylistTrackResponse;
   getAllTranslations: (language: Locale) => ITranslations;
   nextRouterMock: NextRouter;
+  lrcResponse: IlrclibResponse;
+  lyricsDataMock: GetLyrics;
 }
