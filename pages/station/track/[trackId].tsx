@@ -56,7 +56,7 @@ export const getServerSideProps = (async (context) => {
   const cookies = context.req?.headers?.cookie;
   if (!cookies || !trackId) {
     serverRedirect(context.res, "/");
-    return { props: {} };
+    return { props: { translations, locale: getValidCookieLocale(context) } };
   }
   const { user } = (await getAuth(context)) ?? {};
 
@@ -74,7 +74,13 @@ export const getServerSideProps = (async (context) => {
   const currentTrack = fullFilledValue(currentTrackSettledResult);
   if (!currentTrack || !recommendedTracks) {
     serverRedirect(context.res, "/");
-    return { props: {} };
+    return {
+      props: {
+        user: user ?? null,
+        translations,
+        locale: getValidCookieLocale(context),
+      },
+    };
   }
   const allTracks = [currentTrack, ...recommendedTracks];
   const playListTracks =

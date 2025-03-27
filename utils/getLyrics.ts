@@ -13,20 +13,22 @@ export async function getLyrics(
   action?: LyricsAction
 ): Promise<GetLyrics> {
   if (action === LyricsAction.Fullscreen) {
-    const resSyncedLyrics = await fetch(
-      lyricsApiUrl ?? `${baseUrl}/api/synced-lyrics`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ trackId }),
-      }
-    );
-    if (resSyncedLyrics.ok) {
-      const data = (await resSyncedLyrics.json()) as ILyrics;
-      if (data) {
-        return { ...data, isFullscreen: true };
+    if (lyricsApiUrl) {
+      const resSyncedLyrics = await fetch(
+        lyricsApiUrl ?? `${baseUrl}/api/synced-lyrics`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ trackId }),
+        }
+      );
+      if (resSyncedLyrics.ok) {
+        const data = (await resSyncedLyrics.json()) as ILyrics;
+        if (data) {
+          return { ...data, isFullscreen: true };
+        }
       }
     }
 
