@@ -6,11 +6,8 @@ on:
 
 jobs:
   close_stale:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Close Stale Issues
-        uses: MarcoMadera/shared-actions/.github/actions/shared-actions/close-stale-issues
-        secrets:
-          token: ${{secrets.BOT_TOKEN}}
-          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+    uses: MarcoMadera/shared-actions/.github/actions/shared-actions/close-stale-issues
+    secrets:
+      token: ${{secrets.BOT_TOKEN}}
+      GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+      GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
