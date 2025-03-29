@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Close Stale Issues
-        uses: ./.github/actions/shared-actions/close-stale-issues
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+        uses: MarcoMadera/shared-actions/.github/actions/shared-actions/close-stale-issues
+        secrets:
+          token: ${{secrets.BOT_TOKEN}}
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
