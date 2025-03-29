@@ -6,7 +6,7 @@ on:
 
 jobs:
   close_stale:
-    uses: MarcoMadera/shared-actions/.github/actions/shared-actions/close-stale-issues
+    uses: MarcoMadera/shared-actions/.github/actions/shared-actions/close-stale-issues@main
     secrets:
       token: ${{secrets.BOT_TOKEN}}
       GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
