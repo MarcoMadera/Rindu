@@ -3,10 +3,14 @@ name: Close Stale Issues and PRs
 on:
   schedule:
     - cron: "0 0 * * *" # Runs daily at midnight
+  workflow_dispatch:
 
 jobs:
   close_stale:
     uses: MarcoMadera/shared-actions/.github/workflows/close-stale-issues.yml@main
+    with:
+      days-before-stale: "90"
+      days-before-close: "14"
     secrets:
       token: ${{secrets.BOT_TOKEN}}
       GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
