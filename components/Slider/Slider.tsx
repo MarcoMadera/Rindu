@@ -34,7 +34,7 @@ interface SliderProps {
 }
 
 export const styles = css.global`
-  label {
+  .barContainer label {
     clip: rect(0 0 0 0);
     border: 0;
     height: 1px;
