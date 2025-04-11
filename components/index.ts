@@ -45,6 +45,7 @@ export { default as LoginButton } from "./LoginButton";
 export { default as Logo } from "./Logo";
 export { default as LyricsPIPButton } from "./LyricsPIPButton";
 export { default as MainTracks } from "./MainTracks";
+export { default as MiniPlayer } from "./MiniPlayer";
 export { default as ModalContainer } from "./ModalContainer";
 export { default as NavigationTopBarExtraField } from "./NavigationTopBarExtraField";
 export { default as NowPlaying } from "./NowPlaying";

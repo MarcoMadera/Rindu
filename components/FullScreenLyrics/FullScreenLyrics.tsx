@@ -17,9 +17,9 @@ const styles1 = css.global`
     font-weight: 700;
     letter-spacing: -0.04em;
     line-height: 42px;
+    max-height: 100svh;
     position: sticky;
-    top: 0;
-    min-height: 100vh;
+    min-height: calc(100svh - 450px);
     background: var(--lyrics-background-color);
   }
   .message-container {
@@ -39,6 +39,15 @@ const styles1 = css.global`
     color: #fff;
     padding: 1rem;
     position: relative;
+
+    padding: 16px;
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    height: calc(100svh - 150px);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   }
   .lyrics .countdown-container {
     position: absolute;
@@ -77,14 +86,14 @@ const styles1 = css.global`
   }
   @media screen and (max-width: 658px) {
     .lyrics-container {
-      margin: 30px 0px 0px 0px;
+      margin: 0px 0px 0px 0px;
       font-size: 18px;
     }
     .line {
       padding-left: 0;
     }
     .lyrics .countdown-container {
-      top: -1rem;
+      top: 0.8rem;
       left: 50%;
     }
   }
@@ -92,7 +101,13 @@ const styles1 = css.global`
   @media all and (display-mode: picture-in-picture) {
     .lyrics .countdown-container {
       left: 10rem;
-      top: -1.5rem;
+    }
+    .lyrics {
+      gap: 24px;
+      height: calc(100svh - 500px);
+      min-height: calc(100svh - 500px);
+      max-height: calc(100svh - 500px);
+      padding-top: 3rem;
     }
   }
   @media screen and (max-width: 768px) and (display-mode: picture-in-picture) {
@@ -160,6 +175,7 @@ function Lines({
   const { lyricsProgressMs, lyrics, registerContainer } = useLyricsContext();
   const { isPlaying } = useSpotify();
   const containerRef = useRef<HTMLDivElement>(null);
+  const pipApp = document.querySelector<HTMLElement>(".pipApp");
 
   useEffect(() => {
     const unregister = registerContainer(containerRef);
@@ -191,6 +207,7 @@ function Lines({
           startTime={+lyrics.lines[0].startTimeMs}
           currentProgress={lyricsProgressMs}
           isPlaying={isPlaying}
+          size={pipApp ? 24 : 32}
         />
       ) : null}
 

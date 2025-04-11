@@ -75,25 +75,37 @@ export function LyricsContextContextProvider({
     },
     []
   );
-
   const syncLyricsLine = useCallback(() => {
     const observer = new MutationObserver((_, observer) => {
       for (const container of containersRef.current) {
         const currentContainer = container.current;
-
         if (!currentContainer) return;
-        const currentLine = currentContainer.querySelector(".line.current");
-        const firstLine = currentContainer.querySelector(".line.first");
-        const noLine = currentContainer.querySelector(
+
+        const currentLine =
+          currentContainer.querySelector<HTMLDivElement>(".line.current");
+        const firstLine =
+          currentContainer.querySelector<HTMLDivElement>(".line.first");
+        const noLine = currentContainer.querySelector<HTMLDivElement>(
           ".line.previous:last-of-type"
         );
         const currentElement = currentLine ?? firstLine ?? noLine;
 
         if (currentElement) {
           observer.disconnect();
-          currentElement.scrollIntoView({
+
+          const containerRect = currentContainer.getBoundingClientRect();
+
+          const elementRect = currentElement.getBoundingClientRect();
+
+          const scrollTop =
+            currentElement.offsetTop -
+            currentContainer.offsetTop -
+            containerRect.height / 2 +
+            elementRect.height / 2;
+
+          currentContainer.scrollTo({
+            top: scrollTop,
             behavior: "smooth",
-            block: "center",
           });
         }
       }
@@ -108,7 +120,6 @@ export function LyricsContextContextProvider({
       });
     });
   }, []);
-
   useLyricsInPictureInPicture({
     setLyricsProgressMs,
     setLyricLineColor,

@@ -9,6 +9,10 @@ import {
   useState,
 } from "react";
 
+import css from "styled-jsx/css";
+
+import { isServer } from "utils";
+
 interface SliderProps {
   title: string;
   valueText: string;
@@ -26,7 +30,85 @@ interface SliderProps {
   onDragging?: (isDragging: boolean, progressPercent: number) => void;
   showDot?: boolean;
   className?: string;
+  document?: Document;
 }
+
+export const styles = css.global`
+  label {
+    clip: rect(0 0 0 0);
+    border: 0;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+  .barContainer {
+    height: 12px;
+    position: relative;
+    width: 100%;
+  }
+  .transformation {
+    height: 100%;
+
+    touch-action: none;
+    width: 100%;
+  }
+  .barBackground {
+    border-radius: 2px;
+    height: 4px;
+    width: 100%;
+    display: flex;
+    background-color: #ffffff75;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .lineContainer {
+    border-radius: 2px;
+    height: 4px;
+    width: 100%;
+    overflow: hidden;
+    z-index: 900;
+    position: relative;
+  }
+  .slider-line {
+    border-radius: 2px;
+    height: 4px;
+    width: 100%;
+    user-select: none;
+    background-color: #fff;
+  }
+  .transformation:hover .slider-line,
+  .transformation .slider-line.hover {
+    background-color: #1db954;
+    user-select: none;
+  }
+  .transformation:focus-visible {
+    outline: none;
+  }
+  .transformation .dot {
+    display: none;
+    background-color: #fff;
+    border: 0;
+    border-radius: 50%;
+    height: 12px;
+    right: 0px;
+    margin-left: -6px;
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 50%);
+    transform: translateY(-50%);
+    top: 50%;
+    position: absolute;
+    z-index: 900;
+    width: 12px;
+    user-select: none;
+  }
+  .transformation:hover .dot,
+  .transformation .dot.hover {
+    display: block !important;
+  }
+`;
 
 export default function Slider({
   title,
@@ -39,6 +121,7 @@ export default function Slider({
   initialValuePercent,
   showDot,
   className,
+  document = isServer() ? undefined : window.document,
 }: Readonly<SliderProps>): ReactElement {
   const [progressPercent, setProgressPercent] = useState(initialValuePercent);
   const [isPressingMouse, setIsPressingMouse] = useState(false);
@@ -112,21 +195,29 @@ export default function Slider({
   const getMyCurrentPositionPercent = useCallback(
     (e: MouseEvent | globalThis.MouseEvent) => {
       const myposition = e.pageX;
-      const sliderPositionX = sliderRef.current?.parentElement?.offsetLeft ?? 0;
-      const sliderWidth = sliderRef.current?.clientWidth ?? 0;
+
+      const sliderElement = sliderRef.current;
+      const parentElement = sliderElement?.parentElement;
+
+      const sliderRect = sliderElement?.getBoundingClientRect();
+      const parentRect = parentElement?.getBoundingClientRect();
+
+      const sliderPositionX = parentRect?.left ?? 0;
+      const sliderWidth = sliderRect?.width ?? 0;
       const sliderXEnd = sliderPositionX + sliderWidth;
+
       const myPositionInSlider =
         myposition > sliderXEnd
           ? sliderWidth
           : myposition < sliderPositionX
             ? 0
             : myposition - sliderPositionX;
+
       const currentPositionPercent = (myPositionInSlider * 100) / sliderWidth;
       return currentPositionPercent;
     },
     []
   );
-
   useEffect(() => {
     if (!isPressingMouse) {
       return;
@@ -146,19 +237,20 @@ export default function Slider({
     }
 
     if (!isDragging) {
-      document.removeEventListener("mousemove", handleDrag);
-      document.removeEventListener("mouseup", handleDragEnd);
+      document?.removeEventListener("mousemove", handleDrag);
+      document?.removeEventListener("mouseup", handleDragEnd);
       return;
     }
 
-    document.addEventListener("mousemove", handleDrag);
-    document.addEventListener("mouseup", handleDragEnd);
+    document?.addEventListener("mousemove", handleDrag);
+    document?.addEventListener("mouseup", handleDragEnd);
 
     return () => {
-      document.removeEventListener("mousemove", handleDrag);
-      document.removeEventListener("mouseup", handleDragEnd);
+      document?.removeEventListener("mousemove", handleDrag);
+      document?.removeEventListener("mouseup", handleDragEnd);
     };
   }, [
+    document,
     isPressingMouse,
     action,
     isDragging,
@@ -188,11 +280,10 @@ export default function Slider({
         onMouseDown={(e) => {
           e.stopPropagation();
           setIsPressingMouse(true);
-          setProgressPercent(
-            ((e.pageX - (sliderRef.current?.parentElement?.offsetLeft ?? 0)) *
-              100) /
-              (sliderRef.current?.clientWidth ?? 0)
-          );
+          const rect = sliderRef.current?.getBoundingClientRect();
+          const percent =
+            ((e.clientX - (rect?.left ?? 0)) * 100) / (rect?.width ?? 1);
+          setProgressPercent(percent);
         }}
         onMouseLeave={(e) => {
           e.stopPropagation();
@@ -221,101 +312,21 @@ export default function Slider({
         <div className="barBackground">
           <div className="lineContainer">
             <div
-              className="slider-line"
+              className={`slider-line ${isPressingMouse || showDot ? "hover" : ""}`}
               style={{
                 transform: `translateX(calc(-100% + ${progressPercent}%))`,
               }}
             ></div>
           </div>
           <div
-            className="dot"
+            className={`dot ${isPressingMouse || showDot ? "hover" : ""}`}
             style={{
               left: `${progressPercent}%`,
             }}
           ></div>
         </div>
       </div>
-      <style jsx>{`
-        label {
-          clip: rect(0 0 0 0);
-          border: 0;
-          height: 1px;
-          margin: -1px;
-          overflow: hidden;
-          padding: 0;
-          position: absolute;
-          width: 1px;
-        }
-        .barContainer {
-          height: 12px;
-          position: relative;
-          width: 100%;
-        }
-        .transformation {
-          height: 100%;
-
-          touch-action: none;
-          width: 100%;
-        }
-        .barBackground {
-          border-radius: 2px;
-          height: 4px;
-          width: 100%;
-          display: flex;
-          background-color: #ffffff75;
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-        }
-        .lineContainer {
-          border-radius: 2px;
-          height: 4px;
-          width: 100%;
-          overflow: hidden;
-          z-index: 900;
-          position: relative;
-        }
-        .slider-line {
-          border-radius: 2px;
-          height: 4px;
-          width: 100%;
-          user-select: none;
-        }
-        .transformation:hover .slider-line {
-          background-color: #1db954;
-          user-select: none;
-        }
-        .transformation:focus-visible {
-          outline: none;
-        }
-        .transformation .dot {
-          display: none;
-          background-color: #fff;
-          border: 0;
-          border-radius: 50%;
-          height: 12px;
-          right: 0px;
-          margin-left: -6px;
-          box-shadow: 0 2px 4px 0 rgb(0 0 0 / 50%);
-          transform: translateY(-50%);
-          top: 50%;
-          position: absolute;
-          z-index: 900;
-          width: 12px;
-          user-select: none;
-        }
-        .transformation:hover .dot {
-          display: block;
-        }
-      `}</style>
-      <style jsx>{`
-        .transformation .dot {
-          display: ${isPressingMouse || showDot ? "block" : "none"};
-        }
-        .slider-line {
-          background-color: ${isPressingMouse || showDot ? "#1db954" : "#fff"};
-        }
-      `}</style>
+      <style jsx>{styles}</style>
     </div>
   );
 }

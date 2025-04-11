@@ -1,9 +1,23 @@
 import { PropsWithChildren, ReactElement, useEffect, useRef } from "react";
 
+import css from "styled-jsx/css";
+
 interface IScrollableText {
   speedPxSeconds?: number;
   delay?: number;
 }
+
+export const styles = css.global`
+  .ScrollableText-container {
+    position: relative;
+    overflow: hidden;
+  }
+  .ScrollableText-text {
+    white-space: nowrap;
+    width: 100%;
+    display: flex;
+  }
+`;
 
 export default function ScrollableText({
   children,
@@ -80,19 +94,9 @@ export default function ScrollableText({
   }, [speedPxSeconds, delay, children]);
 
   return (
-    <div ref={ref} className="container">
-      <div className="text">{children}</div>
-      <style jsx>{`
-        .container {
-          position: relative;
-          overflow: hidden;
-        }
-        .text {
-          white-space: nowrap;
-          width: 100%;
-          display: flex;
-        }
-      `}</style>
+    <div ref={ref} className="ScrollableText-container">
+      <div className="ScrollableText-text">{children}</div>
+      <style jsx>{styles}</style>
     </div>
   );
 }

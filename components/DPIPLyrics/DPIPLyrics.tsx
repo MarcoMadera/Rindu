@@ -1,6 +1,6 @@
 import { ReactElement, useEffect } from "react";
 
-import FullScreenLyrics from "components/FullScreenLyrics";
+import { FullScreenLyrics, MiniPlayer } from "components";
 import { useSpotify } from "hooks";
 
 export const DPIPLyrics = (): ReactElement => {
@@ -15,22 +15,16 @@ export const DPIPLyrics = (): ReactElement => {
     pipDoc.body.style.margin = "0";
     pipDoc.body.style.padding = "0";
     pipDoc.body.style.minHeight = "100vh";
-    pipDoc.body.style.display = "flex";
+    pipDoc.body.style.display = "contents";
 
     const style = document.createElement("style");
     style.textContent = `
-      .beta-label {
-        font-size: 14px;
-        font-weight: bold;
-        padding: 4px 8px;
-        border-radius: 4px;
-        text-transform: uppercase;
-        display: inline-block;
-        color: #fff;
-        border: 1px solid #fff;
-        display: flex;
-        justify-self: center;
-        width: fit-content;
+      html,body{
+        max-height: 100vh;
+        min-height: 100vh;
+        overflow: hidden;
+        background-color: black;
+        display: contents;
       }
     `;
     pipDoc.head.appendChild(style);
@@ -44,7 +38,7 @@ export const DPIPLyrics = (): ReactElement => {
 
   return (
     <div className="pipApp" style={{ width: "100%" }}>
-      <p className="beta-label">Beta</p>
+      <MiniPlayer document={pipWindow.current?.document} />
       <FullScreenLyrics document={pipWindow.current?.document} />
     </div>
   );
