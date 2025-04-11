@@ -59,13 +59,13 @@ export function AppContextProvider({
           >
             <HeaderContextProvider value={headerValue}>
               <SpotifyContextProvider value={spotifyValue}>
-                <LyricsContextContextProvider>
-                  <ContextMenuContextProvider value={contextMenuValue}>
-                    <ModalContextProvider value={modalValue}>
+                <ContextMenuContextProvider value={contextMenuValue}>
+                  <ModalContextProvider value={modalValue}>
+                    <LyricsContextContextProvider>
                       {children}
-                    </ModalContextProvider>
-                  </ContextMenuContextProvider>
-                </LyricsContextContextProvider>
+                    </LyricsContextContextProvider>
+                  </ModalContextProvider>
+                </ContextMenuContextProvider>
               </SpotifyContextProvider>
             </HeaderContextProvider>
           </PermissionsContextProvider>

@@ -24,7 +24,7 @@ export const lineCss = css.global`
     letter-spacing: -0.04em;
     line-height: 54px;
     cursor: pointer;
-    transition: all 0.1s ease-out 0s;
+    transition: all 0.3s ease;
   }
   .line:hover {
     color: var(--line-hover-color) !important;
@@ -76,32 +76,43 @@ export function LyricLine({
     const currentLine = line.classList.contains("current");
     if (!currentLine) return;
 
+    const container = line.closest<HTMLDivElement>(".lyrics");
+    if (!container) return;
+
     const lineHeight = line.offsetHeight;
     let scrollTimeout: NodeJS.Timeout;
+
     const handleUserScroll = () => {
       setIsManuallyScrolling(true);
       clearTimeout(scrollTimeout);
-
       scrollTimeout = setTimeout(() => {
         setIsManuallyScrolling(false);
       }, 150);
     };
 
-    document?.addEventListener("wheel", handleUserScroll);
-    document?.addEventListener("touchmove", handleUserScroll);
+    container.addEventListener("wheel", handleUserScroll);
+    container.addEventListener("touchmove", handleUserScroll);
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !isManuallyScrolling && isPlaying) {
-          line.scrollIntoView({
+          const containerRect = container.getBoundingClientRect();
+          const lineRect = line.getBoundingClientRect();
+
+          const scrollTop =
+            line.offsetTop -
+            container.offsetTop -
+            containerRect.height / 2 +
+            lineRect.height / 2;
+
+          container.scrollTo({
+            top: scrollTop,
             behavior: "smooth",
-            block: "center",
-            inline: "nearest",
           });
         }
       },
       {
-        root: null,
+        root: container,
         rootMargin: `-${lineHeight}px 0px 0px 0px`,
         threshold: 1.0,
       }
@@ -111,12 +122,11 @@ export function LyricLine({
 
     return () => {
       observer.disconnect();
-      document.removeEventListener("wheel", handleUserScroll);
-      document.removeEventListener("touchmove", handleUserScroll);
+      container.removeEventListener("wheel", handleUserScroll);
+      container.removeEventListener("touchmove", handleUserScroll);
       clearTimeout(scrollTimeout);
     };
-  }, [lyricsProgressMs, isManuallyScrolling, document, isPlaying]);
-
+  }, [lyricsProgressMs, isManuallyScrolling, isPlaying]);
   const lineColorsType: Record<LineType, string> = {
     first: lineColors.first,
     current: lineColors.current,

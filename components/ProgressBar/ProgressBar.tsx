@@ -1,5 +1,7 @@
 import { ReactElement, useEffect, useState } from "react";
 
+import css from "styled-jsx/css";
+
 import { Slider } from "components";
 import {
   useAuth,
@@ -9,9 +11,74 @@ import {
   useTranslations,
 } from "hooks";
 import type { AudioPlayer } from "hooks/useSpotifyPlayer";
-import { formatTime } from "utils";
+import { formatTime, isServer } from "utils";
 
-export default function ProgressBar(): ReactElement {
+export const styles = css.global`
+  .progressBar {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 540px;
+    margin-top: 11px;
+  }
+  .timeTag {
+    min-width: 40px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: normal;
+    line-height: 16px;
+    user-select: none;
+  }
+
+  @media (display-mode: picture-in-picture) {
+    .progressBar {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      grid-template-rows: auto auto;
+      width: 100%;
+      gap: 4px 0;
+      margin-top: 0;
+    }
+    .timeTag {
+      min-width: 40px;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: normal;
+      line-height: 16px;
+      user-select: none;
+      color: #aaa;
+    }
+    .timeTag:first-of-type {
+      grid-column: 1;
+      grid-row: 1;
+      text-align: left;
+    }
+
+    .timeTag:last-of-type {
+      grid-column: 3;
+      grid-row: 1;
+      text-align: right;
+    }
+
+    .barContainer {
+      grid-column: 1 / span 3;
+      grid-row: 2;
+      height: 4px;
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+  }
+`;
+
+export default function ProgressBar({
+  document = isServer() ? undefined : window.document,
+}: {
+  document?: Document;
+}): ReactElement {
   const {
     currentlyPlayingDuration,
     currentlyPlayingPosition,
@@ -102,6 +169,7 @@ export default function ProgressBar(): ReactElement {
       </div>
       <Slider
         key={currentlyPlaying?.uri}
+        document={document}
         title="Control the progress of the playback"
         updateProgress={progressFromSpotify}
         intervalUpdateAction={{
@@ -142,26 +210,7 @@ export default function ProgressBar(): ReactElement {
         }}
       />
       <div className="timeTag">{formatTime(durationInSeconds)}</div>
-      <style jsx>{`
-        .progressBar {
-          display: flex;
-          align-items: center;
-          flex-direction: row;
-          justify-content: space-between;
-          width: 100%;
-          max-width: 540px;
-          margin-top: 11px;
-        }
-        .timeTag {
-          min-width: 40px;
-          text-align: center;
-          font-size: 11px;
-          font-weight: 400;
-          letter-spacing: normal;
-          line-height: 16px;
-          user-select: none;
-        }
-      `}</style>
+      <style jsx>{styles}</style>
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import { ReactElement } from "react";
 
+import css from "styled-jsx/css";
+
 import {
   NextTrack,
   Pause,
@@ -10,6 +12,118 @@ import {
 } from "components/icons";
 import { useAuth, useSpotify, useToast, useTranslations } from "hooks";
 import { repeat, suffle } from "utils/spotifyCalls";
+
+export const styles = css.global`
+  div.player {
+    display: flex;
+    column-gap: 16px;
+    min-width: 280px;
+    justify-content: center;
+    width: 40%;
+  }
+  .player button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background-color: transparent;
+    position: relative;
+  }
+  .player .button {
+    width: 32px;
+    height: 32px;
+  }
+  .player .button.toggle {
+    border-radius: 50%;
+    background-color: #fff;
+  }
+  .player .button.playerButton:hover :global(svg path),
+  .player .button.playerButton:focus :global(svg path) {
+    fill: #fff;
+  }
+  .player .button.playerButton:active :global(svg path) {
+    fill: #ffffffb3;
+  }
+  .player .button.toggle:hover,
+  .player .button.toggle:focus,
+  .player .button.toggle:hover :global(svg),
+  .player .button.toggle:focus :global(svg) {
+    transform: scale(1.05);
+  }
+  .player .button.toggle:active {
+    transform: scale(1);
+  }
+  .player .repeat::after {
+    background-color: #1db954;
+    border-radius: 50%;
+    bottom: 0;
+    content: "";
+    display: block;
+    height: 4px;
+    left: 50%;
+    position: absolute;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    width: 4px;
+  }
+  .player .repeat::after {
+    display: block;
+  }
+  .player .repeat.zero::after {
+    display: none;
+  }
+  .player .button.suffle.playerButton:hover :global(svg path),
+  .player .button.suffle.playerButton:focus :global(svg path) {
+    fill: #fff;
+  }
+  .player .button.repeat.playerButton:hover :global(svg path),
+  .player .button.repeat.playerButton:focus :global(svg path) {
+    fill: #2fd669;
+  }
+  .player .button.suffle.playerButton.shuffleState:hover :global(svg path),
+  .player .button.suffle.playerButton.shuffleState:focus :global(svg path) {
+    fill: #2fd669;
+  }
+  .player .button.repeat.playerButton.zero:hover :global(svg path),
+  .player .button.repeat.playerButton.zero:focus :global(svg path) {
+    fill: #fff;
+  }
+  @media (max-width: 750px) {
+    .player .repeat,
+    .player .suffle {
+      display: none;
+    }
+  }
+  @media (max-width: 1100px) {
+    .player .repeat,
+    .player .suffle {
+      display: none;
+    }
+  }
+  @media (max-width: 1000px) {
+    div.player {
+      justify-content: flex-end;
+    }
+    div.player {
+      justify-content: center;
+      min-width: 100%;
+    }
+  }
+  @media (max-width: 600px) {
+    .player .previous,
+    .player .next {
+      display: none;
+    }
+  }
+  @media (display-mode: picture-in-picture) {
+    .player .repeat,
+    .player .suffle,
+    .player .previous,
+    .player .next {
+      display: block;
+    }
+  }
+`;
 
 export default function Player(): ReactElement {
   const {
@@ -48,7 +162,7 @@ export default function Player(): ReactElement {
             }
             suffle(!suffleState, deviceId);
           }}
-          className="button playerButton suffle"
+          className={`button playerButton suffle ${suffleState ? "shuffleState" : ""}`}
         >
           <Suffle fill={suffleState ? "#1db954" : "#ffffffb3"} />
         </button>
@@ -122,7 +236,7 @@ export default function Player(): ReactElement {
               repeat(state, deviceId);
             });
           }}
-          className="button playerButton repeat"
+          className={`button playerButton repeat ${repeatState === 0 ? "zero" : ""}`}
         >
           <Repeat
             fill={repeatState === 0 ? "#ffffffb3" : "#1db954"}
@@ -130,98 +244,7 @@ export default function Player(): ReactElement {
           />
         </button>
       </div>
-      <style jsx>{`
-        div.player {
-          display: flex;
-          column-gap: 16px;
-          min-width: 280px;
-          justify-content: center;
-          width: 40%;
-        }
-        button {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          border: none;
-          background-color: transparent;
-          position: relative;
-        }
-        .button {
-          width: 32px;
-          height: 32px;
-        }
-        .button.toggle {
-          border-radius: 50%;
-          background-color: #fff;
-        }
-        .button.playerButton:hover :global(svg path),
-        .button.playerButton:focus :global(svg path) {
-          fill: #fff;
-        }
-        .button.playerButton:active :global(svg path) {
-          fill: #ffffffb3;
-        }
-        .button.toggle:hover,
-        .button.toggle:focus,
-        .button.toggle:hover :global(svg),
-        .button.toggle:focus :global(svg) {
-          transform: scale(1.05);
-        }
-        .button.toggle:active {
-          transform: scale(1);
-        }
-        .repeat::after {
-          background-color: #1db954;
-          border-radius: 50%;
-          bottom: 0;
-          content: "";
-          display: block;
-          height: 4px;
-          left: 50%;
-          position: absolute;
-          -webkit-transform: translateX(-50%);
-          transform: translateX(-50%);
-          width: 4px;
-        }
-        .repeat::after {
-          display: ${repeatState === 0 ? "none" : "block"};
-        }
-        .button.suffle.playerButton:hover :global(svg path),
-        .button.suffle.playerButton:focus :global(svg path) {
-          fill: ${!suffleState ? "#fff" : "#2fd669"};
-        }
-        .button.repeat.playerButton:hover :global(svg path),
-        .button.repeat.playerButton:focus :global(svg path) {
-          fill: ${repeatState === 0 ? "#fff" : "#2fd669"};
-        }
-        @media (max-width: 750px) {
-          .repeat,
-          .suffle {
-            display: none;
-          }
-        }
-        @media (max-width: 1100px) {
-          .repeat,
-          .suffle {
-            display: none;
-          }
-        }
-        @media (max-width: 1000px) {
-          div.player {
-            justify-content: flex-end;
-          }
-          div.player {
-            justify-content: center;
-            min-width: 100%;
-          }
-        }
-        @media (max-width: 600px) {
-          .previous,
-          .next {
-            display: none;
-          }
-        }
-      `}</style>
+      <style jsx>{styles}</style>
     </>
   );
 }
