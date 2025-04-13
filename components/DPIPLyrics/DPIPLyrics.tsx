@@ -27,11 +27,14 @@ export const DPIPLyrics = (): ReactElement => {
         box-sizing: border-box;
       }
       html,body{
-        max-height: 100vh;
-        min-height: 100vh;
+        height: 100svh;
+        width: 100vw;
+        max-height: 100svh;
+        min-height: 100svh;
         overflow: hidden;
         background-color: black;
         display: contents;
+        position: fixed;
       }
     `;
     pipDoc.head.appendChild(style);
@@ -45,7 +48,15 @@ export const DPIPLyrics = (): ReactElement => {
 
   return (
     <ContextMenuContextProvider document={pipWindow.current?.document}>
-      <div className="pipApp" style={{ width: "100%" }}>
+      <div
+        className="pipApp"
+        style={{
+          width: "100%",
+          height: "100svh",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <MiniPlayer document={pipWindow.current?.document} />
         <FullScreenLyrics document={pipWindow.current?.document} />
       </div>

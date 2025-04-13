@@ -36,9 +36,10 @@ const styles = css.global`
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    position: sticky;
+    position: relative;
     top: 0;
     z-index: 300;
+    min-height: 450px;
   }
 
   .cover-art-container {
