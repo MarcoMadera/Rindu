@@ -85,30 +85,33 @@ export default function NowPlaying(): ReactElement | null {
       </div>
       <section>
         {currentlyPlaying.id ? (
-          <Link
-            href={`/${currentlyPlaying.type ?? "track"}/${currentlyPlaying.id}`}
-            className="trackName"
-            onContextMenu={(e) => {
-              e.preventDefault();
-              const x = e.pageX;
-              const y = e.pageY;
-              addContextMenu({
-                type: "cardTrack",
-                data: currentlyPlaying,
-                position: { x, y },
-              });
-            }}
-          >
-            <ScrollableText key={currentlyPlaying.uri}>
-              {currentlyPlaying.name}
-            </ScrollableText>
-          </Link>
+          <ScrollableText key={`track-name-${currentlyPlaying.uri}`}>
+            <span>
+              <Link
+                key={`track-name-link-${currentlyPlaying.uri}`}
+                href={`/${currentlyPlaying.type ?? "track"}/${currentlyPlaying.id}`}
+                className="trackName"
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  const x = e.pageX;
+                  const y = e.pageY;
+                  addContextMenu({
+                    type: "cardTrack",
+                    data: currentlyPlaying,
+                    position: { x, y },
+                  });
+                }}
+              >
+                {currentlyPlaying.name}
+              </Link>
+            </span>
+          </ScrollableText>
         ) : (
           <ScrollableText key={currentlyPlaying.uri}>
             {currentlyPlaying.name}
           </ScrollableText>
         )}
-        <ScrollableText key={currentlyPlaying.uri}>
+        <ScrollableText key={`track-artists-${currentlyPlaying.uri}`}>
           <span className="trackArtists">
             <ArtistList artists={currentlyPlaying.artists} />
           </span>
@@ -116,6 +119,7 @@ export default function NowPlaying(): ReactElement | null {
       </section>
       {!currentlyPlaying.is_local && (
         <Heart
+          key={`now-playing-like-${currentlyPlaying.uri}`}
           active={isLikedTrack}
           className="navBar-Button"
           handleDislike={async () => {

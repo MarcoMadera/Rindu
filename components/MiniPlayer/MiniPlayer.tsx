@@ -286,27 +286,29 @@ export default function MiniPlayer({
         <ProgressBar document={document} />
         <div className="track-info">
           {!currentlyPlaying ? null : currentlyPlaying.id ? (
-            <button
-              className="track-title"
-              onClick={handleTrackClick}
-              onContextMenu={(e) => {
-                e.preventDefault();
-                const x = e.pageX;
-                const y = e.pageY;
-                addContextMenu({
-                  type: "cardTrack",
-                  data: currentlyPlaying,
-                  position: { x, y },
-                });
-              }}
-            >
-              <ScrollableText key={currentlyPlaying.uri}>
-                {currentlyPlaying.name}
-              </ScrollableText>
-            </button>
+            <ScrollableText key={currentlyPlaying.uri}>
+              <span>
+                <button
+                  className="track-title"
+                  onClick={handleTrackClick}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    const x = e.pageX;
+                    const y = e.pageY;
+                    addContextMenu({
+                      type: "cardTrack",
+                      data: currentlyPlaying,
+                      position: { x, y },
+                    });
+                  }}
+                >
+                  {currentlyPlaying.name}
+                </button>
+              </span>
+            </ScrollableText>
           ) : (
             <ScrollableText key={currentlyPlaying.uri}>
-              {currentlyPlaying.name}
+              <span>{currentlyPlaying.name}</span>
             </ScrollableText>
           )}
 
