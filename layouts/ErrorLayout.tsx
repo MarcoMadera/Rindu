@@ -109,7 +109,7 @@ export default function ErrorLayout({
           display: flex !important;
           flex-direction: column;
           align-items: center;
-          height: 100vh;
+          height: 100svh;
         }
         :global(main h1) {
           text-align: center !important;

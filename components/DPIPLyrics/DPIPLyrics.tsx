@@ -16,7 +16,7 @@ export const DPIPLyrics = (): ReactElement => {
 
     pipDoc.body.style.margin = "0";
     pipDoc.body.style.padding = "0";
-    pipDoc.body.style.minHeight = "100vh";
+    pipDoc.body.style.minHeight = "100svh";
     pipDoc.body.style.display = "contents";
 
     const style = document.createElement("style");

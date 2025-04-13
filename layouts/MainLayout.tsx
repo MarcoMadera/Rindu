@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactElement, useEffect } from "react";
+import { PropsWithChildren, ReactElement } from "react";
 
 import { useRouter } from "next/router";
 
@@ -18,11 +18,6 @@ export default function MainLayout({
 
   useRefreshAccessToken();
   useDisableGlobalContextMenu();
-
-  useEffect(() => {
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty("--vh", `${vh}px`);
-  }, []);
 
   if (isNotFoundPage || isErrorPage) {
     return <>{children}</>;

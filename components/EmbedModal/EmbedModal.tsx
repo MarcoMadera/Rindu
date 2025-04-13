@@ -247,7 +247,7 @@ export default function EmbedModal({
           text-align: center;
           width: 100%;
           height: 352px;
-          max-height: calc(100vh - 402px);
+          max-height: calc(100svh - 402px);
         }
         small {
           color: #7f7f7f;

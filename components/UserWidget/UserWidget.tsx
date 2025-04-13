@@ -194,7 +194,7 @@ export default function UserWidget({
             0 16px 24px rgba(0, 0, 0, 0.3),
             0 6px 8px rgba(0, 0, 0, 0.2);
           display: ${openSettings ? "block" : "none"};
-          max-height: calc(100vh - 24px);
+          max-height: calc(100svh - 24px);
           max-width: 350px;
           min-width: 196px;
           overflow-y: auto;

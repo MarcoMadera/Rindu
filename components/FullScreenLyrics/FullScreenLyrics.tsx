@@ -25,7 +25,7 @@ const styles1 = css.global`
   }
   .message-container {
     width: 100%;
-    height: calc((var(--vh, 1vh) * 100) - 90px - 60px);
+    height: calc(100svh - 90px - 60px);
   }
   .line {
     font-size: 32px;

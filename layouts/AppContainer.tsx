@@ -113,9 +113,7 @@ export function AppContainer({
 
       <style jsx>{`
         div.container {
-          height: ${isFullScreenApp
-            ? "100%"
-            : "calc((var(--vh, 1vh) * 100) - 90px)"};
+          height: ${isFullScreenApp ? "100%" : "calc(100svh - 90px)"};
           display: flex;
           width: calc(100vw + 1px);
         }
@@ -127,9 +125,7 @@ export function AppContainer({
         }
         :global(.app),
         :global(.app main) {
-          height: ${isFullScreenApp
-            ? "100%"
-            : "calc((var(--vh, 1vh) * 100) - 90px)"};
+          height: ${isFullScreenApp ? "100%" : "calc(100svh - 90px)"};
         }
         :global(.app::-webkit-scrollbar) {
           width: 14px;
@@ -143,22 +139,22 @@ export function AppContainer({
       <style jsx>{`
         @media (max-width: 1000px) {
           div.container {
-            height: calc((var(--vh, 1vh) * 100) - ${playerHeight}px);
+            height: calc(100svh - ${playerHeight}px);
           }
           :global(.app) {
             width: 100%;
-            height: calc((var(--vh, 1vh) * 100) - ${playerHeight}px);
+            height: calc(100svh - ${playerHeight}px);
           }
         }
         @media (max-width: 685px) {
           :global(.app) {
-            height: calc((var(--vh, 1vh) * 100) - ${playerHeight}px);
+            height: calc(100svh - ${playerHeight}px);
           }
         }
 
         @media (max-width: 685px) {
           div.container {
-            height: calc((var(--vh, 1vh) * 100) - ${playerHeight}px);
+            height: calc(100svh - ${playerHeight}px);
           }
         }
       `}</style>

@@ -101,7 +101,7 @@ const Home = ({
             background: #fff;
           }
           main {
-            min-height: calc((var(--vh, 1vh) * 100) - 124px);
+            min-height: calc(100svh - 124px);
             width: 100%;
             display: block;
             margin: 0 auto;
