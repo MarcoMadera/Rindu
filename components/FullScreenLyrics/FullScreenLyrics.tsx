@@ -18,7 +18,7 @@ const styles1 = css.global`
     line-height: 42px;
     max-height: 100svh;
     position: sticky;
-    min-height: calc(100svh - 60px)
+    min-height: calc(100svh - 60px);
     background: var(--lyrics-background-color);
     z-index: 10;
     margin-top: -60px;

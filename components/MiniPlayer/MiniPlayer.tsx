@@ -53,6 +53,10 @@ const styles = css.global`
     position: relative;
   }
 
+  .cover-art-container > div {
+    display: inline-flex;
+  }
+
   .bg-1-mini,
   .bg-2-mini {
     width: 100%;
