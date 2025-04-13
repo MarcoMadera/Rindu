@@ -67,7 +67,9 @@ export default function ContextMenu({
 
   return (
     <PortalTarget
-      targetId={document.querySelector<HTMLElement>("#contextMenu")}
+      targetId={
+        document.querySelector<HTMLElement>("#contextMenu") ?? undefined
+      }
     >
       <section
         role="menu"
