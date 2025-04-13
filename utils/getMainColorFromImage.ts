@@ -10,10 +10,8 @@ export function getMainColorFromImage(
   config?: { sampleSize?: number; qualityReduction?: number },
   document: Document = window.document
 ): void {
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
   const img = document.querySelector(`#${imageId}`) as HTMLImageElement;
-  if (!img || !ctx) {
+  if (!img) {
     return;
   }
 
@@ -21,6 +19,9 @@ export function getMainColorFromImage(
     callback(cache[img.src]);
     return;
   }
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
 
   const image = new Image();
   image.crossOrigin = "anonymous";
