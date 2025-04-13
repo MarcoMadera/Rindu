@@ -1,15 +1,12 @@
 import { getMainColorFromImage } from "utils/getMainColorFromImage";
 
 global.Image = class {
-  onload: () => void;
-  width: number;
-  height: number;
-
+  onload: jest.Mock = jest.fn();
+  width = 100;
+  height = 100;
+  crossOrigin = "";
+  src = "";
   constructor() {
-    // eslint-disable-next-line jest/prefer-spy-on
-    this.onload = jest.fn();
-    this.width = 100;
-    this.height = 100;
     setTimeout(() => {
       this.onload();
     }, 50);
@@ -17,112 +14,161 @@ global.Image = class {
 } as unknown as typeof Image;
 
 describe("getMainColorFromImage", () => {
-  it("should return undefined if not img", () => {
+  it("should return undefined if no img element is found", () => {
+    expect.assertions(2);
+
+    const querySelectorMock = jest
+      .spyOn(document, "querySelector")
+      .mockReturnValue(null);
+
+    const callback = jest.fn();
+    const result = getMainColorFromImage("non-existent-id", callback);
+
+    expect(result).toBeUndefined();
+    expect(querySelectorMock).toHaveBeenCalledWith("#non-existent-id");
+
+    querySelectorMock.mockRestore();
+  });
+
+  it("should return gray (#7a7a7a) if all sampled pixels are too dark", async () => {
     expect.assertions(1);
 
-    jest.spyOn(document, "createElement").mockReturnValueOnce({
-      getContext: jest.fn().mockImplementation(() => ({
-        getImageData: jest.fn().mockImplementation(() => ({
-          data: [0, 0, 0, 0],
-        })),
+    const darkPixels = new Uint8ClampedArray(100 * 100 * 4).fill(0);
+    const querySelectorMock = jest
+      .spyOn(document, "querySelector")
+      .mockReturnValue({ src: "dark-image-src" } as HTMLImageElement);
+    const createElementMock = jest
+      .spyOn(document, "createElement")
+      .mockReturnValue({
+        width: 100,
+        height: 100,
+        getContext: () => ({
+          drawImage: jest.fn(),
+          getImageData: () => ({ data: darkPixels }),
+        }),
+      } as unknown as HTMLCanvasElement);
+
+    await new Promise<void>((resolve) => {
+      getMainColorFromImage("dark-image", (color: string) => {
+        expect(color.toLowerCase()).toBe("#7a7a7a");
+
+        resolve();
+      });
+    });
+
+    querySelectorMock.mockRestore();
+    createElementMock.mockRestore();
+  });
+
+  it("should return gray (#7a7a7a) if all sampled pixels are too bright", async () => {
+    expect.assertions(1);
+
+    const brightPixels = new Uint8ClampedArray(100 * 100 * 4).fill(255);
+    const querySelectorMock = jest
+      .spyOn(document, "querySelector")
+      .mockReturnValue({ src: "bright-image-src" } as HTMLImageElement);
+    const createElementMock = jest
+      .spyOn(document, "createElement")
+      .mockReturnValue({
+        width: 100,
+        height: 100,
+        getContext: () => ({
+          drawImage: jest.fn(),
+          getImageData: () => ({ data: brightPixels }),
+        }),
+      } as unknown as HTMLCanvasElement);
+
+    await new Promise<void>((resolve) => {
+      getMainColorFromImage("bright-image", (color: string) => {
+        expect(color.toLowerCase()).toBe("#7a7a7a");
+
+        resolve();
+      });
+    });
+
+    querySelectorMock.mockRestore();
+    createElementMock.mockRestore();
+  });
+
+  it("should return the dominant color when image has valid colors", async () => {
+    expect.assertions(1);
+
+    const imageData = new Uint8ClampedArray(100 * 100 * 4);
+    for (let i = 0; i < imageData.length; i += 4) {
+      imageData[i] = 87;
+      imageData[i + 1] = 39;
+      imageData[i + 2] = 22;
+      imageData[i + 3] = 255;
+    }
+
+    const querySelectorMock = jest
+      .spyOn(document, "querySelector")
+      .mockReturnValue({ src: "valid-image-src" } as HTMLImageElement);
+    const createElementMock = jest
+      .spyOn(document, "createElement")
+      .mockReturnValue({
+        width: 100,
+        height: 100,
+        getContext: () => ({
+          drawImage: jest.fn(),
+          getImageData: () => ({ data: imageData }),
+        }),
+      } as unknown as HTMLCanvasElement);
+
+    await new Promise<void>((resolve) => {
+      getMainColorFromImage("valid-image", (color: string) => {
+        expect(color.toLowerCase()).toBe("#572716");
+
+        resolve();
+      });
+    });
+
+    querySelectorMock.mockRestore();
+    createElementMock.mockRestore();
+  });
+
+  it("should use cached result if available", async () => {
+    expect.assertions(2);
+
+    const imageSrc = "http://localhost/cached-image-src";
+    const imageData = new Uint8ClampedArray(100 * 100 * 4).fill(255);
+
+    const querySelectorMock = jest
+      .spyOn(document, "querySelector")
+      .mockImplementation(() => ({ src: imageSrc }) as HTMLImageElement);
+
+    const canvasMock = {
+      width: 100,
+      height: 100,
+      getContext: () => ({
         drawImage: jest.fn(),
-      })),
-    } as unknown as HTMLCanvasElement);
-    const imageId = "image-id";
-    const callback = jest.fn();
-    const imgcolor = getMainColorFromImage(imageId, callback);
+        getImageData: () => ({ data: imageData }),
+      }),
+    };
 
-    expect(imgcolor).toBeUndefined();
-  });
+    const createElementMock = jest
+      .spyOn(document, "createElement")
+      .mockImplementation(() => {
+        return canvasMock as unknown as HTMLCanvasElement;
+      });
 
-  it("should return default color for dark image", async () => {
-    expect.hasAssertions();
-
-    await new Promise<void>((done) => {
-      expect.assertions(1);
-
-      const getImageData = jest.fn().mockImplementation(() => ({
-        data: [0, 0, 0, 0],
-      }));
-      jest.spyOn(document, "createElement").mockReturnValue({
-        getContext: jest.fn().mockImplementation(() => ({
-          getImageData,
-          drawImage: jest.fn(),
-        })),
-      } as unknown as HTMLCanvasElement);
-
-      jest.spyOn(document, "querySelector").mockReturnValue({
-        src: "image-src",
-      } as unknown as HTMLImageElement);
-
-      const imageId = "image-id";
-      const callback = jest.fn((color) => {
+    await new Promise<void>((resolve) => {
+      getMainColorFromImage("test-image", (color: string) => {
         expect(color).toBe("#7a7a7a");
 
-        done();
+        resolve();
       });
-      getMainColorFromImage(imageId, callback);
     });
-  });
 
-  it("should return default color for white image", async () => {
-    expect.hasAssertions();
+    await new Promise<void>((resolve) => {
+      getMainColorFromImage("test-image", () => {
+        expect(createElementMock.mock.calls).toHaveLength(1);
 
-    await new Promise<void>((done) => {
-      expect.assertions(1);
-
-      const getImageData = jest.fn().mockImplementation(() => ({
-        data: [255, 255, 255, 255],
-      }));
-      jest.spyOn(document, "createElement").mockReturnValue({
-        getContext: jest.fn().mockImplementation(() => ({
-          getImageData,
-          drawImage: jest.fn(),
-        })),
-      } as unknown as HTMLCanvasElement);
-
-      jest.spyOn(document, "querySelector").mockReturnValue({
-        src: "image-src",
-      } as unknown as HTMLImageElement);
-
-      const imageId = "image-id";
-      const callback = jest.fn((color) => {
-        expect(color).toBe("#7a7a7a");
-
-        done();
+        resolve();
       });
-      getMainColorFromImage(imageId, callback);
     });
-  });
 
-  it("should return brown color for brown image", async () => {
-    expect.hasAssertions();
-
-    jest.restoreAllMocks();
-    await new Promise<void>((done) => {
-      expect.assertions(1);
-
-      const getImageData = jest.fn().mockImplementation(() => ({
-        data: [87, 39, 22, 255],
-      }));
-      jest.spyOn(document, "createElement").mockReturnValue({
-        getContext: jest.fn().mockImplementation(() => ({
-          getImageData,
-          drawImage: jest.fn(),
-        })),
-      } as unknown as HTMLCanvasElement);
-
-      jest.spyOn(document, "querySelector").mockReturnValue({
-        src: "image-src",
-      } as unknown as HTMLImageElement);
-
-      const imageId = "image-id";
-      const callback = jest.fn((color) => {
-        expect(color).toBe("#572716");
-
-        done();
-      });
-      getMainColorFromImage(imageId, callback);
-    });
+    querySelectorMock.mockRestore();
+    createElementMock.mockRestore();
   });
 });

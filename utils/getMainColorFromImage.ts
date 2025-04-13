@@ -7,54 +7,91 @@ const cache: Record<string, string> = {};
 export function getMainColorFromImage(
   imageId: string,
   callback: Dispatch<SetStateAction<string>> | ((color: string) => void),
-  config?: { dsx: number; dwy: number; dw: number; dh: number }
+  config?: { sampleSize?: number; qualityReduction?: number },
+  document: Document = window.document
 ): void {
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
   const img = document.querySelector(`#${imageId}`) as HTMLImageElement;
-  if (!img || !ctx) {
+  if (!img) {
     return;
   }
+
   if (cache[img.src]) {
     callback(cache[img.src]);
     return;
   }
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
   const image = new Image();
   image.crossOrigin = "anonymous";
   image.src = img.src;
   image.onload = () => {
-    canvas.width = image.width;
-    canvas.height = image.height;
-    if (config) {
-      ctx.drawImage(image, config.dsx, config.dwy, config.dw, config.dh);
-    } else {
-      ctx.drawImage(image, 0, 0);
-    }
-    const imageData = ctx.getImageData(
-      config?.dsx ?? 0,
-      config?.dwy ?? 0,
-      canvas.width,
-      canvas.height
-    ).data;
-    const rgb = { r: imageData[0], g: imageData[1], b: imageData[2] };
-    const luma = 0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b;
+    const sampleSize = config?.sampleSize || 100;
+    const qualityReduction = config?.qualityReduction || 10;
 
-    if ((luma > 220 || luma < 30) && !config) {
-      getMainColorFromImage(imageId, callback, {
-        dsx: 0,
-        dwy: 0,
-        dw: 1,
-        dh: 1,
-      });
-      return;
+    const scaledWidth = Math.max(1, Math.floor(image.width / qualityReduction));
+    const scaledHeight = Math.max(
+      1,
+      Math.floor(image.height / qualityReduction)
+    );
+    canvas.width = scaledWidth;
+    canvas.height = scaledHeight;
+
+    ctx.drawImage(image, 0, 0, scaledWidth, scaledHeight);
+
+    const imageData = ctx.getImageData(0, 0, scaledWidth, scaledHeight).data;
+
+    const colorCounts: Record<string, number> = {};
+    const colorValues: Record<string, { r: number; g: number; b: number }> = {};
+
+    for (let i = 0; i < sampleSize; i++) {
+      const randomIndex =
+        Math.floor(Math.random() * (scaledWidth * scaledHeight)) * 4;
+
+      if (imageData[randomIndex + 3] === 0) continue;
+
+      const r = imageData[randomIndex];
+      const g = imageData[randomIndex + 1];
+      const b = imageData[randomIndex + 2];
+
+      const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      if (luma > 240 || luma < 15) continue;
+
+      const simplifiedR = Math.floor(r / 8) * 8;
+      const simplifiedG = Math.floor(g / 8) * 8;
+      const simplifiedB = Math.floor(b / 8) * 8;
+
+      const colorKey = `${simplifiedR},${simplifiedG},${simplifiedB}`;
+
+      if (!colorCounts[colorKey]) {
+        colorCounts[colorKey] = 0;
+        colorValues[colorKey] = { r, g, b };
+      }
+
+      colorCounts[colorKey]++;
     }
 
-    if ((luma > 220 || luma < 30) && config) {
-      callback("#7a7a7a");
-      return;
+    let dominantColorKey = Object.keys(colorCounts)[0];
+    let maxCount = 0;
+
+    for (const colorKey in colorCounts) {
+      if (colorCounts[colorKey] > maxCount) {
+        maxCount = colorCounts[colorKey];
+        dominantColorKey = colorKey;
+      }
     }
-    const hex = rgbToHex(rgb);
+
+    let dominantColor = { r: 122, g: 122, b: 122 };
+
+    if (dominantColorKey) {
+      dominantColor = colorValues[dominantColorKey];
+    }
+
+    const hex = rgbToHex(dominantColor);
+
     cache[img.src] = hex;
+
     callback(hex);
   };
 }

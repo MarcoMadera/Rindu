@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
 import { useRouter } from "next/router";
 import css from "styled-jsx/css";
@@ -12,7 +12,7 @@ import { styles as sliderStyles } from "components/Slider";
 
 import { useContextMenu, useSpotify } from "hooks";
 
-import { chooseImage } from "utils";
+import { chooseImage, getMainColorFromImage } from "utils";
 
 interface Props {
   document?: Document;
@@ -64,6 +64,7 @@ const styles = css.global`
 
   .bg-1-mini {
     background-color: gray;
+    transition: background-color 0.1s ease;
   }
 
   .bg-2-mini {
@@ -207,6 +208,7 @@ export default function MiniPlayer({
   const { addContextMenu } = useContextMenu();
   const { currentlyPlaying } = useSpotify();
   const router = useRouter();
+  const [containerColor, setContainerColor] = useState("#323131");
 
   useEffect(() => {
     const pipApp = document.querySelector<HTMLElement>(".pipApp");
@@ -240,6 +242,16 @@ export default function MiniPlayer({
     };
   }, [document]);
 
+  useEffect(() => {
+    if (!currentlyPlaying?.id) return;
+    getMainColorFromImage(
+      `cover-art-pip-mini-player-${currentlyPlaying.id}`,
+      setContainerColor,
+      undefined,
+      document
+    );
+  }, [router.asPath, currentlyPlaying?.id, document]);
+
   const handleTrackClick = () => {
     if (currentlyPlaying?.id) {
       router.push(
@@ -253,10 +265,14 @@ export default function MiniPlayer({
       {currentlyPlaying?.album?.images.length && (
         <div className="cover-art-container">
           <div>
-            <div className="bg-1-mini"></div>
+            <div
+              className="bg-1-mini"
+              style={{ backgroundColor: containerColor }}
+            ></div>
             <div className="bg-2-mini"></div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
+              id={`cover-art-pip-mini-player-${currentlyPlaying.id}`}
               src={chooseImage(currentlyPlaying.album?.images, 300).url}
               alt={`${currentlyPlaying.name} cover`}
               className="cover-art"
