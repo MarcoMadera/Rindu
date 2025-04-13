@@ -47,6 +47,7 @@ export const styles = css.global`
   .barContainer {
     height: 12px;
     position: relative;
+    overflow: visible;
     width: 100%;
   }
   .transformation {
