@@ -113,6 +113,7 @@ const styles1 = css.global`
     }
     .lyrics-container {
       margin-top: 0px;
+      position: relative;
     }
   }
   @media screen and (max-width: 768px) and (display-mode: picture-in-picture) {
@@ -331,7 +332,7 @@ export default function FullScreenLyrics({
   }, [document, lyricsBackgroundColor]);
 
   return (
-    <div className="lyrics-container">
+    <div className="lyrics-container" style={{ display: "grid" }}>
       {!lyrics ? (
         <div className="message-container">
           {lyricsLoading && <LoadingSpinner />}
