@@ -91,7 +91,7 @@ export default function ScrollableText({
       cancelAnimationFrame(animationFrameId);
       if (delayedTimerId) clearTimeout(delayedTimerId);
     };
-  }, [speedPxSeconds, delay, children]);
+  }, [speedPxSeconds, delay]);
 
   return (
     <div ref={ref} className="ScrollableText-container">
