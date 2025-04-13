@@ -246,6 +246,13 @@ export default function TopBar({
           padding: 0 32px;
           width: 100%;
           height: 60px;
+          pointer-events: none;
+          position: relative;
+          z-index: 1000024;
+        }
+        header :global(a),
+        header :global(button) {
+          pointer-events: auto;
         }
         div.noise {
           background-color: #00000099;
@@ -271,6 +278,7 @@ export default function TopBar({
           top: 0px;
           z-index: 9999999999;
           width: calc(100vw - var(--left-panel-width, 0px) + 2px);
+          pointer-events: none;
         }
         @media screen and (max-width: 768px) {
           .extraElement {

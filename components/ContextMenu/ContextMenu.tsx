@@ -14,7 +14,11 @@ import {
   positionContextMenu,
 } from "utils";
 
-export default function ContextMenu(): ReactElement | null {
+export default function ContextMenu({
+  document = window.document,
+}: {
+  document?: Document;
+}): ReactElement | null {
   const { contextMenuData, removeContextMenu } = useContextMenu();
   const [contextMenuPos, setContextMenuPos] = useState({
     x: (contextMenuData?.position.x ?? 0) - 30,
@@ -62,7 +66,11 @@ export default function ContextMenu(): ReactElement | null {
   );
 
   return (
-    <PortalTarget targetId="contextMenu">
+    <PortalTarget
+      targetId={
+        document.querySelector<HTMLElement>("#contextMenu") ?? undefined
+      }
+    >
       <section
         role="menu"
         data-type={contextMenuData.data?.type}

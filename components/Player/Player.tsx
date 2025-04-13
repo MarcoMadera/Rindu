@@ -28,6 +28,7 @@ export const styles = css.global`
     border: none;
     background-color: transparent;
     position: relative;
+    flex-shrink: 0;
   }
   .player .button {
     width: 32px;

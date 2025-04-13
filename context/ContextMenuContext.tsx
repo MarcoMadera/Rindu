@@ -11,6 +11,7 @@ import dynamic from "next/dynamic";
 import { IModalContext } from "./ModalContext";
 import { ModalContainer } from "components";
 import { IContextMenuContext } from "types/contextMenu";
+import { isServer } from "utils";
 
 const ContextMenuContext = createContext<IContextMenuContext | undefined>(
   undefined
@@ -22,11 +23,13 @@ const ContextMenu = dynamic(() => import("components/ContextMenu"), {
 
 interface IContextMenuContextProviderProps {
   value?: IContextMenuContext;
+  document?: Document;
 }
 
 export function ContextMenuContextProvider({
   children,
   value: propsValue,
+  document = isServer() ? undefined : window.document,
 }: PropsWithChildren<IContextMenuContextProviderProps>): ReactElement {
   const [contextMenuData, setContextMenuData] =
     useState<IContextMenuContext["contextMenuData"]>(undefined);
@@ -47,7 +50,7 @@ export function ContextMenuContextProvider({
 
   return (
     <ContextMenuContext.Provider value={value}>
-      <ContextMenu />
+      <ContextMenu document={document} />
       {modalData && (
         <ModalContainer
           title={modalData.title}

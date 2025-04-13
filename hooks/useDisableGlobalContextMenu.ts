@@ -1,15 +1,19 @@
 import { useEffect } from "react";
 
-export function useDisableGlobalContextMenu(): void {
+import { isServer } from "utils";
+
+export function useDisableGlobalContextMenu(
+  w: (Window & typeof globalThis) | undefined = isServer() ? undefined : window
+): void {
   useEffect(() => {
     function preventDefault(e: MouseEvent) {
       e.preventDefault();
     }
 
-    window.addEventListener("contextmenu", preventDefault);
+    w?.addEventListener("contextmenu", preventDefault);
 
     return (): void => {
-      window.removeEventListener("contextmenu", preventDefault);
+      w?.removeEventListener("contextmenu", preventDefault);
     };
-  }, []);
+  }, [w]);
 }
