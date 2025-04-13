@@ -216,7 +216,7 @@ export default function RemoveTracksModal({
           .tracks {
             overflow-y: hidden;
             overflow-x: hidden;
-            max-height: calc((var(--vh, 1vh) * 100) - 300px);
+            max-height: calc(100svh - 300px);
             margin-top: 30px;
           }
           .loading-message {

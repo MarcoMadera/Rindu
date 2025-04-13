@@ -332,7 +332,7 @@ export default function FullScreenPlayer(): ReactElement | null {
           background-color: var(--header-color);
           -webkit-backdrop-filter: blur(100px);
           box-shadow: rgb(100 100 111 / 20%) 0px 7px 29px 0px;
-          height: 100vh;
+          height: 100svh;
           width: 100vw;
           padding: 0;
           padding: 0;
