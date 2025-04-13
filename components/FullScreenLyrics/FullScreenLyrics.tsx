@@ -9,7 +9,6 @@ import { getLineType } from "utils";
 
 const styles1 = css.global`
   .lyrics-container {
-    margin-top: 60px;
     width: 100%;
     display: flex;
     min-width: calc(100% - 128px);
@@ -19,8 +18,10 @@ const styles1 = css.global`
     line-height: 42px;
     max-height: 100svh;
     position: sticky;
-    min-height: calc(100svh - 450px);
+    min-height: 100svh;
     background: var(--lyrics-background-color);
+    z-index: 10;
+    margin-top: -60px;
   }
   .message-container {
     width: 100%;
@@ -39,19 +40,20 @@ const styles1 = css.global`
     color: #fff;
     padding: 1rem;
     position: relative;
-
+    gap: 0.5rem;
     padding: 16px;
+    padding-top: 136px;
     flex: 1;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    height: calc(100svh - 150px);
+    height: calc(100svh - 30px);
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   }
   .lyrics .countdown-container {
     position: absolute;
-    top: -3rem;
+    top: 76px;
     left: 10rem;
   }
   .lyrics-error {
@@ -104,10 +106,13 @@ const styles1 = css.global`
     }
     .lyrics {
       gap: 24px;
-      height: calc(100svh - 500px);
-      min-height: calc(100svh - 500px);
-      max-height: calc(100svh - 500px);
+      height: calc(100svh - 445px);
+      min-height: calc(100svh - 445px);
+      max-height: calc(100svh - 445px);
       padding-top: 3rem;
+    }
+    .lyrics-container {
+      margin-top: 0px;
     }
   }
   @media screen and (max-width: 768px) and (display-mode: picture-in-picture) {
@@ -125,6 +130,10 @@ const styles1 = css.global`
   @media all and (display-mode: fullscreen) {
     .lyrics .countdown-container {
       left: 12rem;
+    }
+    .lyrics {
+      height: calc(100svh - -60px);
+      margin-left: 1rem;
     }
   }
 `;

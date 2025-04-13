@@ -48,7 +48,7 @@ export class ContextError<T> extends BaseError {
 }
 
 export class TargetElementError extends BaseError {
-  constructor(elementId?: string | HTMLElement) {
+  constructor(elementId?: string | HTMLElement | null) {
     super(`Component needs a target element with id: ${elementId?.toString()}`);
     this.name = "TargetElementError";
   }

@@ -223,7 +223,7 @@ export default function TrackPage({
           </div>
         </div>
         {lyrics ? (
-          <div className="lyrics-container">
+          <div className="track-lyrics-container">
             <Heading number={3} as="h2">
               {translations.pages.track.lyrics}
             </Heading>
@@ -343,7 +343,7 @@ export default function TrackPage({
         .content {
           margin: 0 32px;
         }
-        .lyrics-container {
+        .tracks-lyrics-container {
           position: relative;
           margin: 20px 0;
           z-index: 1;

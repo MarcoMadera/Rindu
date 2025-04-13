@@ -90,8 +90,10 @@ export function LyricLine({
       }, 150);
     };
 
-    container.addEventListener("wheel", handleUserScroll);
-    container.addEventListener("touchmove", handleUserScroll);
+    container.addEventListener("wheel", handleUserScroll, { passive: true });
+    container.addEventListener("touchmove", handleUserScroll, {
+      passive: true,
+    });
 
     const observer = new IntersectionObserver(
       ([entry]) => {

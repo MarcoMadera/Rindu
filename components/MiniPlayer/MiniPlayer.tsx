@@ -1,6 +1,6 @@
 import { ReactElement, useEffect } from "react";
 
-import Link from "next/link";
+import { useRouter } from "next/router";
 import css from "styled-jsx/css";
 
 import { Player, ProgressBar, ScrollableText } from "components";
@@ -11,6 +11,7 @@ import { styles as scrollableTextStyles } from "components/ScrollableText";
 import { styles as sliderStyles } from "components/Slider";
 
 import { useContextMenu, useSpotify } from "hooks";
+
 import { chooseImage } from "utils";
 
 interface Props {
@@ -22,8 +23,10 @@ const styles = css.global`
     justify-self: center;
     background: rgba(0, 0, 0, 0.8);
     color: white;
-    border-radius: 12px;
-    width: 320px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    width: 100%;
+    max-width: 100%;
     padding: 0;
     font-family:
       -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
@@ -35,23 +38,71 @@ const styles = css.global`
     flex-direction: column;
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 300;
+  }
+
+  .cover-art-container {
+    width: 100%;
+    height: 320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.9);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .bg-1-mini,
+  .bg-2-mini {
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .bg-1-mini {
+    background-color: gray;
+  }
+
+  .bg-2-mini {
+    background-image:
+      linear-gradient(transparent 0, rgba(0, 0, 0, 0.5) 100%),
+      url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
   }
 
   .cover-art {
     width: 100%;
-    height: 320px;
+    max-width: 320px;
+    position: relative;
     overflow: hidden;
+    margin: 0 auto;
+    background: #000;
   }
 
   .cover-art img {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 320px;
+    width: auto;
+    max-width: 100%;
     object-fit: cover;
+    background: #000;
   }
 
   .player-info {
     padding: 12px 16px;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   .time-display {
@@ -77,6 +128,13 @@ const styles = css.global`
     border-radius: 2px;
     margin-bottom: 16px;
     overflow: hidden;
+    width: 100%;
+  }
+
+  .track-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
   }
 
   .track-info .player {
@@ -86,10 +144,18 @@ const styles = css.global`
 
   .track-title {
     color: white;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
-    margin: 0 0 4px 0;
     text-decoration: none;
+    width: fit-content;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .track-title:hover {
+    text-decoration: underline;
   }
 
   .track-artist {
@@ -104,6 +170,35 @@ const styles = css.global`
     gap: 4px;
     margin: 12px 0;
   }
+
+  @media (min-width: 768px) {
+    .player-info {
+      max-width: 720px;
+    }
+  }
+  @media (min-width: 360px) {
+    .track-info {
+      align-items: center;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .player-info {
+      max-width: 820px;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .player-info {
+      max-width: 960px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .player-info {
+      padding: 10px 12px;
+    }
+  }
 `;
 
 export default function MiniPlayer({
@@ -111,6 +206,7 @@ export default function MiniPlayer({
 }: Props): ReactElement {
   const { addContextMenu } = useContextMenu();
   const { currentlyPlaying } = useSpotify();
+  const router = useRouter();
 
   useEffect(() => {
     const pipApp = document.querySelector<HTMLElement>(".pipApp");
@@ -144,15 +240,28 @@ export default function MiniPlayer({
     };
   }, [document]);
 
+  const handleTrackClick = () => {
+    if (currentlyPlaying?.id) {
+      router.push(
+        `/${currentlyPlaying.type ?? "track"}/${currentlyPlaying.id}`
+      );
+    }
+  };
+
   return (
     <div className="player-container">
       {currentlyPlaying?.album?.images.length && (
-        <div className="cover-art">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={chooseImage(currentlyPlaying.album?.images, 300).url}
-            alt={`${currentlyPlaying.name} cover`}
-          />
+        <div className="cover-art-container">
+          <div>
+            <div className="bg-1-mini"></div>
+            <div className="bg-2-mini"></div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={chooseImage(currentlyPlaying.album?.images, 300).url}
+              alt={`${currentlyPlaying.name} cover`}
+              className="cover-art"
+            />
+          </div>
         </div>
       )}
 
@@ -160,9 +269,9 @@ export default function MiniPlayer({
         <ProgressBar document={document} />
         <div className="track-info">
           {!currentlyPlaying ? null : currentlyPlaying.id ? (
-            <Link
-              href={`/${currentlyPlaying.type ?? "track"}/${currentlyPlaying.id}`}
+            <button
               className="track-title"
+              onClick={handleTrackClick}
               onContextMenu={(e) => {
                 e.preventDefault();
                 const x = e.pageX;
@@ -177,7 +286,7 @@ export default function MiniPlayer({
               <ScrollableText key={currentlyPlaying.uri}>
                 {currentlyPlaying.name}
               </ScrollableText>
-            </Link>
+            </button>
           ) : (
             <ScrollableText key={currentlyPlaying.uri}>
               {currentlyPlaying.name}

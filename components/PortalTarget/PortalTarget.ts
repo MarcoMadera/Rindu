@@ -8,7 +8,7 @@ export default function PortalTarget({
   children,
   targetId,
 }: PropsWithChildren<{
-  targetId?: string | HTMLElement;
+  targetId?: string | HTMLElement | null;
 }>): ReactPortal | null {
   const [target, setTarget] = useState<Element | HTMLElement | null>();
 
