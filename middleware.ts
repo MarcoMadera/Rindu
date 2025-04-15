@@ -34,10 +34,18 @@ export function middleware(request: NextRequest): NextResponse | void {
 
   const localeCookie = request.cookies.get(LOCALE_COOKIE)?.value;
   const localeCookieValue = localeCookie ?? locale;
-  const response = NextResponse.rewrite(request.nextUrl);
-  response.headers.set("x-locale", localeCookieValue);
+
   if (!localeCookie) {
-    response.cookies.set(LOCALE_COOKIE, localeCookieValue);
+    const rewriteResponse = NextResponse.rewrite(request.nextUrl, {
+      request: {
+        headers: new Headers({
+          ...request.headers,
+          "x-locale": localeCookieValue,
+        }),
+      },
+    });
+    rewriteResponse.cookies.set(LOCALE_COOKIE, localeCookieValue);
+    return rewriteResponse;
   }
-  return response;
+  return NextResponse.next();
 }

@@ -36,7 +36,7 @@ describe("middleware", () => {
       },
     } as unknown as NextRequest;
     const setCookies = jest.fn();
-    const nextResponse = jest.spyOn(NextResponse, "rewrite").mockReturnValue({
+    const rewrite = jest.spyOn(NextResponse, "rewrite").mockReturnValue({
       cookies: { set: setCookies },
       headers: { set: jest.fn() },
     } as unknown as NextResponse);
@@ -44,7 +44,13 @@ describe("middleware", () => {
     middleware(request);
 
     expect(setCookies).toHaveBeenCalledWith(LOCALE_COOKIE, Locale.EN);
-    expect(nextResponse).toHaveBeenCalledWith(nextUrl);
+    expect(rewrite).toHaveBeenCalledWith(nextUrl, {
+      request: {
+        headers: expect.objectContaining(
+          new Headers({ ...request.headers })
+        ) as Headers,
+      },
+    });
   });
 
   it("should not return a NextResponse in api if locale cookie is present", () => {
