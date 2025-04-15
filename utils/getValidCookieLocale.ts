@@ -4,7 +4,9 @@ import { isLocale, Locale } from "./locale";
 import { ServerApiContext } from "types/serverContext";
 
 export function getValidCookieLocale(context: ServerApiContext): Locale | null {
-  const localeCookie = takeCookie(LOCALE_COOKIE, context);
+  const localeCookie =
+    takeCookie(LOCALE_COOKIE, context) ??
+    context.req.headers["x-locale"]?.toString();
   if (localeCookie && isLocale(localeCookie)) return localeCookie;
 
   return null;

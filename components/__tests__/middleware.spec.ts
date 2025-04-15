@@ -38,6 +38,7 @@ describe("middleware", () => {
     const setCookies = jest.fn();
     const nextResponse = jest.spyOn(NextResponse, "next").mockReturnValue({
       cookies: { set: setCookies },
+      headers: { set: jest.fn() },
     } as unknown as NextResponse);
 
     middleware(request);
