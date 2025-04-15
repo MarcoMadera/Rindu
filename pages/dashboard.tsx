@@ -377,6 +377,19 @@ export default Dashboard;
 
 export const getServerSideProps = (async (context) => {
   const translations = getTranslations(context);
+  const locale = getValidCookieLocale(context);
+  if (!locale) {
+    return {
+      redirect: {
+        destination: context.req.url,
+        permanent: false,
+      },
+      props: {
+        translations,
+        locale,
+      },
+    };
+  }
   let tokens: Record<string, string | null> | AuthorizationResponse = {
     accessToken: takeCookie(ACCESS_TOKEN_COOKIE, context),
     refreshToken: takeCookie(REFRESH_TOKEN_COOKIE, context),
@@ -401,7 +414,7 @@ export const getServerSideProps = (async (context) => {
       return {
         props: {
           translations,
-          locale: getValidCookieLocale(context),
+          locale,
         },
       };
     }
@@ -664,7 +677,7 @@ export const getServerSideProps = (async (context) => {
         deserialize(mappedTracksData(tracksRecommendations)) ?? [],
       tracksInLibrary,
       translations,
-      locale: getValidCookieLocale(context),
+      locale: locale,
       topTracksCards: fullFilledValue(topTracksCards) ?? null,
     },
   };
