@@ -4,6 +4,7 @@ import { ITranslations } from "types/translations";
 import {
   DEFAULT_LOCALE,
   getLocale,
+  getValidCookieLocale,
   isLocale,
   Locale,
   LOCALE_COOKIE,
@@ -16,7 +17,9 @@ export function loadLocalization(locale: Locale): ITranslations {
 }
 
 export function getTranslations(context?: ServerApiContext): ITranslations {
-  const locale = getLocale(takeCookie(LOCALE_COOKIE, context));
+  const locale = getLocale(
+    context ? getValidCookieLocale(context) : takeCookie(LOCALE_COOKIE, context)
+  );
 
   if (!isLocale(locale)) {
     const defaultTranslations = loadLocalization(DEFAULT_LOCALE);
