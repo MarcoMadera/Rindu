@@ -32,7 +32,7 @@
     "html-entities": "2.6.0",
     "isomorphic-dompurify": "2.22.0",
     "lottie-react": "2.4.1",
-    "next": "15.2.4",
+    "next": "15.3.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-virtualized": "9.22.6",
