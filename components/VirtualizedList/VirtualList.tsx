@@ -96,6 +96,7 @@ export default function VirtualizedList<T>({
                 <List
                   autoHeight
                   height={height ?? 0}
+                  containerStyle={{ margin: "4px", overflow: "visible" }}
                   isScrolling={isScrolling}
                   onRowsRendered={onRowsRendered}
                   ref={registerChild}
