@@ -200,7 +200,7 @@ function CardTrack({
         );
 
         if (!scrollElement) {
-          prev.focus();
+          target.focus();
           return;
         }
 
