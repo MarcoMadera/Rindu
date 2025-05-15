@@ -192,7 +192,40 @@ function CardTrack({
       },
       ArrowUp: (e) => {
         e.preventDefault();
-        (e.currentTarget.previousElementSibling as HTMLElement)?.focus();
+        const prev = e.currentTarget.previousElementSibling as HTMLElement;
+        const target = prev ?? e.currentTarget;
+
+        const scrollElement = document.querySelector<HTMLElement>(
+          "#right .simplebar-content-wrapper"
+        );
+
+        if (!scrollElement) {
+          target.focus();
+          return;
+        }
+
+        function forceItemToY(
+          el: HTMLElement,
+          scrollElement: HTMLElement,
+          offset = 100
+        ) {
+          const elRect = el.getBoundingClientRect();
+          const containerRect = scrollElement.getBoundingClientRect();
+
+          const elTopRelative = elRect.top - containerRect.top;
+
+          if (elTopRelative < offset) {
+            const scrollAmount = elTopRelative - offset;
+
+            scrollElement.scrollBy({
+              top: scrollAmount,
+              behavior: "instant",
+            });
+          }
+        }
+
+        forceItemToY(target, scrollElement, 100);
+        target.focus();
       },
       " ": (e) => {
         if (!isPremium) {
@@ -361,6 +394,10 @@ function CardTrack({
         :global(.trackHeart:focus),
         :global(.trackHeart:hover) {
           transform: scale(1.06);
+        }
+        .trackItem:focus {
+          scroll-margin-block-start: 100px;
+          scroll-margin-block-end: 4px;
         }
         .trackItem :global(p),
         .trackItem :global(.trackName),
