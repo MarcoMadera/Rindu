@@ -119,6 +119,8 @@ export const DPIPLyrics = (): ReactElement => {
             direction="vertical"
             waitForImages={true}
             observeResize={true}
+            maxSize="450px"
+            minSize="124px"
             className="player-container"
             document={pipWindow.current?.document}
           >
