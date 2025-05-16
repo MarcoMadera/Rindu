@@ -38,50 +38,46 @@ export const DPIPLyrics = (): ReactElement => {
       }
 
       .resize-handle {
-        background: transparent;
         position: absolute;
-        z-index: 1000000000;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: auto;
       }
 
-      .resize-handle.horizontal {
-        right: -6px;
-        top: 0;
-        bottom: 0;
-        width: 12px;
+      .resize-panel {
+        position: relative;
       }
 
       .resize-handle.vertical {
         bottom: -6px;
         left: 0;
         right: 0;
-        height: 12px;
+        height: 24px;
+        cursor: ns-resize;
       }
 
-      .resize-handle:hover .resize-handle-line {
-        background: rgba(255, 255, 255, 0.3);
+      .resize-grip {
+        width: 36px;
+        height: 4px;
+        border-radius: 9999px;
+        background: rgba(255, 255, 255, 0.2);
+        opacity: 0;
+        transform: scale(1);
+        transition: opacity 0.2s ease, background 0.2s ease, transform 0.2s ease;
       }
 
-      .resize-handle-line {
-        background: transparent;
-        position: absolute;
-        transition: background 0.2s ease;
-      }
-      .resize-handle-line.resizing {
-        background: "rgba(255, 255, 255, 0.3)";
+      .resize-panel:hover .resize-grip,
+      .resize-handle:hover .resize-grip {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.4);
+        transform: scale(1.05);
       }
 
-      .horizontal .resize-handle-line {
-        right: 6px;
-        top: 0;
-        bottom: 0;
-        width: 1px;
-      }
-
-      .vertical .resize-handle-line {
-        bottom: 6px;
-        left: 0;
-        right: 0;
-        height: 1px;
+      .resize-grip.active {
+        opacity: 1 !important;
+        background: rgba(255, 255, 255, 0.7);
       }
 
       .lyrics-container-container {
@@ -115,14 +111,15 @@ export const DPIPLyrics = (): ReactElement => {
       >
         <ResizablePanel.Group direction="column">
           <ResizablePanel.Panel
-            id="top-panel"
             direction="vertical"
             waitForImages={true}
             observeResize={true}
-            maxSize="450px"
-            minSize="124px"
+            maxSize="fit-content"
+            minSize="125px"
             className="player-container"
             document={pipWindow.current?.document}
+            defaultSize="450px"
+            initialExpanded={true}
           >
             <MiniPlayer document={pipWindow.current?.document} />
           </ResizablePanel.Panel>

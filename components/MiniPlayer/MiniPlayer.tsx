@@ -41,6 +41,7 @@ const styles = css.global`
     z-index: 300;
     min-height: 0;
     height: auto;
+    user-select: none;
   }
 
   .cover-art-container {

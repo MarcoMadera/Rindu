@@ -6,6 +6,8 @@ import React, {
   useState,
 } from "react";
 
+import { isServer } from "utils";
+
 interface PanelGroupProps {
   direction: "column" | "row";
   className?: string;
@@ -159,7 +161,7 @@ export function Item({
     <div
       ref={itemRef}
       style={{
-        flex: initialized ? "0 0 auto" : "0 1 auto",
+        flex: initialized ? "0 0 auto" : "0 0 auto",
         width: size,
         height: "100%",
         position: "relative",
@@ -184,6 +186,7 @@ interface PanelResizeHandleProps {
   containerRef?: React.RefObject<HTMLElement | null>;
   defaultOnResize?: (delta: number) => void;
   document?: Document;
+  onDoubleClick?: () => void;
 }
 
 export function Handle({
@@ -193,7 +196,8 @@ export function Handle({
   onResizeEnd,
   containerRef,
   defaultOnResize,
-  document = window.document,
+  document = isServer() ? undefined : window.document,
+  onDoubleClick,
 }: PanelResizeHandleProps): ReactElement {
   const handleRef = useRef<HTMLDivElement>(null);
   const [isResizing, setIsResizing] = useState(false);
@@ -251,17 +255,17 @@ export function Handle({
     }
 
     if (!isDragging) {
-      document.removeEventListener("mousemove", handleDrag);
-      document.removeEventListener("mouseup", handleDragEnd);
+      document?.removeEventListener("mousemove", handleDrag);
+      document?.removeEventListener("mouseup", handleDragEnd);
       return;
     }
 
-    document.addEventListener("mousemove", handleDrag);
-    document.addEventListener("mouseup", handleDragEnd);
+    document?.addEventListener("mousemove", handleDrag);
+    document?.addEventListener("mouseup", handleDragEnd);
 
     return () => {
-      document.removeEventListener("mousemove", handleDrag);
-      document.removeEventListener("mouseup", handleDragEnd);
+      document?.removeEventListener("mousemove", handleDrag);
+      document?.removeEventListener("mouseup", handleDragEnd);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -282,6 +286,7 @@ export function Handle({
       style={{ cursor: cursor }}
       role="button"
       tabIndex={0}
+      onDoubleClick={onDoubleClick}
       onMouseMove={() => {
         if (isPressingMouse) {
           setIsDragging(true);
@@ -308,9 +313,7 @@ export function Handle({
         }
       }}
     >
-      <div
-        className={`resize-handle-line ${isResizing ? "resizing" : ""}`}
-      ></div>
+      <div className={`resize-grip ${isResizing ? "active" : ""}`} />
       <style jsx>{`
         .resize-handle {
           background: transparent;
@@ -364,7 +367,7 @@ export function Handle({
 }
 
 interface ResizablePanelProps {
-  id: string;
+  id?: string;
   direction?: "horizontal" | "vertical";
   defaultSize?: string;
   minSize?: string;
@@ -375,6 +378,7 @@ interface ResizablePanelProps {
   observeResize?: boolean;
   className?: string;
   document?: Document;
+  initialExpanded?: boolean;
 }
 
 export function Panel({
@@ -390,11 +394,13 @@ export function Panel({
   children,
   className,
   document = window.document,
+  initialExpanded = false,
 }: PropsWithChildren<ResizablePanelProps>): ReactElement {
   const panelRef = useRef<HTMLDivElement>(null);
   const [internalSize, setInternalSize] = useState(defaultSize || "auto");
   const [initialized, setInitialized] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(!waitForImages);
+  const [isExpanded, setIsExpanded] = useState(initialExpanded);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
   const size = externalSize !== undefined ? externalSize : internalSize;
@@ -537,6 +543,20 @@ export function Panel({
     }
   };
 
+  const toggleSize = () => {
+    if (!minSize || !maxSize) return;
+
+    const newSize = isExpanded ? minSize : maxSize;
+
+    if (onSizeChange) {
+      onSizeChange(newSize);
+    } else {
+      setInternalSize(newSize);
+    }
+
+    setIsExpanded(!isExpanded);
+  };
+
   return (
     <div
       ref={panelRef}
@@ -548,13 +568,14 @@ export function Panel({
         ...maxConstraint,
       }}
       id={id}
-      className={className}
+      className={`resize-panel ${className}`}
     >
       {children}
       <Handle
         direction={direction}
         defaultOnResize={handleResize}
         containerRef={panelRef}
+        onDoubleClick={toggleSize}
         document={document}
       />
     </div>
