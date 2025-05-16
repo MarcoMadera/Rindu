@@ -39,12 +39,12 @@ const styles = css.global`
     position: relative;
     top: 0;
     z-index: 300;
-    min-height: 450px;
+    min-height: fit-content;
   }
 
   .cover-art-container {
     width: 100%;
-    height: 320px;
+    height: auto;
     display: flex;
     justify-content: center;
     align-items: center;
