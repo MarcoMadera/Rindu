@@ -86,9 +86,40 @@ const styles1 = css.global`
       transform: translateX(-50%);
     }
   }
+
+  @media screen and (min-width: 658px) and (display-mode: picture-in-picture) {
+    .lyrics-container {
+      width: auto;
+      margin-right: 0;
+    }
+    .lyrics {
+      padding-right: 5rem;
+    }
+  }
+
+  @media screen and (min-width: 658px) and (display-mode: picture-in-picture) {
+    .lyrics-container {
+      margin: 30px 0;
+      width: auto;
+      font-size: 18px;
+    }
+    .lyrics {
+      padding-left: 3rem;
+      padding-right: 3rem;
+    }
+    .lyrics .line {
+      padding-left: 0;
+    }
+    .lyrics .countdown-container {
+      left: 4rem;
+      top: 0;
+      transform: translateX(-50%);
+    }
+  }
   @media screen and (max-width: 658px) {
     .lyrics-container {
       margin: 0px 0px 0px 0px;
+      width: auto;
       font-size: 18px;
     }
     .line {
@@ -101,24 +132,29 @@ const styles1 = css.global`
   }
 
   @media all and (display-mode: picture-in-picture) {
-    .lyrics .countdown-container {
-      left: 10rem;
-    }
     .lyrics {
       gap: 24px;
-      height: calc(100svh - 445px);
-      min-height: calc(100svh - 445px);
-      max-height: calc(100svh - 445px);
       padding-top: 3rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: unset;
     }
     .lyrics-container {
       margin-top: 0px;
+      margin-bottom: 0px;
       position: relative;
+      height: unset;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
   }
   @media screen and (max-width: 768px) and (display-mode: picture-in-picture) {
     .lyrics .countdown-container {
-      left: 2rem;
+      left: 4rem;
+      top: 0;
     }
   }
 

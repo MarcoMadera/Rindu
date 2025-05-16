@@ -53,8 +53,9 @@ export const DPIPLyrics = (): ReactElement => {
         style={{
           width: "100%",
           height: "100svh",
-          display: "flex",
           flexDirection: "column",
+          position: "relative",
+          display: "flex",
         }}
       >
         <MiniPlayer document={pipWindow.current?.document} />
