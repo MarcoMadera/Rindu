@@ -70,7 +70,7 @@ export function AppContainer({
       <div className="overlay"></div>
       <ResizablePanel.Group direction="row">
         <ResizablePanel.Item
-          defaultSize={`${leftPanelWidth}px`}
+          size={`${leftPanelWidth}px`}
           id="left"
           minWidth={`${leftPanelMinWidth}px`}
           maxWidth={`${leftPanelMaxWidth}px`}

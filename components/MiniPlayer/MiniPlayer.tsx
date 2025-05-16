@@ -39,7 +39,9 @@ const styles = css.global`
     position: relative;
     top: 0;
     z-index: 300;
-    min-height: fit-content;
+    min-height: 0;
+    height: auto;
+    user-select: none;
   }
 
   .cover-art-container {
@@ -266,7 +268,7 @@ export default function MiniPlayer({
   };
 
   return (
-    <div className="player-container">
+    <>
       {currentlyPlaying?.album?.images.length && (
         <div className="cover-art-container">
           <div>
@@ -319,6 +321,6 @@ export default function MiniPlayer({
           <Player />
         </div>
       </div>
-    </div>
+    </>
   );
 }
