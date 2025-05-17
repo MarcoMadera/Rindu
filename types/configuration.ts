@@ -2,6 +2,7 @@ export interface Configuration {
   isDocPipEnabled: boolean;
   theme: "light" | "dark" | "system";
   volume: number;
+  colorizedLyrics: boolean;
 }
 
 export interface VersionedConfig {

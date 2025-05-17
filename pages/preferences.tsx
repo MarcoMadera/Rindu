@@ -45,6 +45,9 @@ export default function PreferencesPage(): ReactElement {
   const [useDocumentPiP, setUseDocumentPip] = useToggle(
     configuration.get("isDocPipEnabled")
   );
+  const [useColorizedLyrics, setUseColorizedLyrics] = useToggle(
+    configuration.get("colorizedLyrics")
+  );
 
   useEffect(() => {
     trackWithGoogleAnalytics();
@@ -143,6 +146,28 @@ export default function PreferencesPage(): ReactElement {
                     translations.pages.preferences
                       .disableDocumentPiPToggleReason
                   }
+                />
+              </div>
+            </div>
+          </>
+          <>
+            <Heading number={4} as={AsType.H2}>
+              {translations.pages.preferences.useColorizedLyrics}
+            </Heading>
+            <div className="inputs-container">
+              <div className="label-container">
+                <label htmlFor="useColorizedLyrics">
+                  {translations.pages.preferences.useColorizedLyricsHint}
+                </label>
+              </div>
+              <div className="select-container">
+                <FormToggle
+                  checked={useColorizedLyrics}
+                  id="useColorizedLyrics"
+                  onChange={(e) => {
+                    configuration.set("colorizedLyrics", e.target.checked);
+                    setUseColorizedLyrics.toggle();
+                  }}
                 />
               </div>
             </div>

@@ -12,7 +12,7 @@ import { styles as sliderStyles } from "components/Slider";
 
 import { useContextMenu, useSpotify } from "hooks";
 
-import { chooseImage, getMainColorFromImage } from "utils";
+import { chooseImage, configuration, getMainColorFromImage } from "utils";
 
 interface Props {
   document?: Document;
@@ -253,7 +253,23 @@ export default function MiniPlayer({
     if (!currentlyPlaying?.id) return;
     getMainColorFromImage(
       `cover-art-pip-mini-player-${currentlyPlaying.id}`,
-      setContainerColor,
+      (color: string) => {
+        setContainerColor(color);
+        const backgroundColor = configuration.get("colorizedLyrics")
+          ? color
+          : "#767676";
+
+        document.documentElement.style.setProperty(
+          "--lyrics-background-color",
+          backgroundColor
+        );
+
+        const pipApp = document.querySelector(".pipApp") as HTMLElement;
+
+        if (pipApp) {
+          pipApp.style.backgroundColor = backgroundColor;
+        }
+      },
       undefined,
       document
     );

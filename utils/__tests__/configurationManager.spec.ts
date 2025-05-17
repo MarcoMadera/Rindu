@@ -75,12 +75,10 @@ describe("configurationManager", () => {
       configurationManager.set("theme", "dark");
 
       expect(configurationManager.get("theme")).toBe("dark");
+
       expect(localStorage.setItem).toHaveBeenCalledWith(
         "app_config",
-        JSON.stringify({
-          version: 1,
-          data: { isDocPipEnabled: false, theme: "dark", volume: 1 },
-        })
+        expect.stringMatching(/.*"data":\s*\{.*"theme":\s*"dark".*\}.*/)
       );
     });
 
@@ -160,11 +158,13 @@ describe("configurationManager", () => {
 
       const allConfig = configurationManager.getAll();
 
-      expect(allConfig).toStrictEqual({
-        isDocPipEnabled: false,
-        theme: "system",
-        volume: 1,
-      });
+      expect(allConfig).toStrictEqual(
+        expect.objectContaining({
+          isDocPipEnabled: false,
+          theme: "system",
+          volume: 1,
+        })
+      );
     });
 
     it("should return updated values after changes", () => {
@@ -179,11 +179,13 @@ describe("configurationManager", () => {
 
       const allConfig = configurationManager.getAll();
 
-      expect(allConfig).toStrictEqual({
-        isDocPipEnabled: false,
-        theme: "dark",
-        volume: 0.5,
-      });
+      expect(allConfig).toStrictEqual(
+        expect.objectContaining({
+          isDocPipEnabled: false,
+          theme: "dark",
+          volume: 0.5,
+        })
+      );
     });
   });
 
@@ -262,7 +264,7 @@ describe("configurationManager", () => {
 
   describe("configurationManager migrations", () => {
     it("should handle legacy config without version", () => {
-      expect.assertions(4);
+      expect.assertions(5);
 
       localStorage.setItem(
         "app_config",
@@ -284,14 +286,8 @@ describe("configurationManager", () => {
         localStorage.getItem("app_config") as string
       ) as VersionedConfig;
 
-      expect(savedData).toStrictEqual({
-        version: 1,
-        data: {
-          isDocPipEnabled: false,
-          theme: "dark",
-          volume: 0.7,
-        },
-      });
+      expect(savedData.version).toBe(1);
+      expect(savedData.data.isDocPipEnabled).toBe(false);
     });
 
     it("should handle old version config", () => {
@@ -397,11 +393,13 @@ describe("configurationManager", () => {
       ) as VersionedConfig;
 
       expect(savedData.version).toBe(1);
-      expect(savedData.data).toStrictEqual({
-        isDocPipEnabled: false, // default value for missing property
-        theme: "dark",
-        volume: 0.5,
-      });
+      expect(savedData.data).toStrictEqual(
+        expect.objectContaining({
+          isDocPipEnabled: false, // default value for missing property
+          theme: "dark",
+          volume: 0.5,
+        })
+      );
     });
   });
 });

@@ -367,6 +367,9 @@ export const es: ITranslations = {
       languageLabel:
         "Elige un idioma (los cambios se aplicarán cuando se reinicie la aplicación)",
       useDocumentPiP: "Ventana Flotante Mejorada (Beta)",
+      useColorizedLyrics: "Colores de Letra Dinámicos",
+      useColorizedLyricsHint:
+        "Cambia el color de fondo de la pantalla de letras según la portada de la canción.",
       disableDocumentPiPToggleReason:
         "Esta funcionalidad no está aún soportada por este navegador",
       useDocumentPiPHint:
