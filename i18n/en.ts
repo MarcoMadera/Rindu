@@ -366,6 +366,9 @@ export const en: ITranslations = {
         "Choose language - Changes will be applied after restarting the app",
       useDocumentPiP: "Enhanced Floating Window (Beta)",
       useDocumentPiPHint: "Uses an improved floating window system for lyrics.",
+      useColorizedLyrics: "Dynamic Lyric Colors",
+      useColorizedLyricsHint:
+        "Changes the background color of the lyrics screen based on the song's artwork.",
       disableDocumentPiPToggleReason:
         "This feature is not supported yet by this browser",
       spanish: "Spanish",

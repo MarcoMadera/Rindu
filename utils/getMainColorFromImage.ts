@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
-import { rgbToHex } from "utils";
+import { snapToAnchorColor } from "utils";
 
 const cache: Record<string, string> = {};
 
@@ -45,15 +45,17 @@ export function getMainColorFromImage(
     const colorCounts: Record<string, number> = {};
     const colorValues: Record<string, { r: number; g: number; b: number }> = {};
 
-    for (let i = 0; i < sampleSize; i++) {
-      const randomIndex =
-        Math.floor(Math.random() * (scaledWidth * scaledHeight)) * 4;
+    const totalPixels = scaledWidth * scaledHeight;
+    const step = Math.max(1, Math.floor(totalPixels / sampleSize));
 
-      if (imageData[randomIndex + 3] === 0) continue;
+    for (let i = 0; i < totalPixels; i += step) {
+      const idx = i * 4;
 
-      const r = imageData[randomIndex];
-      const g = imageData[randomIndex + 1];
-      const b = imageData[randomIndex + 2];
+      if (imageData[idx + 3] === 0) continue;
+
+      const r = imageData[idx];
+      const g = imageData[idx + 1];
+      const b = imageData[idx + 2];
 
       const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
       if (luma > 240 || luma < 15) continue;
@@ -88,10 +90,11 @@ export function getMainColorFromImage(
       dominantColor = colorValues[dominantColorKey];
     }
 
-    const hex = rgbToHex(dominantColor);
+    const { r, g, b } = dominantColor;
+    const snappedHex = snapToAnchorColor(r, g, b);
 
-    cache[img.src] = hex;
+    cache[img.src] = snappedHex;
 
-    callback(hex);
+    callback(snappedHex);
   };
 }

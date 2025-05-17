@@ -5,6 +5,7 @@ export const DEFAULT_CONFIG: Configuration = {
   isDocPipEnabled: false,
   theme: "system",
   volume: 1,
+  colorizedLyrics: true,
 };
 
 export const CONFIGURATION_STORAGE_KEY = "app_config";
@@ -19,6 +20,12 @@ export const validators: Validators = {
       : false;
 
     return isBool && isSupported;
+  },
+  colorizedLyrics: (
+    value: unknown
+  ): value is Configuration["colorizedLyrics"] => {
+    const isBool = typeof value === "boolean";
+    return isBool;
   },
   theme: (value: unknown): value is Configuration["theme"] =>
     typeof value === "string" && ["light", "dark", "system"].includes(value),

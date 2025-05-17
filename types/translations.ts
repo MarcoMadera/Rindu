@@ -225,6 +225,8 @@ export interface Preferences {
   languageLabel: string;
   useDocumentPiP: string;
   useDocumentPiPHint: string;
+  useColorizedLyrics: string;
+  useColorizedLyricsHint: string;
   disableDocumentPiPToggleReason: string;
   spanish: string;
   english: string;
