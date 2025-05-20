@@ -1,55 +1,54 @@
-function srgbToLinear(channel: number) {
+function srgbToLinear(channel: number): number {
   const c = channel / 255;
   return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
 }
 
-function rgbToXyz(r: number, g: number, b: number) {
-  r = srgbToLinear(r);
-  g = srgbToLinear(g);
-  b = srgbToLinear(b);
-
+function rgbToLms(
+  r: number,
+  g: number,
+  b: number
+): { l: number; m: number; s: number } {
   return {
-    x: r * 0.4124564 + g * 0.3575761 + b * 0.1804375,
-    y: r * 0.2126729 + g * 0.7151522 + b * 0.072175,
-    z: r * 0.0193339 + g * 0.119192 + b * 0.9503041,
+    l: 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b,
+    m: 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b,
+    s: 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b,
   };
 }
 
-function xyzToLab(x: number, y: number, z: number) {
-  const white = { x: 0.95047, y: 1.0, z: 1.08883 };
-
-  x /= white.x;
-  y /= white.y;
-  z /= white.z;
-
-  const f = (t: number) =>
-    t > 0.008856 ? Math.cbrt(t) : (903.3 * t + 16) / 116;
-
-  const fx = f(x);
-  const fy = f(y);
-  const fz = f(z);
-
+function lmsToCubeRoot(lms: { l: number; m: number; s: number }): {
+  l_: number;
+  m_: number;
+  s_: number;
+} {
   return {
-    l: 116 * fy - 16,
-    a: 500 * (fx - fy),
-    b: 200 * (fy - fz),
+    l_: Math.cbrt(lms.l),
+    m_: Math.cbrt(lms.m),
+    s_: Math.cbrt(lms.s),
   };
 }
 
-function labToLch({ l, a, b }: { l: number; a: number; b: number }) {
-  const c = Math.sqrt(a * a + b * b);
-  let h = Math.atan2(b, a) * (180 / Math.PI);
-  if (h < 0) h += 360;
-
-  return { l, c, h };
+function cubeRootLmsToOklab(lms: { l_: number; m_: number; s_: number }): {
+  L: number;
+  A: number;
+  B: number;
+} {
+  return {
+    L: 0.2104542553 * lms.l_ + 0.793617785 * lms.m_ - 0.0040720468 * lms.s_,
+    A: 1.9779984951 * lms.l_ - 2.428592205 * lms.m_ + 0.4505937099 * lms.s_,
+    B: 0.0259040371 * lms.l_ + 0.7827717662 * lms.m_ - 0.808675766 * lms.s_,
+  };
 }
 
-function lchToOklch({ l, c, h }: { l: number; c: number; h: number }) {
-  return {
-    l: l / 100,
-    c: c / 100,
-    h: h,
-  };
+function oklabToOklch(lab: { L: number; A: number; B: number }): {
+  l: number;
+  c: number;
+  h: number;
+} {
+  const C = Math.sqrt(lab.A * lab.A + lab.B * lab.B);
+  let H = Math.atan2(lab.B, lab.A) * (180 / Math.PI);
+  if (H < 0) H += 360;
+
+  return { l: lab.L, c: C, h: H };
 }
 
 export function rgbToOklch(
@@ -57,8 +56,13 @@ export function rgbToOklch(
   g: number,
   b: number
 ): { l: number; c: number; h: number } {
-  const xyz = rgbToXyz(r, g, b);
-  const lab = xyzToLab(xyz.x, xyz.y, xyz.z);
-  const lch = labToLch(lab);
-  return lchToOklch(lch);
+  const linearR = srgbToLinear(r);
+  const linearG = srgbToLinear(g);
+  const linearB = srgbToLinear(b);
+
+  const lms = rgbToLms(linearR, linearG, linearB);
+  const lmsCube = lmsToCubeRoot(lms);
+  const oklab = cubeRootLmsToOklab(lmsCube);
+
+  return oklabToOklch(oklab);
 }

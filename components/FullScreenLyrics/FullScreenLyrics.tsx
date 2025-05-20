@@ -295,7 +295,7 @@ export default function FullScreenLyrics({
   });
 
   useEffect(() => {
-    const root = document.documentElement;
+    const root = window.document.documentElement;
     const body = document.body;
 
     const originalRootBgColor = root.style.getPropertyValue(
@@ -318,25 +318,22 @@ export default function FullScreenLyrics({
   }, [lyricsBackgroundColor, document.body, document.documentElement]);
 
   useEffect(() => {
-    const pipApp = document.querySelector<HTMLElement>(".pipApp");
     const shouldModifyBackground = source !== "main-footer";
-    const appContainer =
-      pipApp ??
-      (shouldModifyBackground
-        ? document.querySelector<HTMLElement>(".app")
-        : null);
-    const originalBackground = appContainer?.style?.backgroundColor;
-    const originalPosition = appContainer?.style?.position;
+    const app = shouldModifyBackground
+      ? document.querySelector<HTMLElement>(".app")
+      : null;
+    const originalBackground = app?.style?.backgroundColor;
+    const originalPosition = app?.style?.position;
 
-    if (appContainer) {
-      appContainer.style.backgroundColor = lyricsBackgroundColor;
-      appContainer.style.position = "relative";
+    if (app) {
+      app.style.backgroundColor = lyricsBackgroundColor;
+      app.style.position = "relative";
     }
 
     return () => {
-      if (appContainer) {
-        appContainer.style.backgroundColor = originalBackground ?? "";
-        appContainer.style.position = originalPosition ?? "";
+      if (app) {
+        app.style.backgroundColor = originalBackground ?? "";
+        app.style.position = originalPosition ?? "";
       }
     };
   }, [document, lyricsBackgroundColor, source]);

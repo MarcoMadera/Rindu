@@ -10,7 +10,7 @@ import { styles as progressBarStyles } from "components/ProgressBar";
 import { styles as scrollableTextStyles } from "components/ScrollableText";
 import { styles as sliderStyles } from "components/Slider";
 
-import { useContextMenu, useSpotify } from "hooks";
+import { useContextMenu, useLyricsContext, useSpotify } from "hooks";
 
 import { chooseImage, configuration, getMainColorFromImage } from "utils";
 
@@ -216,6 +216,7 @@ export default function MiniPlayer({
   const { currentlyPlaying } = useSpotify();
   const router = useRouter();
   const [containerColor, setContainerColor] = useState("#323131");
+  const { setLyricsBackgroundColor } = useLyricsContext();
 
   useEffect(() => {
     const pipApp = document.querySelector<HTMLElement>(".pipApp");
@@ -264,6 +265,7 @@ export default function MiniPlayer({
           backgroundColor
         );
 
+        setLyricsBackgroundColor(backgroundColor);
         const pipApp = document.querySelector(".pipApp") as HTMLElement;
 
         if (pipApp) {
@@ -273,7 +275,7 @@ export default function MiniPlayer({
       undefined,
       document
     );
-  }, [router.asPath, currentlyPlaying?.id, document]);
+  }, [router.asPath, currentlyPlaying?.id, document, setLyricsBackgroundColor]);
 
   const handleTrackClick = () => {
     if (currentlyPlaying?.id) {
