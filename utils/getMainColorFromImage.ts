@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
-import { snapToAnchorColor } from "utils";
+import { getSafeColorFromImage } from "utils";
 
 const cache: Record<string, string> = {};
 
@@ -57,9 +57,8 @@ export function getMainColorFromImage(
       const g = imageData[idx + 1];
       const b = imageData[idx + 2];
 
-      const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-      if (luma > 240 || luma < 15) continue;
-
+      const saturation = (Math.max(r, g, b) - Math.min(r, g, b)) / 255;
+      if (saturation < 0.1) continue;
       const simplifiedR = Math.floor(r / 8) * 8;
       const simplifiedG = Math.floor(g / 8) * 8;
       const simplifiedB = Math.floor(b / 8) * 8;
@@ -91,7 +90,7 @@ export function getMainColorFromImage(
     }
 
     const { r, g, b } = dominantColor;
-    const snappedHex = snapToAnchorColor(r, g, b);
+    const snappedHex = getSafeColorFromImage(r, g, b);
 
     cache[img.src] = snappedHex;
 

@@ -30,7 +30,7 @@ describe("getMainColorFromImage", () => {
     querySelectorMock.mockRestore();
   });
 
-  it("should return gray (#767676) if all sampled pixels are too dark", async () => {
+  it("should return gray (#7a7a7a) if all sampled pixels are too dark", async () => {
     expect.assertions(1);
 
     const darkPixels = new Uint8ClampedArray(100 * 100 * 4).fill(0);
@@ -50,7 +50,7 @@ describe("getMainColorFromImage", () => {
 
     await new Promise<void>((resolve) => {
       getMainColorFromImage("dark-image", (color: string) => {
-        expect(color.toLowerCase()).toBe("#767676");
+        expect(color.toLowerCase()).toBe("#7a7a7a");
 
         resolve();
       });
@@ -60,7 +60,7 @@ describe("getMainColorFromImage", () => {
     createElementMock.mockRestore();
   });
 
-  it("should return gray (#767676) if all sampled pixels are too bright", async () => {
+  it("should return gray (#7a7a7a) if all sampled pixels are too bright", async () => {
     expect.assertions(1);
 
     const brightPixels = new Uint8ClampedArray(100 * 100 * 4).fill(255);
@@ -80,7 +80,7 @@ describe("getMainColorFromImage", () => {
 
     await new Promise<void>((resolve) => {
       getMainColorFromImage("bright-image", (color: string) => {
-        expect(color.toLowerCase()).toBe("#767676");
+        expect(color.toLowerCase()).toBe("#7a7a7a");
 
         resolve();
       });
@@ -117,7 +117,7 @@ describe("getMainColorFromImage", () => {
 
     await new Promise<void>((resolve) => {
       getMainColorFromImage("valid-image", (color: string) => {
-        expect(color.toLowerCase()).toBe("#a56565");
+        expect(color.toLowerCase()).toBe("#b6392e");
 
         resolve();
       });
@@ -154,7 +154,7 @@ describe("getMainColorFromImage", () => {
 
     await new Promise<void>((resolve) => {
       getMainColorFromImage("test-image", (color: string) => {
-        expect(color).toBe("#767676");
+        expect(color).toBe("#7a7a7a");
 
         resolve();
       });
