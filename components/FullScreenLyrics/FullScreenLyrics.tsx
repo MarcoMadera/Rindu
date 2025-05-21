@@ -133,12 +133,21 @@ const styles1 = css.global`
 
   @media all and (display-mode: picture-in-picture) {
     .lyrics {
-      gap: 24px;
+      gap: 0;
       padding-top: 3rem;
       flex: 1;
       display: flex;
       flex-direction: column;
       height: unset;
+    }
+    .lyrics .line {
+      padding-block: 12px;
+    }
+    .lyrics .line:first-of-type {
+      padding-top: 0;
+    }
+    .lyrics > .line:last-of-type {
+      padding-bottom: 0;
     }
     .lyrics-container {
       margin-top: 0px;
