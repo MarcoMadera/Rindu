@@ -57,7 +57,7 @@ export default function LyricsPIPButton({
     }
     try {
       const pipWin = await window.documentPictureInPicture?.requestWindow({
-        width: 350,
+        width: 320,
         height: screen.availHeight,
       });
       pipWindow.current = pipWin ?? null;
