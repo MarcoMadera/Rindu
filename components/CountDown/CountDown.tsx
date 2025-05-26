@@ -1,95 +1,145 @@
-import React, { ReactElement, useEffect, useRef, useState } from "react";
+import React, {
+  ReactElement,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
-export const CountDown = ({
-  startTime,
-  currentProgress,
-  isPlaying,
-  size = 32,
-  strokeWidth = 3,
-  color = "#ffffff",
-}: {
-  startTime: number;
+export enum CountDownType {
+  DOTS = "dots",
+  CIRCULAR = "circular",
+}
+
+export interface CountDownProps {
+  duration: number;
   currentProgress: number;
   isPlaying: boolean;
+  type?: CountDownType;
+  startTime?: number;
   size?: number;
   strokeWidth?: number;
   color?: string;
-}): ReactElement | null => {
-  const radius = size / 2 - strokeWidth / 2;
-  const circumference = 2 * Math.PI * radius;
+}
+
+export const CountDown = ({
+  duration,
+  currentProgress,
+  isPlaying,
+  type = CountDownType.CIRCULAR,
+  startTime = 0,
+  size = 32,
+  strokeWidth = 3,
+  color = "#ffffff",
+}: CountDownProps): ReactElement | null => {
+  const isDotType = type === CountDownType.DOTS;
+
+  const { radius, circumference, fontSize } = useMemo(() => {
+    const r = size / 2 - strokeWidth / 2;
+    return {
+      radius: r,
+      circumference: 2 * Math.PI * r,
+      fontSize: Math.max(size * 0.3, 12),
+    } as const;
+  }, [size, strokeWidth]);
+
   const circleRef = useRef<SVGCircleElement>(null);
   const animationRef = useRef<number>(null);
   const progressRef = useRef(currentProgress);
-  const lastTimeRef = useRef<number>(null);
+  const lastTimeRef = useRef<number | null>(null);
   const [countdownNumber, setCountdownNumber] = useState<number | null>(null);
 
-  const updateCircle = () => {
-    if (!circleRef.current) return;
-
-    const remainingTime = startTime - progressRef.current;
-    const totalDuration = startTime;
-
-    const progress = Math.max(0, Math.min(1, remainingTime / totalDuration));
-    const dashOffset = circumference * (1 - progress);
-
-    circleRef.current.style.strokeDashoffset = dashOffset.toString();
-
-    if (progress < 0.1) {
-      circleRef.current.style.opacity = (progress * 10).toString(); // Fade out in last 10%
-    } else {
-      circleRef.current.style.opacity = "1";
-    }
+  const paintCircle = () => {
+    if (!circleRef.current) return false;
+    const remainingTime = duration - progressRef.current;
+    const progress = Math.max(0, Math.min(1, remainingTime / duration));
+    circleRef.current.style.strokeDashoffset = `${
+      circumference * (1 - progress)
+    }`;
+    circleRef.current.style.opacity = progress < 0.1 ? `${progress * 10}` : "1";
 
     const remainingSeconds = Math.ceil(remainingTime / 1000);
-    if (remainingSeconds <= 3 && remainingSeconds > 0) {
-      setCountdownNumber(remainingSeconds);
-    } else {
-      setCountdownNumber(null);
-    }
+    setCountdownNumber(
+      remainingSeconds > 0 && remainingSeconds <= 3 ? remainingSeconds : null
+    );
 
-    if (progress <= 0) {
-      return false;
-    }
-
-    return true;
+    return progress > 0;
   };
 
   useEffect(() => {
     progressRef.current = currentProgress;
-
-    updateCircle();
+    if (!isDotType) paintCircle();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentProgress, startTime]);
+  }, [currentProgress, duration, isDotType]);
 
   useEffect(() => {
+    if (isDotType || !isPlaying) return;
+
     const animate = (time: number) => {
-      if (lastTimeRef.current && isPlaying) {
-        const deltaTime = time - lastTimeRef.current;
-
-        progressRef.current += deltaTime;
+      if (lastTimeRef.current !== null) {
+        progressRef.current += time - lastTimeRef.current;
       }
-
       lastTimeRef.current = time;
-
-      if (updateCircle()) {
+      if (paintCircle()) {
         animationRef.current = requestAnimationFrame(animate);
       }
     };
 
-    if (isPlaying) {
-      lastTimeRef.current = performance.now();
-      animationRef.current = requestAnimationFrame(animate);
-    }
+    lastTimeRef.current = performance.now();
+    animationRef.current = requestAnimationFrame(animate);
 
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
+      animationRef.current && cancelAnimationFrame(animationRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPlaying]);
+  }, [isDotType, isPlaying]);
 
-  const fontSize = Math.max(size * 0.3, 12);
+  if (isDotType) {
+    const inWindow =
+      currentProgress >= startTime && currentProgress <= startTime + duration;
+    const progress = inWindow
+      ? Math.min(1, Math.max(0, (currentProgress - startTime) / duration))
+      : 0;
+
+    const total = progress * 3;
+    const activeDot = Math.floor(total);
+    const dotProgress = total - activeDot;
+
+    const dotOpacity = (i: number) => {
+      if (i < activeDot) return 1;
+      if (i > activeDot) return 0.2;
+      return 0.2 + dotProgress * 0.8;
+    };
+
+    const dotSize = Math.max(size * 0.1, 3);
+    const gap = size * 0.15;
+
+    return (
+      <div
+        style={{
+          width: size,
+          display: "flex",
+          gap,
+          alignItems: "center",
+          visibility: inWindow ? "visible" : "hidden",
+        }}
+      >
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            style={{
+              width: dotSize,
+              height: dotSize,
+              borderRadius: "50%",
+              backgroundColor: color,
+              opacity: dotOpacity(i),
+              transition: "opacity 150ms linear",
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="countdown-container" style={{ width: size, height: size }}>
@@ -106,17 +156,16 @@ export const CountDown = ({
           stroke={color}
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
-          strokeDashoffset="0"
-          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+          strokeDashoffset={circumference}
           strokeLinecap="round"
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
-
         {countdownNumber !== null && (
           <text
-            x={size / 2}
-            y={size / 2 + fontSize / 6}
+            x="50%"
+            y="50%"
             textAnchor="middle"
-            dominantBaseline="middle"
+            dominantBaseline="central"
             fill={color}
             fontSize={fontSize}
             fontWeight="bold"

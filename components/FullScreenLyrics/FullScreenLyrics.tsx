@@ -4,6 +4,7 @@ import css from "styled-jsx/css";
 
 import { lineCss, LyricLine } from "./LyricLine";
 import { CountDown, LoadingSpinner, LyricsPIPButton } from "components";
+import { CountDownType } from "components/CountDown";
 import { useAuth, useHeader, useLyricsContext, useSpotify } from "hooks";
 import { getLineType } from "utils";
 
@@ -252,19 +253,20 @@ function Lines({
   }, [lyrics, ready]);
 
   if (!lyrics || !lyrics.lines.length) return null;
+
   return (
     <div className="lyrics" ref={containerRef}>
       {lyrics.lines[0].startTimeMs &&
-      typeof lyricsProgressMs === "number" &&
-      +lyrics.lines[0].startTimeMs >= 2000 &&
-      lyricsProgressMs <= +lyrics.lines[0].startTimeMs ? (
-        <CountDown
-          startTime={+lyrics.lines[0].startTimeMs}
-          currentProgress={lyricsProgressMs}
-          isPlaying={isPlaying}
-          size={pipApp ? 24 : 32}
-        />
-      ) : null}
+        typeof lyricsProgressMs === "number" &&
+        +lyrics.lines[0].startTimeMs >= 2000 &&
+        lyricsProgressMs <= +lyrics.lines[0].startTimeMs && (
+          <CountDown
+            duration={+lyrics.lines[0].startTimeMs}
+            currentProgress={lyricsProgressMs}
+            isPlaying={isPlaying}
+            size={pipApp ? 24 : 32}
+          />
+        )}
 
       {lyrics.lines.map((line, i) => {
         const type = getLineType({
@@ -274,8 +276,27 @@ function Lines({
           index: i,
         });
 
+        const isEmptyLine =
+          i !== 0 && line.words === "" && i !== lyrics.lines.length - 1;
+        const startTime = line.startTimeMs;
+        const endTime = lyrics.lines[i + 1]?.startTimeMs;
+
         return (
-          <LyricLine line={line} type={type} key={i} document={document} />
+          <LyricLine line={line} type={type} key={`line-${i}`}>
+            {isEmptyLine && startTime && endTime ? (
+              <CountDown
+                duration={+endTime - +startTime}
+                key={`empty-line-${i}-${startTime}`}
+                type={CountDownType.DOTS}
+                isPlaying={isPlaying}
+                currentProgress={lyricsProgressMs}
+                startTime={+startTime}
+                size={pipApp ? 72 : 98}
+              />
+            ) : (
+              line.words
+            )}
+          </LyricLine>
         );
       })}
     </div>
