@@ -1,4 +1,10 @@
-import { ReactElement, useEffect, useRef, useState } from "react";
+import {
+  PropsWithChildren,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import css from "styled-jsx/css";
 
@@ -48,7 +54,8 @@ export function LyricLine({
   line,
   type,
   document = window.document,
-}: ILyricLineProps): ReactElement {
+  children,
+}: PropsWithChildren<ILyricLineProps>): ReactElement {
   const { player, isPlaying } = useSpotify();
   const { isPremium } = useAuth();
   const lineRef = useRef<HTMLButtonElement>(null);
@@ -165,7 +172,7 @@ export function LyricLine({
       ref={lineRef}
       style={{ color: getColorLine(type) }}
     >
-      {line.words}
+      {children}
       <style jsx>{lineCss}</style>
     </button>
   );

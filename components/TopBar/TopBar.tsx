@@ -251,6 +251,7 @@ export default function TopBar({
           z-index: 1000024;
         }
         header :global(a),
+        header :global(input),
         header :global(button) {
           pointer-events: auto;
         }
