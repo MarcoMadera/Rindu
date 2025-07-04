@@ -75,9 +75,21 @@ const styles = css.global`
   }
 
   .bg-2-mini {
-    background-image:
-      linear-gradient(transparent 0, rgba(0, 0, 0, 0.5) 100%),
-      url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=");
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-image: none;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    z-index: 0;
+    filter: blur(20px) brightness(0.6);
+    transform: scale(1.2);
+    transition:
+      transform 0.3s ease-out,
+      filter 0.3s ease-out;
   }
 
   .cover-art {
@@ -294,7 +306,12 @@ export default function MiniPlayer({
               className="bg-1-mini"
               style={{ backgroundColor: containerColor }}
             ></div>
-            <div className="bg-2-mini"></div>
+            <div
+              className="bg-2-mini"
+              style={{
+                backgroundImage: `url(${chooseImage(currentlyPlaying.album?.images, 300).url})`,
+              }}
+            ></div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               id={`cover-art-pip-mini-player-${currentlyPlaying.id}`}
