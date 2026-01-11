@@ -67,7 +67,6 @@ export { default as ProgressBar } from "./ProgressBar";
 export { default as RemoveTracksModal } from "./RemoveTracksModal";
 export { default as ResizablePanel } from "./ResizablePanel";
 export { default as RouterButtons } from "./RouterButtons";
-export { default as SafeHTML } from "./SafeHTML";
 export { default as ScrollableText } from "./ScrollableText";
 export { default as ScrollBar } from "./ScrollBar";
 export { default as Searchable } from "./Searchable";

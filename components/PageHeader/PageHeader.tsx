@@ -10,7 +10,6 @@ import {
   Eyebrow,
   Heading,
   PageDetails,
-  SafeHTML,
   ScrollableText,
 } from "components";
 import {
@@ -23,13 +22,7 @@ import {
 } from "hooks";
 import { AsType } from "types/heading";
 import { HeaderProps, HeaderType } from "types/pageHeader";
-import {
-  formatNumber,
-  formatTime,
-  getIdFromUri,
-  getMainColorFromImage,
-  getYear,
-} from "utils";
+import { formatNumber, formatTime, getIdFromUri, getMainColorFromImage, getYear } from "utils";
 
 export default function PageHeader({
   type,
@@ -59,29 +52,18 @@ export default function PageHeader({
   const isPlaylist = type === HeaderType.Playlist;
   const isOwner = user?.id === pageDetails?.owner?.id;
   const enableEditPlaylist =
-    !!(pageDetails?.uri && isPlaylist && isOwner) &&
-    router.asPath.includes("/playlist/");
+    !!(pageDetails?.uri && isPlaylist && isOwner) && router.asPath.includes("/playlist/");
   const [pageHeaderImg, setPageHeaderImg] = useState(coverImg);
   const [pageHeaderTitle, setPageHeaderTitle] = useState(title);
-  const [pageHeaderDescription, setPageHeaderDescription] =
-    useState(description);
+  const [pageHeaderDescription, setPageHeaderDescription] = useState(description);
 
   useEffect(() => {
     // This will reset page header image color when navigating to a new page
     getMainColorFromImage("playlist-cover-image", setHeaderColor);
-  }, [
-    coverImg,
-    title,
-    description,
-    setHeaderColor,
-    displayInFullScreen,
-    router.asPath,
-  ]);
+  }, [coverImg, title, description, setHeaderColor, displayInFullScreen, router.asPath]);
 
   const isAlbumVariant =
-    type === HeaderType.Album ||
-    type === HeaderType.Single ||
-    type === HeaderType.Compilation;
+    type === HeaderType.Album || type === HeaderType.Single || type === HeaderType.Compilation;
 
   const headerTypeEyebrowText = {
     [HeaderType.Artist]: translations.pageHeader.Artist,
@@ -97,8 +79,7 @@ export default function PageHeader({
     [HeaderType.Radio]: translations.pageHeader.Radio,
     [HeaderType.Top]: translations.pageHeader.Top,
   };
-  const [headingElement, setHeadingElement] =
-    useState<HTMLHeadingElement | null>(null);
+  const [headingElement, setHeadingElement] = useState<HTMLHeadingElement | null>(null);
 
   useDynamicFontSize({
     element: headingElement,
@@ -109,11 +90,7 @@ export default function PageHeader({
   });
 
   return (
-    <PageDetails
-      banner={banner}
-      data={data ?? null}
-      disableOpacityChange={disableOpacityChange}
-    >
+    <PageDetails banner={banner} data={data ?? null} disableOpacityChange={disableOpacityChange}>
       {coverImg && !banner ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={pageHeaderImg} alt="" id="playlist-cover-image" />
@@ -158,9 +135,7 @@ export default function PageHeader({
           </ScrollableText>
         </div>
         {pageHeaderDescription ? (
-          <p className="description">
-            <SafeHTML>{decode(pageHeaderDescription)}</SafeHTML>
-          </p>
+          <p className="description">{decode(pageHeaderDescription)}</p>
         ) : null}
         <div>
           <p>
@@ -192,15 +167,13 @@ export default function PageHeader({
               <span className="stats">
                 {stats?.listeners && (
                   <span className="stat">
-                    {formatNumber(Number(stats?.listeners))}{" "}
-                    {translations.pageHeader.listeners}
+                    {formatNumber(Number(stats?.listeners))} {translations.pageHeader.listeners}
                     &nbsp;&middot;&nbsp;
                   </span>
                 )}
                 {stats?.playcount && (
                   <span className="stat">
-                    {formatNumber(Number(stats?.playcount))}{" "}
-                    {translations.pageHeader.plays}
+                    {formatNumber(Number(stats?.playcount))} {translations.pageHeader.plays}
                     &nbsp;&middot;&nbsp;
                   </span>
                 )}
@@ -208,15 +181,12 @@ export default function PageHeader({
             )}
             {(totalFollowers ?? 0) > 0 ? (
               <span>
-                {!(
-                  type === HeaderType.Profile || type === HeaderType.Artist
-                ) ? (
+                {!(type === HeaderType.Profile || type === HeaderType.Artist) ? (
                   <span>&nbsp;&middot;</span>
                 ) : (
                   ""
                 )}{" "}
-                {formatNumber(totalFollowers ?? 0)}{" "}
-                {translations.pageHeader.followers}
+                {formatNumber(totalFollowers ?? 0)} {translations.pageHeader.followers}
               </span>
             ) : null}
             {(type === HeaderType.Song || isAlbumVariant) && release_date ? (
@@ -224,8 +194,7 @@ export default function PageHeader({
                 <span>&nbsp;&middot; {getYear(release_date)}</span>
                 {type === HeaderType.Song && duration_s ? (
                   <span>
-                    &nbsp;&middot; {formatTime(duration_s)}{" "}
-                    {translations.pageHeader.minutes}
+                    &nbsp;&middot; {formatTime(duration_s)} {translations.pageHeader.minutes}
                   </span>
                 ) : null}
               </>
@@ -240,8 +209,7 @@ export default function PageHeader({
             ) : null}
             {popularity ? (
               <span>
-                &nbsp;&middot; {formatNumber(popularity)}{" "}
-                {translations.pageHeader.popularity}
+                &nbsp;&middot; {formatNumber(popularity)} {translations.pageHeader.popularity}
               </span>
             ) : null}
             {totalPublicPlaylists ? (
@@ -328,8 +296,7 @@ export default function PageHeader({
             min-width: 232px;
             width: 232px;
             box-shadow: 0 4px 60px rgb(0 0 0 / 50%);
-            border-radius: ${type === HeaderType.Artist ||
-            type === HeaderType.Profile
+            border-radius: ${type === HeaderType.Artist || type === HeaderType.Profile
               ? "50%"
               : type === HeaderType.Episode || type === HeaderType.Podcast
                 ? "12px"
