@@ -32,14 +32,14 @@ export default function TrackListHeader({
     const cachedRef = ref.current,
       observer = new IntersectionObserver(
         ([e]) => {
-          if (e.intersectionRect.top >= 59) {
+          if (e.isIntersecting) {
             setIsPin(true);
           } else {
             setIsPin(false);
           }
         },
         {
-          rootMargin: `0px 0px -${Math.max(0, (window.innerHeight || 0) - 60)}px 0px`,
+          rootMargin: `0px 0px -${Math.max(0, (window.innerHeight || 0) - 61)}px 0px`,
         }
       );
 
