@@ -97,11 +97,9 @@ export default function CardContent({
       <div>
         <strong id={cardContentId}>{title}</strong>
         <p>
-          {typeof subTitle === "string" ? (
-            decode(subTitle).slice(0, 200)
-          ) : (
-            subTitle
-          )}
+          {typeof subTitle === "string"
+            ? decode(subTitle).slice(0, 200)
+            : subTitle}
         </p>
       </div>
       <style jsx>{`
